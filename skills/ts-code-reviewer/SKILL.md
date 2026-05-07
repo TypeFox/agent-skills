@@ -1,6 +1,6 @@
 ---
 name: typescript-code-review
-description: Perform a senior-level code review of TypeScript or JavaScript code and produce an actionable REVIEW.md report using Conventional Comments notation. Use this skill whenever the user asks for a code review, PR review, diff review, or feedback on TypeScript/JavaScript code — including phrasings like "review this", "look at this PR", "give me feedback on this code", "what do you think of this", or when they paste TS/JS code clearly intending critique. Also use it for code-quality audits, pre-merge sanity checks, and reviews of `.ts`, `.tsx`, `.js`, `.jsx`, or `.mts`/`.cts` files. Do not use for non-TypeScript languages or for one-line "is this syntax correct" questions.
+description: Perform a senior-level TypeScript/JavaScript code review and produce an actionable REVIEW.md report using Conventional Comments notation. Use this skill for code reviews, PR reviews, diff reviews, or feedback on TS/JS code (.ts, .tsx, .js, .jsx, .mts, .cts files). Do not use for non-TypeScript languages or for one-line syntax questions.
 ---
 
 # TypeScript Code Review
@@ -17,7 +17,7 @@ Follow these steps in order:
 
 3. **Analyze.** Walk the code against the dimensions in the [Analysis framework](#analysis-framework) below. Do not include this analysis in the output — it is internal scaffolding to form the review.
 
-4. **Write the review** to the confirmed path using the structure in [Output format](#output-format). All feedback items must use Conventional Comments notation (see `references/conventional-comments.md`).
+4. **Write the review** to the confirmed path using the structure in [Output format](#output-format). All feedback items must use Conventional Comments notation (see `conventional-comments.md`).
 
 5. **Surface the file** to the user with a short summary of the verdict and the top 1–3 priorities. Do not restate the whole review in chat — the file is the deliverable.
 
@@ -54,15 +54,7 @@ Systematically consider the code along these dimensions. Not every dimension pro
 
 ## Conventional Comments
 
-Every feedback item uses the Conventional Comments format:
-
-```
-<label> [decorations]: <subject>
-
-[discussion]
-```
-
-Use the labels and decorations defined in `references/conventional-comments.md`. Read that file when starting a review — it is short and contains the complete reference for labels (`praise:`, `nitpick:`, `suggestion:`, `issue:`, `question:`, `thought:`, `todo:`, `chore:`, `note:`, `typo:`, `polish:`) and decorations (`(blocking)`, `(non-blocking)`, `(security)`, `(performance)`, `(types)`, etc.).
+Refer to `conventional-comments.md` in this directory for the full label and decoration reference. Read it before starting a review.
 
 ## Output format
 
@@ -145,7 +137,7 @@ Why this matters and why the suggested change is better. Reference principles, p
 
 For lightweight comments (`nitpick:`, `praise:`, `typo:`), the rationale and code blocks can be condensed or omitted — match weight to substance.
 
-A complete worked example of a finished review is in `references/example-review.md`. Read it before writing your first review for this skill, especially to calibrate the tone and depth of `Rationale` sections.
+A complete worked example of a finished review is in `example-review.md`. Read it before writing your first review for this skill, especially to calibrate the tone and depth of `Rationale` sections.
 
 ## Final checks before delivering
 
