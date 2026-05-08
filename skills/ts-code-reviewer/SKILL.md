@@ -1,5 +1,5 @@
 ---
-name: typescript-code-review
+name: ts-code-reviewer
 description: Perform a senior-level TypeScript/JavaScript code review and produce an actionable REVIEW.md report using Conventional Comments notation. Use this skill for code reviews, PR reviews, diff reviews, or feedback on TS/JS code (.ts, .tsx, .js, .jsx, .mts, .cts files). Do not use for non-TypeScript languages or for one-line syntax questions.
 ---
 
