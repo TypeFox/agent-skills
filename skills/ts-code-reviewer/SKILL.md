@@ -54,7 +54,7 @@ Systematically consider the code along these dimensions. Not every dimension pro
 
 ## Conventional Comments
 
-Refer to `conventional-comments.md` in this directory for the full label and decoration reference. Read it before starting a review.
+Refer to `references/conventional-comments.md` for the full label and decoration reference. Read it before starting a review.
 
 ## Output format
 
@@ -137,7 +137,7 @@ Why this matters and why the suggested change is better. Reference principles, p
 
 For lightweight comments (`nitpick:`, `praise:`, `typo:`), the rationale and code blocks can be condensed or omitted — match weight to substance.
 
-A complete worked example of a finished review is in `example-review.md`. Read it before writing your first review for this skill, especially to calibrate the tone and depth of `Rationale` sections.
+A complete worked example of a finished review is in `references/example-review.md`. Read it before writing your first review for this skill, especially to calibrate the tone and depth of `Rationale` sections.
 
 ## Final checks before delivering
 
