@@ -78,9 +78,9 @@ A 2–4 sentence high-level assessment. What does this code do well? What are th
 
 ## Prioritized Recommendations
 
-1. **(Blocking)** [Most critical change]
-2. **(Blocking)** [Second most critical]
-3. **(Non-blocking)** [Important but not blocking]
+1. **(Blocking)** [Most critical change] (#N)
+2. **(Blocking)** [Second most critical] (#N)
+3. **(Non-blocking)** [Important but not blocking] (#N)
 ...
 
 ---
@@ -89,23 +89,23 @@ A 2–4 sentence high-level assessment. What does this code do well? What are th
 
 ### Blocking Issues
 
-[One entry per blocking issue, using the per-comment template below]
+[One entry per blocking issue, numbered sequentially using the per-comment template below]
 
 ### Suggestions & Improvements
 
-[One entry per non-blocking suggestion]
+[One entry per non-blocking suggestion, continuing the numbering]
 
 ### Nitpicks & Polish
 
-[Trivial items]
+[Trivial items, continuing the numbering]
 
 ### Questions
 
-[Items needing author clarification]
+[Items needing author clarification, continuing the numbering]
 
 ### Praise
 
-[Positive observations]
+[Positive observations, continuing the numbering]
 
 ## Additional Notes
 
@@ -114,10 +114,10 @@ A 2–4 sentence high-level assessment. What does this code do well? What are th
 
 ### Per-comment template
 
-Each feedback item in the detailed sections follows this template:
+Each feedback item in the detailed sections is numbered sequentially across all sections (a single counter that starts at 1 and increments through Blocking Issues, Suggestions, Nitpicks, Questions, and Praise). This makes it easy to reference specific items later (e.g. "item 4").
 
 ```markdown
-**<label> (<decorations>): [Concise title]**
+**#N — <label> (<decorations>): [Concise title]**
 
 **Location:** `filename.ts:L##`
 
@@ -147,4 +147,6 @@ Before surfacing the review to the user, verify:
 - Every blocking issue has a concrete suggested fix, not just a complaint.
 - At least one `praise:` is included if the code deserves it.
 - Statistics counts match the actual content.
+- Item numbers (`#1`, `#2`, …) are sequential across all sections with no gaps or duplicates.
+- Prioritized Recommendations cross-reference the correct item numbers.
 - File paths and line numbers in `Location:` fields are accurate.

@@ -45,13 +45,13 @@ Decorations are optional and appear in parentheses after the label. Multiple dec
 
 ## Combining labels and decorations
 
-A few real examples of well-formed comment headers:
+A few real examples of well-formed comment headers (each prefixed with its sequential item number):
 
-- `**issue (blocking, security): Password comparison vulnerable to timing attacks**`
-- `**suggestion (non-blocking, types): Replace `any` with proper interface**`
-- `**nitpick (if-minor): Variable name could be more descriptive**`
-- `**question: Is the retry behavior here intentional?**`
-- `**praise: Excellent separation of concerns**`
+- `**#1 — issue (blocking, security): Password comparison vulnerable to timing attacks**`
+- `**#2 — suggestion (non-blocking, types): Replace `any` with proper interface**`
+- `**#3 — nitpick (if-minor): Variable name could be more descriptive**`
+- `**#4 — question: Is the retry behavior here intentional?**`
+- `**#5 — praise: Excellent separation of concerns**`
 
 ## Choosing severity
 
