@@ -21,17 +21,17 @@ This service handles user authentication and profile management. The core logic 
 
 ## Statistics
 
-- **Total Comments:** 7
+- **Total Comments:** 6
 - **Blocking Issues:** 2
-- **Non-blocking Suggestions:** 3
+- **Non-blocking Suggestions:** 2
 - **Praise:** 2
 
 ## Prioritized Recommendations
 
-1. **(Blocking)** Fix password comparison to use constant-time comparison
-2. **(Blocking)** Add proper error handling for database operations
-3. **(Non-blocking)** Replace `any` types with proper interfaces
-4. **(Non-blocking)** Consider extracting validation logic into a dedicated module
+1. **(Blocking)** Fix password comparison to use constant-time comparison (#1)
+2. **(Blocking)** Add proper error handling for database operations (#2)
+3. **(Non-blocking)** Replace `any` types with proper interfaces (#3)
+4. **(Non-blocking)** Consider extracting validation logic into a dedicated module (#4)
 
 ---
 
@@ -41,7 +41,7 @@ This service handles user authentication and profile management. The core logic 
 
 ---
 
-**issue (blocking, security): Password comparison vulnerable to timing attacks**
+**#1 — issue (blocking, security): Password comparison vulnerable to timing attacks**
 
 **Location:** `UserService.ts:L45`
 
@@ -73,7 +73,7 @@ String comparison with `===` short-circuits at the first differing byte, which l
 
 ---
 
-**issue (blocking): Unhandled promise rejection and incorrect return type**
+**#2 — issue (blocking): Unhandled promise rejection and incorrect return type**
 
 **Location:** `UserService.ts:L28`
 
@@ -107,7 +107,7 @@ Two problems here. First, database errors propagate raw to the caller, which bot
 
 ---
 
-**suggestion (non-blocking, types): Replace `any` with a proper input interface**
+**#3 — suggestion (non-blocking, types): Replace `any` with a proper input interface**
 
 **Location:** `UserService.ts:L12`
 
@@ -132,7 +132,7 @@ async createUser(data: CreateUserInput): Promise<User> {
 
 ---
 
-**suggestion (non-blocking): Extract validation into a dedicated module**
+**#4 — suggestion (non-blocking): Extract validation into a dedicated module**
 
 **Location:** `UserService.ts:L60–95`
 
@@ -145,7 +145,7 @@ The `validateRegistration` method has grown to ~35 lines of branching validation
 
 ---
 
-**praise: Excellent separation of concerns**
+**#5 — praise: Excellent separation of concerns**
 
 **Location:** `UserService.ts` (overall structure)
 
@@ -153,7 +153,7 @@ The service is cleanly organized — each method has a single responsibility, de
 
 ---
 
-**praise: Clean async flow in registration**
+**#6 — praise: Clean async flow in registration**
 
 **Location:** `UserService.ts:L50–60`
 
