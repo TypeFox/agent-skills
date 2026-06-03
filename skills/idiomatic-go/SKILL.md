@@ -1,6 +1,6 @@
 ---
 name: idiomatic-go
-description: Apply Go community idioms when the task demands more than routine editing — designing a Go API, package, error type, or concurrency primitive; reviewing Go code for convention compliance; naming exported symbols where initialism casing or stutter matters; or when the user explicitly asks about Go style, idioms, "the Go way", or design choices like pointer-vs-value receivers or channels-vs-mutexes. Skip for small Go edits where idiom decisions aren't at stake. Do not use for doc comments — see the `go-documentation` skill.
+description: Apply Go community idioms for API and package design, error and concurrency patterns, naming (initialisms, stutter, receivers), generics vs interfaces, and Go code review — including PR or diff review and questions about "the Go way", pointer vs value receivers, or channels vs mutexes, even when the user doesn't say "idiomatic." Skip trivial one-line Go edits with no design choices. Do not use for godoc or doc comments — use the `go-documentation` skill.
 ---
 
 # Idiomatic Go
@@ -9,13 +9,7 @@ The conventions here come from [Effective Go](https://go.dev/doc/effective_go) a
 
 The guiding principle is **clear is better than clever** (Rob Pike's phrasing, elaborated in [Dave Cheney's article of the same name](https://dave.cheney.net/2019/07/09/clear-is-better-than-clever)). When choosing between a concise/clever construction and an explicit/plain one, pick the explicit one. Code is decoded, not skimmed, and it outlives the person who wrote it. For godoc and doc-comment conventions, use the sibling `go-documentation` skill — this one stays focused on code style.
 
-Use this skill when:
-
-- Writing new Go code: a package, a type, a function, an API.
-- Reviewing a Go diff or pull request.
-- Designing a Go interface, error type, or concurrency primitive.
-- Naming exported symbols, packages, or methods.
-- Asking what the "Go way" of doing something is.
+APIs that require **Go 1.22 or later** are called out inline below. Older stable symbols (`errors.Is`, `fmt.Errorf` with `%w`, `slices.Clone`, and similar) are not annotated.
 
 ## Reference files
 
@@ -64,6 +58,22 @@ func NewServer(log Logger) HTTPHandler
 **Small interfaces compose better.** Prefer `io.Reader` to a six-method `Source`. If you need read+write, embed: `io.ReadWriter` is just `io.Reader` plus `io.Writer`.
 
 See `references/interfaces-and-errors.md` for type-assertion forms, embedding, and the compile-time satisfaction check `var _ io.Reader = (*MyReader)(nil)`.
+
+## Generics
+
+**Write functions first; add type parameters when you would duplicate the same logic for different types.** Starting with constraint interfaces is usually the wrong path ([When To Use Generics](https://go.dev/blog/when-generics)).
+
+**Prefer interfaces over type parameters** when callers only need methods (`io.Reader`, `io.Writer`). Do not rewrite `func Read(r io.Reader)` into `func Read[T io.Reader](r T)` — harder to read, rarely faster.
+
+**Prefer the standard library** (`slices`, `maps`, `cmp`) over custom generic utilities; use `cmp.Ordered`, not `golang.org/x/exp/constraints`.
+
+**Use type parameters** for language containers (slice/map/channel ops with no element-specific logic) and shared data structures — not when each type needs a different method body (use interfaces and separate implementations).
+
+**Preserve named slice types:** constrain slice args as `S ~[]E` and return `S`, not `[]E`, when callers may pass a defined slice type ([An Introduction To Generics](https://go.dev/blog/intro-generics) Scale example).
+
+**Map keys need `comparable`** in the type parameter list when a generic type uses `map[K]V`.
+
+**Go 1.27 — generic methods:** From Go 1.27, a method may declare type parameters (`func (t *T) M[P any](...)`). Use them for helpers that naturally live on the receiver type instead of polluting the package with `func helper[T, P any](t *T, ...)`. A generic method **does not** implement a non-generic interface method: `func (*R) Read[E any]([]E)` does not satisfy `io.Reader`. For interface satisfaction, keep ordinary methods or package-level generic functions.
 
 ## Errors
 
@@ -184,7 +194,7 @@ default:
 
 ## Security: `crypto/rand` over `math/rand`
 
-For tokens, IDs, keys, session identifiers, or anything an attacker could exploit by predicting: use `crypto/rand` (and its helpers `crypto/rand.Text`, `crypto/rand.Int`). `math/rand` and `math/rand/v2` are for simulation, jitter, sampling, and tests — not security. The default autocomplete is `math/rand`; flag it on every use that produces a value an attacker would care about.
+For tokens, IDs, keys, session identifiers, or anything an attacker could exploit by predicting: use `crypto/rand` (`Read`, `Int(rand.Reader, max *big.Int)`, and from Go 1.24 `Text`). `math/rand` and `math/rand/v2` (Go 1.22) are for simulation, jitter, sampling, and tests — not security. The default autocomplete is `math/rand`; flag it on every use that produces a value an attacker would care about.
 
 ## Quick checklist before committing
 
@@ -192,6 +202,9 @@ For tokens, IDs, keys, session identifiers, or anything an attacker could exploi
 - [ ] Package names are short, lowercase, single words; no `util`/`common`/`misc`.
 - [ ] Receiver names are 1–2 letters, consistent across the type — never `self`/`this`/`me`.
 - [ ] Interfaces are defined in the consumer; constructors return concrete types.
+- [ ] Generics only where the same logic would otherwise be duplicated; interfaces kept for method-only APIs.
+- [ ] Named slice types preserved (`S ~[]E`); `cmp`/`slices`/`maps` preferred over `x/exp/constraints`.
+- [ ] Go 1.27+: generic methods not used where the type must implement a non-generic interface method.
 - [ ] No `Get` prefix on getters.
 - [ ] Error strings are lowercase, end with no punctuation, and wrap with `%w` when chained.
 - [ ] No `_ = err` without an explaining comment.

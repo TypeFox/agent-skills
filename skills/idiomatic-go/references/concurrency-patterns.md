@@ -147,6 +147,8 @@ if err := g.Wait(); err != nil {
 }
 ```
 
+Capturing the loop variable in the closure is correct when the module uses Go 1.22+ loop semantics (`go 1.22` or later in `go.mod`). On older language versions, copy into the closure body (`u := url`) before calling `fetch`.
+
 ## Channel-closing rules
 
 - **The sender closes the channel, never the receiver.** A receiver closing a channel can cause the sender's next send to panic.
@@ -162,7 +164,7 @@ Fan-out: many goroutines read from one channel and produce on their own (or a sh
 
 Fan-in: many goroutines write to a shared output channel; a single coordinator closes it once all producers signal done (typically via `WaitGroup`).
 
-A worked example is out of scope here; the patterns are documented in detail in Effective Go and Sameer Ajmani's "Go Concurrency Patterns" talk.
+A worked example is out of scope here; the patterns are documented in detail in Effective Go and Rob Pike's ["Go Concurrency Patterns"](https://go.dev/talks/2012/concurrency.slide) talk.
 
 ## Anti-patterns
 
