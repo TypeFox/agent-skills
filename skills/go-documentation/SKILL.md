@@ -7,21 +7,13 @@ description: Write idiomatic Go doc comments that render correctly on pkg.go.dev
 
 Go treats documentation as part of the language toolchain, not an afterthought. `go doc` reads comments locally, [pkg.go.dev](https://pkg.go.dev) publishes them on the public index, and `gofmt` normalizes their formatting. The conventions in this skill come from the official spec at https://go.dev/doc/comment — they are not stylistic preferences. Tools depend on them.
 
-Use this skill when:
-
-- Adding or revising doc comments on exported names.
-- Writing or improving a package-level overview.
-- Preparing a Go module for publication on pkg.go.dev.
-- Previewing rendered documentation locally before tagging a release.
-- Diagnosing why pkg.go.dev shows the wrong summary, no documentation, or a stale version.
-
 ## Reference files
 
 Load these as needed — don't read them upfront. The main SKILL.md has the conventions and decision points; the references hold operational detail.
 
 - `references/comment-syntax.md` — the full markup grammar of doc comments: paragraphs, headings, links (reference-style and doc links), lists, code blocks, notes, deprecations, directives, plus the gofmt reformatting rules and the half-dozen common pitfalls that produce unintended code blocks or broken lists. Read this whenever a comment includes anything richer than plain prose, or when `gofmt` reformats a comment in a surprising way.
 - `references/examples.md` — testable `Example` functions: naming rules (including the `_suffix` casing constraint), `// Output:` and `// Unordered output:` assertion comments, whole-file examples, and the rule that examples without an Output comment are compiled but not run. Read this when adding examples, or when an example test fails unexpectedly.
-- `references/publishing.md` — how pkg.go.dev discovers and indexes modules via `proxy.golang.org`, the `go.mod` and redistributable-license requirements, semantic-versioning expectations, README rendering, source-code linking, retraction, and removal. Read this before publishing a new module, or when an existing module isn't showing up or is showing the wrong content.
+- `references/publishing.md` — how pkg.go.dev discovers and indexes modules via `proxy.golang.org`, the `go.mod` and redistributable-license requirements, semantic-versioning expectations, README rendering on pkg.go.dev (filenames, links, Markdown limits), source-code linking, retraction, and removal. Read this before publishing a new module, when authoring a module README for pkg.go.dev, or when an existing module isn't showing up or is showing the wrong content.
 - `references/pkgsite-preview.md` — installing and running `pkgsite` to preview the current module's docs in a browser before publication. Read this when iterating on doc comments locally.
 
 ## Core convention: every exported name gets a doc comment
@@ -105,6 +97,37 @@ package http
 ```
 
 The overview shows up at the top of the pkg.go.dev page, before the symbol index. Long packages with no overview render as a wall of symbols and force readers to guess where to start.
+
+### README.md vs package documentation (`doc.go`)
+
+Go modules typically need **both** a top-level `README.md` and package comments (often in `doc.go`). They serve different readers at different moments — copy-pasting the same text into both is a common mistake.
+
+**Two audiences:**
+
+- **Visitor (not yet using the module)** — finds the repo via search, a blog post, or GitHub. They read `README.md` on the host. **Sell and onboard**: what the project is, why it exists, install (`go get`), prerequisites, badges, contributing, links to broader docs. A short, informal quick-start snippet is fine here.
+- **Developer (module on the import path)** — runs `go doc`, hovers in an IDE, or browses pkg.go.dev. They read the package comment in `doc.go` (or above `package`). **Technical overview**: what the package provides, design constraints, where to start in the API, doc links to key symbols — the same role as standard-library package docs. Assume the package is installed; do not make them open the README for a package-level overview.
+
+After `go get`, the README effectively disappears from day-to-day work. Package documentation is what `go doc path/to/pkg` and pkg.go.dev show above the symbol index. If that overview is empty or only says "see README", callers lose the toolchain integration that makes Go documentation distinctive.
+
+**What goes where:**
+
+Put in **README.md**:
+
+- Project pitch, status, roadmap, community
+- Install, env setup, credentials, deployment
+- Badges, CI, license summary, changelog links
+- "Try it in 30 seconds" sample for casual visitors
+- Migration guides between major versions at the **module** level
+
+Put in **package comment** / **`doc.go`**:
+
+- `Package <name> ...` first sentence (search-indexed on pkg.go.dev)
+- API-oriented overview: main types, typical call flow
+- Invariants, error semantics, concurrency, performance notes
+- Doc links (`[Client]`, `[New]`), patterns that belong in `go doc`
+- Per-package design notes; subpackage overviews in **that** package's `doc.go`
+
+**Multi-package modules:** one `README.md` at the module root for the whole project. Each package (including subpackages) gets its own package comment — usually in a `doc.go` in that directory — not a separate README per package unless you have an unusual layout.
 
 ### Commands (`package main`)
 
@@ -255,6 +278,8 @@ Reach for `pkgsite` once the comment includes formatting (headings, lists, links
 - [ ] Every exported name has a doc comment with no blank line between the comment and the declaration.
 - [ ] The first sentence names the symbol and follows the pattern from the table above.
 - [ ] The package has a `Package <name> ...` comment (in `doc.go` for multi-file packages).
+- [ ] Package overview and API entry points live in doc comments, not only in `README.md`.
+- [ ] `README.md` complements package doc (install, motivation, project meta) without duplicating the full technical overview.
 - [ ] `gofmt` produces no changes to the comments (`gofmt -d ./...`).
 - [ ] `go doc` shows the symbol with the comment you expected.
 - [ ] For new APIs: at least one `Example` function demonstrates the common usage path.

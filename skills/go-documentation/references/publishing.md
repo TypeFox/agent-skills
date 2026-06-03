@@ -81,7 +81,7 @@ Relative links and images in the README are rewritten to absolute URLs pointing 
 
 Notes on README authoring for pkg.go.dev:
 
-- The README is a complement to the package doc, not a replacement. Put the package overview, examples, and reference material in doc comments — they show up in `go doc`, IDE hover cards, and pkg.go.dev's structured layout. The README is for installation, motivation, project status, badges, and links to broader docs.
+- The README is a complement to the package doc, not a replacement. README for selling and getting started; package comments for the technical overview, examples (via `Example` functions), and reference material that must appear in `go doc` and IDE hovers.
 - The README is rendered as plain Markdown; doc-link syntax `[Name]` does **not** resolve to Go symbols inside the README. Use Markdown links to pkg.go.dev URLs instead: `[Client](https://pkg.go.dev/example.com/foo#Client)`.
 - HTML inside Markdown is sanitized aggressively. Iframes, scripts, and most styling attributes are stripped.
 
