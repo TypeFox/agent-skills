@@ -87,13 +87,13 @@ Use unpublish for "this was a mistake, I'll re-release shortly." Use remove only
 
 ## Deprecation
 
-Marketplace doesn't expose deprecation via `vsce` — request it by filing a discussion at https://github.com/microsoft/vscode-discussions/discussions/1. You can deprecate with:
+`vsce` cannot deprecate an extension — request deprecation by leaving a comment on the existing [Deprecated extensions](https://github.com/microsoft/vscode-discussions/discussions/1) discussion (do not open a new one). Options:
 
 - no replacement,
 - a pointer to an alternative extension, or
 - a pointer to a built-in setting that subsumes the functionality.
 
-The marketplace renders the extension's name struck-through with a yellow warning icon, and (if alternatives are configured) offers users a **Migrate** button.
+VS Code shows the extension struck-through with a yellow warning icon; with alternatives configured, users get a **Migrate** button. The Marketplace website does not reflect deprecated status yet.
 
 ## Common errors
 

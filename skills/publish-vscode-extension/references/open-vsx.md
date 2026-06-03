@@ -124,7 +124,7 @@ If a publish gets flagged, it stays Deactivated and you'll get notified via the 
 The community-standard GitHub Action is `HaaLeo/publish-vscode-extension`. It wraps `ovsx` (and `vsce`), so you don't need to install `ovsx` separately in the workflow:
 
 ```yaml
-- uses: HaaLeo/publish-vscode-extension@v1
+- uses: HaaLeo/publish-vscode-extension@v2
   with:
     pat: ${{ secrets.OVSX_PAT }}
     extensionFile: ./my-ext-1.0.0.vsix

@@ -214,12 +214,12 @@ The community-standard GitHub Action is [`HaaLeo/publish-vscode-extension`](http
 - run: npm ci
 - run: npx vsce package
   # produces <name>-<version>.vsix
-- uses: HaaLeo/publish-vscode-extension@v1
+- uses: HaaLeo/publish-vscode-extension@v2
   with:
     pat: ${{ secrets.VSCE_PAT }}
     registryUrl: https://marketplace.visualstudio.com
     extensionFile: ./<name>-<version>.vsix
-- uses: HaaLeo/publish-vscode-extension@v1
+- uses: HaaLeo/publish-vscode-extension@v2
   with:
     pat: ${{ secrets.OVSX_PAT }}
     extensionFile: ./<name>-<version>.vsix
