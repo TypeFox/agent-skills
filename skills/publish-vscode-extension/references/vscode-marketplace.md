@@ -21,6 +21,8 @@ Both must use the **same Microsoft account**, or `vsce login` will succeed again
    - **Scopes**: `Custom defined` → **Show all scopes** → **Marketplace** → tick **Manage**. (Default scopes do not include Marketplace at all.)
 4. Copy the token immediately — it's shown only once.
 
+Enable **2FA** on the Microsoft account. Issue one PAT per CI pipeline or purpose; revoke unused tokens during periodic audits.
+
 ## Create the publisher
 
 1. Visit https://marketplace.visualstudio.com/manage, signed into the same Microsoft account.
@@ -84,6 +86,8 @@ These are not the same operation, and only one is recoverable.
 - **Remove** (irreversible): wipes the extension and **permanently reserves the name** — nobody, including you, can ever publish another extension under that `publisher.extension` pair. Done via `vsce unpublish <publisher>.<extension>` or **More Actions → Remove**.
 
 Use unpublish for "this was a mistake, I'll re-release shortly." Use remove only when the extension shouldn't exist (compromise, mistaken trademark, etc.).
+
+**If credentials are compromised:** revoke all PATs immediately, unpublish the malicious version(s), audit publisher members and recent git/CI changes, then publish a clean version with a security notice in `CHANGELOG.md`.
 
 ## Deprecation
 

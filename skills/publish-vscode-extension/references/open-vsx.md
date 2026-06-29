@@ -121,20 +121,14 @@ If a publish gets flagged, it stays Deactivated and you'll get notified via the 
 
 ## CI integration
 
-The community-standard GitHub Action is `HaaLeo/publish-vscode-extension`. It wraps `ovsx` (and `vsce`), so you don't need to install `ovsx` separately in the workflow:
+For dual-registry CI, use [`TypeFox/gh-publish-npm`](https://github.com/TypeFox/gh-publish-npm) — see SKILL.md § "Typical CI release flow". It handles both Marketplace and Open VSX in one step with project-local `vsce`/`ovsx`.
+
+For Open VSX only, publish a pre-built `.vsix` with `OVSX_PAT` in the environment (never `-p` on the command line):
 
 ```yaml
-- uses: HaaLeo/publish-vscode-extension@v2
-  with:
-    pat: ${{ secrets.OVSX_PAT }}
-    extensionFile: ./my-ext-1.0.0.vsix
-    # registryUrl defaults to https://open-vsx.org
-```
-
-For a self-hosted publish step:
-
-```yaml
-- run: npx ovsx publish ./my-ext-${{ env.VERSION }}.vsix -p ${{ secrets.OVSX_PAT }}
+- run: ovsx publish ./my-ext-1.0.0.vsix
+  env:
+    OVSX_PAT: ${{ secrets.OVSX_PAT }}
 ```
 
 Add the CI service account to the namespace as a **Contributor** (not Owner) so a token leak limits blast radius.

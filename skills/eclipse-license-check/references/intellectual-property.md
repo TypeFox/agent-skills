@@ -12,7 +12,7 @@ This reference summarizes the Eclipse Foundation's rules for handling intellectu
 - [Versions and service releases](#versions-and-service-releases)
 - [Test and build dependencies](#test-and-build-dependencies)
 - [License compatibility](#license-compatibility)
-- [How the Eclipse Dash License Tool classifies content](#how-the-eclipse-dash-license-tool-classifies-content)
+- [How content gets classified as approved or restricted](#how-content-gets-classified-as-approved-or-restricted)
 - [Requesting an IP review (IPLab issues)](#requesting-an-ip-review-iplab-issues)
 - [Release gate](#release-gate)
 
@@ -33,7 +33,7 @@ Committers engage the IP Team by filing [IPLab](https://gitlab.eclipse.org/eclip
 
 **ClearlyDefined** (https://clearlydefined.io/) — an OSI project that aggregates license information from public software repositories. The Eclipse Foundation uses it as a *secondary* source. **Do not query ClearlyDefined directly**; use the Eclipse Dash License Tool, which consults both sources. When the Dash Database and ClearlyDefined disagree, **the Dash Database wins**.
 
-**Eclipse Dash License Tool** (https://github.com/eclipse/dash-licenses) — the canonical automation for license checks. Available as a CLI and a Maven plugin. This is the tool to use for automated checks.
+**Eclipse Dash License Tool** (https://github.com/eclipse-dash/dash-licenses) — the canonical automation for license checks. Available as a CLI and a Maven plugin. This is the tool to use for automated checks.
 
 **Eclipse approved licenses list** — https://www.eclipse.org/legal/licenses.php#approved. Licenses on this list are *generally* compatible with most Eclipse project licenses; licenses outside the list are not automatically prohibited but require careful review.
 

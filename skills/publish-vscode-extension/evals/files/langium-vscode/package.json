@@ -1,0 +1,66 @@
+{
+  "name": "langium-vscode",
+  "publisher": "langium",
+  "version": "4.3.0",
+  "displayName": "Langium",
+  "description": "Support for the Langium Grammar Language",
+  "homepage": "https://langium.org",
+  "categories": [
+    "Programming Languages",
+    "Other"
+  ],
+  "type": "module",
+  "license": "MIT",
+  "icon": "data/langium-logo.png",
+  "galleryBanner": {
+    "color": "#262626",
+    "theme": "dark"
+  },
+  "engines": {
+    "vscode": "^1.91.0"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "langium.showRailroadDiagram",
+        "title": "Show Railroad Syntax Diagram",
+        "category": "Langium",
+        "icon": "$(list-tree)"
+      }
+    ],
+    "languages": [
+      {
+        "id": "langium",
+        "extensions": [".langium"],
+        "aliases": ["Langium"]
+      }
+    ]
+  },
+  "activationEvents": [
+    "onLanguage:langium",
+    "onWebviewPanel:railroadDiagram"
+  ],
+  "vsce": {
+    "dependencies": false
+  },
+  "main": "out/extension.cjs",
+  "scripts": {
+    "vscode:prepublish": "npm run clean && tsc --noEmit && node esbuild.mjs --minify",
+    "clean": "shx rm -rf out",
+    "build": "tsc --noEmit && node esbuild.mjs"
+  },
+  "dependencies": {
+    "langium": "4.3.0",
+    "vscode-languageserver": "~10.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eclipse-langium/langium.git",
+    "directory": "packages/langium-vscode"
+  },
+  "bugs": "https://github.com/eclipse-langium/langium/issues",
+  "author": {
+    "name": "TypeFox",
+    "url": "https://www.typefox.io"
+  }
+}

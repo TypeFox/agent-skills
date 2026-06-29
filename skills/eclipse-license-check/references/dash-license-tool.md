@@ -44,7 +44,7 @@ https://repo.eclipse.org/service/rest/v1/search/assets/download?sort=version&rep
 
 Requires **Java 11 or later**. The Maven plugin additionally requires Maven 3.6.3+.
 
-The Maven plugin coordinates are `org.eclipse.dash:license-tool-plugin` (latest published `1.0.2`). It is published to `repo.eclipse.org`, **not** Maven Central — the project's `pom.xml` (or `~/.m2/settings.xml`) must declare:
+The Maven plugin coordinates are `org.eclipse.dash:license-tool-plugin`. Check the latest published version at https://repo.eclipse.org/content/repositories/dash-maven2-releases/org/eclipse/dash/license-tool-plugin/ (or use a locally built clone). It is published to `repo.eclipse.org`, **not** Maven Central — the project's `pom.xml` (or `~/.m2/settings.xml`) must declare:
 
 ```xml
 <pluginRepositories>
@@ -266,7 +266,7 @@ Bind it to the build in `pom.xml`:
 <plugin>
   <groupId>org.eclipse.dash</groupId>
   <artifactId>license-tool-plugin</artifactId>
-  <version>1.0.2</version>
+  <version>...</version> <!-- latest from repo.eclipse.org -->
   <executions>
     <execution>
       <id>license-check</id>
@@ -328,11 +328,11 @@ Prerequisites: Eclipse committer status on the project, plus a personal access t
 ```bash
 # CLI
 java -jar org.eclipse.dash.licenses-<v>.jar yarn.lock \
-    -review -token "$ECLIPSE_GITLAB_TOKEN" -project ecd.theia
+    -review -token "$IPLAB_TOKEN" -project ecd.theia
 
 # Maven plugin
 mvn org.eclipse.dash:license-tool-plugin:license-check \
-    -Ddash.iplab.token="$ECLIPSE_GITLAB_TOKEN" \
+    -Ddash.iplab.token="$IPLAB_TOKEN" \
     -Ddash.projectId=technology.dash
 ```
 

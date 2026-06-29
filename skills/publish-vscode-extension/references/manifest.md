@@ -132,3 +132,12 @@ A minimal but publish-ready manifest for a bundled extension that targets both d
 - **Missing `browser` entry on a web-relevant extension**: extension installs in `vscode.dev` but never activates. If the extension claims `Web` capability or you want it on browser-hosted IDEs, both `main` and `browser` must be set and the corresponding bundle must exist.
 - **`extensionDependencies` to an extension that exists only on Marketplace**: that extension's Open VSX install will fail because the dep can't be resolved. Either remove the hard dep, or publish a forked manifest with the dep removed for Open VSX (rare).
 - **Activation event `"*"`** in modern extensions: VS Code 1.74+ auto-generates activation events for most contribution points, so `"*"` is almost always wrong. Replace with the specific `onLanguage:`, `onCommand:`, `onView:`, etc. event.
+
+## Security review
+
+Before publishing, check the manifest with supply-chain risk in mind:
+
+- **`activationEvents`**: use the narrowest events that work — avoid `"*"` and `onStartupFinished` unless required.
+- **`extensionPack` / `extensionDependencies`**: every listed ID installs automatically with yours; confirm each is intentional, from a trusted publisher, and available on both registries you ship to.
+- **`capabilities.untrustedWorkspaces`**: declare honestly — users rely on workspace trust to limit extension behavior.
+- **Remote code**: avoid fetching and executing code from the network at activation; ship reviewable, bundled code instead.

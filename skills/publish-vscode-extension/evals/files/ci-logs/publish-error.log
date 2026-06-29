@@ -1,0 +1,14 @@
+$ npm ci
+added 412 packages in 9s
+
+$ npx vsce publish --packagePath acme-tools-2.1.0.vsix
+Publishing 'acme.acme-tools v2.1.0'...
+ ERROR  Failed Request: Unauthorized (401)
+        at /home/runner/work/_actions/.../node_modules/@vscode/vsce/out/util.js
+Error: Process completed with exit code 1.
+
+$ npx ovsx publish acme-tools-2.1.0.vsix
+ INFO  Published acme.acme-tools v2.1.0
+ WARN  Extension 'acme.acme-tools' is published under namespace 'acme',
+        which is not owned by any user. The extension will be shown as
+        "unverified" on the Open VSX Registry.

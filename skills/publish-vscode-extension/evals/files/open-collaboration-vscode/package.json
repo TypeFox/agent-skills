@@ -1,0 +1,50 @@
+{
+  "name": "open-collaboration-tools",
+  "displayName": "Open Collaboration Tools",
+  "version": "0.3.4",
+  "license": "MIT",
+  "description": "Connect with others and live-share your code in real-time collaboration sessions",
+  "publisher": "typefox",
+  "categories": ["Other"],
+  "keywords": ["collaboration", "share", "live-share", "real-time"],
+  "icon": "data/oct-logo.png",
+  "galleryBanner": {
+    "color": "#CBC9E8",
+    "theme": "light"
+  },
+  "homepage": "https://www.open-collab.tools/",
+  "bugs": {
+    "url": "https://github.com/eclipse-oct/open-collaboration-tools/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eclipse-oct/open-collaboration-tools",
+    "directory": "packages/open-collaboration-vscode"
+  },
+  "main": "./dist/extension.js",
+  "browser": "./dist/extension.web.js",
+  "engines": {
+    "vscode": "^1.73.0",
+    "node": ">=20.10.0"
+  },
+  "activationEvents": [
+    "onStartupFinished",
+    "onUri:oct"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": { "supported": true }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run check-types && tsx ./scripts/esbuild.js --production",
+    "package": "vsce package --no-dependencies",
+    "build": "npm run check-types && tsx ./scripts/esbuild.js",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "open-collaboration-protocol": "0.3.1",
+    "vscode-messenger": "^0.6.0"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.0.0"
+  }
+}

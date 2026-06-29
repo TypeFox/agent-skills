@@ -1,0 +1,14 @@
+module basicMath
+
+def a: 5;
+def b: 3;
+def c: a + b;
+
+def root(x, y):
+    x^(1/y);
+
+def sqrt(x):
+    root(x, 2);
+
+2 * c;
+b % 2;

@@ -1,0 +1,57 @@
+{
+  "skill_name": "skill-evals",
+  "assertions_intent": "Two roles (see skill-evals Activity 3). DISCRIMINATING assertions probe skill-evals' controls over a skill-creator-only baseline — things the baseline would plausibly fail — and reveal the delta. REGRESSION assertions lock in core properties that must not silently disappear as skill-evals evolves; they may tie (pass in both configs) today but catch a future with-skill failure. Each assertion is tagged with its role.",
+  "shared_methodology_assertions": [
+    "context-access-logged [discriminating]: every run directory carries a resource-access log (access-log.md or context-manifest.json) enumerating each skill/spec file and input file the run loaded into context — OR the run was hard-sandboxed to an allowlist and that scoping is recorded.",
+    "baseline-context-clean [discriminating]: the baseline run's access log (or sandbox allowlist) confirms it loaded ONLY its permitted skill — skill-creator only, the old-version snapshot, or no skill — and did NOT read skill-evals or any other skill version. Verified from the log/sandbox, not assumed. This check covers both the L0 baseline (the direct config-B run) and any nested L2 baselines spawned by a config-A run — a nested baseline that read the with-skill output or the parent run's evals.json is also contaminated. When a config-A run launches no nested generation runs at all, there is no nested baseline to verify and this check is N/A for that run — the failure to run nested loops is caught by both-configs-executed, not double-penalized here.",
+    "isolation-audited [discriminating]: for each run, the per-run allowlist was written before launch, the loaded context was checked against that allowlist after the run (via sandbox records or access-log.md + metrics.json), and the verdict was recorded per-run in methodology notes.",
+    "contaminated-runs-excluded [discriminating]: any run found to be contaminated (loaded files outside its per-run allowlist) was discarded and actually rerun before its results entered the benchmark — NOT merely flagged, annotated, or left in with a note. Applies at every nesting level including nested L2 baselines. A contaminated run that still appears in benchmark.json FAILS this check.",
+    "preflight-gates-documented [discriminating]: before the runs, recorded Gate 1 (skill-creator located at a named path) and Gate 2 (the isolation mechanism + per-run allowlists), e.g. in methodology-and-isolation.md.",
+    "benchmark-schema [discriminating+regression]: benchmark.json follows skill-creator's schema — per-configuration run_summary plus an explicit delta block — with the executor model recorded in metadata (not a <model-name> placeholder). The configuration field may use old_skill/new_skill as aliases for without_skill/with_skill when the L1 prompt is a version-comparison (v1-vs-v2) eval. Subsumes the former model-recorded check.",
+    "delta-cost-benefit [discriminating]: an explicit with-skill-vs-baseline delta is reported and framed as cost (time/tokens) versus benefit (pass rate), not just a single pass-rate number.",
+    "analysis-lenses [regression]: the analyst pass names at least one Activity-6 pattern (assertions passing in both configs, failing in both, or only the skill config passing). May tie with the baseline; kept to ensure the analyst pass never silently drops out.",
+    "timing-addressed [regression]: timing/token data is captured — per-run timing.json files for the nested runs, OR per-configuration timing recorded in benchmark.json — OR the summary explicitly states timing/tokens were unavailable and why. May tie; kept so the cost side of the delta is never silently abandoned."
+  ],
+  "evals": [
+    {
+      "id": 0,
+      "name": "new-skill-vs-no-skill",
+      "prompt": "I just wrote a skill that teaches an agent the Statemachine DSL (our little .statemachine language for finite state machines). The skill is at evals/files/dsl-skills/statemachine-dsl/SKILL.md . Before I rely on it, I want to know whether it actually makes an agent better at writing and modifying correct .statemachine files, compared to an agent that doesn't have the skill. There's a sample machine at evals/files/dsl-samples/trafficlight.statemachine you can use for grounding. Please set up and run an evaluation that answers this, and tell me whether the skill is worth keeping.",
+      "expected_output": "A rigorous evaluation of the statemachine-dsl skill against a no-skill baseline: several varied, grounded eval cases (generating and modifying .statemachine files, including an edge case); objectively checkable assertions tied to the grammar (references resolve, declared events/commands, etc.); both a with-skill and a no-skill baseline configuration run under isolated/clean context with the model recorded; a benchmark comparing pass rate and cost as an explicit delta; and a clear keep/drop recommendation grounded in that delta.",
+      "files": [
+        "evals/files/dsl-skills/statemachine-dsl/SKILL.md",
+        "evals/files/dsl-samples/trafficlight.statemachine"
+      ],
+      "assertions": []
+    },
+    {
+      "id": 1,
+      "name": "improving-v1-vs-v2",
+      "prompt": "I have a skill that teaches an agent our Domain Model DSL (.dmodel — datatypes, entities, packages). I just rewrote it and I want to know if the new version is actually an improvement over the old one before I ship it. The old version is at evals/files/dsl-skills/domainmodel-dsl-v1/SKILL.md and the new version is at evals/files/dsl-skills/domainmodel-dsl-v2/SKILL.md . Sample models you can use for grounding: evals/files/dsl-samples/blog.dmodel and evals/files/dsl-samples/datatypes.dmodel . Please evaluate whether the new version beats the old one and give me a recommendation.",
+      "expected_output": "An evaluation that compares domainmodel-dsl-v2 against domainmodel-dsl-v1 as the baseline (NOT against no-skill): the old version used as the comparison point, eval cases that exercise what v2 added (qualified cross-package references, extends, many), objectively checkable assertions, isolated runs with the model recorded, a benchmark with an explicit delta between the two versions, and a recommendation on whether v2 is better grounded in that delta.",
+      "files": [
+        "evals/files/dsl-skills/domainmodel-dsl-v1/SKILL.md",
+        "evals/files/dsl-skills/domainmodel-dsl-v2/SKILL.md",
+        "evals/files/dsl-samples/blog.dmodel",
+        "evals/files/dsl-samples/datatypes.dmodel"
+      ],
+      "assertions": [
+        "both-configs-executed [discriminating]: actually ran a new_skill (v2) AND an old_skill (v1) generation-and-grading loop with saved outputs in each config, rather than answering by only diffing the two SKILL.md texts. A version comparison must not collapse into a text comparison.",
+        "old-version-baseline: compared the new skill version against the OLD version as baseline (v1 / old_skill), explicitly NOT against a no-skill baseline."
+      ]
+    },
+    {
+      "id": 2,
+      "name": "skeptical-edgecase-arithmetics",
+      "prompt": "I made a skill for our .calc calculator language (the arithmetics DSL — modules, defs, expressions), but I'm not convinced it's pulling its weight. Can you check whether it actually helps versus not having it at all? It's at evals/files/dsl-skills/arithmetics-dsl/SKILL.md. I'm especially worried about the trickier cases like operator precedence and the case-insensitive function names. There's an example file at evals/files/dsl-samples/basicMath.calc.",
+      "expected_output": "Despite the skeptical, under-specified ask, a real evaluation of the arithmetics-dsl skill against a no-skill baseline: eval cases that deliberately probe the user's stated worries (operator precedence, case-insensitive symbol/function names) as an edge case, objectively checkable assertions, isolated runs with the model recorded, a benchmark with an explicit delta, and a recommendation. A strong eval also surfaces that the skill is vague on exactly those points.",
+      "files": [
+        "evals/files/dsl-skills/arithmetics-dsl/SKILL.md",
+        "evals/files/dsl-samples/basicMath.calc"
+      ],
+      "assertions": [
+        "both-configs-executed [discriminating]: actually ran a with-skill AND a baseline (no-skill) generation-and-grading loop with saved outputs in each config, rather than answering the skeptical ask by only analyzing the skill's text. The under-specified phrasing must not collapse the eval into a skill-text review."
+      ]
+    }
+  ]
+}
