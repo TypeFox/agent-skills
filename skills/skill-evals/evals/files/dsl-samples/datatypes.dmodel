@@ -1,0 +1,11 @@
+datatype String
+datatype Int
+
+package big {
+    datatype Int
+    datatype Decimal
+}
+
+package complex {
+    datatype Date
+}

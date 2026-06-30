@@ -1,0 +1,49 @@
+{
+  "name": "markdown-toolkit",
+  "displayName": "Markdown Toolkit",
+  "description": "Linting, table of contents, and preview helpers for Markdown files",
+  "version": "1.4.2",
+  "publisher": "acme-devtools",
+  "engines": {
+    "vscode": "*"
+  },
+  "categories": [
+    "Other"
+  ],
+  "icon": "media/icon.svg",
+  "repository": "https://github.com/acme-devtools/markdown-toolkit",
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "*"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "markdownToolkit.generateToc",
+        "title": "Markdown Toolkit: Generate Table of Contents"
+      }
+    ],
+    "languages": [
+      {
+        "id": "markdown",
+        "extensions": [".md"]
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "dependencies": {
+    "markdown-it": "^14.1.0",
+    "lodash": "^4.17.21",
+    "remark": "^15.0.1",
+    "unified": "^11.0.5"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.84.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0"
+  }
+}
