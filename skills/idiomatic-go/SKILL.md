@@ -1,13 +1,13 @@
 ---
 name: idiomatic-go
-description: Apply Go community idioms for API and package design, error and concurrency patterns, naming (initialisms, stutter, receivers), generics vs interfaces, and Go code review — including PR or diff review and questions about "the Go way", pointer vs value receivers, or channels vs mutexes, even when the user doesn't say "idiomatic." Skip trivial one-line Go edits with no design choices. Do not use for godoc or doc comments — use the `go-documentation` skill.
+description: Apply Go community idioms for API and package design, error and concurrency patterns, naming (initialisms, stutter, receivers), generics vs interfaces, and Go code review — including PR or diff review, questions about "the Go way", pointer vs value receivers, channels vs mutexes, and building Go language tooling (parsers, language servers/LSP, type checkers, validators, DSLs, or toolkits built on a Go language framework) — even when the user doesn't say "idiomatic." Skip trivial one-line Go edits with no design choices. Do not use for godoc or doc comments — use the `go-documentation` skill.
 ---
 
 # Idiomatic Go
 
 The conventions here come from [Effective Go](https://go.dev/doc/effective_go) and [Go Code Review Comments](https://go.dev/wiki/CodeReviewComments) — the documents that codify what Go reviewers reject pull requests over. The content is filtered to the rules that strong models still slip on, so basic syntax, `gofmt` usage, and well-known mechanics (LIFO `defer`, `new` vs `make`, channel basics) are not repeated here.
 
-The guiding principle is **clear is better than clever** (Rob Pike's phrasing, elaborated in [Dave Cheney's article of the same name](https://dave.cheney.net/2019/07/09/clear-is-better-than-clever)). When choosing between a concise/clever construction and an explicit/plain one, pick the explicit one. Code is decoded, not skimmed, and it outlives the person who wrote it. For godoc and doc-comment conventions, use the sibling `go-documentation` skill — this one stays focused on code style.
+The guiding principle is **clear is better than clever** (Rob Pike's phrasing, elaborated in [Dave Cheney's article of the same name](https://dave.cheney.net/2019/07/09/clear-is-better-than-clever)). When choosing between a concise/clever construction and an explicit/plain one, pick the explicit one. Code is decoded, not skimmed, and it outlives the person who wrote it.
 
 APIs that require **Go 1.22 or later** are called out inline below. Older stable symbols (`errors.Is`, `fmt.Errorf` with `%w`, `slices.Clone`, and similar) are not annotated.
 
@@ -17,7 +17,8 @@ Load these as needed — don't read them upfront. This file has the rules and de
 
 - `references/naming.md` — the full initialism table with the awkward cases (`OAuth`, `IPv4`, `gRPC`, `IDs`, `HTTPSProxy`), worked naming examples, deeper package-naming guidance (why `util`/`common`/`misc` collect garbage and how to split them), import grouping, and file naming with build constraints. Read this when naming anything exported or organizing a new package.
 - `references/interfaces-and-errors.md` — interface placement worked end-to-end, embedding, compile-time satisfaction checks; sentinel errors vs custom error types vs `fmt.Errorf`; the `errors.Is`/`As`/`Join` model and when *not* to wrap; structured errors; `panic`/`recover` discipline. Read this when designing an API, writing a non-trivial error type, or wrapping errors across abstraction boundaries.
-- `references/concurrency-patterns.md` — the `context.Context` contract end-to-end, the four ways a goroutine exits, the `for select` skeleton, channel-direction signatures, semaphore and leaky-buffer patterns, `sync.Once`/`WaitGroup`/`errgroup` decisions, channel-closing rules, and the anti-patterns (sleeping in tests, polling, fire-and-forget goroutines). Read this when starting a goroutine, designing a cancellable operation, or reviewing concurrent code.
+- `references/concurrency-patterns.md` — the `context.Context` contract end-to-end, the four ways a goroutine exits, the `for select` skeleton, channel-direction signatures, semaphore and leaky-buffer patterns, `sync.Once`/`WaitGroup`/`errgroup` decisions, channel-closing rules, idempotent shutdown against concurrent registration (a coordinator's shutdown safe to call twice and race-free against concurrent subscriber registration), and the anti-patterns (sleeping in tests, polling, fire-and-forget goroutines). Read this when starting a goroutine, designing a cancellable operation, or reviewing concurrent code.
+- `references/language-engineering.md` — patterns specific to Go tools for *programming languages* (parsers, language servers/LSP, type checkers, validators, DSLs) that go beyond baseline idiomatic Go: nil-safe AST navigation, callback-vs-iterator traversal, optional capability interfaces, non-nil empty sentinels, typed source coordinates and UTF-16 columns, editor-overlay text handles, lazy scope chains, typed/untyped references and once-only resolution with cycle detection, phased incremental builds and the write-to-read lock downgrade, keeping the domain free of the LSP protocol, and completion as a parser capability. Read this when working on a language implementation, a DSL, or a toolkit built on a Go language framework — not for ordinary application code.
 
 ## Naming
 
@@ -91,6 +92,8 @@ return fmt.Errorf("Failed to open %s: %v.", path, err)
 
 **Wrap with `%w` once** so `errors.Is` and `errors.As` work. Use `%v` only when you intentionally want to flatten — i.e., the inner error is an implementation detail not part of your contract.
 
+**Wrapping is not branching.** `%w` only helps a caller who actually calls `errors.Is`/`errors.As` — it does nothing by itself. If *your own* function needs to treat one failure differently from the rest (not-found vs. everything else), check it with `errors.Is`/`errors.As` before you return; don't assume the branch happens further up the stack.
+
 **Don't `_ = err`.** If you genuinely cannot act on an error, leave a comment explaining why. Silent discard is the default failure mode for `os.Setenv`, `f.Close()` on a read-only file, and similar cases.
 
 **Indent the error branch, not the happy path.** Early return on failure; let success flow down the page.
@@ -113,7 +116,34 @@ func (c *Client) Fetch(ctx context.Context, id string) (*Doc, error)
 type Client struct { ctx context.Context; /* ... */ }
 ```
 
-**Prefer synchronous APIs.** A function that returns `(Result, error)` is composable, testable, and trivially wrappable in a goroutine by anyone who wants concurrency. A function that returns `<-chan Result` decides for the caller, leaks if the caller forgets to drain it, and complicates error reporting. Write the synchronous version first; let the caller add the goroutine.
+**Prefer synchronous APIs.** A function that returns `(Result, error)` is composable, testable, and trivially wrappable in a goroutine by anyone who wants concurrency. A function that returns `<-chan Result` decides for the caller, leaks if the caller forgets to drain it, and complicates error reporting. Write the synchronous version first; let the caller add the goroutine — even a "streaming" API should be a thin wrapper over that synchronous core, not the primary shape.
+
+```go
+// Good: synchronous core; concurrency is the caller's choice, not baked into the API.
+func (c *Client) FetchOne(ctx context.Context) (Item, error)
+
+// A streaming form wraps the core — it doesn't replace it.
+func (c *Client) FetchAll(ctx context.Context) <-chan Item {
+    out := make(chan Item)
+    go func() {
+        defer close(out)
+        for {
+            item, err := c.FetchOne(ctx)
+            if err != nil {
+                return
+            }
+            select {
+            case out <- item:
+            case <-ctx.Done():
+                return
+            }
+        }
+    }()
+    return out
+}
+```
+
+**Coming from TypeScript:** `async`/`await` makes every I/O call asynchronous by default, and the type system reflects it — `async function getUser(id): Promise<User>` is simply how you write "fetch a user"; the language chose the shape, not the author. Porting that method to Go as `func (s *Service) GetUser(id string) chan User` reproduces the `Promise<T>` shape in Go syntax, but Go never forced that choice. `func (s *Service) GetUser(ctx context.Context, id string) (User, error)` is the default; a caller who actually wants concurrency writes `go` in front of the call.
 
 **Unbuffered channels are synchronization; buffered channels are throughput tolerance.** `make(chan T)` blocks the sender until the receiver receives — that *is* the synchronization. `make(chan T, N)` lets the sender get ahead by N values; it doesn't "make things faster", it changes semantics. Pick the capacity by what the data flow requires, not by tuning.
 
@@ -137,6 +167,34 @@ Use **value receivers** when:
 
 When in doubt, use a pointer receiver. The cost is one indirection; the cost of inconsistency is bugs.
 
+## Value semantics: Go copies, TypeScript never does
+
+**Coming from TypeScript:** every object, array, and class instance is a reference — assignment, passing to a function, and storing something in a collection all point at the same underlying data, so there's no copy to reason about. **Go structs are value types.** Assignment, passing by value, and `for _, v := range` all copy. Code written on reference-semantics instincts keeps compiling in Go — it just quietly stops mutating anything.
+
+```go
+// Looks right if "objects are always shared" — silently wrong in Go.
+func deactivateStale(users []User, cutoff time.Time) {
+    for _, u := range users { // u is a copy of each element
+        if u.LastSeen.Before(cutoff) {
+            u.Active = false // mutates the copy; users is untouched
+        }
+    }
+}
+
+// Correct: index into the slice so the assignment reaches the real element.
+func deactivateStale(users []User, cutoff time.Time) {
+    for i := range users {
+        if users[i].LastSeen.Before(cutoff) {
+            users[i].Active = false
+        }
+    }
+}
+```
+
+The same gap hides in a value-receiver method (`func (u User) Deactivate()` only ever mutates its own copy, never the caller's) and in a Redux-style "return the changed copy" update — natural coming from immutable-update habits, but in Go nothing changes until the caller replaces its own variable with the result; there's no in-place effect the way mutating a shared object would have. When a type needs a mutation to be visible to whoever holds the original, hold it by pointer: a pointer receiver, `[]*T` instead of `[]T`, or an index-based assignment like the fix above.
+
+**Fixing mutation-visibility does not fix slice-exposure, and vice versa — when one field backs both a mutator and an accessor, check both independently.** Switching `[]User` to `[]*User` (or indexing into the original) closes the mutation gap above, but any accessor that still returns a subslice of that same field (`return s.active[start:end]`) is exactly as unsafe as before — re-slicing `[]*User` still hands the caller a live view of the backing array, so `append`ing to the returned page can still corrupt the service's own next append, and every pointer in it is still the service's own `*User`. The two fixes live in different sections of this document (this one; "Data gotchas" below) because they are genuinely independent problems that happen to collide on the same field whenever a type both mutates and lists its own cache — applying one is not a side effect of applying the other, so re-check every reader of a field right after you change how it's mutated (and vice versa).
+
 ## Pass values; avoid pointer-itis
 
 Don't reflexively reach for `*int`, `*string`, `*bool` to "save a copy" or to model optionality. Pointer-to-primitive forces nil-checks at every call site, hides intent, and costs more than the value would have.
@@ -155,9 +213,9 @@ For optional configuration, use a zero-value-friendly struct, a functional `Opti
 
 **Slices share backing arrays — until they don't.** A slice is a header over an array; two slices into the same array see each other's writes. Then `append` exceeds capacity and reallocates, and the two slices silently diverge. When passing slices across an API boundary, document whether you retain or copy, and `slices.Clone` when in doubt.
 
-**Composite literals: use field-name form.** `&File{fd: fd, name: name}` is robust to field reordering; `&File{fd, name, nil, 0}` breaks the day someone adds a field.
+**Coming from TypeScript:** a getter that returns `this.items` is unremarkable — most callers never mutate through it, and JS arrays don't have a backing-array/capacity split to worry about. Go's equivalent, `func (s *Store) Items() []Item { return s.items }`, hands back the exact backing array: `items[0].Field = x` mutates the store's private state through it, and a caller's `append` may or may not corrupt the store's next append depending on spare capacity. Return `slices.Clone(s.items)` (or an equivalent copy) whenever a field must not leak a live handle to internal state.
 
-**Nil maps panic on write.** See zero-value design above.
+**Composite literals: use field-name form.** `&File{fd: fd, name: name}` is robust to field reordering; `&File{fd, name, nil, 0}` breaks the day someone adds a field.
 
 ## Control flow and structure
 
@@ -196,22 +254,6 @@ default:
 
 For tokens, IDs, keys, session identifiers, or anything an attacker could exploit by predicting: use `crypto/rand` (`Read`, `Int(rand.Reader, max *big.Int)`, and from Go 1.24 `Text`). `math/rand` and `math/rand/v2` (Go 1.22) are for simulation, jitter, sampling, and tests — not security. The default autocomplete is `math/rand`; flag it on every use that produces a value an attacker would care about.
 
-## Quick checklist before committing
+## Before you're done
 
-- [ ] Initialisms are single-cased: `URL`, `ID`, `HTTP`, `JSON` — `userID`, `ServeHTTP`, `parseJSON`.
-- [ ] Package names are short, lowercase, single words; no `util`/`common`/`misc`.
-- [ ] Receiver names are 1–2 letters, consistent across the type — never `self`/`this`/`me`.
-- [ ] Interfaces are defined in the consumer; constructors return concrete types.
-- [ ] Generics only where the same logic would otherwise be duplicated; interfaces kept for method-only APIs.
-- [ ] Named slice types preserved (`S ~[]E`); `cmp`/`slices`/`maps` preferred over `x/exp/constraints`.
-- [ ] Go 1.27+: generic methods not used where the type must implement a non-generic interface method.
-- [ ] No `Get` prefix on getters.
-- [ ] Error strings are lowercase, end with no punctuation, and wrap with `%w` when chained.
-- [ ] No `_ = err` without an explaining comment.
-- [ ] Every goroutine has a documented exit (finite work, `ctx.Done()`, close signal, or `WaitGroup`).
-- [ ] `context.Context` is the first parameter where it appears; never stored in a struct.
-- [ ] Receiver types are consistent within a type (all value or all pointer).
-- [ ] No `*int`/`*string`/`*bool` parameters unless `nil` is genuinely distinct from the zero value.
-- [ ] `crypto/rand` for anything security-sensitive; `math/rand` only for simulation/jitter.
-- [ ] Happy path stays at the leftmost indent; error branches are early returns.
-- [ ] `gofmt`/`goimports` clean.
+Whether you wrote the code or are reviewing a diff, the section headings above are the agenda: walk every one, and flag each violation with the idiom it breaks and the concrete fix. Coverage — not the first few slips — is the bar.

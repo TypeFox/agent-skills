@@ -15,6 +15,7 @@ The full markup grammar used by Go doc comments, as defined at https://go.dev/do
 - [Directives](#directives)
 - [How gofmt reformats comments](#how-gofmt-reformats-comments)
 - [Common pitfalls](#common-pitfalls)
+- [Javadoc-style block comments](#javadoc-style-block-comments)
 
 ## Paragraphs
 
@@ -88,6 +89,8 @@ Gofmt automatically moves all link definitions to the end of the comment, in up 
 ### Plain URLs
 
 A URL in prose (e.g., `https://example.com`) is auto-linked in the HTML rendering. There is no Markdown-style `[Text](URL)` form — use the reference style if you need link text.
+
+Symptom: `go doc` or pkg.go.dev shows a literal `[text](url)` in the output. That's leftover Markdown syntax carried over from JSDoc/TSDoc or a README — Go has no such link form, so it's preserved as plain text rather than rendered. Fix by converting to a bare URL or a reference-style link (above).
 
 ## Doc links
 
@@ -357,6 +360,27 @@ The wrapped continuation `client, it may ...` is at column 0, breaking out of th
 Go 1.19+ gofmt applies heuristics that merge unindented lines into adjacent code blocks or lists when it looks unambiguous. This silently fixes some of the above cases — useful, but also means a comment may render correctly today and incorrectly tomorrow under a slightly different gofmt version.
 
 If you want a paragraph clearly separated from following non-paragraph content, insert a blank line between them. The blank line is the unambiguous separator and is preserved through every gofmt revision.
+
+## Javadoc-style block comments
+
+A doc comment can be a `/* ... */` block comment as well as a `//` line comment — Go's attachment rule (immediately before the declaration, no blank line) doesn't care which style you use. This matters because a comment ported from Java/TypeScript often looks like:
+
+```go
+/**
+ * The maximum number of tokens a bucket can hold by default.
+ */
+const DefaultCapacity = 100
+```
+
+This attaches as the doc comment for `DefaultCapacity` — it is not silently dropped — but it renders badly. `//` line comments have their leading space stripped per line, but a `/* */` block comment's internal lines are used as written, so every ` * ` prefix becomes part of the text, and the leading space makes each line an indented (code-block) line. `go doc -all` on the example above prints:
+
+```
+const DefaultCapacity = 100
+    *
+      - The maximum number of tokens a bucket can hold by default.
+```
+
+Worse, `gofmt` recognizes the leading-`*` Javadoc pattern and deliberately leaves it alone rather than guessing at a rewrite — unlike an ordinary indented block comment, which gofmt *will* reformat. So this pattern produces broken rendering that no `gofmt -d` diff will ever flag. Fix by converting to `//` on every line before deciding on wrapping or indentation.
 
 ## Quick verification
 
