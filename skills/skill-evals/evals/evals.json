@@ -8,7 +8,9 @@
     "isolation-audited [discriminating]: for each run, the per-run allowlist was written before launch, the loaded context was checked against that allowlist after the run (via sandbox records, a deterministic harness-trace audit, or access-log.md + metrics.json), and a per-run verdict for that specific run was recorded in methodology notes. Recording an allowlist and a non-empty access log is not enough on its own — the audit must actually compare the two and register a verdict for the run.",
     "contaminated-runs-excluded [discriminating]: any run found to be contaminated (loaded files outside its per-run allowlist) was discarded and actually rerun before its results entered the benchmark — NOT merely flagged, annotated, or left in with a note. A run whose methodology verdict is FAIL, or that is 'kept with a flag', while it still appears in benchmark.json / grading FAILS this check exactly as a silently contaminated run would. Applies at every nesting level including nested L2 baselines.",
     "preflight-gates-documented [discriminating]: before the runs, recorded Gate 1 (skill-creator located at a named path) and Gate 2 (the isolation mechanism + per-run allowlists), e.g. in methodology-and-isolation.md.",
-    "benchmark-schema [discriminating+regression]: benchmark.json follows skill-creator's schema — per-configuration run_summary plus an explicit delta block — with the executor model recorded in metadata (not a <model-name> placeholder). The configuration field may use old_skill/new_skill as aliases for without_skill/with_skill when the L1 prompt is a version-comparison (v1-vs-v2) eval. Subsumes the former model-recorded check.",
+    "baseline-stated [discriminating]: before launching any generation runs, explicitly named the primary skill-under-test path and every baseline candidate to the user in plain text (e.g. a 'Primary (with-skill): ... / Baseline: ...' restatement) — a no-skill baseline is stated as such rather than silently assumed, and a version-comparison or three-way baseline names the specific snapshot path(s). Not satisfied by a baseline that is only inferable from run configuration, output directory names, or benchmark.json after the fact.",
+    "nested-evals-no-iteration-noise [discriminating+regression]: the nested evals.json the run authored for its L2 loop (testing the DSL skill under evaluation) carries no iteration-numbered or run-history annotations — assertion tags read only [discriminating] / [regression] / [discriminating+regression], never a parenthetical like [discriminating, iteration-2] or [reversed, iteration-3], and any assertions_intent-equivalent field describes what the assertions currently check rather than a running per-iteration changelog of past results. Applies even on a single top-level pass, since Activity 3/4's assertion revision (write assertions after the first run, then revise after grading) happens within one invocation. A skill-creator-only baseline has no such anti-drift rule and plausibly lets this leak in as notes accumulate across the nested loop's own passes.",
+    "benchmark-schema [discriminating+regression]: benchmark.json follows skill-creator's schema — per-configuration run_summary plus an explicit delta block — with the executor model recorded in metadata (not a <model-name> placeholder). The configuration field may use old_skill/new_skill as aliases for without_skill/with_skill when the L1 prompt is a version-comparison (v1-vs-v2) eval.",
     "delta-cost-benefit [discriminating]: an explicit with-skill-vs-baseline delta is reported and framed as cost (time/tokens) versus benefit (pass rate), not just a single pass-rate number.",
     "report-single-consolidated [discriminating]: the human-facing result is a single REPORT.md in the iteration directory — skill-creator's eval viewer (generate_review.py) was NOT launched and no separate review.md / review.html was produced. This is skill-evals' deliberate deviation from skill-creator; a skill-creator-only baseline surfaces results through the HTML viewer + review.md and FAILS this check. (benchmark.md may still exist on disk as an unused aggregation-script byproduct; its presence does not fail this check.)",
     "report-four-sections [discriminating]: that REPORT.md contains all four skill-evals sections — Summary (delta-led results plus Activity-6 patterns), Verdict (recommendations split across skill content / evals / assertions), User Review (hands the decision back and asks what to do next, answered in chat), and Detailed Results (per-eval prompt + per-assertion PASS/FAIL with evidence, tokens, runtime). A skill-creator baseline review.md lacks the Verdict + User Review structure and FAILS this check.",
@@ -40,7 +42,7 @@
       ],
       "assertions": [
         "both-configs-executed [discriminating]: actually ran a new_skill (v2) AND an old_skill (v1) generation-and-grading loop with saved outputs in each config, rather than answering by only diffing the two SKILL.md texts. A version comparison must not collapse into a text comparison.",
-        "old-version-baseline: compared the new skill version against the OLD version as baseline (v1 / old_skill), explicitly NOT against a no-skill baseline."
+        "old-version-baseline [discriminating]: compared the new skill version against the OLD version as baseline (v1 / old_skill), explicitly NOT against a no-skill baseline, and stated that baseline choice to the user before launching runs."
       ]
     },
     {
@@ -54,6 +56,21 @@
       ],
       "assertions": [
         "both-configs-executed [discriminating]: actually ran a with-skill AND a baseline (no-skill) generation-and-grading loop with saved outputs in each config, rather than answering the skeptical ask by only analyzing the skill's text. The under-specified phrasing must not collapse the eval into a skill-text review."
+      ]
+    },
+    {
+      "id": 3,
+      "name": "ambiguous-baseline-domainmodel",
+      "prompt": "I've been iterating on our Domain Model DSL skill (.dmodel — datatypes, entities, packages). There's an older version at evals/files/dsl-skills/domainmodel-dsl-v1/SKILL.md and I reworked it into evals/files/dsl-skills/domainmodel-dsl-v2/SKILL.md. Can you check whether this skill is actually worth having? Sample models for grounding: evals/files/dsl-samples/blog.dmodel and evals/files/dsl-samples/datatypes.dmodel.",
+      "expected_output": "The prompt names two skill versions but never says which one to treat as the baseline, or whether the comparison should be against no skill at all — 'worth having' is genuinely ambiguous between 'worth having v2 over v1' and 'worth having at all'. The correct behavior is to STOP before launching any generation runs and ask the user which baseline(s) they want (no skill, the old v1 version, or both) — not to silently pick one (e.g. defaulting to v1-as-baseline, or to no-skill-as-baseline) and proceed, and not to unilaterally launch a three-way comparison without confirming that's what was meant. Once the user clarifies, the loop runs as usual for whichever baseline they chose.",
+      "files": [
+        "evals/files/dsl-skills/domainmodel-dsl-v1/SKILL.md",
+        "evals/files/dsl-skills/domainmodel-dsl-v2/SKILL.md",
+        "evals/files/dsl-samples/blog.dmodel",
+        "evals/files/dsl-samples/datatypes.dmodel"
+      ],
+      "assertions": [
+        "stops-before-launching [discriminating]: recognized the baseline as ambiguous — two skill versions are named but the prompt never says whether to compare against the old version, no skill, or both — and stopped to ask the user which baseline(s) they want BEFORE launching any generation runs. Did not silently default to one baseline and proceed, and did not launch a three-way comparison on its own initiative without confirming that's what the user meant."
       ]
     }
   ]

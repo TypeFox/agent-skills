@@ -24,4 +24,18 @@ Each skill lives in its own subfolder under `skills/`. To get started, install t
 npx skills add anthropics/skills -g -s skill-creator
 ```
 
-Then use `/skill-creator` in Claude Code to scaffold, edit, and test skills interactively.
+Then use `/skill-creator` in your agent to scaffold, edit, and test skills interactively.
+
+## Evaluating Skills
+
+To measure whether a skill actually improves agent output, use the `skill-evals` skill. It runs prompts with and without the skill, grades both against the same assertions, and writes a comprehensive report.
+
+Install it (and `skill-creator`, which skill-evals depends on):
+
+```sh
+npx skills add TypeFox/agent-skills -g -s skill-evals
+```
+
+Then use `/skill-evals` in your agent to run the evaluation end-to-end. Use a relatively cheap model for this work; evals spawn many subagent runs and can consume a lot of tokens.
+
+Results are written to a local workspace (gitignored) at `skills/{skill-name}-workspace/iteration-{n}/REPORT.md`. Review that report for the benchmark summary, per-test outcomes, and recommendations before iterating on `SKILL.md` or `evals/evals.json`.
