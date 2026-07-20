@@ -187,6 +187,24 @@ Do **not** wrap when:
 
 A useful rule: wrap when the inner error came from a public API of another package or from your own caller; replace when the inner error came from an internal helper whose existence is incidental.
 
+**Wrapping and branching are independent decisions — do both when the caller needs to.** Returning `fmt.Errorf("...: %w", err)` preserves the chain for *some* future caller to inspect; it does not make the current function itself react to the failure. When your immediate caller needs one failure treated differently from the rest, check it with `errors.Is`/`errors.As` before you return, then wrap for whatever caller is further up:
+
+```go
+// The service branches on the sentinel it cares about, then wraps for its own caller.
+func (s *Service) Checkout(ctx context.Context, cartID string) error {
+    cart, err := s.carts.Find(ctx, cartID)
+    switch {
+    case errors.Is(err, store.ErrNotFound):
+        return fmt.Errorf("checkout: %w", ErrCartNotFound) // the service's own sentinel
+    case err != nil:
+        return fmt.Errorf("checkout: find cart %s: %w", cartID, err)
+    }
+    // ...
+}
+```
+
+A wrap-only version compiles and looks identical to a caller who never checks — the gap only shows up when someone needs to branch and can't.
+
 ## `errors.Is`, `errors.As`, `errors.Join`
 
 - `errors.Is(err, target)` — walks the chain looking for an error that equals `target`. Use for sentinel-error checks.

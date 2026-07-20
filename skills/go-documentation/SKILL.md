@@ -1,79 +1,104 @@
 ---
 name: go-documentation
-description: Write idiomatic Go doc comments that render correctly on pkg.go.dev. Use whenever the user is writing or reviewing Go documentation — package comments, `doc.go` files, exported symbol comments, testable `Example` functions, deprecation notices — or wants to publish a module to pkg.go.dev, preview docs locally with `pkgsite`, or debug a broken pkg.go.dev page. Do not use for general Go programming questions or non-Go languages.
+description: Write idiomatic Go doc comments that render correctly on pkg.go.dev — package comments, `doc.go`, exported-symbol comments, testable `Example` functions, deprecation notices — and publish or debug modules on pkg.go.dev (`pkgsite`, the module proxy). Use when writing or reviewing Go documentation, or when a developer used to writing JSDoc/TSDoc/Markdown is unsure how Go doc comments differ. Not for general Go programming or non-Go languages.
 ---
 
 # Go Documentation
 
-Go treats documentation as part of the language toolchain, not an afterthought. `go doc` reads comments locally, [pkg.go.dev](https://pkg.go.dev) publishes them on the public index, and `gofmt` normalizes their formatting. The conventions in this skill come from the official spec at https://go.dev/doc/comment — they are not stylistic preferences. Tools depend on them.
+Go treats documentation as part of the toolchain. `go doc` reads comments locally, [pkg.go.dev](https://pkg.go.dev) publishes them, and `gofmt` normalizes their markup. The conventions here come from the official spec at https://go.dev/doc/comment — tools depend on them, so they are not stylistic preferences.
+
+## Coming from TypeScript
+
+A Go doc comment is a plain `//` comment above a declaration — there are no tags, and almost none of the Markdown that JSDoc/TSDoc allow. These are the habits that silently produce wrong or unrendered docs; reach for the Go column instead.
+
+| TypeScript / JSDoc habit                 | What Go actually does                                                                                     |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `@param`, `@returns`, `@throws` tags     | No tags exist. Name params and results in prose ("It returns the number of bytes written"). Types are in the signature — don't restate them. |
+| `` `inline code` `` backticks            | Backticks (and `'single quotes'`) render as curly ‘quotes’. There is no inline-code markup — use a doc link `[Name]` for a symbol, plain text otherwise. |
+| Markdown link `[text](url)`              | Not a link. Use a bare URL, or reference style: `[text]` in prose plus `[text]: https://…` defined at the end of the comment. |
+| `{@link Foo}` cross-reference            | Not recognized, renders as literal text. Use a doc link: `[Foo]`.                                         |
+| Fenced ```` ``` ```` blocks, `**bold**`  | No fences, no emphasis. A code block is any line indented by one tab; `**bold**` renders literally.       |
+| `/** ... */` Javadoc-style block comment | Valid Go syntax, and it *does* attach as the doc comment — but `gofmt` recognizes the leading-`*` pattern and deliberately leaves it untouched, so the un-stripped `*` on every line makes `go doc`/pkg.go.dev render it as a mangled code block. Use a plain `//` on every line instead. |
+| `@example` with a snippet                | Examples are real compiled functions (`func ExampleFoo()`) in `_test.go`, run by `go test`. See `references/examples.md`. |
+| `@deprecated`                            | A paragraph beginning with the exact prefix `Deprecated: `.                                               |
+| Summary in any phrasing                  | The first sentence must start with the symbol name: `Foo returns…`, `Package foo…` (see the table below). |
+| README is the docs (npmjs.com)           | pkg.go.dev and `go doc` show the **package comment**, in addition to the README, above the API.           |
+| Indent comment text freely               | Any indented line becomes a code block. Keep prose flush left.                                            |
+
+These habits usually show up together. Porting one JSDoc comment typically means fixing several rows in the table at once. Before — reads fine in an editor, renders broken or missing on pkg.go.dev:
+
+```go
+// `Cache` is a simple LRU cache.
+//
+// @param size max number of entries
+// @returns a new Cache
+func NewCache(size int) *Cache { ... }
+
+// Method to look up `key`, returns true if found.
+// See the [tuning guide](https://example.com/cache-tuning) for eviction details.
+func (c *Cache) Get(key string) (string, bool) { ... }
+```
+
+After:
+
+```go
+// Cache is a simple LRU cache.
+type Cache struct{ ... }
+
+// NewCache creates a Cache that holds at most size entries.
+func NewCache(size int) *Cache { ... }
+
+// Get reports whether key is present in the cache, returning its
+// value if so. See https://example.com/cache-tuning for eviction details.
+func (c *Cache) Get(key string) (string, bool) { ... }
+```
 
 ## Reference files
 
-Load these as needed — don't read them upfront. The main SKILL.md has the conventions and decision points; the references hold operational detail.
+Load on demand; don't read upfront.
 
-- `references/comment-syntax.md` — the full markup grammar of doc comments: paragraphs, headings, links (reference-style and doc links), lists, code blocks, notes, deprecations, directives, plus the gofmt reformatting rules and the half-dozen common pitfalls that produce unintended code blocks or broken lists. Read this whenever a comment includes anything richer than plain prose, or when `gofmt` reformats a comment in a surprising way.
-- `references/examples.md` — testable `Example` functions: naming rules (including the `_suffix` casing constraint), `// Output:` and `// Unordered output:` assertion comments, whole-file examples, and the rule that examples without an Output comment are compiled but not run. Read this when adding examples, or when an example test fails unexpectedly.
-- `references/publishing.md` — how pkg.go.dev discovers and indexes modules via `proxy.golang.org`, the `go.mod` and redistributable-license requirements, semantic-versioning expectations, README rendering on pkg.go.dev (filenames, links, Markdown limits), source-code linking, retraction, and removal. Read this before publishing a new module, when authoring a module README for pkg.go.dev, or when an existing module isn't showing up or is showing the wrong content.
-- `references/pkgsite-preview.md` — installing and running `pkgsite` to preview the current module's docs in a browser before publication. Read this when iterating on doc comments locally.
+- `references/comment-syntax.md` — full markup grammar (paragraphs, headings, links, doc links, lists, code blocks, notes, deprecations, directives), the gofmt reformatting rules, and the pitfalls that produce unintended code blocks or broken lists. Read it for any comment richer than plain prose, or when gofmt reformats a comment unexpectedly.
+- `references/examples.md` — testable `Example` functions: naming rules (including the `_suffix` lower-case constraint), `// Output:` / `// Unordered output:` assertions, whole-file examples. Read it when adding examples or when one misbehaves.
+- `references/publishing.md` — how pkg.go.dev discovers and indexes modules via `proxy.golang.org`: `go.mod` and license requirements, semantic versioning, README rendering, source links, retraction, removal. Read it before publishing, or when a module isn't showing up.
+- `references/pkgsite-preview.md` — running `pkgsite` to preview a module's docs locally before publishing. Read it when iterating on comments.
 
-## Core convention: every exported name gets a doc comment
+## The attachment rule
 
-A doc comment is a comment placed immediately before a top-level `package`, `const`, `func`, `type`, or `var` declaration, with **no blank line in between**. The blank line is what separates a doc comment from an unrelated comment above it — `go/doc` uses that rule to associate the comment with the declaration. Get that detail wrong and the documentation disappears from `go doc` and pkg.go.dev even though the comment is still in the source.
+A doc comment is a comment placed **immediately** before a top-level `package`, `const`, `func`, `type`, or `var` declaration, with **no blank line between them**. The blank line is what `go/doc` uses to tell a doc comment from an unrelated comment above it. Get it wrong and the docs vanish from `go doc` and pkg.go.dev even though the comment is still in the source. Every exported (capitalized) name should have one.
 
-Every exported (capitalized) name should have one. Unexported names benefit from comments too, but the conventions below specifically target what shows up in published documentation.
+## First sentence names the symbol
 
-## Naming the symbol in the first sentence
+`go doc`, IDE hovers, and pkg.go.dev search all surface the first sentence alone as the one-line summary — often with no symbol name beside it. So the sentence must name the symbol itself.
 
-Every doc comment starts with a full sentence whose first word names the symbol being documented. This isn't decorative: `go doc`, IDE hover cards, and pkg.go.dev's search results all surface the first sentence as a one-line summary, often without the symbol name shown alongside. A reader scanning the function list of a package sees only that first sentence — if it doesn't name the function, they can't tell what they're looking at.
-
-| Symbol kind            | First-sentence pattern                | Example                                                                       |
-| ---------------------- | ------------------------------------- | ----------------------------------------------------------------------------- |
+| Symbol kind            | First-sentence pattern                | Example                                                                         |
+| ---------------------- | ------------------------------------- | ------------------------------------------------------------------------------- |
 | Package                | `Package <name> ...`                  | `Package path implements utility routines for manipulating slash-separated paths.` |
-| Command (`main`)       | `<Command> ...` (capitalized)         | `Gofmt formats Go programs.`                                                  |
-| Type                   | `A <Type> ...` / `An <Type> ...`      | `A Reader serves content from a ZIP archive.`                                 |
-| Function (returns)     | `<Function> returns ...`              | `Quote returns a double-quoted Go string literal representing s.`             |
-| Function (side effect) | `<Function> <verb> ...`               | `Exit causes the current program to exit with the given status code.`        |
-| Function (bool result) | `<Function> reports whether ...`      | `HasPrefix reports whether the string s begins with prefix.`                  |
-| Constant / variable    | `<Name> is ...` / `<Name> <verb> ...` | `Version is the Unicode edition from which the tables are derived.`           |
+| Command (`main`)       | `<Command> ...` (capitalized)         | `Gofmt formats Go programs.`                                                     |
+| Type                   | `A <Type> ...` / `An <Type> ...`      | `A Reader serves content from a ZIP archive.`                                    |
+| Function (returns)     | `<Function> returns ...`              | `Quote returns a double-quoted Go string literal representing s.`                |
+| Function (side effect) | `<Function> <verb> ...`               | `Exit causes the current program to exit with the given status code.`            |
+| Function (bool result) | `<Function> reports whether ...`      | `HasPrefix reports whether the string s begins with prefix.`                     |
+| Constant / variable    | `<Name> is ...` / `<Name> <verb> ...` | `Version is the Unicode edition from which the tables are derived.`              |
 
-The `reports whether` phrasing for booleans is idiomatic Go — prefer it over `returns true if`. It reads more naturally in the doc index and matches the standard library convention.
+Use `reports whether` for booleans, not `returns true if` — it is the standard-library convention and reads better in the index.
 
 ## Package documentation
 
-Package documentation is the single most important comment in a module — it is what pkg.go.dev's search indexes, what shows on the package's landing page, and what answers "what is this library for?" for everyone who arrives without context. The detail that follows applies broadly; for a focused checklist on multi-file packages and commands, the rules below are sufficient on their own.
+The package comment is the most important comment in a module: it is what pkg.go.dev indexes and shows on the landing page, and what answers "what is this for?". Write the first sentence as a self-contained one-liner starting with `Package <name>` — assume the reader sees nothing else.
 
-### Where to put it
+Good: `Package errgroup provides synchronization, error propagation, and Context cancellation for groups of goroutines working on subtasks of a common task.`
+Weak: `This package is a small library for working with goroutines.` — no `Package errgroup`, says nothing specific.
 
-The package comment sits directly above the `package` declaration. In a multi-file package, by convention place it in a dedicated `doc.go` file:
+Put the comment in a dedicated `doc.go` (only the comment plus the `package` clause). It is a stable home that survives the file renames that silently orphan a comment attached to a regular source file, and it signals where package docs live. Only one file may hold the package comment; multiple are concatenated in an unspecified order.
 
 ```go
 // Package json implements encoding and decoding of JSON as defined in
 // RFC 7159. The mapping between JSON and Go values is described
 // in the documentation for the [Marshal] and [Unmarshal] functions.
-//
-// See "JSON and Go" at https://golang.org/doc/articles/json_and_go.html
-// for an introduction to this package.
 package json
 ```
 
-The `doc.go` file usually contains only the package comment and the `package` declaration — no other code. Two reasons to prefer this layout over attaching the comment to a regular source file:
-
-1. **Stability.** Source files get split, renamed, or deleted during refactors. A package comment attached to `client.go` quietly disappears the day someone renames `client.go` to `transport.go` and forgets to move the comment. `doc.go` is a stable home that future contributors recognize as "the file that holds package documentation."
-2. **Discoverability.** Anyone opening the directory immediately sees that the package has dedicated documentation and where to edit it.
-
-In a multi-file package, only one file should hold the package comment; if multiple files do, `go/doc` concatenates them in an unspecified order, which is almost never what you want.
-
-### First sentence
-
-The first sentence MUST begin with `Package <name>` (exact capitalization of the package name). pkg.go.dev indexes this sentence and shows it in search results. Write it as a self-contained one-liner — assume the reader sees nothing else.
-
-Good: `Package errgroup provides synchronization, error propagation, and Context cancellation for groups of goroutines working on subtasks of a common task.`
-
-Weak: `This package is a small library for working with goroutines.` — doesn't start with `Package errgroup`, doesn't say what it does specifically.
-
-### Overview for larger packages
-
-For packages with more than a handful of exported symbols, include a short overview after the first paragraph. Point readers at the most important types and functions using doc links (see `references/comment-syntax.md` § Doc links):
+For packages beyond a handful of symbols, add a short overview after the first paragraph pointing at the main entry points with doc links, so the page doesn't render as a wall of symbols:
 
 ```go
 // Package http provides HTTP client and server implementations.
@@ -81,57 +106,24 @@ For packages with more than a handful of exported symbols, include a short overv
 // [Get], [Head], [Post], and [PostForm] make HTTP (or HTTPS) requests:
 //
 //  resp, err := http.Get("http://example.com/")
-//  ...
 //
 // The client must close the response body when finished with it:
 //
-//  resp, err := http.Get("http://example.com/")
-//  if err != nil {
-//      // handle error
-//  }
 //  defer resp.Body.Close()
 //
-// For control over HTTP client headers, redirect policy, and other
-// settings, create a [Client] ...
+// For control over headers and redirect policy, create a [Client] ...
 package http
 ```
 
-The overview shows up at the top of the pkg.go.dev page, before the symbol index. Long packages with no overview render as a wall of symbols and force readers to guess where to start.
+### README vs `doc.go`
 
-### README.md vs package documentation (`doc.go`)
+Modules typically need both, for two readers — don't paste the same text into both. The `README.md` is read on the host (GitHub/pkg.go.dev landing area) by someone **not yet using** the module: pitch, `go get`, prerequisites, badges, a quick-start snippet. The package comment is read via `go doc`, IDE hover, and the pkg.go.dev API view by someone who **already imported** it: technical overview, main types and call flow, invariants, error and concurrency semantics, doc links to key symbols. After `go get` the README disappears from daily work — a package overview that only says "see README" loses the toolchain integration that makes Go docs distinctive.
 
-Go modules typically need **both** a top-level `README.md` and package comments (often in `doc.go`). They serve different readers at different moments — copy-pasting the same text into both is a common mistake.
-
-**Two audiences:**
-
-- **Visitor (not yet using the module)** — finds the repo via search, a blog post, or GitHub. They read `README.md` on the host. **Sell and onboard**: what the project is, why it exists, install (`go get`), prerequisites, badges, contributing, links to broader docs. A short, informal quick-start snippet is fine here.
-- **Developer (module on the import path)** — runs `go doc`, hovers in an IDE, or browses pkg.go.dev. They read the package comment in `doc.go` (or above `package`). **Technical overview**: what the package provides, design constraints, where to start in the API, doc links to key symbols — the same role as standard-library package docs. Assume the package is installed; do not make them open the README for a package-level overview.
-
-After `go get`, the README effectively disappears from day-to-day work. Package documentation is what `go doc path/to/pkg` and pkg.go.dev show above the symbol index. If that overview is empty or only says "see README", callers lose the toolchain integration that makes Go documentation distinctive.
-
-**What goes where:**
-
-Put in **README.md**:
-
-- Project pitch, status, roadmap, community
-- Install, env setup, credentials, deployment
-- Badges, CI, license summary, changelog links
-- "Try it in 30 seconds" sample for casual visitors
-- Migration guides between major versions at the **module** level
-
-Put in **package comment** / **`doc.go`**:
-
-- `Package <name> ...` first sentence (search-indexed on pkg.go.dev)
-- API-oriented overview: main types, typical call flow
-- Invariants, error semantics, concurrency, performance notes
-- Doc links (`[Client]`, `[New]`), patterns that belong in `go doc`
-- Per-package design notes; subpackage overviews in **that** package's `doc.go`
-
-**Multi-package modules:** one `README.md` at the module root for the whole project. Each package (including subpackages) gets its own package comment — usually in a `doc.go` in that directory — not a separate README per package unless you have an unusual layout.
+For a multi-package module: one `README.md` at the root, and a package comment (usually a `doc.go`) in every package and subpackage — not a README per package.
 
 ### Commands (`package main`)
 
-For binary commands, the package comment describes the program rather than its Go API. The first sentence begins with the program name capitalized as a normal sentence start:
+For a binary, the package comment describes the program, not a Go API. Use semantic linefeeds (one sentence per line); gofmt preserves them, giving cleaner diffs.
 
 ```go
 // Gofmt formats Go programs.
@@ -143,22 +135,16 @@ For binary commands, the package comment describes the program rather than its G
 //
 // The flags are:
 //
-//  -d
-//      Do not print reformatted sources to standard output.
-//      Instead, print diffs.
 //  -l
 //      List files whose formatting differs from gofmt's.
-//  ...
 package main
 ```
 
-Use semantic linefeeds (one sentence per line) in command documentation. Gofmt preserves line breaks within paragraphs, so this produces cleaner diffs when text is edited and reads naturally when rendered.
-
 ## Function and method documentation
 
-Pick the first-sentence pattern from the table above. Beyond that, include the details a caller would reasonably need:
+Pick the first-sentence pattern from the table, then add what a caller needs. Refer to parameters and results by name in prose, without backticks; avoid names like `a` or `s` that read as ordinary words.
 
-- **Special cases and edge cases.** Document edge cases as an indented preformatted block, as in the standard library's `math.Sqrt`:
+- **Special cases** as an indented block:
 
   ```go
   // Sqrt returns the square root of x.
@@ -166,27 +152,24 @@ Pick the first-sentence pattern from the table above. Beyond that, include the d
   // Special cases are:
   //
   //  Sqrt(+Inf) = +Inf
-  //  Sqrt(±0) = ±0
   //  Sqrt(x < 0) = NaN
   //  Sqrt(NaN) = NaN
   func Sqrt(x float64) float64
   ```
 
-- **Asymptotic complexity** when it matters to callers (e.g., `sort.Sort` documents its O(n log n) call count to `Less` and `Swap`).
-- **Concurrency safety.** Top-level functions are conventionally assumed to be safe for concurrent use; state otherwise if not. For methods, the default assumption is the opposite — only safe for a single goroutine at a time. State exceptions in the method comment, or in the type's doc comment if it applies to all methods.
-- **Deprecation.** A paragraph beginning `Deprecated:` triggers tools to warn callers and causes pkg.go.dev to hide the symbol by default. See `references/comment-syntax.md` § Deprecations.
+- **Concurrency safety.** Top-level functions are conventionally assumed safe for concurrent use; methods are assumed *not* safe (single goroutine at a time). State any exception explicitly.
+- **Complexity** when it matters to callers (e.g. `sort.Sort` documents its O(n log n) comparisons).
+- **Deprecation** via a `Deprecated:` paragraph — always name the replacement. See `references/comment-syntax.md` § Deprecations.
 
-Leave out internal implementation details. The doc comment describes behavior callers can rely on, not the algorithm currently used. Documenting "uses quicksort internally" locks the implementation behind the doc contract — a future maintainer who switches to timsort will silently break that contract.
-
-Refer to named parameters and results directly by name in prose, without backticks: `Copy copies from src to dst until either EOF is reached on src or an error occurs. It returns the total number of bytes written and the first error encountered while copying, if any.` Avoid parameter names like `a` or `s` that could be confused with ordinary words.
+Document behavior callers can rely on, not the algorithm. "Uses quicksort internally" locks the implementation behind the doc contract; a maintainer who switches to timsort silently breaks it.
 
 ## Type documentation
 
-Start with `A <Type>` or `An <Type>` and describe what an instance represents. Then add whichever of these apply:
+Start with `A <Type>` / `An <Type>` describing what an instance represents, then add whichever apply:
 
-- **Zero value.** Go encourages designing types whose zero value is useful. When the zero value is meant to work — `var b Buffer` is a valid empty buffer — document it: `The zero value for Buffer is an empty buffer ready to use.` Readers can only count on the zero value working if you say so.
-- **Concurrency safety.** The default assumption is "not safe for concurrent use". Anything stronger (`A Regexp is safe for concurrent use by multiple goroutines, except for configuration methods, such as Longest.`) must be explicit.
-- **Field documentation.** For structs with exported fields, either the type's doc comment describes the fields collectively, or each exported field has its own per-field comment. Pick one approach per type — don't mix the two awkwardly.
+- **Zero value.** If the zero value is meant to work, say so — readers can only rely on it if documented: `The zero value for Buffer is an empty buffer ready to use.`
+- **Concurrency safety.** Default is "not safe"; anything stronger must be explicit.
+- **Fields.** Either the type comment describes exported fields collectively, or each field carries its own comment — pick one per type.
 
 ```go
 // A LimitedReader reads from R but limits the amount of
@@ -199,11 +182,11 @@ type LimitedReader struct {
 }
 ```
 
-For methods, use a consistent receiver name across the type so the method list reads uniformly on pkg.go.dev. A type with `func (c *Conn) Read` and `func (conn *Conn) Write` looks unfinished.
+Use one consistent receiver name across a type's methods; mixing `c *Conn` and `conn *Conn` looks unfinished in the method list.
 
 ## Constant and variable documentation
 
-**Grouped** (a `const (...)` or `var (...)` block of related items): one introductory doc comment for the whole block, with brief end-of-line comments on individual entries:
+**Grouped** (`const (...)` / `var (...)`): one intro comment for the block, brief end-of-line comments per entry.
 
 ```go
 // Generic file system errors.
@@ -213,74 +196,60 @@ var (
     ErrInvalid    = errInvalid()    // "invalid argument"
     ErrPermission = errPermission() // "permission denied"
     ErrExist      = errExist()      // "file already exists"
-    ErrNotExist   = errNotExist()   // "file does not exist"
 )
 ```
 
-For typed constants displayed next to their type on pkg.go.dev, the type's doc comment can cover them; the const block need not repeat the explanation.
+**Ungrouped** (a single top-level `const`/`var`): a full comment starting with the name, like any other symbol.
 
-**Ungrouped** (a single top-level `const` or `var`): a full doc comment starting with the name, same as for any other top-level symbol:
+## Doc links
 
-```go
-// Version is the Unicode edition from which the tables are derived.
-const Version = "13.0.0"
-```
-
-## Testable examples
-
-Go's `testing` package supports `Example` functions: documented uses of a package that are compiled (and optionally run) by `go test` and rendered on pkg.go.dev. They are the most reliable form of documentation because they cannot drift away from the API — a renamed function breaks the example at the next test run.
-
-Add an example when the API has any non-trivial usage pattern that prose alone won't communicate. Place examples in a `_test.go` file in the same package (or a `*_test` external package if they need to import the package the same way users would). For naming rules, output assertions, and the whole-file example pattern, see `references/examples.md`.
-
-## Cross-references with doc links
-
-Inside any doc comment, use `[Name]` to link to another exported identifier in the same package, or `[pkg.Name]` to link across packages. Doc links render as hyperlinks on pkg.go.dev and are validated by `go doc` and IDEs — broken links surface immediately.
+Inside any comment, `[Name]` links to an exported identifier in the same package and `[pkg.Name]` links across packages. They render as hyperlinks and are validated by `go doc` and IDEs, so broken links surface immediately. Use them liberally in overviews and wherever prose names another symbol.
 
 ```go
 // ReadFrom reads data from r until EOF and appends it to the buffer, growing
-// the buffer as needed. The return value n is the number of bytes read. Any
-// error except [io.EOF] encountered during the read is also returned. If the
-// buffer becomes too large, ReadFrom will panic with [ErrTooLarge].
+// the buffer as needed. Any error except [io.EOF] encountered during the read
+// is also returned. If the buffer becomes too large, ReadFrom panics with
+// [ErrTooLarge].
 func (b *Buffer) ReadFrom(r io.Reader) (n int64, err error) { ... }
 ```
 
-Use them liberally in package overviews and in any prose that names another symbol. See `references/comment-syntax.md` § Doc links for the full syntax (including the `[*pkg.Type]` pointer form and the rule about adjacent punctuation).
+A link must be surrounded by punctuation, spaces, or line boundaries: `map[ast.Expr]TypeAndValue` is *not* a link because the brackets touch other identifier characters. See `references/comment-syntax.md` § Doc links.
+
+## Testable examples
+
+`Example` functions are documented uses compiled (and optionally run) by `go test` and rendered on pkg.go.dev. They can't drift from the API — a rename breaks them at the next test run. Add one for any non-trivial usage pattern prose won't convey; place them in a `_test.go` file, preferably in a `*_test` external package so they import the package as a user would. For naming, output assertions, and whole-file examples, see `references/examples.md`.
 
 ## Publishing and previewing
 
-Two distinct workflows:
-
-- **Local preview before publishing**: run `pkgsite` in the module directory and open the rendered docs in a browser. Iterate on comments, refresh, repeat. See `references/pkgsite-preview.md`.
+- **Preview locally** with `pkgsite` in the module directory, then iterate. See `references/pkgsite-preview.md`.
 
   ```bash
   go install golang.org/x/pkgsite/cmd/pkgsite@latest
-  cd /path/to/module
-  pkgsite -open      # opens http://localhost:8080
+  cd /path/to/module && pkgsite -open   # http://localhost:8080
   ```
 
-- **Publishing to pkg.go.dev**: pkg.go.dev indexes any public module reachable via the Go module proxy. Tag a semantic version, push the tag, and either visit `https://pkg.go.dev/<module-path>` and click *Request*, or run `go get <module-path>@<version>` from any machine — both trigger indexing. See `references/publishing.md` for license, version, and README requirements.
+- **Publish**: tag a semantic version and push; pkg.go.dev indexes any public module reachable via the proxy. Force it by visiting `https://pkg.go.dev/<module-path>` and clicking *Request*, or running `go get <module-path>@<version>`. See `references/publishing.md` for license, version, and README requirements.
 
-While editing, `go doc` is the fastest way to verify a comment renders as intended. It uses the same parsing as pkg.go.dev, so what you see locally matches what users will see published:
+While editing, `go doc` is the fastest check — same parser as pkg.go.dev:
 
 ```bash
-go doc                          # current package overview
-go doc .                        # same
-go doc SomeType                 # a specific symbol
-go doc SomeType.Method          # a method
-go doc -all                     # everything in the current package
-go doc -src SomeType            # also show source
+go doc                 # current package overview
+go doc SomeType        # a specific symbol
+go doc SomeType.Method # a method
+go doc -all            # everything in the package
 ```
 
-Reach for `pkgsite` once the comment includes formatting (headings, lists, links, code blocks) — that's where the HTML rendering can diverge from the plain-text `go doc` view, particularly around code block indentation and list formatting.
+Switch to `pkgsite` once a comment includes formatting (headings, lists, links, code blocks) — that's where HTML rendering can diverge from `go doc`'s plain text.
+
+For mechanical enforcement in CI, `staticcheck`'s stylecheck rules `ST1000` (package comment format) and `ST1020`–`ST1022` (function/type/const comments must start with the declared name) catch malformed openers — they're opt-in (excluded from the default check set), so enable them explicitly if you want this checked automatically.
 
 ## Quick checklist before committing
 
-- [ ] Every exported name has a doc comment with no blank line between the comment and the declaration.
-- [ ] The first sentence names the symbol and follows the pattern from the table above.
+- [ ] Every exported name has a doc comment with no blank line before its declaration.
+- [ ] The first sentence names the symbol and follows the table's pattern.
 - [ ] The package has a `Package <name> ...` comment (in `doc.go` for multi-file packages).
 - [ ] Package overview and API entry points live in doc comments, not only in `README.md`.
-- [ ] `README.md` complements package doc (install, motivation, project meta) without duplicating the full technical overview.
-- [ ] `gofmt` produces no changes to the comments (`gofmt -d ./...`).
-- [ ] `go doc` shows the symbol with the comment you expected.
-- [ ] For new APIs: at least one `Example` function demonstrates the common usage path.
-- [ ] If any comment uses links, lists, headings, or code blocks: previewed in `pkgsite` and renders as intended.
+- [ ] No JSDoc leftovers: no `@param`/`@returns` tags, no `/** */` block comments, no `{@link}` refs, no `` `backtick` `` code, no `[text](url)` links, no `**bold**`.
+- [ ] `gofmt -d ./...` produces no changes to the comments.
+- [ ] `go doc` shows each symbol with the comment you expected.
+- [ ] New APIs have at least one `Example`; comments with links/lists/headings/code blocks preview correctly in `pkgsite`.
