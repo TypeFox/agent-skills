@@ -1,6 +1,6 @@
 ---
 name: go-documentation
-description: Write idiomatic Go doc comments that render correctly on pkg.go.dev — package comments, `doc.go`, exported-symbol comments, testable `Example` functions, deprecation notices — and publish or debug modules on pkg.go.dev (`pkgsite`, the module proxy). Use when writing or reviewing Go documentation, or when a developer used to JSDoc/TSDoc/Markdown is unsure how Go doc comments differ. Not for general Go programming or non-Go languages.
+description: Write idiomatic Go doc comments that render correctly on pkg.go.dev — package comments, `doc.go`, exported-symbol comments, testable `Example` functions, deprecation notices — and publish or debug modules on pkg.go.dev (`pkgsite`, the module proxy). Use when writing or reviewing Go documentation, or when a developer used to writing JSDoc/TSDoc/Markdown is unsure how Go doc comments differ. Not for general Go programming or non-Go languages.
 ---
 
 # Go Documentation
@@ -11,20 +11,19 @@ Go treats documentation as part of the toolchain. `go doc` reads comments locall
 
 A Go doc comment is a plain `//` comment above a declaration — there are no tags, and almost none of the Markdown that JSDoc/TSDoc allow. These are the habits that silently produce wrong or unrendered docs; reach for the Go column instead.
 
-| TypeScript / JSDoc habit                 | What Go actually does                                                                                      |
+| TypeScript / JSDoc habit                 | What Go actually does                                                                                     |
 | ---------------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | `@param`, `@returns`, `@throws` tags     | No tags exist. Name params and results in prose ("It returns the number of bytes written"). Types are in the signature — don't restate them. |
 | `` `inline code` `` backticks            | Backticks (and `'single quotes'`) render as curly ‘quotes’. There is no inline-code markup — use a doc link `[Name]` for a symbol, plain text otherwise. |
 | Markdown link `[text](url)`              | Not a link. Use a bare URL, or reference style: `[text]` in prose plus `[text]: https://…` defined at the end of the comment. |
-| `{@link Foo}` cross-reference             | Not recognized, renders as literal text. Use a doc link: `[Foo]`.                                          |
-| Fenced ```` ``` ```` blocks, `**bold**`  | No fences, no emphasis. A code block is any line indented by one tab; `**bold**` renders literally.        |
+| `{@link Foo}` cross-reference            | Not recognized, renders as literal text. Use a doc link: `[Foo]`.                                         |
+| Fenced ```` ``` ```` blocks, `**bold**`  | No fences, no emphasis. A code block is any line indented by one tab; `**bold**` renders literally.       |
 | `/** ... */` Javadoc-style block comment | Valid Go syntax, and it *does* attach as the doc comment — but `gofmt` recognizes the leading-`*` pattern and deliberately leaves it untouched, so the un-stripped `*` on every line makes `go doc`/pkg.go.dev render it as a mangled code block. Use a plain `//` on every line instead. |
 | `@example` with a snippet                | Examples are real compiled functions (`func ExampleFoo()`) in `_test.go`, run by `go test`. See `references/examples.md`. |
-| `@deprecated`                            | A paragraph beginning with the exact prefix `Deprecated: `.                                                |
-| Summary in any phrasing                  | The first sentence must start with the symbol name: `Foo returns…`, `Package foo…` (see the table below).  |
-| README is the docs (npmjs.com)           | pkg.go.dev and `go doc` show the **package comment**, not the README, above the API. Empty package docs = no docs. |
-| `npm publish` to a registry              | No push step. Tag `vX.Y.Z`; the module proxy indexes it. A published version is immutable.                 |
-| Indent comment text freely               | Any indented line becomes a code block. Keep prose flush left.                                             |
+| `@deprecated`                            | A paragraph beginning with the exact prefix `Deprecated: `.                                               |
+| Summary in any phrasing                  | The first sentence must start with the symbol name: `Foo returns…`, `Package foo…` (see the table below). |
+| README is the docs (npmjs.com)           | pkg.go.dev and `go doc` show the **package comment**, in addition to the README, above the API.           |
+| Indent comment text freely               | Any indented line becomes a code block. Keep prose flush left.                                            |
 
 These habits usually show up together. Porting one JSDoc comment typically means fixing several rows in the table at once. Before — reads fine in an editor, renders broken or missing on pkg.go.dev:
 
@@ -35,7 +34,7 @@ These habits usually show up together. Porting one JSDoc comment typically means
 // @returns a new Cache
 func NewCache(size int) *Cache { ... }
 
-// Get looks up `key` and returns true if found.
+// Method to look up `key`, returns true if found.
 // See the [tuning guide](https://example.com/cache-tuning) for eviction details.
 func (c *Cache) Get(key string) (string, bool) { ... }
 ```
