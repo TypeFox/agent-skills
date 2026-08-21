@@ -17,7 +17,7 @@ Order sections by observed leverage. When trimming to the length ceiling, cut fr
 
 ## Evidence and limits
 
-The numbers to reason (and argue) from:
+The numbers to reason (and argue) from — each traces to a single study, so treat them as direction and rough magnitude, not constants:
 
 - **Instructions are followed — that's the problem.** Unnecessary requirements increase reasoning tokens 14–22%. Every line costs on every task, forever.
 - **Listed commands get used ~160× more** than unlisted ones — the command section plus a task-runner surface is the highest-leverage guide pair that exists.

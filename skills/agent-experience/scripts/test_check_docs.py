@@ -2,7 +2,7 @@
 
 Run from this directory (or point pytest at this file from anywhere):
 
-    python3 -m pytest test_check_docs.py
+    pytest test_check_docs.py
 
 pytest is the only test dependency; the script under test stays stdlib-only.
 The suite builds throwaway repos in tmp_path and asserts on finding levels
@@ -458,6 +458,28 @@ class TestExecPlanGraph:
         checker = run_checker(tmp_path, doc)
         assert not checker.findings
 
+    def test_relates_to_edge_checked(self, tmp_path):
+        write(tmp_path, "docs/exec-plans/plan-b.md")
+        doc = write(tmp_path, "docs/exec-plans/plan-a.md", """\
+            ---
+            relates-to: [plan-b, plan-gone]
+            ---
+            """)
+        checker = run_checker(tmp_path, doc)
+        assert cited(errors(checker)) == ["relates-to: plan-gone"]
+
+    def test_edges_resolve_across_active_completed_folders(self, tmp_path):
+        # The lifecycle scenario: an active plan depending on completed ones.
+        write(tmp_path, "docs/exec-plans/completed/plan-done.md")
+        doc = write(tmp_path, "docs/exec-plans/active/plan-next.md", """\
+            ---
+            depends-on: [plan-done]
+            discovered-from: plan-gone
+            ---
+            """)
+        checker = run_checker(tmp_path, doc)
+        assert cited(errors(checker)) == ["discovered-from: plan-gone"]
+
     def test_placeholder_edges_skipped(self, tmp_path):
         doc = write(tmp_path, "docs/exec-plans/plan-a.md", """\
             ---
@@ -561,6 +583,30 @@ class TestDiscoverDocs:
                          ".github/copilot-instructions.md",
                          ".claude/rules/style.md"}
 
+    def test_exclude_globs_filter_by_relative_path(self, tmp_path):
+        write(tmp_path, "AGENTS.md")
+        write(tmp_path, "fixtures/broken/AGENTS.md")
+        write(tmp_path, "docs/guide.md")
+        found = {str(p.relative_to(tmp_path))
+                 for p in cd.discover_docs(tmp_path, excludes=["fixtures/*"])}
+        assert found == {"AGENTS.md", "docs/guide.md"}
+
+    def test_gitignored_docs_are_skipped(self, tmp_path):
+        if not cd.shutil.which("git"):
+            pytest.skip("git not available")
+        import subprocess
+        subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
+        write(tmp_path, ".gitignore", "scratch/\n")
+        write(tmp_path, "AGENTS.md")
+        write(tmp_path, "scratch/CLAUDE.md")
+        found = {str(p.relative_to(tmp_path)) for p in cd.discover_docs(tmp_path)}
+        assert found == {"AGENTS.md"}
+
+    def test_no_git_repo_keeps_all_docs(self, tmp_path):
+        # tmp_path is outside any work tree; check-ignore fails → no filtering
+        write(tmp_path, "AGENTS.md")
+        assert cd.git_ignored(tmp_path, list(tmp_path.glob("*.md"))) == set()
+
 
 # --- CLI entry point ---
 
@@ -589,6 +635,14 @@ class TestMain:
     def test_explicit_file_arguments(self, tmp_path, monkeypatch, capsys):
         doc = write(tmp_path, "notes.md", "[gone](missing.md)")
         assert self.run_main(monkeypatch, [str(doc)]) == 1
+        capsys.readouterr()
+
+    def test_exclude_flag_skips_broken_fixture(self, tmp_path, monkeypatch,
+                                               capsys):
+        write(tmp_path, "AGENTS.md")
+        write(tmp_path, "fixtures/AGENTS.md", "[gone](missing.md)")
+        argv = ["--exclude", "fixtures/*", str(tmp_path)]
+        assert self.run_main(monkeypatch, argv) == 0
         capsys.readouterr()
 
     def test_nonexistent_file_argument_exits_two(self, tmp_path, monkeypatch,

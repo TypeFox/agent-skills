@@ -16,8 +16,8 @@ What is checked
   `bash foo.sh`, `./foo`
 - backtick-quoted repo paths exist (root-relative or doc-relative)
 - relative markdown link targets exist
-- exec-plan frontmatter graph edges (`depends-on`, `discovered-from`) name
-  plan files that exist under docs/exec-plans/
+- exec-plan frontmatter graph edges (`depends-on`, `discovered-from`,
+  `relates-to`) name plan files that exist under docs/exec-plans/
 - ADR frontmatter lifecycle: `superseded-by` targets exist, `status:
   superseded` and `superseded-by` appear together, and root instruction files
   (AGENTS.md, CLAUDE.md, …) cite only accepted ADRs
@@ -33,6 +33,11 @@ Usage
     check_docs.py [REPO_ROOT]            # discover and check agent docs
     check_docs.py FILE.md [FILE.md ...]  # check specific files
     check_docs.py --strict ...           # promote warnings to errors
+    check_docs.py --exclude 'fixtures/*' .   # skip fixture docs by glob
+Discovery skips gitignored files (when git is available) and any repo-relative
+path matched by an --exclude glob — deliberately-broken fixtures and generated
+workspaces would otherwise fail the check. Files named explicitly on the
+command line are always checked.
 Exit code: 1 if any error (CI-gate ready), 0 otherwise.
 
 To install as a CI gate, copy this file into the target repo (e.g. scripts/)
@@ -42,9 +47,11 @@ Python 3.8+, stdlib only.
 
 import argparse
 import difflib
+import fnmatch
 import json
 import re
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -120,7 +127,24 @@ class Finding:
                 f"  Fix: {self.fix}")
 
 
-def discover_docs(root: Path):
+def git_ignored(root: Path, paths):
+    """Subset of paths that git ignores under root. Empty when git is missing
+    or root is not a work tree — discovery then relies on BUILD_DIRS alone."""
+    if not paths:
+        return set()
+    rels = [p.relative_to(root).as_posix() for p in paths]
+    try:
+        proc = subprocess.run(
+            ["git", "-C", str(root), "check-ignore", "--stdin", "-z"],
+            input="\0".join(rels), capture_output=True, text=True, timeout=30)
+    except (OSError, subprocess.SubprocessError):
+        return set()
+    if proc.returncode not in (0, 1):  # 0: some ignored, 1: none; else error
+        return set()
+    return {root / r for r in proc.stdout.split("\0") if r}
+
+
+def discover_docs(root: Path, excludes=()):
     docs = []
     for pattern in ("AGENTS.md", "AGENTS.override.md", "CLAUDE.md", "GEMINI.md",
                     "**/AGENTS.md", "**/CLAUDE.md",
@@ -130,7 +154,13 @@ def discover_docs(root: Path):
             if p.is_file() and not any(part in BUILD_DIRS or part == ".git"
                                        for part in p.parts):
                 docs.append(p)
-    return sorted(set(docs))
+    docs = sorted(set(docs))
+    if excludes:
+        docs = [p for p in docs
+                if not any(fnmatch.fnmatch(p.relative_to(root).as_posix(), pat)
+                           for pat in excludes)]
+    ignored = git_ignored(root, docs)
+    return [p for p in docs if p not in ignored]
 
 
 def load_scripts(candidates):
@@ -313,7 +343,7 @@ class Checker:
         pool = set()
         for p in plans_root.rglob("*.md"):
             pool.update((p.stem, p.name))
-        for key in ("depends-on", "discovered-from"):
+        for key in ("depends-on", "discovered-from", "relates-to"):
             targets, lineno = fm.get(key, ([], 0))
             for t in targets:
                 if SKIP_CHARS & set(t):
@@ -517,11 +547,15 @@ def main():
                     help="repo root (default .) or explicit .md files")
     ap.add_argument("--strict", action="store_true",
                     help="treat warnings (PATH lookups, missing Makefile) as errors")
+    ap.add_argument("--exclude", action="append", default=[], metavar="GLOB",
+                    help="skip discovered docs whose repo-relative path matches "
+                         "this glob (repeatable; * also crosses '/'); files "
+                         "named explicitly are never excluded")
     args = ap.parse_args()
 
     paths = [Path(p).resolve() for p in (args.paths or ["."])]
     if len(paths) == 1 and paths[0].is_dir():
-        root, docs = paths[0], discover_docs(paths[0])
+        root, docs = paths[0], discover_docs(paths[0], args.exclude)
     else:
         files = [p for p in paths if p.is_file()]
         if len(files) != len(paths):
