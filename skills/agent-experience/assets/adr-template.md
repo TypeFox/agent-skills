@@ -1,7 +1,10 @@
-# ADR-NNNN: (decision title, stated as a choice made)
+---
+status: proposed   # proposed | accepted | superseded — the only field edited after acceptance
+date: YYYY-MM-DD
+superseded-by:     # ADR filename; set together with status: superseded when a new ADR replaces this one
+---
 
-- **Status**: proposed | accepted | superseded by ADR-MMMM
-- **Date**: YYYY-MM-DD
+# ADR-NNNN: (decision title, stated as a choice made)
 
 ## Context
 
@@ -22,6 +25,6 @@
 
 (What becomes easier, what becomes harder, what follow-up work this creates. Include the costs — a consequences section with only upsides is unfinished.)
 
-<!-- Accepted ADRs are immutable: to change the decision, write a new ADR and
-set this one's status to "superseded by ADR-MMMM". That immutability is what
-lets an agent tell current from stale. -->
+<!-- Accepted ADRs are immutable: to change the decision, write a new ADR, set
+this one's status to superseded, and point superseded-by at the new file. That
+immutability is what lets an agent tell current from stale. -->

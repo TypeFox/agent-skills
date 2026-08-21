@@ -16,6 +16,11 @@ What is checked
   `bash foo.sh`, `./foo`
 - backtick-quoted repo paths exist (root-relative or doc-relative)
 - relative markdown link targets exist
+- exec-plan frontmatter graph edges (`depends-on`, `discovered-from`) name
+  plan files that exist under docs/exec-plans/
+- ADR frontmatter lifecycle: `superseded-by` targets exist, `status:
+  superseded` and `superseded-by` appear together, and root instruction files
+  (AGENTS.md, CLAUDE.md, …) cite only accepted ADRs
 - first tokens of shell-block commands resolve on PATH (warning only — the
   environment running this check may legitimately differ)
 
@@ -60,20 +65,58 @@ DOC_NAMES = {"AGENTS.md", "AGENTS.override.md", "CLAUDE.md", "GEMINI.md"}
 
 INLINE_CODE = re.compile(r"`([^`\n]+)`")
 MD_LINK = re.compile(r"\[[^\]]*\]\(([^)\s]+)\)")
+ADR_STATUSES = {"proposed", "accepted", "superseded"}
+ADR_REF = re.compile(r"\bADR-?(\d{1,6})\b", re.IGNORECASE)
+
+
+def parse_frontmatter(lines):
+    """Minimal YAML-subset frontmatter parser: flat keys with scalar,
+    [inline]-list, or dash-list values, plus comments. Returns
+    ({key: ([values], lineno)}, closing_line) — values always a list, empty
+    for blank scalars — or (None, 0) when there is no terminated frontmatter
+    block. Deliberately not a YAML implementation: the doc graph needs only
+    flat keys, and a parser dependency would break the stdlib-only contract."""
+    if not lines or lines[0].strip() != "---":
+        return None, 0
+    data, key = {}, None
+    for i, raw in enumerate(lines[1:], start=2):
+        if raw.strip() == "---":
+            return data, i
+        line = re.sub(r"\s+#.*$", "", raw).rstrip()
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        m = re.match(r"^([A-Za-z0-9_-]+):\s*(.*)$", line)
+        d = re.match(r"^\s*-\s+(.+)$", line)
+        if m:
+            key, val = m.group(1), m.group(2).strip()
+            if val.startswith("[") and val.endswith("]"):
+                items = [v.strip().strip("'\"") for v in val[1:-1].split(",")]
+                data[key] = ([v for v in items if v], i)
+            else:
+                data[key] = ([val.strip("'\"")] if val else [], i)
+        elif d and key is not None:
+            data[key][0].append(d.group(1).strip().strip("'\""))
+    return None, 0  # unterminated — treat the file as having no frontmatter
+
+
+WHY_DEAD_REF = ("agents copy commands from docs verbatim and follow paths "
+                "literally; a dead reference sends every future session down a "
+                "broken path before it writes any code.")
+WHY_DOC_GRAPH = ("the frontmatter graph is the agents' task and decision "
+                 "memory; a broken edge or stale status makes future sessions "
+                 "trust decisions that no longer hold or wait on work that "
+                 "doesn't exist.")
 
 
 class Finding:
-    def __init__(self, level, path, line, cited, problem, fix):
+    def __init__(self, level, path, line, cited, problem, fix, why=WHY_DEAD_REF):
         self.level, self.path, self.line = level, path, line
-        self.cited, self.problem, self.fix = cited, problem, fix
+        self.cited, self.problem, self.fix, self.why = cited, problem, fix, why
 
     def render(self):
         mark = "✖" if self.level == "error" else "⚠"
-        why = ("agents copy commands from docs verbatim and follow paths "
-               "literally; a dead reference sends every future session down a "
-               "broken path before it writes any code.")
         return (f"{mark} {self.path}:{self.line} — `{self.cited}` — {self.problem}\n"
-                f"  Why this matters: {why}\n"
+                f"  Why this matters: {self.why}\n"
                 f"  Fix: {self.fix}")
 
 
@@ -129,7 +172,9 @@ def load_just_recipes(candidates):
                 continue
             found = True
             for line in jf.read_text(errors="replace").splitlines():
-                m = re.match(r"^@?([A-Za-z0-9_-]+)(\s[^:=]*)?:", line)
+                # Params may carry default values (build target="all":), so
+                # allow "=" before the colon — but reject ":=" assignments.
+                m = re.match(r"^@?([A-Za-z0-9_-]+)(\s[^:]*)?:([^=]|$)", line)
                 if m:
                     recipes.add(m.group(1))
     return recipes if found else None
@@ -177,11 +222,27 @@ def suggest(name, pool):
     return f' (closest existing: "{close[0]}")' if close else ""
 
 
+def resolve_adr(adr_dir: Path, token: str):
+    """Resolve a superseded-by value — filename, stem, or ADR-NNNN — to a file."""
+    stem = token[:-3] if token.endswith(".md") else token
+    pool = {p.stem: p for p in adr_dir.glob("*.md")}
+    if stem in pool:
+        return pool[stem]
+    m = re.fullmatch(r"(?i)(?:adr-?)?0*(\d+)", stem)
+    if m:
+        for s, p in pool.items():
+            dm = re.match(r"\d+", s)
+            if dm and int(dm.group(0)) == int(m.group(1)):
+                return p
+    return None
+
+
 class Checker:
     def __init__(self, root: Path):
         self.root = root
         self.findings = []
         self.checked = 0
+        self._adr_index = None
 
     def check_file(self, doc: Path):
         doc_dir = doc.parent
@@ -191,8 +252,16 @@ class Checker:
         just = load_just_recipes(ctx)
         rel = doc.relative_to(self.root) if self.root in doc.parents or doc.parent == self.root else doc
 
+        lines = doc.read_text(errors="replace").splitlines()
+        fm, fm_end = parse_frontmatter(lines)
+        if fm:
+            self.check_frontmatter(doc, rel, fm)
+        root_doc = doc.name in DOC_NAMES
+
         in_fence, fence_lang, prev_continued = False, "", False
-        for lineno, line in enumerate(doc.read_text(errors="replace").splitlines(), 1):
+        for lineno, line in enumerate(lines, 1):
+            if lineno <= fm_end:
+                continue
             fence = re.match(r"^\s*(```+|~~~+)\s*(\w*)", line)
             if fence:
                 in_fence = not in_fence
@@ -228,6 +297,118 @@ class Checker:
                             "fix the link, restore the file, or drop the reference."))
                     elif clean:
                         self.checked += 1
+            if root_doc:
+                self.check_adr_refs(line, rel, lineno)
+
+    # --- frontmatter graph checks (exec plans, ADRs) ---
+
+    def check_frontmatter(self, doc, rel, fm):
+        if "exec-plans" in doc.parts:
+            self.check_plan_frontmatter(doc, rel, fm)
+        elif doc.parent.name == "adr":
+            self.check_adr_frontmatter(doc, rel, fm)
+
+    def check_plan_frontmatter(self, doc, rel, fm):
+        plans_root = Path(*doc.parts[:doc.parts.index("exec-plans") + 1])
+        pool = set()
+        for p in plans_root.rglob("*.md"):
+            pool.update((p.stem, p.name))
+        for key in ("depends-on", "discovered-from"):
+            targets, lineno = fm.get(key, ([], 0))
+            for t in targets:
+                if SKIP_CHARS & set(t):
+                    continue
+                self.checked += 1
+                if t not in pool:
+                    self.findings.append(Finding(
+                        "error", rel, lineno, f"{key}: {t}",
+                        f'no exec plan named "{t}" exists under '
+                        f"{plans_root.name}/{suggest(t, pool)}.",
+                        "correct the reference, or create the plan it points "
+                        "at — a dead graph edge blocks ready-work computation.",
+                    WHY_DOC_GRAPH))
+
+    def check_adr_frontmatter(self, doc, rel, fm):
+        status_vals, status_line = fm.get("status", ([], 0))
+        status = status_vals[0].lower() if status_vals else None
+        sup_vals, sup_line = fm.get("superseded-by", ([], 0))
+        sup = sup_vals[0] if sup_vals else None
+        if status is not None:
+            self.checked += 1
+            if status not in ADR_STATUSES:
+                self.findings.append(Finding(
+                    "warning", rel, status_line, f"status: {status}",
+                    "not a lifecycle status this docs system uses "
+                    "(proposed | accepted | superseded).",
+                    "map onto a standard status so lifecycle checks stay "
+                    "mechanical.",
+                    WHY_DOC_GRAPH))
+        if status == "superseded" and not sup:
+            self.findings.append(Finding(
+                "error", rel, status_line, "status: superseded",
+                "status is superseded but superseded-by names no ADR.",
+                "point superseded-by at the replacing ADR — without the edge, "
+                "agents cannot follow the decision to its current form.",
+                    WHY_DOC_GRAPH))
+        if sup and status != "superseded":
+            self.findings.append(Finding(
+                "error", rel, sup_line, f"superseded-by: {sup}",
+                f'superseded-by is set but status is "{status or "missing"}".',
+                "set status: superseded, or clear superseded-by — the two "
+                "must appear together.",
+                    WHY_DOC_GRAPH))
+        if sup and not (SKIP_CHARS & set(sup)):
+            self.checked += 1
+            if resolve_adr(doc.parent, sup) is None:
+                pool = [p.stem for p in doc.parent.glob("*.md")]
+                self.findings.append(Finding(
+                    "error", rel, sup_line, f"superseded-by: {sup}",
+                    f"no such ADR exists in {doc.parent.name}/"
+                    f"{suggest(sup, pool)}.",
+                    "correct the reference, or add the superseding ADR.",
+                    WHY_DOC_GRAPH))
+
+    def adr_status_index(self):
+        """ADR number → (filename, status) for docs/adr/ at the repo root."""
+        if self._adr_index is None:
+            self._adr_index = {}
+            for p in sorted((self.root / "docs" / "adr").glob("*.md")):
+                m = re.match(r"\d+", p.stem)
+                if not m:
+                    continue
+                fm, _ = parse_frontmatter(p.read_text(errors="replace").splitlines())
+                vals = (fm or {}).get("status", ([], 0))[0]
+                status = vals[0].lower() if vals else None
+                self._adr_index[int(m.group(0))] = (p.name, status)
+        return self._adr_index
+
+    def check_adr_refs(self, line, rel, lineno):
+        if not (self.root / "docs" / "adr").is_dir():
+            return
+        for m in ADR_REF.finditer(line):
+            self.checked += 1
+            entry = self.adr_status_index().get(int(m.group(1)))
+            if entry is None:
+                self.findings.append(Finding(
+                    "error", rel, lineno, m.group(0),
+                    "no ADR with this number exists in docs/adr/.",
+                    "correct the number, or add the missing decision record.",
+                    WHY_DOC_GRAPH))
+            elif entry[1] == "superseded":
+                self.findings.append(Finding(
+                    "error", rel, lineno, m.group(0),
+                    f"{entry[0]} is superseded — root instruction files must "
+                    "cite only accepted ADRs.",
+                    "point at the superseding ADR instead, or drop the "
+                    "reference.",
+                    WHY_DOC_GRAPH))
+            elif entry[1] == "proposed":
+                self.findings.append(Finding(
+                    "warning", rel, lineno, m.group(0),
+                    f"{entry[0]} is still proposed, not accepted.",
+                    "accept the ADR before citing it as binding guidance, or "
+                    "mark the reference as tentative.",
+                    WHY_DOC_GRAPH))
 
     def check_path(self, token, rel, lineno, doc_dir):
         # Slash tokens are only judged when their first segment is a real

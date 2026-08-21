@@ -10,8 +10,8 @@ The full layout, for orientation — **propose the minimal subset the project ac
 
 ```
 AGENTS.md                     # the ~100-line map (see agents-md.md)
-ARCHITECTURE.md               # domain map, package layering, invariants
 docs/
+├── ARCHITECTURE.md           # domain map, package layering, invariants
 ├── design-docs/
 │   ├── index.md              # catalogued, with verification status
 │   └── core-beliefs.md       # golden principles (see techniques.md)
@@ -23,8 +23,9 @@ docs/
 ├── product-specs/            # functional intent per feature, indexed
 ├── generated/                # CI-regenerated ground truth (db-schema.md, api-surface.md)
 ├── references/               # llms.txt files for key dependencies
-├── SECURITY.md  RELIABILITY.md  …   # per-concern docs with real project-specific rules
-└── QUALITY_SCORE.md          # per-domain quality grades, tracked over time
+├── security-guidelines.md    # per-concern rules for agents (see the naming note below)
+├── reliability-guidelines.md # …one file per cross-cutting concern, as warranted
+└── quality-score.md          # per-domain quality grades, tracked over time
 ```
 
 Everything is indexed and cross-linked; AGENTS.md points into it; CI validates the knowledge base is current and structurally correct (`check_docs.py` covers commands and paths); a doc-gardening agent handles semantic staleness.
@@ -42,12 +43,23 @@ Everything is indexed and cross-linked; AGENTS.md points into it; CI validates t
 | **product-specs/** | Functional intent per feature | Behaviour-dimension work; anything an agent implements or regression-tests against | Spec precedes implementation |
 | **generated/** | Derived ground truth (schemas, API surfaces) | Whenever a non-prose source of truth exists | Regenerated in CI; never hand-edited; failing regeneration fails the build |
 | **references/ (llms.txt)** | Dependency docs in LLM-ready form | Dependencies the agent misuses or hallucinates | Pinned to the dependency version; refreshed on upgrade |
-| **Per-concern docs** | Cross-cutting requirements (security, reliability…) | The concern has real project-specific rules — not generic advice | Pair each with a sensor where possible (AppSec checklist → review skill) |
-| **QUALITY_SCORE** | Graded map of where quality is weak | Larger codebases running GC agents | Updated by the scheduled quality-grading pass |
+| **Per-concern docs** (`security-guidelines.md`, `reliability-guidelines.md`, …) | Cross-cutting requirements (security, reliability…) | The concern has real project-specific rules — not generic advice | Pair each with a sensor where possible (AppSec checklist → review skill) |
+| **quality-score.md** | Graded map of where quality is weak | Larger codebases running GC agents | Updated by the scheduled quality-grading pass |
 
-**Small-project variant — the Memory Bank pattern.** When even the minimal subset is oversized, a fixed small file set serves as session-start memory: `projectbrief.md` (what/for whom), `productContext.md` (why), `systemPatterns.md` (architecture), `techContext.md` (stack, setup, constraints), `activeContext.md` (current focus, last decisions, next step), `progress.md`. Operating rules: AGENTS.md instructs the agent to read the bank at session start and update the active files at session end; everything is committed. Known failure mode: **contradictions between the files** — which is why single-source-of-truth and eventual graduation to the structured layout matter. The leanest viable variant is a feature list + progress file + `init.sh`, updated every session.
+**Naming note.** Files this skill introduces under docs/ are kebab-case (`security-guidelines.md`, `quality-score.md`); only names with an ecosystem-standard casing keep it (`AGENTS.md`, `ARCHITECTURE.md`). In particular, never name a per-concern doc `SECURITY.md`: that name is the community vulnerability-reporting policy, and GitHub detects it in `docs/` as well as the root and `.github/` — a per-concern doc under that name would be surfaced as the project's official security policy. Source material uses uppercase variants (`SECURITY.md`, `RELIABILITY.md`, `QUALITY_SCORE.md`); recognize those when auditing an existing repo, but generate kebab-case.
 
-**Structured task graphs.** Markdown exec-plans suffice for most repos. When plans become graph-shaped — many interdependent work items, multiple agents discovering work — piles of markdown give agents "dementia" (yesterday's decision indistinguishable from a three-week-old brainstorm); consider a git-stored, dependency-aware issue tracker (e.g. Beads). Plain GitHub Issues lack the dependency semantics agents want, so pointer-only task memory is weaker than either option.
+**Small-project variant — the Memory Bank pattern.** When even the minimal subset is oversized, a fixed small file set serves as session-start memory: `project-brief.md` (what/for whom), `product-context.md` (why), `system-patterns.md` (architecture), `tech-context.md` (stack, setup, constraints), `active-context.md` (current focus, last decisions, next step), `progress.md`. Operating rules: AGENTS.md instructs the agent to read the bank at session start and update the active files at session end; everything is committed. Known failure mode: **contradictions between the files** — which is why single-source-of-truth and eventual graduation to the structured layout matter. The leanest viable variant is a feature list + progress file + `init.sh`, updated every session.
+
+**Structured task graphs.** Markdown exec-plans suffice for most repos. When work becomes graph-shaped — many interdependent items, multiple agents discovering work — piles of prose give agents "dementia" (yesterday's decision indistinguishable from a three-week-old brainstorm). The fix stays inside the standard structure: give each exec plan (or other graph-shaped artifact) a YAML frontmatter carrying the dependency metadata, and nothing else:
+
+```yaml
+---
+depends-on: [other-plan, …]       # filenames of plans that must be completed first
+discovered-from: originating-plan  # provenance when this work surfaced mid-task
+---
+```
+
+The plan's filename is its id and its folder is its status — no `id:` or `status:` keys to drift (single source of truth). "Ready work" then becomes computable instead of judged: any plan in `active/` whose `depends-on` entries all sit in `completed/`; a `check_docs.py` rule verifies every referenced plan exists. Keep the vocabulary this small until it hurts — a soft `relates-to:` is the only extension that usually earns itself. Plain GitHub Issues lack these dependency semantics, so pointer-only task memory is weaker than frontmatter in the repo.
 
 ## Plans as first-class artifacts
 
@@ -56,6 +68,8 @@ Complex work gets an execution plan in `docs/exec-plans/active/` (use `assets/ex
 ## Decision records
 
 The rationale layer of memory. Canonical shape (Nygard; use `assets/adr-template.md`): context → options considered → decision → consequences, one decision per numbered file in `docs/adr/`. **Accepted records are immutable — changing your mind means a new record superseding the old one.** That immutability is precisely what lets an agent distinguish current from stale.
+
+Metadata lives in YAML frontmatter, as in exec plans (the MADR community template standardized the same choice): `status:` (proposed | accepted | superseded), `date:`, and the graph edge `superseded-by:`. ADRs sit flat in `docs/adr/`, so unlike exec plans the status must be a frontmatter field, not a folder — it is the one field edited after acceptance. The lifecycle then becomes checkable: `check_docs.py` verifies every `superseded-by` target exists, that `status: superseded` and `superseded-by:` appear together, and that AGENTS.md points only at accepted ADRs.
 
 Agent-specific wiring:
 
@@ -67,7 +81,7 @@ Agent-specific wiring:
 
 1. Single source of truth per fact; pointers everywhere else.
 2. No duplication of the README or of anything a linter already enforces.
-3. Freshness is mechanically checked: link/structure lint in CI, commands-and-paths verification (`check_docs.py`), doc-gardening for semantics.
+3. Freshness is mechanically checked: link/structure lint in CI, commands, paths, and frontmatter-graph verification (`check_docs.py`), doc-gardening for semantics.
 4. Explicit lifecycle on everything: active/completed for plans, accepted/superseded for ADRs, verification status on design docs.
 5. Docs merge through review like code; agents may draft, humans (or reviewer agents) adjudicate.
 6. Provenance on anything mirrored from outside.
@@ -78,5 +92,6 @@ Agent-specific wiring:
 
 - OpenAI — Harness engineering (the docs-as-system-of-record layout and GC practice): https://openai.com/index/harness-engineering/
 - Nygard-shape decision records: https://github.com/architecture-decision-record/architecture-decision-record
+- MADR's decision to keep ADR metadata in YAML frontmatter: https://adr.github.io/madr/decisions/0013-use-yaml-front-matter-for-meta-data.html
 - Unblocked — why memory hubs don't adjudicate: https://getunblocked.com/blog/team-memory-hubs-ai-agents/
-- Beads — structured task graphs in git: https://github.com/steveyegge/beads
+- Beads — the dependency-metadata model the exec-plan frontmatter distills: https://github.com/steveyegge/beads

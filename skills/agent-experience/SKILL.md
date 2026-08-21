@@ -1,6 +1,6 @@
 ---
 name: agent-experience
-description: Make a code repository agent-ready with state-of-the-art AX (Agent Experience): audit and set up AGENTS.md / CLAUDE.md and agent docs, wire verification sensors (linters, tests, structural rules) with self-correction messages, build docs-as-memory (architecture docs, ADRs, exec plans), and interview the user for what the code can't reveal. Use when the user wants to make a repo agent-ready or AI-friendly, onboard coding agents, create/review/improve AGENTS.md, CLAUDE.md, or other agent instruction files, audit agent readiness, set up a new project for agent-first development from scratch, or asks why an agent keeps repeating the same mistake — also when they say "harness engineering", "agent readiness", or "AX" about a repository. Do not use for building agent runtimes or orchestration code, nor for authoring a single agent skill — use skill-creator for that.
+description: Make a code repository agent-ready with state-of-the-art AX (Agent Experience): audit and set up AGENTS.md / CLAUDE.md and agent docs, wire verification sensors with self-correction messages, and build docs-as-memory (architecture docs, ADRs, exec plans). Use when the user wants to make a repo agent-ready or AI-friendly, onboard coding agents, create/review/improve AGENTS.md, CLAUDE.md, or other agent instruction files, set up a project for agent-first development, asks why an agent keeps repeating a mistake, asks any AX question (general or project-specific), or mentions "harness engineering", "agent readiness", or "AX". Not for building agent runtimes or orchestration code, nor for authoring a single agent skill — use skill-creator for that.
 ---
 
 # Agent Experience (AX)
@@ -18,7 +18,7 @@ Treat the repo-side AX setup as a control system that regulates the codebase tow
 | | **Guides** (feedforward — steer before the agent acts) | **Sensors** (feedback — verify after it acts) |
 |---|---|---|
 | **Computational** (deterministic, fast, cheap — run on every change) | one-command bootstrap, task-runner command surface, scaffolding, codemods, generated reference docs, deterministic dev env | type checks, linters, tests + coverage, structural/dependency rules, mutation testing, secret scanners, the build |
-| **Inferential** (LLM-run, semantic, costly — run at gates or on a schedule) | AGENTS.md, skills, docs/, ADRs, specs, code-level discoverability | review skills, modularity reviews, security/data reviews, doc-gardening, janitor/GC agents |
+| **Inferential** (LLM-run, semantic, costly — run at gates or on a schedule) | AGENTS.md, skills, docs/, ADRs (architecture decision records — short, versioned docs capturing one decision, its context, and its consequences), specs, code-level discoverability | review skills, modularity reviews, security/data reviews, doc-gardening, janitor/GC agents |
 
 Both directions are mandatory. Feedback-only, the agent repeats the same mistakes every session — nothing steers it up front. Feedforward-only, rules accumulate but nothing ever verifies they held. Guides raise first-attempt quality; sensors give the agent a self-correction loop that fixes issues before they reach human eyes.
 
@@ -33,7 +33,7 @@ Keep quality left: fast computational sensors run alongside the coding session; 
 
 ## Non-negotiables — the AX standards
 
-Hold every artifact you audit or generate to these. In improve mode they are the audit checklist; in every mode they are the generation rules. Cite them by number when explaining findings.
+Hold every artifact you audit or generate to these. In improve mode they are the audit checklist; in every mode they are the generation rules. Cite them by tagline when explaining findings (e.g. "this violates *map, not manual*"), as this document does itself.
 
 1. **Repo-local or nonexistent.** Anything the agent can't reach from inside the repo effectively doesn't exist — wikis, chat threads, and heads are invisible. Push knowledge into versioned repo artifacts. An external system counts as reachable only where a fetch path exists (e.g. `gh` for GitHub issues); otherwise mirror a one-line summary with the link as provenance.
 2. **Map, not manual.** The root instruction file is a ≲150-line map that teaches the agent where to look next, with progressive disclosure into docs/. A giant file crowds out the task, makes everything "important" (so nothing is), rots into stale rules, and can't be mechanically verified.
@@ -44,18 +44,19 @@ Hold every artifact you audit or generate to these. In improve mode they are the
 7. **Single source of truth.** Each fact lives in exactly one place; everything else points at it. Never vendor copies of external docs — audited vendored files have drifted 183 lines from upstream, still instructing agents to run tools removed months earlier.
 8. **Run it, don't read it.** Agents demonstrably *read* check scripts and predict their results instead of executing them. Require evidence-backed verification: execute the check, capture the output.
 9. **Write-as-you-go.** Agent statelessness erases anything not captured: every interview answer and decision lands in its durable artifact immediately — never in a summary to be filed later.
-10. **Docs are verified like code.** Freshness is mechanically checked (`scripts/check_docs.py` verifies cited commands and paths exist), and every artifact has an explicit lifecycle: active/completed for plans, accepted/superseded for decision records.
+10. **Docs are verified like code.** Freshness is mechanically checked (`scripts/check_docs.py` verifies cited commands, paths, and frontmatter graph edges), and every artifact has an explicit lifecycle: active/completed for plans, accepted/superseded for decision records.
 11. **Convention over configuration.** This skill carries opinionated defaults for the AX layer itself — which artifacts to create, doc layout, sensor wiring, message patterns — and applies them whenever the user hasn't stated otherwise. Interviews and template placeholders gather *project facts* (intent, scope, technical architecture); they never poll the user on how to design the AX layer ("would you like ADRs?" is a forbidden question). An unprompted user preference or a hard project constraint overrides a default and gets recorded, naturally as an ADR. When in doubt, convention wins.
 
 ## Pick your mode
 
-Find the user's situation and jump in — state your chosen mode and scope before starting (that statement is Phase 0):
+Find the user's situation and jump in — state your chosen mode and scope before starting (that statement is Phase 0; consult alone skips it):
 
 | Mode | Entry signals | Phases |
 |---|---|---|
-| **Retrofit** | Existing codebase; no or thin agent setup ("make this repo agent-ready", "onboard Claude/Codex here") | 0 → 6, the full playbook |
-| **Improve** | Agent instruction files already exist ("review our AGENTS.md", "make our agent docs follow AX standards", "why does the agent keep getting X wrong?") | 0 → 6 scoped to the existing docs: audit against the standards, shrink, verify, restructure. Touch sensors only where docs state rules nothing enforces |
-| **Greenfield** | No code yet ("set up a new project for agent-first development") | 0 → 4 → 5 → 6, interview-first (see Greenfield specifics) |
+| **Retrofit** | Existing codebase; no or thin agent setup ("make this repo agent-ready", "onboard Claude/Codex here") | All phases 0–6, the full playbook |
+| **Improve** | Agent instruction files already exist ("review our AGENTS.md", "make our agent docs follow AX standards", "why does the agent keep getting X wrong?") | All phases 0–6, scoped to the existing docs: audit against the standards, shrink, verify, restructure. Touch sensors only where docs state rules nothing enforces |
+| **Greenfield** | No code yet ("set up a new project for agent-first development") | 0, then 4–6 — phases 1–3 are skipped (no code to audit); interview-first (see Greenfield specifics) |
+| **Consult** | A question about AX, general or project-specific ("what belongs in AGENTS.md?", "is our CLAUDE.md too long?"), or one small, specific change ("add the release commands to AGENTS.md") | None — no phase spine; answer or apply directly (see Consulting specifics) |
 
 ## The workflow
 
@@ -93,7 +94,7 @@ Load `references/agents-md.md` (content model, exclusion list) and `references/d
 
 ### Phase 4 — Interview the placeholders
 
-Interview the user to resolve exactly the markers — codebase-first is absolute: never ask what Phases 1–3 answered. Follow the grill protocol: one question at a time, themed batches in dependency order, a recommended answer with every question ("based on your CI config, I'd say X — correct?"), a visible progress counter, "skip / decide later" recorded as an explicit open question. Write each answer into its durable artifact immediately (standard 9). Questions target intent, scope, and technical architecture — the AX layer's own shape follows the defaults and is not up for interview (standard 11).
+Interview the user to resolve exactly the markers — codebase-first is absolute: never ask what Phases 1–3 answered. Follow the grill protocol: one question at a time, themed batches in dependency order, a recommended answer with every question ("based on your CI config, I'd say X — correct?"), a visible progress counter, "skip / decide later" recorded as an explicit open question. Write each answer into its durable artifact immediately (*write-as-you-go*). Questions target intent, scope, and technical architecture — the AX layer's own shape follows the defaults and is not up for interview (*convention over configuration*).
 
 Load `references/interview.md` for the protocol, theme→destination map, and question bank.
 
@@ -104,8 +105,8 @@ Load `references/interview.md` for the protocol, theme→destination map, and qu
 Produce the final artifacts:
 
 - **AGENTS.md** per the content model, plus the **CLAUDE.md projection** (`@AGENTS.md` import — Claude Code does not read AGENTS.md directly) and nested per-package files for monorepos. Every command in it comes from Phase 2's verified block.
-- **Docs nucleus**: the minimal subset from Phase 3's triage (typically ARCHITECTURE.md + `docs/adr/` + `docs/exec-plans/`), using `assets/adr-template.md` and `assets/exec-plan-template.md`.
-- **Sensors** per the escalation ladder for the promotion candidates from Phase 1, each with self-correction messages (standard 6). Offer to install `scripts/check_docs.py` into the repo with a CI job (standard 10).
+- **Docs nucleus**: the minimal subset from Phase 3's triage (typically `docs/ARCHITECTURE.md` + `docs/adr/` + `docs/exec-plans/`), using `assets/adr-template.md` and `assets/exec-plan-template.md`.
+- **Sensors** per the escalation ladder for the promotion candidates from Phase 1, each with self-correction messages (*error channels are guidance channels*). Offer to install `scripts/check_docs.py` into the repo with a CI job (*docs are verified like code*).
 
 Load `references/techniques.md` (sensor/guide catalog, self-correction message patterns) and `references/agents-md.md` (projections, drafting rules).
 
@@ -113,7 +114,7 @@ Load `references/techniques.md` (sensor/guide catalog, self-correction message p
 
 ### Phase 6 — Prove it and hand off
 
-Run every new or changed sensor and `scripts/check_docs.py` against the final state; fix what fails — evidence-backed, output captured (standard 8). Then deliver:
+Run every new or changed sensor and `scripts/check_docs.py` against the final state; fix what fails — evidence-backed, output captured (*run it, don't read it*). Then deliver:
 
 1. The **remediation roadmap** for everything deferred, in foundational→sophisticated order (see the remediation ordering in `references/audit-playbook.md`), each step small and individually shippable.
 2. The **steering loop as standing practice**: tell the team that from now on, every recurring agent mistake gets engineered away up the escalation ladder — the setup you built is the seed, not the finished system.
@@ -122,13 +123,22 @@ Run every new or changed sensor and `scripts/check_docs.py` against the final st
 
 ## Greenfield specifics
 
-With no code to audit, the phase order becomes 0 → 4 → 5 → 6, and the interview leads: use the greenfield question bank in `references/interview.md` (product intent, users, stack, topology, module boundaries, risk profile, workflow, org constraints — every theme a product or technical fact, none an AX design preference).
+With no code to audit, Phases 1–3 are skipped — after Phase 0 you go straight to the interview (Phase 4), which leads: use the greenfield question bank in `references/interview.md` (product intent, users, stack, topology, module boundaries, risk profile, workflow, org constraints — every theme a product or technical fact, none an AX design preference).
 
 Guide stack and topology decisions by **affordances** — the structural properties that make a repo governable: a strongly typed language (type checking is a free sensor), a constraining framework (conventions abstract away whole error classes), fast build/test tooling (feedback-loop speed), clearly definable module boundaries (expressible as import rules). Committing to a topology reduces variety: it narrows what an agent can produce, which is what makes a comprehensive control set achievable. Rigid layered architecture — usually postponed until hundreds of engineers — becomes an *early* prerequisite with agents, because constraints are what allow speed without decay.
 
-Day-one build order: root map (AGENTS.md + CLAUDE.md projection) → one-command bootstrap and task-runner command surface → in-session sensors (typecheck, lint with agent-failure-mode rules, fast tests, secrets pre-commit) → docs nucleus (ARCHITECTURE.md, `docs/adr/` seeded with the stack/topology decisions from the interview, `docs/exec-plans/`).
+Day-one build order: root map (AGENTS.md + CLAUDE.md projection) → one-command bootstrap and task-runner command surface → in-session sensors (typecheck, lint with agent-failure-mode rules, fast tests, secrets pre-commit) → docs nucleus (`docs/ARCHITECTURE.md`, `docs/adr/` seeded with the stack/topology decisions from the interview, `docs/exec-plans/`).
 
 Boundary: this skill sets up the AX layer around the user's chosen project scaffolding — it does not generate the application itself. The user supplies product and technical decisions; the AX setup derived from them is applied by convention, not negotiated.
+
+## Consulting specifics
+
+Consult is for the light requests: the user wants to understand something about AX, or wants one specific change, and the phase spine would be ceremony. Skip the phases and the Phase 0 announcement — a question deserves an answer, not a preamble.
+
+- **Ground answers in this skill's model.** Explain through the control system and the standards, citing taglines as everywhere else. Load only the reference file that covers the topic (e.g. `references/agents-md.md` for a question about AGENTS.md content) — not the whole set. For questions about *this* project, check the actual repo state with targeted searches before answering; never speculate about files you could read.
+- **Targeted changes obey the standards at the scale of the edit.** Every added line passes the litmus; any command you write down is verified by execution first; each fact lands in its single source of truth, and the CLAUDE.md projection stays a pure `@AGENTS.md` import. What consult never does: inventory, interview, roadmap, readiness score.
+- **Escalate by offer, not by action.** If the question or edit exposes a deeper problem — the file violates *map, not manual*, documented commands don't run, rules have no sensors — name it in a sentence or two and offer improve mode. Don't launch the full workflow uninvited.
+- **Know when you've left consult.** "Write our AGENTS.md" or "restructure our agent docs" is artifact-scale work: that's improve or retrofit, audit included (generation without audit produces exactly the bloat this skill exists to prevent). Say you're switching modes, then switch.
 
 ## Reference files
 
@@ -142,6 +152,6 @@ Load these when their phase comes up — don't read them all upfront.
 
 ## Before you're done
 
-Check the mode's definition of done: **retrofit** — verified commands, AGENTS.md + CLAUDE.md projection, docs nucleus, wired sensors, roadmap, all proven by execution; **improve** — the docs are shorter, every line passes the litmus, every command verified, claims-vs-enforcement resolved or on the roadmap; **greenfield** — interview answers captured in durable artifacts, day-one AX layer in place around the user's scaffolding.
+Check the mode's definition of done: **retrofit** — verified commands, AGENTS.md + CLAUDE.md projection, docs nucleus, wired sensors, roadmap, all proven by execution; **improve** — the docs are shorter, every line passes the litmus, every command verified, claims-vs-enforcement resolved or on the roadmap; **greenfield** — interview answers captured in durable artifacts, day-one AX layer in place around the user's scaffolding; **consult** — the question answered (or the change applied and verified) grounded in the standards, with any deeper gap you spotted offered, not silently pursued or dropped.
 
-In every mode: the CLAUDE.md projection exists wherever an AGENTS.md was written; no vendored copies; no unresolved silent assumptions — open questions are recorded as open questions. Readiness scores you produced are labeled as diagnostics. And the closing message hands over the steering loop: the honest test — ticket in, green suite and accepted diff out, reliably — is the target; this session's setup is only the seed.
+In every mode: the CLAUDE.md projection exists wherever an AGENTS.md was written; no vendored copies; no unresolved silent assumptions — open questions are recorded as open questions. Readiness scores you produced are labeled as diagnostics. And in the phase-spine modes, the closing message hands over the steering loop: the honest test — ticket in, green suite and accepted diff out, reliably — is the target; this session's setup is only the seed.

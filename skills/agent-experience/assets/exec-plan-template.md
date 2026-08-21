@@ -1,3 +1,9 @@
+---
+# Task-graph metadata — keep only when plans depend on each other; delete otherwise.
+depends-on: []        # filenames of plans that must be completed first
+discovered-from:      # plan that spawned this one, when work surfaced mid-task
+---
+
 # Exec plan: (task name)
 
 - **Status**: active (in `docs/exec-plans/active/`; move the file to `completed/` when done — that move is the memory GC, keep the active set small)

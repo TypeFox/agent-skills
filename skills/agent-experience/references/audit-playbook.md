@@ -95,7 +95,7 @@ Default order, foundational → sophisticated. Each step is small and individual
 1. **Verified command surface + hand-written root AGENTS.md + CLAUDE.md projection.** The map and the verbs. Highest leverage, lowest cost.
 2. **Fast in-session sensors**: typecheck, lint with agent-failure-mode rules, fast tests, secrets scan in pre-commit — each with self-correction messages.
 3. **Boundaries and definition-of-done** in AGENTS.md; CI mirrors the in-session sensors.
-4. **Minimal docs/ nucleus** per the Phase 3 triage (usually ARCHITECTURE.md + `docs/adr/` + `docs/exec-plans/`) + doc-freshness checks (`check_docs.py` in CI).
+4. **Minimal docs/ nucleus** per the Phase 3 triage (usually `docs/ARCHITECTURE.md` + `docs/adr/` + `docs/exec-plans/`) + doc-freshness checks (`check_docs.py` in CI).
 5. **Structural rules** encoding the layer diagram (dependency-cruiser / ArchUnit / import-linter), plus the new-file-must-live-in-known-structure rule.
 6. **Skills** for the recurring procedures discovered in the audit (how-to-test, review, release, bootstrap).
 7. **Scheduled inferential sensors** (modularity review, security/data review, doc-gardening) and a GC cadence.

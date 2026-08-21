@@ -13,7 +13,7 @@ Order sections by observed leverage. When trimming to the length ceiling, cut fr
 5. **Conventions not already enforced by tooling.** If the linter catches it, don't restate it. Pair every prohibition with its concrete alternative: "don't instantiate HTTP clients directly — use the shared `apiClient` from `lib/http`". Bare don'ts make agents cautious and over-exploratory; files with 15+ unpaired prohibitions measurably degraded output.
 6. **Boundaries and definition of done** — files never to touch, generated dirs, migration rules, secrets policy ("never commit secrets" is the single most common genuinely helpful constraint), destructive-command rules; and what proof is required before claiming completion.
 7. **PR/commit conventions** — title format, conventional commits, what to exclude.
-8. **Pointers** — into ARCHITECTURE.md, docs/, the key active ADRs ("do not contradict accepted ADRs: ADR-0012 …"), and available skills. This is the map function: one line each, no summaries of what the target says.
+8. **Pointers** — into docs/: ARCHITECTURE.md, the key active ADRs ("do not contradict accepted ADRs: ADR-0012 …"), and available skills. This is the map function: one line each, no summaries of what the target says.
 
 ## Evidence and limits
 
@@ -57,7 +57,7 @@ One source, projected to many tools — never parallel sources that drift apart.
 
   plus, optionally, genuinely Claude-specific additions (hooks caveats, Claude-only tool notes) below the import. A symlink also works but needs admin rights or developer mode on Windows — the import file is the portable choice. Claude Code additionally supports path-scoped rules in `.claude/rules/` (rules that apply only to files matching a glob) — use them when a rule is real but only applies to part of the tree, instead of growing the root file.
 - **Nested files for monorepos**: a smaller, more concrete `AGENTS.md` per package/app; agents merge root → nearest along the path. The root keeps the map and cross-cutting rules; per-package files carry package-specific commands and conventions. Pair each nested AGENTS.md with its own `CLAUDE.md` projection.
-- **Other tools' native locations** (`.cursor/rules`, `.github/copilot-instructions.md`, `GEMINI.md`, `.windsurf/`) — when the team uses those tools, project the same source there (a one-line import/pointer where the tool supports it, a generated copy with a "generated from AGENTS.md — do not edit" header where it doesn't).
+- **Other tools' native locations** (`.cursor/rules`, `.github/copilot-instructions.md`, `GEMINI.md`, `.windsurf/`) — when the team uses those tools, project the same source there: a one-line import where the tool supports it; where it doesn't, a file containing just "Read AGENTS.md in the project root." Never generate copies of AGENTS.md — copies drift from the source no matter what their header promises.
 - **Migration helpers**: Claude Code's `/init` can ingest existing instruction files from other tools (`.cursor/rules`, `.github/copilot-instructions.md`, AGENTS.md), and `/import` copies configs across — useful when consolidating a repo that grew several competing rule files. Consolidate into AGENTS.md as the single source; retire the rest to projections.
 
 When you find multiple divergent instruction files in an audit, that *is* the finding: pick AGENTS.md as the source, merge the genuinely distinct content, and turn the rest into projections.

@@ -68,5 +68,5 @@ complete (which sensors must pass, evidence captured). -->
 
 <!-- The map function: one line each into deeper docs. No summaries. -->
 
-- `ARCHITECTURE.md` — module boundaries and layering.
+- `docs/ARCHITECTURE.md` — module boundaries and layering.
 - `docs/adr/` — do not contradict accepted ADRs: (list key active ones).

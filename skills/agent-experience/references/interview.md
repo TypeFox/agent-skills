@@ -13,7 +13,7 @@ The codebase can't answer everything. What only the human holds: intent and road
 
 ## Fact-finding, not preference-polling
 
-Questions investigate **intent, scope, technical architecture, workflow, risk appetite, and org constraints** — never the user's preferences about the AX layer's own design. "Do you want ADRs?", "how long should AGENTS.md be?", "which doc layout do you prefer?", "would you like an ARCHITECTURE.md?" are all forbidden questions: the skill's defaults settle them (AX standard 11). If the user volunteers an unprompted preference or a hard constraint, honor it and record it with its rationale (as an ADR) — the skill honors flexibility; it just never solicits it.
+Questions investigate **intent, scope, technical architecture, workflow, risk appetite, and org constraints** — never the user's preferences about the AX layer's own design. "Do you want ADRs?", "how long should AGENTS.md be?", "which doc layout do you prefer?", "would you like an ARCHITECTURE.md?" are all forbidden questions: the skill's defaults settle them (the *convention over configuration* standard). If the user volunteers an unprompted preference or a hard constraint, honor it and record it with its rationale (as an ADR) — the skill honors flexibility; it just never solicits it.
 
 ## Core protocol
 
@@ -43,8 +43,8 @@ Interview **relentlessly** until shared understanding — depth is licensed, not
 | Architecture rationale, rejected alternatives | ADRs |
 | Intent, roadmap, product judgment | product-specs, design-docs |
 | Tolerated debt and its reasons | tech-debt-tracker |
-| Quality bars, risk appetite per area | sensor thresholds; QUALITY_SCORE seeds |
-| Org policy (security, data) | SECURITY.md + derived review prompts |
+| Quality bars, risk appetite per area | sensor thresholds; quality-score.md seeds |
+| Org policy (security, data) | security-guidelines.md + derived review prompts |
 | Terminology | glossary in design-docs |
 
 ## Greenfield question bank
@@ -63,13 +63,13 @@ What shape is this system — CLI, service + API, web app, library, data pipelin
 **4. Module boundaries** → *ARCHITECTURE.md, structural rules*
 What are the 3–6 top-level parts, and which must never depend on which? (Recommend a conventional layering for the chosen topology and let the user correct it.) These lines become import rules on day one, not after the first violation.
 
-**5. Risk profile and quality bars** → *sensor thresholds, SECURITY.md*
+**5. Risk profile and quality bars** → *sensor thresholds, security-guidelines.md*
 What breaks the business if it breaks — data loss, leaked PII, downtime, wrong numbers? Which parts need the strict bar and which are experimental? Compliance obligations? This decides gate strictness and where behaviour-dimension work is justified.
 
 **6. Workflow and review model** → *AGENTS.md PR conventions*
 Who reviews, what merges without review, PR conventions? Solo-with-agents differs from team-with-agents: recommend gating accordingly.
 
-**7. Org constraints** → *AGENTS.md boundaries, SECURITY.md*
+**7. Org constraints** → *AGENTS.md boundaries, security-guidelines.md*
 Mandated tooling/registries/CI? Secrets management? Anything agents must never touch from day one?
 
 Wherever an answer isn't forthcoming, record the open question in the draft artifact and proceed with the recommended default, labeled as such.
