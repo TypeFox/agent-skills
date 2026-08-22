@@ -5,7 +5,7 @@ A collection of agent skills in the [agentskills.io](https://agentskills.io/) fo
 ## Commands
 
 ```sh
-pytest skills/agent-experience/scripts/test_check_docs.py -q         # full script test suite, <1s
+pytest skills/agent-experience/scripts/test_check_docs.py -q         # check_docs unit tests (the only script tests so far), <1s
 pytest skills/agent-experience/scripts/test_check_docs.py -k NAME    # single test by keyword
 python3 skills/agent-experience/scripts/check_docs.py --exclude 'skills/*/evals/*' .   # doc-freshness check, <1s
 ```
@@ -20,14 +20,17 @@ Installing skills for end use is `npx skills add TypeFox/agent-skills` (see READ
 
 ## Conventions
 
-- Every skill ships evals in `evals/evals.json` (known gap: ts-code-reviewer has none yet).
+- Every skill ships evals in `evals/evals.json` (missing for ts-code-reviewer; adding them is planned as a standalone task).
 - Python scripts stay stdlib-only so `check_docs.py` remains copy-installable into target repos.
 
 ## Boundaries and definition of done
 
 - Never edit `skills/*-workspace/` — generated eval output.
 - Files under `skills/*/evals/files/` are eval fixtures and may be *intentionally broken* (dead paths, bloated agent docs). Never "fix" them in repo-wide cleanups; check_docs excludes them deliberately.
-- Done means: the pytest suite and the check_docs command above pass locally with output shown, and any changed `SKILL.md` frontmatter still matches its folder name.
+- Done means: the check_docs command above passes locally with output shown, and any changed `SKILL.md` frontmatter still matches its folder name. Run the pytest suite only when a change touches `skills/*/scripts/` — skill scripts are self-contained, so other changes cannot affect them.
+- A new skill ships its `evals/evals.json` in the same PR. Re-running evals after modifying an existing skill is a judgment call (they are token-expensive), not a gate.
+- A behavior change to a script in `skills/*/scripts/` includes matching unit-test updates in the same change.
+- If reality contradicts this file, fix it in the same change — never silently work around a stale rule.
 
 ## PR conventions
 

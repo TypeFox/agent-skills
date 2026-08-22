@@ -54,11 +54,17 @@ Inferred-but-unconfirmed patterns stay marked until the interview. -->
 
 <!-- Never-touch files, generated dirs, migration rules, secrets policy,
 destructive-command rules. Then: what proof is required before claiming a task
-complete (which sensors must pass, evidence captured). -->
+complete (which sensors must pass, evidence captured), and the change-coupling
+rules — which artifact must accompany each kind of change (e.g. bugfix →
+regression test, new feature → test + spec entry, API change → doc update).
+Phrase couplings as checkable completion requirements, never hedged advice
+("might need updating"); keep only couplings that actually hold in this repo. -->
 
 - Never edit `(generated dir)/` by hand — regenerate with `(command)`.
 - Never commit secrets; (secrets policy). (to be confirmed)
 - Done means: (verification commands) pass locally with output shown.
+- When (kind of change: bugfix / new feature / API change), the change includes (accompanying artifact: regression test / spec entry / doc update). (to be confirmed)
+- If reality contradicts this file or docs/, fix the doc as part of the change — never silently work around it.
 
 ## PR conventions
 
@@ -70,3 +76,4 @@ complete (which sensors must pass, evidence captured). -->
 
 - `docs/ARCHITECTURE.md` — module boundaries and layering.
 - `docs/adr/` — do not contradict accepted ADRs: (list key active ones).
+- `docs/exec-plans/` — multi-session work gets a plan in `active/`; move it to `completed/` when done.

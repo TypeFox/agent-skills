@@ -68,7 +68,7 @@ From the verified inventory, extract exactly the **non-inferable deltas** — wh
 2. **Verified command block.** From Phase 2, verbatim, with timings. Never a command you didn't run.
 3. **Rules-without-sensors triage.** For each prose-only rule from Phase 1b, decide: promote to lint/structural test (mechanical), keep in AGENTS.md or a skill (judgment-laden), or drop (fails the litmus). Every kept rule pairs the prohibition with the concrete alternative.
 4. **Boundaries.** Files never to touch, generated dirs, migration rules, secret paths, config the team hand-tunes, deploy-sensitive files. Source them from CODEOWNERS, `.gitignore` patterns, CI deploy steps — and the interview.
-5. **Convention archaeology.** Mine dominant patterns from code and git history: naming schemes, error-handling idioms, test structure, commit-message style. Mark each one **observed, unconfirmed** — the interview confirms load-bearing vs. habit. Never promote an inferred pattern straight to a rule; teams routinely carry accidental conventions nobody wants enforced.
+5. **Convention archaeology.** Mine dominant patterns from code and git history: naming schemes, error-handling idioms, test structure, commit-message style — and change-coupling conventions (do bugfix commits carry a regression test? do feature PRs touch specs or docs?), which seed the definition-of-done couplings in AGENTS.md. Mark each one **observed, unconfirmed** — the interview confirms load-bearing vs. habit. Never promote an inferred pattern straight to a rule; teams routinely carry accidental conventions nobody wants enforced.
 6. **Docs triage.** Map existing documents onto the `docs-structure.md` layout: what moves, what gets indexed, what is stale (Phase 2 evidence), where single-source-of-truth is violated. Propose the *minimal subset* of artifacts this project actually warrants — never the full layout by default.
 
 Everything uncertain becomes a `(to be confirmed)` marker in the drafts; nothing uncertain ships as fact.
@@ -81,7 +81,7 @@ A quick yes/no pass to spot obvious neglect — useful in Phase 1 to orient and 
 2. Every command in it runs, verbatim, from a fresh checkout?
 3. A single test can be run with a documented one-liner?
 4. Scope boundaries stated (never-touch files, generated dirs, secrets policy)?
-5. Definition of done stated (what proof before claiming completion)?
+5. Definition of done stated (what proof before claiming completion; which artifacts must accompany each kind of change)?
 6. Fast in-session sensors exist (typecheck, lint, fast tests) and CI mirrors them?
 7. Docs freshness is mechanically checked (commands/paths verified, e.g. `check_docs.py` in CI)?
 8. Monorepo/large repo: nested per-package agent files where the root map can't carry the detail?

@@ -39,6 +39,7 @@ Interview **relentlessly** until shared understanding — depth is licensed, not
 |---|---|
 | Commands, environment quirks | AGENTS.md commands section |
 | Never-touch paths, secrets, deploy sensitivity | AGENTS.md boundaries |
+| Change-coupling rules (what must accompany a bugfix, feature, API change) | AGENTS.md definition of done; sensor-promotion candidates |
 | Load-bearing conventions (confirmed from archaeology) | AGENTS.md conventions, or promoted to a lint rule |
 | Architecture rationale, rejected alternatives | ADRs |
 | Intent, roadmap, product judgment | product-specs, design-docs |
@@ -63,8 +64,8 @@ What shape is this system — CLI, service + API, web app, library, data pipelin
 **4. Module boundaries** → *ARCHITECTURE.md, structural rules*
 What are the 3–6 top-level parts, and which must never depend on which? (Recommend a conventional layering for the chosen topology and let the user correct it.) These lines become import rules on day one, not after the first violation.
 
-**5. Risk profile and quality bars** → *sensor thresholds, security-guidelines.md*
-What breaks the business if it breaks — data loss, leaked PII, downtime, wrong numbers? Which parts need the strict bar and which are experimental? Compliance obligations? This decides gate strictness and where behaviour-dimension work is justified.
+**5. Risk profile and quality bars** → *sensor thresholds, security-guidelines.md, AGENTS.md definition of done*
+What breaks the business if it breaks — data loss, leaked PII, downtime, wrong numbers? Which parts need the strict bar and which are experimental? Compliance obligations? What must accompany each kind of change — a test with every feature and bugfix, a spec entry, a doc update? This decides gate strictness, the definition-of-done couplings, and where behaviour-dimension work is justified.
 
 **6. Workflow and review model** → *AGENTS.md PR conventions*
 Who reviews, what merges without review, PR conventions? Solo-with-agents differs from team-with-agents: recommend gating accordingly.
