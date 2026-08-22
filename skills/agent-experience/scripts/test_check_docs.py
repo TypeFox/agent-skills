@@ -607,6 +607,32 @@ class TestDiscoverDocs:
         write(tmp_path, "AGENTS.md")
         assert cd.git_ignored(tmp_path, list(tmp_path.glob("*.md"))) == set()
 
+    def test_build_dir_name_above_root_does_not_hide_docs(self, tmp_path):
+        # The repo itself sits under a directory named like a build dir (a /tmp
+        # checkout, ~/build/repo, ...). Only the path below root may be
+        # filtered, or every doc vanishes and the check reports a clean run.
+        root = tmp_path / "build" / "repo"
+        write(root, "AGENTS.md")
+        write(root, "dist/AGENTS.md")  # below root: still skipped
+        found = {str(p.relative_to(root)) for p in cd.discover_docs(root)}
+        assert found == {"AGENTS.md"}
+
+    def test_root_ignored_by_enclosing_repo_keeps_docs(self, tmp_path):
+        # root is not its own work tree but sits inside one that ignores it.
+        # git walks up and calls every path ignored; trusting that would
+        # discard the whole doc set and report "no agent docs found".
+        if not cd.shutil.which("git"):
+            pytest.skip("git not available")
+        import subprocess
+        subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
+        write(tmp_path, ".gitignore", "workspace/\n")
+        root = tmp_path / "workspace" / "project"
+        write(root, "AGENTS.md")
+        write(root, "CLAUDE.md")
+        assert cd.git_ignored(root, cd.candidate_docs(root)) == set()
+        found = {str(p.relative_to(root)) for p in cd.discover_docs(root)}
+        assert found == {"AGENTS.md", "CLAUDE.md"}
+
 
 # --- CLI entry point ---
 
@@ -653,3 +679,31 @@ class TestMain:
     def test_repo_without_docs_exits_zero(self, tmp_path, monkeypatch, capsys):
         assert self.run_main(monkeypatch, [str(tmp_path)]) == 0
         assert "nothing to check" in capsys.readouterr().out
+
+    def test_all_docs_gitignored_is_an_error(self, tmp_path, monkeypatch,
+                                             capsys):
+        # Invisible filtering removed every doc. Exiting 0 would report success
+        # for a repo the check cannot read — the whole point of a gate.
+        if not cd.shutil.which("git"):
+            pytest.skip("git not available")
+        import subprocess
+        subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
+        write(tmp_path, ".gitignore", "*.md\n")
+        write(tmp_path, "AGENTS.md")
+        write(tmp_path, "docs/guide.md")
+        assert self.run_main(monkeypatch, [str(tmp_path)]) == 1
+        out = capsys.readouterr().out
+        assert "discarded as gitignored" in out
+        assert "Result: FAIL" in out
+
+    def test_all_docs_excluded_warns_but_passes_unless_strict(
+            self, tmp_path, monkeypatch, capsys):
+        # The user's own --exclude matched everything: deliberate, so a warning
+        # rather than a failure, promoted to an error under --strict.
+        write(tmp_path, "AGENTS.md")
+        write(tmp_path, "docs/guide.md")
+        argv = ["--exclude", "*", str(tmp_path)]
+        assert self.run_main(monkeypatch, argv) == 0
+        assert "all matched --exclude" in capsys.readouterr().out
+        assert self.run_main(monkeypatch, ["--strict"] + argv) == 1
+        capsys.readouterr()

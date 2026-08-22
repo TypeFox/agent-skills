@@ -56,7 +56,7 @@ Record along the way:
 - **Sandbox friction**: network access needed mid-build, credentials, OS assumptions, services that must already be running. Sandboxability gaps are AX gaps — anything the agent needs should stand up inside a coding-agent sandbox without ceremony.
 - **Affordance probes** (they set what the roadmap can reach): Is the language typed — is type checking a free sensor, or is adding types a prerequisite investment? Are module boundaries clean enough to express as import rules? Does a constraining framework provide conventions the agent can lean on? Are build/test tools fast enough for in-session feedback?
 
-Run `scripts/check_docs.py <repo-root>` over existing agent docs to mechanically catch cited-but-missing commands and paths. Discovery skips gitignored files; pass `--exclude <glob>` for tracked docs that are intentionally broken (test fixtures, example corpora).
+Run `scripts/check_docs.py <repo-root>` over existing agent docs to mechanically catch cited-but-missing commands and paths. Discovery skips gitignored files; pass `--exclude <glob>` for tracked docs that are intentionally broken (test fixtures, example corpora). It exits non-zero if gitignore filtering discarded every doc it found — a gate that silently discovers nothing would otherwise report success forever.
 
 **Done when** a verified command block exists (exact invocations + timings), backed by captured output, with discrepancies and friction listed.
 

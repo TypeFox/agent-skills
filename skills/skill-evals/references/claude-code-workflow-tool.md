@@ -16,10 +16,11 @@ When scanning a transcript for the isolation audit, check every `Bash` command s
 
 If you fall back to a run's own `access-log.md`, don't treat it as the verdict — it can fail both ways. A run can delete its own log during end-of-run cleanup, leaving nothing on disk even though the transcript trace shows a clean run; a run can also log a path it never actually read (written reflexively to satisfy a "log what you read" instruction, with no matching `Read` call anywhere in the transcript). Treat `access-log.md` as a **corroborating signal to cross-check, never as the verdict** — the transcript trace is what you trust. If you reconstruct a missing log for continuity, label it explicitly as reconstructed, not as the agent's own report.
 
-## Two contamination flavors — check for both
+## Three contamination flavors — check for all of them
 
 - **Path-allowlist violations**: a run reads something outside its assigned scope (e.g. the shared eval source instead of its own pre-seeded copy). Discard and rerun regardless of how harmless the specific leak looks — Gate 2's rule has no "but the content was identical" exception. If an indirect instruction ("don't reference any other copy of these files") isn't landing with a cheaper model, name the literal forbidden path instead.
 - **Fixture-freshness violations**: a run's `outputs/` directory isn't actually pristine when it starts — most often from re-seeding one job but not its sibling, or from an unexpected `Workflow` re-execution (see caching below). This stays entirely inside the run's own allowlist, so a naive "did every read stay in scope" check misses it, but it still invalidates the run — e.g. it edits already-fixed code instead of the original flawed fixture. **Reset a job's `outputs/` from the pristine fixture before every rerun**, for any reason — a fresh agent invocation does not imply a fresh filesystem, and `Workflow`'s caching has no effect on what's actually sitting in the workspace directories.
+- **Harness-injected project memory**: the repo's root AGENTS.md/CLAUDE.md reaches every `Workflow`-spawned agent through the harness itself, not through a tool call — so the transcript audit above cannot detect it and a contaminated run's trace comes back clean. This flavor is prevented, never traced: Gate 2's project-memory step in `SKILL.md` (root instruction files absent since the eval session started) must be cleared before any generation run launches.
 
 ## Cheap targeted reruns, and a caching gotcha
 

@@ -2,6 +2,10 @@
 
 A collection of agent skills in the [agentskills.io](https://agentskills.io/) format for open source technologies maintained at TypeFox. The product is the Markdown skill definitions under `skills/` — there is no application to build. Scripts are Python 3.8+, stdlib-only; pytest is the only test dependency.
 
+## STOP — before running any skill evaluation
+
+If your task is to run a skill evaluation (skill-evals, or any with-skill vs. baseline comparison): **stop immediately — do not start.** The harness injects this file and CLAUDE.md into every subagent's context, cached at session start, so eval runs launched from this session are contaminated — this file even describes the eval fixtures, an answer key for baselines — and removing the files mid-session does not help. Remove AGENTS.md and CLAUDE.md first, run the evaluation in a fresh session started without them, and restore both afterwards with `git checkout -- AGENTS.md CLAUDE.md`.
+
 ## Commands
 
 ```sh

@@ -34,10 +34,13 @@ Usage
     check_docs.py FILE.md [FILE.md ...]  # check specific files
     check_docs.py --strict ...           # promote warnings to errors
     check_docs.py --exclude 'fixtures/*' .   # skip fixture docs by glob
-Discovery skips gitignored files (when git is available) and any repo-relative
-path matched by an --exclude glob — deliberately-broken fixtures and generated
-workspaces would otherwise fail the check. Files named explicitly on the
-command line are always checked.
+Discovery skips gitignored files (when root is its own work tree, or a
+non-ignored directory inside one) and any repo-relative path matched by an
+--exclude glob — deliberately-broken fixtures and generated workspaces would
+otherwise fail the check. Files named explicitly on the command line are
+always checked. If filtering removes every doc it found, that is an error
+rather than a quiet pass: a gate that discovers nothing reports success
+forever.
 Exit code: 1 if any error (CI-gate ready), 0 otherwise.
 
 To install as a CI gate, copy this file into the target repo (e.g. scripts/)
@@ -127,40 +130,87 @@ class Finding:
                 f"  Fix: {self.fix}")
 
 
+def _git(root: Path, *args, stdin=None):
+    """Run a git command under root. None if git is missing or errored."""
+    try:
+        proc = subprocess.run(["git", "-C", str(root), *args], input=stdin,
+                              capture_output=True, text=True, timeout=30)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    return proc
+
+
 def git_ignored(root: Path, paths):
-    """Subset of paths that git ignores under root. Empty when git is missing
-    or root is not a work tree — discovery then relies on BUILD_DIRS alone."""
+    """Subset of paths that git ignores under root.
+
+    Empty when git is missing, when root is not inside a work tree, or when
+    root *is itself* ignored by an enclosing work tree. That last case is the
+    one worth spelling out: git walks upward, so checking a directory that is
+    not its own repo silently answers from whatever repository encloses it. If
+    that repository ignores the directory (a gitignored workspace, a vendored
+    copy, a scratch checkout), every path under it comes back ignored and the
+    filter would discard the entire doc set — reporting "no agent docs found"
+    for a tree full of them. Ignoring is only meaningful relative to the repo
+    the docs actually live in, so we skip filtering rather than trust it.
+    """
     if not paths:
         return set()
+    self_check = _git(root, "check-ignore", "--quiet", ".")
+    if self_check is None or self_check.returncode not in (0, 1):
+        return set()  # not a work tree (or git failed) — no filtering
+    if self_check.returncode == 0:
+        return set()  # root itself is ignored — the filter would eat everything
     rels = [p.relative_to(root).as_posix() for p in paths]
-    try:
-        proc = subprocess.run(
-            ["git", "-C", str(root), "check-ignore", "--stdin", "-z"],
-            input="\0".join(rels), capture_output=True, text=True, timeout=30)
-    except (OSError, subprocess.SubprocessError):
-        return set()
-    if proc.returncode not in (0, 1):  # 0: some ignored, 1: none; else error
+    proc = _git(root, "check-ignore", "--stdin", "-z", stdin="\0".join(rels))
+    if proc is None or proc.returncode not in (0, 1):  # 0: some, 1: none
         return set()
     return {root / r for r in proc.stdout.split("\0") if r}
 
 
-def discover_docs(root: Path, excludes=()):
+def candidate_docs(root: Path):
+    """Every agent doc under root before --exclude and gitignore filtering.
+
+    Kept separate from discover_docs so the caller can tell "this repo has no
+    agent docs" apart from "filtering removed all of them" — the second is a
+    misconfiguration that must not be reported as a clean run.
+    """
     docs = []
     for pattern in ("AGENTS.md", "AGENTS.override.md", "CLAUDE.md", "GEMINI.md",
                     "**/AGENTS.md", "**/CLAUDE.md",
                     ".github/copilot-instructions.md", ".claude/rules/*.md",
                     "docs/**/*.md"):
         for p in root.glob(pattern):
+            # Match build dirs against the path *below* root only: p.parts
+            # covers the absolute path, so a repo checked out under /tmp, or
+            # any directory named build/out/target/..., would otherwise have
+            # every one of its docs skipped and report a clean run.
+            rel = p.relative_to(root)
             if p.is_file() and not any(part in BUILD_DIRS or part == ".git"
-                                       for part in p.parts):
+                                       for part in rel.parts):
                 docs.append(p)
-    docs = sorted(set(docs))
+    return sorted(set(docs))
+
+
+def discover_docs_detailed(root: Path, excludes=()):
+    """(docs, n_excluded, n_gitignored) — the two filters counted separately.
+
+    The caller needs them apart because they fail differently: an --exclude
+    glob is the user's own explicit instruction, while gitignore filtering is
+    invisible and can silently swallow every doc in the tree.
+    """
+    candidates = candidate_docs(root)
+    kept = candidates
     if excludes:
-        docs = [p for p in docs
+        kept = [p for p in kept
                 if not any(fnmatch.fnmatch(p.relative_to(root).as_posix(), pat)
                            for pat in excludes)]
-    ignored = git_ignored(root, docs)
-    return [p for p in docs if p not in ignored]
+    ignored = git_ignored(root, kept)
+    docs = [p for p in kept if p not in ignored]
+    return docs, len(candidates) - len(kept), len(ignored)
+
+
+def discover_docs(root: Path, excludes=()):
+    return discover_docs_detailed(root, excludes)[0]
 
 
 def load_scripts(candidates):
@@ -554,8 +604,10 @@ def main():
     args = ap.parse_args()
 
     paths = [Path(p).resolve() for p in (args.paths or ["."])]
+    n_excluded = n_gitignored = 0
     if len(paths) == 1 and paths[0].is_dir():
-        root, docs = paths[0], discover_docs(paths[0], args.exclude)
+        root = paths[0]
+        docs, n_excluded, n_gitignored = discover_docs_detailed(root, args.exclude)
     else:
         files = [p for p in paths if p.is_file()]
         if len(files) != len(paths):
@@ -565,6 +617,33 @@ def main():
         root, docs = Path.cwd().resolve(), files
 
     if not docs:
+        if n_gitignored:
+            # Docs exist and gitignore filtering — which the user never asked
+            # for and cannot see — removed every one. Exiting 0 would green-light
+            # a repo the check cannot read, so this is an error.
+            print(f"✖ {root} — {n_gitignored} agent doc(s) found but all were "
+                  f"discarded as gitignored, so nothing was checked.\n"
+                  f"  Why this matters: a docs gate that discovers nothing still "
+                  f"exits 0, so it reports success forever while the docs it "
+                  f"should guard drift unchecked.\n"
+                  f"  Fix: check whether an enclosing repository's .gitignore "
+                  f"covers this directory — name the docs explicitly to bypass "
+                  f"discovery: check_docs.py AGENTS.md CLAUDE.md")
+            print("Result: FAIL — nothing was checked.")
+            return 1
+        if n_excluded:
+            # The user's own --exclude globs matched everything. Deliberate, so
+            # not an error by default, but still worth saying out loud.
+            print(f"⚠ {root} — {n_excluded} agent doc(s) found but all matched "
+                  f"--exclude, so nothing was checked.\n"
+                  f"  Why this matters: the run passes without having checked "
+                  f"anything, which reads as a clean gate.\n"
+                  f"  Fix: narrow the --exclude globs if that was not intended.")
+            if args.strict:
+                print("Result: FAIL — nothing was checked (--strict).")
+                return 1
+            print("Result: OK — nothing was checked.")
+            return 0
         print(f"check_docs: no agent docs found under {root} — nothing to check.")
         return 0
 
