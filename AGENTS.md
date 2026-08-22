@@ -28,7 +28,7 @@ Installing skills for end use is `npx skills add TypeFox/agent-skills` (see READ
 - Never edit `skills/*-workspace/` — generated eval output.
 - Files under `skills/*/evals/files/` are eval fixtures and may be *intentionally broken* (dead paths, bloated agent docs). Never "fix" them in repo-wide cleanups; check_docs excludes them deliberately.
 - Done means: the check_docs command above passes locally with output shown, and any changed `SKILL.md` frontmatter still matches its folder name. Run the pytest suite only when a change touches `skills/*/scripts/` — skill scripts are self-contained, so other changes cannot affect them.
-- A new skill ships its `evals/evals.json` in the same PR. Re-running evals after modifying an existing skill is a judgment call (they are token-expensive), not a gate.
+- A new skill ships its `evals/evals.json` in the same PR. A substantive change to an existing skill includes reviewing its `evals/evals.json` in the same change — do the prompts, expected outputs, and assertions still describe the changed behavior? — and updating it where they don't. Only *re-running* evals is a judgment call (they are token-expensive), not a gate; the spec review is cheap and always happens.
 - A behavior change to a script in `skills/*/scripts/` includes matching unit-test updates in the same change.
 - If reality contradicts this file, fix it in the same change — never silently work around a stale rule.
 

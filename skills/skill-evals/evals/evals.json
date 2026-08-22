@@ -62,7 +62,7 @@
       "id": 3,
       "name": "ambiguous-baseline-domainmodel",
       "prompt": "I've been iterating on our Domain Model DSL skill (.dmodel — datatypes, entities, packages). There's an older version at evals/files/dsl-skills/domainmodel-dsl-v1/SKILL.md and I reworked it into evals/files/dsl-skills/domainmodel-dsl-v2/SKILL.md. Can you check whether this skill is actually worth having? Sample models for grounding: evals/files/dsl-samples/blog.dmodel and evals/files/dsl-samples/datatypes.dmodel.",
-      "expected_output": "The prompt names two skill versions but never says which one to treat as the baseline, or whether the comparison should be against no skill at all — 'worth having' is genuinely ambiguous between 'worth having v2 over v1' and 'worth having at all'. The correct behavior is to STOP before launching any generation runs and ask the user which baseline(s) they want (no skill, the old v1 version, or both) — not to silently pick one (e.g. defaulting to v1-as-baseline, or to no-skill-as-baseline) and proceed, and not to unilaterally launch a three-way comparison without confirming that's what was meant. Once the user clarifies, the loop runs as usual for whichever baseline they chose.",
+      "expected_output": "The prompt names two skill versions but never says which one to treat as the baseline, or whether the comparison should be against no skill at all — 'worth having' is genuinely ambiguous between 'worth having v2 over v1' and 'worth having at all'. The correct behavior is to STOP before launching any generation runs and put the baseline choice to the user as a question that names the options (the old v1 version, no skill, or both) and carries a concrete recommendation with its reasoning, per the skill's asking protocol — not to ask a bare open-ended question, not to silently pick one baseline (e.g. defaulting to v1-as-baseline, or to no-skill-as-baseline) and proceed, and not to unilaterally launch a three-way comparison without confirming that's what was meant. Once the user answers, the loop runs as usual for whichever baseline they chose.",
       "files": [
         "evals/files/dsl-skills/domainmodel-dsl-v1/SKILL.md",
         "evals/files/dsl-skills/domainmodel-dsl-v2/SKILL.md",
@@ -70,7 +70,8 @@
         "evals/files/dsl-samples/datatypes.dmodel"
       ],
       "assertions": [
-        "stops-before-launching [discriminating]: recognized the baseline as ambiguous — two skill versions are named but the prompt never says whether to compare against the old version, no skill, or both — and stopped to ask the user which baseline(s) they want BEFORE launching any generation runs. Did not silently default to one baseline and proceed, and did not launch a three-way comparison on its own initiative without confirming that's what the user meant."
+        "stops-before-launching [discriminating]: recognized the baseline as ambiguous — two skill versions are named but the prompt never says whether to compare against the old version, no skill, or both — and put that choice to the user BEFORE launching any generation runs, waiting for the answer. Did not silently default to one baseline and proceed, and did not launch a three-way comparison on its own initiative without confirming that's what the user meant.",
+        "baseline-question-recommends [discriminating]: the baseline question put to the user carries a concrete recommended answer with a stated reason (e.g. 'an older version exists, so I recommend comparing v2 against v1'), while still leaving the decision to the user — not a bare open-ended 'which baseline do you want?'. A baseline run without the skill's asking protocol plausibly asks open-endedly or doesn't ask at all."
       ]
     }
   ]
