@@ -16,6 +16,11 @@ What is checked
   `bash foo.sh`, `./foo`
 - backtick-quoted repo paths exist (root-relative or doc-relative)
 - relative markdown link targets exist
+- intra-document anchor links (`[…](#section)`) resolve to a heading or
+  explicit id in the same file
+- directional prose pointers ("see the open questions below") point at
+  content that exists in that direction — flagged only when *none* of the
+  pointer's significant words appears there, so ordinary prose never trips it
 - exec-plan frontmatter graph edges (`depends-on`, `discovered-from`,
   `relates-to`) name plan files that exist under docs/exec-plans/
 - ADR frontmatter lifecycle: `superseded-by` targets exist, `status:
@@ -77,6 +82,30 @@ INLINE_CODE = re.compile(r"`([^`\n]+)`")
 MD_LINK = re.compile(r"\[[^\]]*\]\(([^)\s]+)\)")
 ADR_STATUSES = {"proposed", "accepted", "superseded"}
 ADR_REF = re.compile(r"\bADR-?(\d{1,6})\b", re.IGNORECASE)
+HEADING = re.compile(r"^ {0,3}#{1,6}\s+(.+?)\s*#*\s*$")
+SETEXT_UNDERLINE = re.compile(r"^ {0,3}(=+|-+)\s*$")
+HTML_ID = re.compile(r'(?:id|name)="([^"]+)"')
+PROSE_POINTER = re.compile(
+    r"\bsee\s+(?:also\s+)?(?:the\s+)?([A-Za-z][A-Za-z0-9 _'/&-]{2,60}?)"
+    r"\s+(below|above)\b", re.IGNORECASE)
+WORD = re.compile(r"[A-Za-z][A-Za-z0-9'-]*")
+# Words that name the *form* or *position* of pointed-at content rather than
+# its subject ("see the notes below"). A pointer made only of these carries
+# nothing checkable, so it is skipped rather than judged.
+POINTER_STOPWORDS = {
+    "the", "and", "for", "with", "from", "its", "this", "that", "these",
+    "those", "them",
+    "section", "sections", "subsection", "note", "notes", "item", "items",
+    "list", "lists", "table", "tables", "paragraph", "paragraphs", "chapter",
+    "part", "parts", "page", "pages", "example", "examples", "snippet",
+    "snippets", "block", "blocks", "code", "output", "figure", "diagram",
+    "screenshot", "detail", "details", "description", "discussion",
+    "explanation", "instructions", "step", "steps", "comment", "comments",
+    "point", "points", "entry", "entries", "line", "lines", "text",
+    "full", "further", "more", "also", "above", "below", "relevant",
+    "corresponding", "respective", "next", "previous", "own", "other",
+    "remaining", "following", "preceding",
+}
 
 
 def parse_frontmatter(lines):
@@ -116,6 +145,56 @@ WHY_DOC_GRAPH = ("the frontmatter graph is the agents' task and decision "
                  "memory; a broken edge or stale status makes future sessions "
                  "trust decisions that no longer hold or wait on work that "
                  "doesn't exist.")
+WHY_DEAD_POINTER = ("a pointer to content that does not exist teaches agents "
+                    "the doc cannot be trusted — every future session burns "
+                    "context searching for it or, worse, invents it.")
+
+
+def github_slug(text: str):
+    """Anchor id the way GitHub renders a heading: inline markup stripped,
+    lowercased, punctuation dropped, spaces to hyphens."""
+    text = text.replace("`", "")
+    text = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", text)
+    text = re.sub(r"[*_]{1,3}", "", text)
+    text = re.sub(r"[^\w\- ]", "", text.strip().lower())
+    return re.sub(r" ", "-", text)
+
+
+def collect_anchors(lines, fm_end):
+    """Anchor ids defined in a document: GitHub-style heading slugs (ATX and
+    setext) plus explicit HTML id=/name= attributes. Fenced code is skipped —
+    a # comment inside a code block is not a heading."""
+    anchors, in_fence, prev = set(), False, ""
+    for lineno, line in enumerate(lines, 1):
+        if lineno <= fm_end:
+            continue
+        if re.match(r"^\s*(```+|~~~+)", line):
+            in_fence, prev = not in_fence, ""
+            continue
+        if in_fence:
+            continue
+        m = HEADING.match(line)
+        if m:
+            anchors.add(github_slug(m.group(1)))
+        elif SETEXT_UNDERLINE.match(line) and prev.strip():
+            # May also be a thematic break after a paragraph; the extra anchor
+            # that misreading adds can only silence, never raise, a finding.
+            anchors.add(github_slug(prev))
+        for a in HTML_ID.finditer(line):
+            anchors.add(a.group(1).lower())
+        prev = line
+    return anchors
+
+
+def significant_words(phrase: str):
+    return [w for w in WORD.findall(phrase.lower())
+            if len(w) >= 3 and w not in POINTER_STOPWORDS]
+
+
+def word_stem(w: str):
+    """Crude unifier for inflection (question/questions, handling/handled).
+    Collisions only ever silence a finding, never raise one."""
+    return w[:5]
 
 
 class Finding:
@@ -337,11 +416,15 @@ class Checker:
         if fm:
             self.check_frontmatter(doc, rel, fm)
         root_doc = doc.name in DOC_NAMES
+        anchors = collect_anchors(lines, fm_end)
 
         in_fence, fence_lang, prev_continued = False, "", False
         for lineno, line in enumerate(lines, 1):
             if lineno <= fm_end:
                 continue
+            # Prose pointers are judged everywhere, fenced code included — the
+            # observed failure mode is a dead pointer inside a command comment.
+            self.check_prose_pointers(line, rel, lineno, lines)
             fence = re.match(r"^\s*(```+|~~~+)\s*(\w*)", line)
             if fence:
                 in_fence = not in_fence
@@ -366,7 +449,9 @@ class Checker:
                     self.check_path(span, rel, lineno, doc_dir)
             for m in MD_LINK.finditer(line):
                 target = m.group(1)
-                if (not target.startswith(("http", "mailto:", "#", "/"))
+                if target.startswith("#"):
+                    self.check_anchor(target, rel, lineno, anchors)
+                elif (not target.startswith(("http", "mailto:", "/"))
                         and not SKIP_CHARS & set(target)):
                     clean = target.split("#")[0]
                     if clean and not (doc_dir / clean).exists() and not (self.root / clean).exists():
@@ -489,6 +574,42 @@ class Checker:
                     "accept the ADR before citing it as binding guidance, or "
                     "mark the reference as tentative.",
                     WHY_DOC_GRAPH))
+
+    def check_anchor(self, target, rel, lineno, anchors):
+        anchor = target[1:].lower()
+        if not anchor or SKIP_CHARS & set(anchor):
+            return
+        self.checked += 1
+        # GitHub dedupes repeated headings with -N suffixes; accept those too.
+        if anchor in anchors or re.sub(r"-\d+$", "", anchor) in anchors:
+            return
+        self.findings.append(Finding(
+            "error", rel, lineno, target,
+            f"no heading in this document matches this anchor"
+            f"{suggest(anchor, anchors)}.",
+            "fix the anchor, add the missing section, or drop the link.",
+            WHY_DEAD_POINTER))
+
+    def check_prose_pointers(self, line, rel, lineno, lines):
+        for m in PROSE_POINTER.finditer(line):
+            words = significant_words(m.group(1))
+            if not words:
+                continue  # only form/position words — nothing checkable
+            direction = m.group(2).lower()
+            region = lines[lineno:] if direction == "below" else lines[:lineno - 1]
+            self.checked += 1
+            stems = {word_stem(w) for w in WORD.findall("\n".join(region).lower())}
+            if any(word_stem(w) in stems for w in words):
+                continue
+            self.findings.append(Finding(
+                "error", rel, lineno, m.group(0),
+                f"nothing {direction} this line mentions "
+                + " or ".join(f'"{w}"' for w in words)
+                + " — the pointer references content this document does not "
+                  "contain.",
+                "add the referenced content, point at where it actually "
+                "lives, or drop the pointer.",
+                WHY_DEAD_POINTER))
 
     def check_path(self, token, rel, lineno, doc_dir):
         # Slash tokens are only judged when their first segment is a real

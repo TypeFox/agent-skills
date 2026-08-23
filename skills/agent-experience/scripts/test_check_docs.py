@@ -279,13 +279,104 @@ class TestMarkdownLinks:
         assert not checker.findings and checker.checked == 1
 
     @pytest.mark.parametrize("target", [
-        "https://example.com/x.md", "mailto:a@b.c", "#section",
+        "https://example.com/x.md", "mailto:a@b.c",
         "/absolute/path.md", "docs/<placeholder>.md",
     ])
     def test_external_and_placeholder_targets_skipped(self, tmp_path, target):
         doc = write(tmp_path, "AGENTS.md", f"[link]({target})")
         checker = run_checker(tmp_path, doc)
         assert not checker.findings
+
+
+# --- intra-document references (anchor links, prose pointers) ---
+
+class TestAnchorLinks:
+    def test_dead_anchor_is_error(self, tmp_path):
+        doc = write(tmp_path, "AGENTS.md", "# Setup\n\n[jump](#deploy)\n")
+        checker = run_checker(tmp_path, doc)
+        assert cited(errors(checker)) == ["#deploy"]
+
+    def test_anchor_resolves_against_slugged_heading(self, tmp_path):
+        doc = write(tmp_path, "AGENTS.md",
+                    "## Running Tests — CI & Local\n\n"
+                    "[how](#running-tests--ci--local)\n")
+        checker = run_checker(tmp_path, doc)
+        assert not checker.findings and checker.checked == 1
+
+    def test_duplicate_heading_suffix_accepted(self, tmp_path):
+        doc = write(tmp_path, "AGENTS.md",
+                    "# Setup\n\ntext\n\n# Setup\n\n[second](#setup-1)\n")
+        checker = run_checker(tmp_path, doc)
+        assert not errors(checker)
+
+    def test_heading_inside_code_fence_is_no_anchor(self, tmp_path):
+        doc = write(tmp_path, "AGENTS.md", """\
+            ```bash
+            # deploy
+            ```
+            [jump](#deploy)
+            """)
+        checker = run_checker(tmp_path, doc)
+        assert cited(errors(checker)) == ["#deploy"]
+
+    def test_setext_heading_and_html_id_are_anchors(self, tmp_path):
+        doc = write(tmp_path, "AGENTS.md", """\
+            Deploy steps
+            ============
+            <a name="rollback"></a>
+            [a](#deploy-steps) [b](#rollback)
+            """)
+        checker = run_checker(tmp_path, doc)
+        assert not errors(checker)
+
+    def test_placeholder_anchor_skipped(self, tmp_path):
+        doc = write(tmp_path, "AGENTS.md", "[tpl](#<section>)")
+        checker = run_checker(tmp_path, doc)
+        assert not checker.findings
+
+
+class TestProsePointers:
+    def test_dead_pointer_in_fence_comment_is_error(self, tmp_path):
+        # The observed failure mode: a commands block promising an "open
+        # question below" in a doc that contains no such thing.
+        doc = write(tmp_path, "AGENTS.md", """\
+            ```sh
+            ruff check .   # assumes ruff on PATH, see open question below
+            ```
+            Nothing else here.
+            """)
+        checker = run_checker(tmp_path, doc)
+        errs = errors(checker)
+        assert len(errs) == 1 and "see open question below" in errs[0].cited
+
+    def test_pointer_satisfied_across_inflection(self, tmp_path):
+        doc = write(tmp_path, "AGENTS.md", """\
+            Run lint (see open question below).
+
+            ## Open questions
+            - is ruff pinned?
+            """)
+        checker = run_checker(tmp_path, doc)
+        assert not checker.findings and checker.checked == 1
+
+    def test_form_only_phrase_not_judged(self, tmp_path):
+        # "the notes below" names a form, not a subject — nothing checkable.
+        doc = write(tmp_path, "AGENTS.md", "Careful (see the notes below).\n")
+        checker = run_checker(tmp_path, doc)
+        assert not checker.findings and checker.checked == 0
+
+    def test_above_direction_checked(self, tmp_path):
+        # The pointer's own line is not part of the region it may point at.
+        doc = write(tmp_path, "AGENTS.md", """\
+            ## Deployment
+            Ship it.
+
+            Roll back as described, see deployment steps above.
+            Also see migration steps above.
+            """)
+        checker = run_checker(tmp_path, doc)
+        errs = errors(checker)
+        assert len(errs) == 1 and "migration" in errs[0].cited
 
 
 # --- fenced shell blocks ---
