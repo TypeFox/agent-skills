@@ -44,8 +44,9 @@ Hold every artifact you audit or generate to these. In improve mode they are the
 7. **Single source of truth.** Each fact lives in exactly one place; everything else points at it. Never vendor copies of external docs — audited vendored files have drifted 183 lines from upstream, still instructing agents to run tools removed months earlier.
 8. **Run it, don't read it.** Agents demonstrably *read* check scripts and predict their results instead of executing them. Require evidence-backed verification: execute the check, capture the output.
 9. **Write-as-you-go.** Agent statelessness erases anything not captured: every interview answer and decision lands in its durable artifact immediately — never in a summary to be filed later.
-10. **Docs are verified like code.** Freshness is mechanically checked (`scripts/check_docs.py` verifies cited commands, paths, and frontmatter graph edges), and every artifact has an explicit lifecycle: active/completed for plans, accepted/superseded for decision records.
+10. **Docs are verified like code.** Freshness is mechanically checked (`scripts/check_docs.py` verifies cited commands, paths, intra-doc pointers, and frontmatter graph edges), and every artifact has an explicit lifecycle: active/completed for plans, accepted/superseded for decision records.
 11. **Convention over configuration.** This skill carries opinionated defaults for the AX layer itself — which artifacts to create, doc layout, sensor wiring, message patterns — and applies them whenever the user hasn't stated otherwise. Interviews and template placeholders gather *project facts* (intent, scope, technical architecture); they never poll the user on how to design the AX layer ("would you like ADRs?" is a forbidden question). An unprompted user preference or a hard project constraint overrides a default and gets recorded, naturally as an ADR. When in doubt, convention wins.
+12. **Every fact traces to a source.** Any statement in a generated doc traces to the repo, to output captured this session, or to the user's own words — anything else is marked `(to be confirmed)` or omitted. Product color counts: an invented name, count, or backstory is as much a fabrication as an invented database choice, and the user is never quoted or paraphrased saying something they did not say.
 
 ## Pick your mode
 
@@ -86,7 +87,7 @@ Load `references/audit-playbook.md` (verification protocol section).
 
 ### Phase 3 — Assess and draft with placeholders
 
-Distill the non-inferable deltas: deviations from ecosystem defaults, the verified command block, rules-without-sensors triage, boundaries (from CODEOWNERS, .gitignore, CI deploy steps), conventions mined from the code marked *observed, unconfirmed*. Draft the target artifacts — AGENTS.md from `assets/AGENTS.template.md`, plus the minimal docs/ subset this project actually warrants — with explicit `(to be confirmed)` markers wherever the repo couldn't answer. Never silently assume: a marker is a question for Phase 4; an unmarked guess is a fabrication.
+Distill the non-inferable deltas: deviations from ecosystem defaults, the verified command block, rules-without-sensors triage, boundaries (from CODEOWNERS, .gitignore, CI deploy steps), conventions mined from the code marked *observed, unconfirmed*. Draft the target artifacts — AGENTS.md from `assets/AGENTS.template.md`, plus the minimal docs/ subset this project actually warrants — with explicit `(to be confirmed)` markers wherever the repo couldn't answer. Never silently assume: a marker is a question for Phase 4; an unmarked guess is a fabrication (*every fact traces to a source*).
 
 Load `references/agents-md.md` (content model, exclusion list) and `references/docs-structure.md` (which docs artifacts this project warrants).
 
@@ -104,9 +105,9 @@ Load `references/interview.md` for the protocol, theme→destination map, and qu
 
 Produce the final artifacts:
 
-- **AGENTS.md** per the content model, plus the **CLAUDE.md projection** (`@AGENTS.md` import — Claude Code does not read AGENTS.md directly) and nested per-package files for monorepos. Every command in it comes from Phase 2's verified block.
+- **AGENTS.md** per the content model, plus the **CLAUDE.md projection** (`@AGENTS.md` import — Claude Code does not read AGENTS.md directly) and nested per-package files for monorepos. Every other agent tool the user names or the repo shows traces of (Copilot, Cursor, Gemini, …) gets its projection too: a one-line import or pointer at that tool's native location, never a copied body. Every command in it comes from Phase 2's verified block.
 - **Docs nucleus**: the minimal subset from Phase 3's triage (typically `docs/ARCHITECTURE.md` + `docs/adr/` + `docs/exec-plans/`), using `assets/adr-template.md` and `assets/exec-plan-template.md`.
-- **Sensors** per the escalation ladder for the promotion candidates from Phase 1, each with self-correction messages (*error channels are guidance channels*). Offer to install `scripts/check_docs.py` into the repo with a CI job (*docs are verified like code*).
+- **Sensors** per the escalation ladder for the promotion candidates from Phase 1, each with self-correction messages (*error channels are guidance channels*). Offer to install `scripts/check_docs.py` into the repo with a CI job (*docs are verified like code*). Every sensor and command added this session gets cited in AGENTS.md — in the commands section or the definition of done — because an unlisted sensor is one no future session will run.
 
 Load `references/techniques.md` (sensor/guide catalog, self-correction message patterns) and `references/agents-md.md` (projections, drafting rules).
 
@@ -114,12 +115,14 @@ Load `references/techniques.md` (sensor/guide catalog, self-correction message p
 
 ### Phase 6 — Prove it and hand off
 
-Run every new or changed sensor and `scripts/check_docs.py` against the final state; fix what fails — evidence-backed, output captured (*run it, don't read it*). Then deliver:
+Run every new or changed sensor and `scripts/check_docs.py` against the final state; fix what fails — evidence-backed, output captured (*run it, don't read it*). Judge each sensor by its output, not its exit code: prove it can fire (a deliberate failing input is the cheapest proof), and prove it at every scope the docs claim for it — a gate advertised as covering README.md is proven by a deliberate failure in README.md, not by firing somewhere else. A check that reports success while checking nothing is a false green shipped as a sensor. Verification litters: remove the caches and build artifacts your runs created (`__pycache__/`, `.ruff_cache/`, …) from the delivered copy — and if no `.gitignore` covers them, that gap is itself an AX finding to fix or surface.
+
+Then run the **claim check** over every doc this session wrote or changed: re-read it as a skeptical reviewer and trace each factual claim to this session's evidence — captured output, a file actually read, or the user's words. Generalizations ("every module has a test file") are verified exhaustively or weakened; commands appear exactly as proven in the delivered copy; anything untraceable is fixed, marked `(to be confirmed)`, or cut (*every fact traces to a source*). Two claim families reliably slip past self-review because you just wrote what they describe, so they get mechanical treatment: pointers to other content ("see the open questions below") are caught by `check_docs.py`, and claims about tooling this session installed are exactly what the sensor-scope proof above tests. Then deliver:
 
 1. The **remediation roadmap** for everything deferred, in foundational→sophisticated order (see the remediation ordering in `references/audit-playbook.md`), each step small and individually shippable.
 2. The **steering loop as standing practice**: tell the team that from now on, every recurring agent mistake gets engineered away up the escalation ladder — the setup you built is the seed, not the finished system.
 
-**Done when** everything green is proven with captured output and the roadmap is delivered.
+**Done when** everything green is proven with captured output, the claim check comes back clean, and the roadmap is delivered.
 
 ## Greenfield specifics
 
@@ -129,7 +132,7 @@ Guide stack and topology decisions by **affordances** — the structural propert
 
 Day-one build order: root map (AGENTS.md + CLAUDE.md projection) → one-command bootstrap and task-runner command surface → in-session sensors (typecheck, lint with agent-failure-mode rules, fast tests, secrets pre-commit) → docs nucleus (`docs/ARCHITECTURE.md`, `docs/adr/` seeded with the stack/topology decisions from the interview, `docs/exec-plans/`).
 
-Boundary: this skill sets up the AX layer around the user's chosen project scaffolding — it does not generate the application itself. The user supplies product and technical decisions; the AX setup derived from them is applied by convention, not negotiated.
+Boundary: this skill sets up the AX layer around the user's chosen project scaffolding — it does not generate the application itself. The pull to cross this line is strongest at the end, when a working feature feels like the honest proof that the loop works. It is not: the sensors firing on deliberate failures prove the loop, and a feature silently answers product questions the interview left open. The ceiling is scaffold-level — a smoke-tested placeholder route and an empty, clearly labeled schema stub; no domain logic, no seeded domain data, no working screens. The user supplies product and technical decisions; the AX setup derived from them is applied by convention, not negotiated.
 
 ## Consulting specifics
 
@@ -152,6 +155,6 @@ Load these when their phase comes up — don't read them all upfront.
 
 ## Before you're done
 
-Check the mode's definition of done: **retrofit** — verified commands, AGENTS.md + CLAUDE.md projection, docs nucleus, wired sensors, roadmap, all proven by execution; **improve** — the docs are shorter, every line passes the litmus, every command verified, claims-vs-enforcement resolved or on the roadmap; **greenfield** — interview answers captured in durable artifacts, day-one AX layer in place around the user's scaffolding; **consult** — the question answered (or the change applied and verified) grounded in the standards, with any deeper gap you spotted offered, not silently pursued or dropped.
+Check the mode's definition of done: **retrofit** — verified commands, AGENTS.md + CLAUDE.md projection, docs nucleus, wired sensors, roadmap, all proven by execution; **improve** — the docs are shorter, every line passes the litmus, every command verified, claims-vs-enforcement resolved or on the roadmap; **greenfield** — interview answers captured in durable artifacts, day-one AX layer in place around the user's scaffolding, nothing past the scaffold ceiling; **consult** — the question answered (or the change applied and verified) grounded in the standards, with any deeper gap you spotted offered, not silently pursued or dropped.
 
-In every mode: the CLAUDE.md projection exists wherever an AGENTS.md was written; no vendored copies; no unresolved silent assumptions — open questions are recorded as open questions. Readiness scores you produced are labeled as diagnostics. And in the phase-spine modes, the closing message hands over the steering loop: the honest test — ticket in, green suite and accepted diff out, reliably — is the target; this session's setup is only the seed.
+In every mode: the CLAUDE.md projection exists wherever an AGENTS.md was written; no vendored copies; no unresolved silent assumptions — open questions are recorded as open questions; every doc you wrote or changed has passed the claim check. Readiness scores you produced are labeled as diagnostics. And in the phase-spine modes, the closing message hands over the steering loop: the honest test — ticket in, green suite and accepted diff out, reliably — is the target; this session's setup is only the seed.

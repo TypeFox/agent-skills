@@ -75,6 +75,8 @@ Mandated tooling/registries/CI? Secrets management? Anything agents must never t
 
 Wherever an answer isn't forthcoming, record the open question in the draft artifact and proceed with the recommended default, labeled as such.
 
+Greenfield is also where fabrication is cheapest: with no repo to contradict you, invented product color — location names, a predecessor system, "the user told me X" — reads exactly like fact. The *every fact traces to a source* standard binds hardest here: the user's words, a labeled default, or a marker; nothing in between.
+
 ## Sources
 
 - Pocock — the "grill-me" pattern: https://www.aihero.dev/my-grill-me-skill-has-gone-viral
