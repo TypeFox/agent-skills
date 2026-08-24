@@ -1,6 +1,6 @@
 # AGENTS.md — content model, evidence, projections
 
-AGENTS.md is the root map: the always-on, project-scoped context every agent session starts from. It is an open format (agents.md, stewarded by the Agentic AI Foundation) read natively by Codex, Cursor, Copilot, Gemini CLI, Devin, Windsurf, Aider, Amazon Q, Factory Droid, and more — plain Markdown, no required schema. Its job is to be a **map, not a manual**: teach the agent where to look next, and carry only the irreducible always-on rules.
+AGENTS.md is the root map: the always-on, project-scoped context every agent session starts from. It is an open format (agents.md, stewarded by the Agentic AI Foundation) read natively by most coding agents — Codex, Copilot, Cursor, Gemini CLI, and others — plain Markdown, no required schema. Its job is to be a **map, not a manual**: teach the agent where to look next, and carry only the irreducible always-on rules.
 
 ## Content model, in leverage order
 
@@ -35,14 +35,14 @@ The numbers to reason (and argue) from — each traces to a single study, so tre
 - temporary task state ("currently migrating X" — that's an exec plan)
 - stale precision (table names, row counts, version numbers that drift)
 
-The litmus for every surviving line: *would removing it cause a mistake the agent wouldn't otherwise make?*
+The litmus test for every surviving line: *would removing it cause a mistake the agent wouldn't otherwise make?*
 
 ## Drafting procedure
 
 1. Start from `assets/AGENTS.template.md` — it encodes the section order above with per-section guidance comments.
 2. Fill sections **only from verified facts**: Phase 2's executed commands, Phase 1's inventory, confirmed conventions. Mark everything else `(to be confirmed)` for the interview. Markers stand for *project facts* only — never for AX design choices, which the skill's defaults settle.
 3. Delete any section that would only restate ecosystem defaults, and delete all guidance comments before commit.
-4. Never ship raw generation. `/init`-style scaffolds and this template are drafts to be edited against reality — the evidence above says an unedited generated file is worse than none.
+4. Never ship raw generation. `/init`-style scaffolds and this template are drafts to be edited against reality — the evidence above ties unedited generated files, redundant with what the model already infers, to worse outcomes than no file at all.
 
 ## Projections and the multi-tool ecosystem
 

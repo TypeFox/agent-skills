@@ -51,7 +51,7 @@ The mnemonic: ARCHITECTURE.md is the **map**, product-specs are the **promises**
 
 | Artifact | What it holds | When it earns its place | Maintenance rule |
 |---|---|---|---|
-| **AGENTS.md** | Map + irreducible always-on rules | Always — any repo an agent touches | Every-line litmus; cited commands verified |
+| **AGENTS.md** | Map + irreducible always-on rules | Always — any repo an agent touches | Every-line litmus test; cited commands verified |
 | **ARCHITECTURE.md** | Where things live, boundaries, layering, invariants | More than a handful of modules, or any monorepo | Update on structural change; back with structural tests so drift is caught mechanically |
 | **design-docs/ + core-beliefs** | Point-in-time design rationale — strategy, trade-offs, rejected alternatives; operating principles | A design an ADR can't hold; design history worth rescuing (see the design-docs section) | Dated, never silently rewritten; index with trust labels; garden regularly |
 | **adr/** | One decision per file: context, options, decision, consequences | The moment ≥2 people or ≥1 agent make architectural choices, or "why" questions recur | Append-only; supersede, never edit |
@@ -86,7 +86,7 @@ Complex work gets an execution plan in `docs/exec-plans/active/` (use `assets/ex
 
 The rationale layer of memory. Canonical shape (Nygard; use `assets/adr-template.md`): context → options considered → decision → consequences, one decision per numbered file in `docs/adr/`. **Accepted records are immutable — changing your mind means a new record superseding the old one.** That immutability is precisely what lets an agent distinguish current from stale.
 
-Metadata lives in YAML frontmatter, as in exec plans (the MADR community template standardized the same choice): `status:` (proposed | accepted | superseded), `date:`, and the graph edge `superseded-by:`. ADRs sit flat in `docs/adr/`, so unlike exec plans the status must be a frontmatter field, not a folder — it is the one field edited after acceptance. The lifecycle then becomes checkable: `check_docs.py` verifies every `superseded-by` target exists, that `status: superseded` and `superseded-by:` appear together, and that AGENTS.md points only at accepted ADRs.
+Metadata lives in YAML frontmatter, as in exec plans (the MADR community template standardized the same choice): `status:` (proposed | accepted | superseded), `date:`, and the graph edge `superseded-by:`. Only `status` is load-bearing — `date` is optional and `superseded-by` appears only on superseded records; the record's substance is the decision and its why, not its metadata. ADRs sit flat in `docs/adr/`, so unlike exec plans the status must be a frontmatter field, not a folder — it is the one field edited after acceptance. The lifecycle then becomes checkable: `check_docs.py` verifies every `superseded-by` target exists, that `status: superseded` and `superseded-by:` appear together, and that AGENTS.md points only at accepted ADRs.
 
 Agent-specific wiring:
 

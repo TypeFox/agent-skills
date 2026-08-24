@@ -120,7 +120,7 @@ Placement summary for the sensors that run on a cadence, not per-change: dead-co
 The setup you ship is a seed. These are the maintenance practices to hand over with it:
 
 - **Sensor-history heuristics.** Log sensor states over time. A never-failing sensor is suspicious — unnecessary, or blind. A frequently-failing one signals weak guides (fix the feedforward side) or over-sensitivity. A declining failure trend signals improving guides or models. An always-green pipeline catches nothing; an always-red one indicts either the code or the pipeline.
-- **Instruction cost accounting.** Instructions are not free (the 14–22% effect). Periodically re-run the litmus over AGENTS.md and prune.
+- **Instruction cost accounting.** Instructions are not free (the 14–22% effect). Periodically re-run the litmus test over AGENTS.md and prune.
 - **Guide/sensor balance review.** Once a sensor set is trusted, which guides can be deleted (context reclaimed)? Where do guides and sensors contradict each other? Are sensors pushing complexity sideways (a max-lines rule squeezing complexity into prop-drilling chains)?
 - **Model evolution invalidates controls.** Controls encode assumptions about what models can't do, and those go stale — workarounds built for one model become dead weight on the next. Schedule "is this control still earning its cost?" reviews alongside the sensor-history analysis. Early candidate: evidence-capture mandates — there are first reports of newer models over-verifying, re-checking work that is already green.
 - **Instruction rot is the default.** Doc-gardening + mechanical freshness checks + the active/completed and accepted/superseded lifecycles are not optional at scale.

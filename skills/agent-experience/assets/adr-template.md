@@ -1,7 +1,12 @@
 ---
+# Frontmatter is optional — the record's substance is the decision and its why.
+# `status` is the one field worth keeping: it makes the lifecycle mechanically
+# checkable (check_docs.py verifies supersession edges and that root docs cite
+# only accepted ADRs). Drop `date` freely; add `superseded-by` only when a new
+# ADR replaces this one.
 status: proposed   # proposed | accepted | superseded — the only field edited after acceptance
-date: YYYY-MM-DD
-superseded-by:     # ADR filename; set together with status: superseded when a new ADR replaces this one
+date: YYYY-MM-DD   # optional
+superseded-by:     # optional; ADR filename, set together with status: superseded
 ---
 
 # ADR-NNNN: (decision title, stated as a choice made)

@@ -1,12 +1,15 @@
 <!--
-Drafting scaffold — not boilerplate. Evidence says raw generated AGENTS.md files
-make agents *worse*; this template only helps if every line is filled from
-verified facts (executed commands, confirmed conventions) or explicitly marked
-`(to be confirmed)` for the interview. Markers stand for project facts only —
-commands, boundaries, conventions — never for AX design choices.
+Drafting scaffold — not boilerplate. Generated AGENTS.md files backfire when
+shipped unedited: study data ties files that only restate what the model
+already infers to *lower* task success at higher cost. This template only
+helps if every line is filled from verified facts (executed commands,
+confirmed conventions) or explicitly marked `(to be confirmed)` for the
+interview. Markers stand for project facts only — commands, boundaries,
+conventions — never for AX design choices.
 Before commit: delete every section that would only restate ecosystem defaults,
-delete all <!-- guidance --> comments, and run the litmus on each remaining
-line: would removing it cause a mistake the agent wouldn't otherwise make?
+delete all <!-- guidance --> comments, and run the litmus test on each
+remaining line: would removing it cause a mistake the agent wouldn't otherwise
+make?
 Target: under 150 lines; 30–50 for a small repo.
 -->
 
