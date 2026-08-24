@@ -9,9 +9,11 @@ drift mechanical: it extracts backtick-quoted commands, path references, and
 relative markdown links from the docs and verifies each against the repo.
 
 What is checked
-- task-runner invocations resolve: `npm run X` / `npm test` / `yarn|pnpm run X`
-  against package.json scripts, `make X` against Makefile targets, `just X`
-  against justfile recipes
+- task-runner invocations resolve: `npm run X` / `npm test|start` /
+  `yarn|pnpm run X` against package.json scripts — workspace-targeted forms
+  (`npm run X -w ws`, `pnpm --filter ws run X`, `yarn workspace ws run X`)
+  against the named workspace's package.json — `make X` against Makefile
+  targets, `just X` against justfile recipes
 - script invocations point at existing files: `python foo.py`, `node foo.js`,
   `bash foo.sh`, `./foo`
 - backtick-quoted repo paths exist (root-relative or doc-relative)
@@ -39,6 +41,7 @@ Usage
     check_docs.py FILE.md [FILE.md ...]  # check specific files
     check_docs.py --strict ...           # promote warnings to errors
     check_docs.py --exclude 'fixtures/*' .   # skip fixture docs by glob
+    check_docs.py --require-docs .       # fail when no docs are found (CI)
 Discovery skips gitignored files (when root is its own work tree, or a
 non-ignored directory inside one) and any repo-relative path matched by an
 --exclude glob — deliberately-broken fixtures and generated workspaces would
@@ -49,7 +52,10 @@ forever.
 Exit code: 1 if any error (CI-gate ready), 0 otherwise.
 
 To install as a CI gate, copy this file into the target repo (e.g. scripts/)
-and add a job step:  python3 scripts/check_docs.py .
+and add a job step:  python3 scripts/check_docs.py --require-docs .
+(--require-docs makes a run that checks nothing fail: without it, deleting or
+renaming the last agent doc returns the gate to "nothing to check", exit 0,
+forever.)
 Python 3.8+, stdlib only.
 """
 
@@ -57,6 +63,7 @@ import argparse
 import difflib
 import fnmatch
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -305,6 +312,35 @@ def load_scripts(candidates):
     return scripts if scripts else None  # None: no package.json found at all
 
 
+def split_workspace(head, rest):
+    """Strip workspace-targeting arguments from an npm/yarn/pnpm invocation.
+
+    Returns (remaining_args, workspace); workspace is None when the command is
+    not workspace-scoped. yarn's form is positional (`yarn workspace ws …`);
+    npm and pnpm use flags. Only the first workspace value is kept, and the
+    run-in-every-workspace flags map to "*", which the caller cannot resolve
+    and therefore skips — both conservative choices.
+    """
+    if head == "yarn" and rest[:1] == ["workspace"] and len(rest) >= 3:
+        return rest[2:], rest[1]
+    flags = {"npm": ("-w", "--workspace"), "pnpm": ("-F", "--filter")}.get(head, ())
+    out, ws, i = [], None, 0
+    while i < len(rest):
+        tok = rest[i]
+        flag = next((f for f in flags if tok == f or tok.startswith(f + "=")), None)
+        if head == "npm" and tok in ("--workspaces", "-ws"):
+            ws = ws or "*"
+        elif flag is None:
+            out.append(tok)
+        elif "=" in tok:
+            ws = ws or tok.split("=", 1)[1]
+        elif i + 1 < len(rest):
+            ws = ws or rest[i + 1]
+            i += 1
+        i += 1
+    return out, ws
+
+
 def load_make_targets(candidates):
     targets, found = set(), False
     for d in candidates:
@@ -402,6 +438,7 @@ class Checker:
         self.findings = []
         self.checked = 0
         self._adr_index = None
+        self._pkg_index = None
 
     def check_file(self, doc: Path):
         doc_dir = doc.parent
@@ -533,6 +570,44 @@ class Checker:
                     "correct the reference, or add the superseding ADR.",
                     WHY_DOC_GRAPH))
 
+    def workspace_scripts(self, ws, doc_dir):
+        """Scripts of the named workspace — a directory path or a package
+        name. None when the workspace cannot be resolved; conservatively, an
+        unresolved workspace suppresses the script check rather than judging
+        it against the wrong manifest."""
+        ws = ws.rstrip("./")  # pnpm's include-dependencies suffix (`ws...`)
+        if not ws or SKIP_CHARS & set(ws) or ws.startswith("!"):
+            return None
+        for base in (self.root, doc_dir):
+            pkg = base / ws / "package.json"
+            if pkg.is_file():
+                try:
+                    return json.loads(pkg.read_text()).get("scripts", {})
+                except (json.JSONDecodeError, OSError):
+                    return None
+        return self.package_index().get(ws)
+
+    def package_index(self):
+        """Package name → scripts for every package.json under the repo root
+        (build dirs and .git pruned during the walk, so node_modules is never
+        descended into) — resolves workspaces named by package name."""
+        if self._pkg_index is None:
+            self._pkg_index = {}
+            for dirpath, dirnames, filenames in os.walk(self.root):
+                dirnames[:] = [d for d in dirnames
+                               if d not in BUILD_DIRS and d != ".git"]
+                if "package.json" not in filenames:
+                    continue
+                try:
+                    data = json.loads(
+                        (Path(dirpath) / "package.json").read_text())
+                except (json.JSONDecodeError, OSError):
+                    continue
+                name = data.get("name") if isinstance(data, dict) else None
+                if name:
+                    self._pkg_index.setdefault(name, data.get("scripts", {}))
+        return self._pkg_index
+
     def adr_status_index(self):
         """ADR number → (filename, status) for docs/adr/ at the repo root."""
         if self._adr_index is None:
@@ -640,7 +715,7 @@ class Checker:
             head = tokens[0]
             if SKIP_CHARS & set(part):
                 continue
-            self.check_runner(tokens, rel, lineno, npm, make, just)
+            self.check_runner(tokens, rel, lineno, doc_dir, npm, make, just)
             if head in ("python", "python3", "node", "bash", "sh", "ruby") and len(tokens) > 1:
                 arg = next((t for t in tokens[1:] if not t.startswith("-")), None)
                 if arg and looks_like_path(arg):
@@ -659,22 +734,31 @@ class Checker:
                         "the command is stale, remove it. Ignore if this "
                         "environment legitimately lacks the tool."))
 
-    def check_runner(self, tokens, rel, lineno, npm, make, just):
+    def check_runner(self, tokens, rel, lineno, doc_dir, npm, make, just):
         head, rest = tokens[0], tokens[1:]
         def fail(cited, problem, fix):
             self.findings.append(Finding("error", rel, lineno, cited, problem, fix))
 
         if head in ("npm", "yarn", "pnpm"):
+            rest, ws = split_workspace(head, rest)
+            if ws is not None:
+                npm = self.workspace_scripts(ws, doc_dir)
+                if npm is None:
+                    return  # unresolvable workspace — skip rather than guess
             script = None
             if rest[:1] == ["run"] and len(rest) > 1:
                 script = rest[1]
-            elif rest[:1] == ["test"]:
-                script = "test"
+            elif rest[:1] in (["test"], ["start"]):
+                script = rest[0]
+            if "--if-present" in rest:
+                script = None  # missing script is explicitly tolerated
             if script and npm is not None:
                 self.checked += 1
                 if script not in npm:
+                    where = (f'workspace "{ws}"\'s package.json' if ws
+                             else "package.json")
                     fail(f"{head} {'run ' if rest[:1] == ['run'] else ''}{script}",
-                         f'package.json has no script "{script}"{suggest(script, npm)}.',
+                         f'{where} has no script "{script}"{suggest(script, npm)}.',
                          "correct the doc to a script that exists, or add the "
                          "missing script to package.json.")
             elif script and npm is None:
@@ -722,6 +806,10 @@ def main():
                     help="skip discovered docs whose repo-relative path matches "
                          "this glob (repeatable; * also crosses '/'); files "
                          "named explicitly are never excluded")
+    ap.add_argument("--require-docs", action="store_true",
+                    help="fail when no agent docs are found or none survive "
+                         "filtering — for CI gates, where losing the docs must "
+                         "not turn the gate green")
     args = ap.parse_args()
 
     paths = [Path(p).resolve() for p in (args.paths or ["."])]
@@ -760,11 +848,22 @@ def main():
                   f"  Why this matters: the run passes without having checked "
                   f"anything, which reads as a clean gate.\n"
                   f"  Fix: narrow the --exclude globs if that was not intended.")
-            if args.strict:
-                print("Result: FAIL — nothing was checked (--strict).")
+            if args.strict or args.require_docs:
+                flag = "--require-docs" if args.require_docs else "--strict"
+                print(f"Result: FAIL — nothing was checked ({flag}).")
                 return 1
             print("Result: OK — nothing was checked.")
             return 0
+        if args.require_docs:
+            print(f"✖ {root} — no agent docs found, and --require-docs is set.\n"
+                  f"  Why this matters: this gate exists because the repo is "
+                  f"supposed to have agent docs; without --require-docs, "
+                  f"deleting or renaming the last one would return the gate to "
+                  f"'nothing to check' and report success forever.\n"
+                  f"  Fix: restore the missing docs (AGENTS.md and friends), or "
+                  f"drop --require-docs if this repo genuinely keeps none.")
+            print("Result: FAIL — nothing was checked.")
+            return 1
         print(f"check_docs: no agent docs found under {root} — nothing to check.")
         return 0
 

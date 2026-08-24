@@ -72,8 +72,10 @@ Phrase couplings as checkable completion requirements, never hedged advice
 
 ## Pointers
 
-<!-- The map function: one line each into deeper docs. No summaries. -->
+<!-- The map function: one line each into deeper docs. No summaries. Keep the
+product-specs line only where the repo keeps behaviour specs. -->
 
 - `docs/ARCHITECTURE.md` — module boundaries and layering.
 - `docs/adr/` — do not contradict accepted ADRs: (list key active ones).
 - `docs/exec-plans/` — multi-session work gets a plan in `active/`; move it to `completed/` when done.
+- `docs/product-specs/index.md` — behaviour contracts; a change to intended behaviour updates its spec in the same change.

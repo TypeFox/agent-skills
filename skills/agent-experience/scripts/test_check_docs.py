@@ -502,6 +502,88 @@ class TestRunnerChecks:
         checker = run_checker(tmp_path, doc)
         assert not errors(checker) and len(warnings(checker)) == 1
 
+    def test_npm_start_shorthand_checked(self, tmp_path):
+        write(tmp_path, "package.json", '{"scripts": {"build": "x"}}')
+        doc = write(tmp_path, "AGENTS.md", "Run `npm start` to serve.")
+        checker = run_checker(tmp_path, doc)
+        assert cited(errors(checker)) == ["npm start"]
+
+    def test_npm_workspace_flag_resolves_in_workspace(self, tmp_path):
+        write(tmp_path, "package.json", '{"scripts": {"build": "x"}}')
+        write(tmp_path, "examples/package.json",
+              '{"name": "examples", "scripts": {"start": "vite"}}')
+        doc = write(tmp_path, "AGENTS.md",
+                    "Run `npm run start -w examples` to serve the examples.")
+        checker = run_checker(tmp_path, doc)
+        assert not checker.findings
+
+    def test_npm_workspace_missing_script_is_error(self, tmp_path):
+        # The root manifest HAS the script — the error proves resolution
+        # happens against the named workspace, not the root.
+        write(tmp_path, "package.json", '{"scripts": {"start": "x"}}')
+        write(tmp_path, "examples/package.json",
+              '{"name": "examples", "scripts": {"build": "x"}}')
+        doc = write(tmp_path, "AGENTS.md", "Run `npm run start -w examples`.")
+        checker = run_checker(tmp_path, doc)
+        errs = errors(checker)
+        assert cited(errs) == ["npm run start"]
+        assert "examples" in errs[0].problem
+
+    def test_workspace_resolved_by_package_name(self, tmp_path):
+        write(tmp_path, "packages/web/package.json",
+              '{"name": "@app/web", "scripts": {"dev": "vite"}}')
+        doc = write(tmp_path, "AGENTS.md",
+                    "Run `npm run dev --workspace=@app/web`.")
+        checker = run_checker(tmp_path, doc)
+        assert not checker.findings
+
+    def test_unresolvable_workspace_is_skipped(self, tmp_path):
+        # Conservative by design: a workspace we can't locate suppresses the
+        # check instead of judging the script against the wrong manifest.
+        write(tmp_path, "package.json", '{"scripts": {"build": "x"}}')
+        doc = write(tmp_path, "AGENTS.md", "Run `npm run gone -w mystery`.")
+        checker = run_checker(tmp_path, doc)
+        assert not checker.findings
+
+    def test_all_workspaces_flag_skipped(self, tmp_path):
+        write(tmp_path, "package.json", '{"scripts": {"build": "x"}}')
+        doc = write(tmp_path, "AGENTS.md", "Run `npm run gone --workspaces`.")
+        checker = run_checker(tmp_path, doc)
+        assert not checker.findings
+
+    def test_if_present_flag_suppresses_check(self, tmp_path):
+        write(tmp_path, "package.json", '{"scripts": {"build": "x"}}')
+        doc = write(tmp_path, "AGENTS.md", "Run `npm run gone --if-present`.")
+        checker = run_checker(tmp_path, doc)
+        assert not checker.findings
+
+    def test_yarn_workspace_run_form_checked(self, tmp_path):
+        write(tmp_path, "pkg/package.json",
+              '{"name": "pkg", "scripts": {"build": "x"}}')
+        doc = write(tmp_path, "AGENTS.md",
+                    "Use `yarn workspace pkg run build` then "
+                    "`yarn workspace pkg run gone`.")
+        checker = run_checker(tmp_path, doc)
+        assert cited(errors(checker)) == ["yarn run gone"]
+
+    def test_yarn_workspace_bare_command_not_judged(self, tmp_path):
+        # `yarn workspace ws <cmd>` may target a binary or yarn builtin, not a
+        # script — only the explicit run/test/start forms are judged.
+        write(tmp_path, "pkg/package.json",
+              '{"name": "pkg", "scripts": {"build": "x"}}')
+        doc = write(tmp_path, "AGENTS.md", "Use `yarn workspace pkg tsc`.")
+        checker = run_checker(tmp_path, doc)
+        assert not checker.findings
+
+    def test_pnpm_filter_resolves_workspace(self, tmp_path):
+        write(tmp_path, "packages/cli/package.json",
+              '{"name": "cli", "scripts": {"test": "x"}}')
+        doc = write(tmp_path, "AGENTS.md",
+                    "Run `pnpm --filter cli test` then "
+                    "`pnpm --filter cli run gone`.")
+        checker = run_checker(tmp_path, doc)
+        assert cited(errors(checker)) == ["pnpm run gone"]
+
     def test_make_target_checked(self, tmp_path):
         write(tmp_path, "Makefile", "build:\n\ttrue\n")
         doc = write(tmp_path, "AGENTS.md", "Run `make build` then `make deploy`.")
@@ -786,6 +868,27 @@ class TestMain:
         out = capsys.readouterr().out
         assert "discarded as gitignored" in out
         assert "Result: FAIL" in out
+
+    def test_require_docs_fails_repo_without_docs(self, tmp_path, monkeypatch,
+                                                  capsys):
+        # A CI gate must not turn green when the docs it guards disappear.
+        assert self.run_main(monkeypatch, ["--require-docs", str(tmp_path)]) == 1
+        out = capsys.readouterr().out
+        assert "no agent docs found" in out
+        assert "Result: FAIL" in out
+
+    def test_require_docs_fails_when_all_docs_excluded(self, tmp_path,
+                                                       monkeypatch, capsys):
+        write(tmp_path, "AGENTS.md")
+        argv = ["--require-docs", "--exclude", "*", str(tmp_path)]
+        assert self.run_main(monkeypatch, argv) == 1
+        capsys.readouterr()
+
+    def test_require_docs_passes_when_docs_exist(self, tmp_path, monkeypatch,
+                                                 capsys):
+        write(tmp_path, "AGENTS.md", "hello")
+        assert self.run_main(monkeypatch, ["--require-docs", str(tmp_path)]) == 0
+        capsys.readouterr()
 
     def test_all_docs_excluded_warns_but_passes_unless_strict(
             self, tmp_path, monkeypatch, capsys):

@@ -21,15 +21,15 @@ Interview **relentlessly** until shared understanding — depth is licensed, not
 
 - **Termination is a goal, not a count**: continue until you're confident you understand the underlying intent — then stop.
 - **Walk the decision tree in dependency order.** Decisions have prerequisites; resolve each branch before the branches that depend on it (stack before boundaries; boundaries before quality bars). Don't fire questions randomly.
-- **One question at a time** — protects the user's working memory and yields clean, attributable answers.
-- **Recommended answer with every question.** Transform open questions into confirm/correct decisions: "Based on your CI config, I'd say deploys are the sensitive path — correct?" This is cheaper for the user and shows your repo analysis. Use the native question tool with options where available.
+- **One question at a time** — protects the user's working memory and yields clean, attributable answers. Where the runtime's question tool presents a batch with option lists, one *themed batch* per call is the faithful adaptation: a single theme, dependency-ordered within it, never mixed themes.
+- **Recommended answer with every question.** Transform open questions into confirm/correct decisions: "Based on your CI config, I'd say deploys are the sensitive path — correct?" This is cheaper for the user and shows your repo analysis. Use the native question tool with options where available, the recommended answer listed first.
 - **Escalate depth on signal**: follow up on a brief answer only where a downstream decision depends on it — when a branch is blocked, not for completeness.
 
 ## Session mechanics
 
 - **Draft-with-placeholders first** (Phase 3), then interview *only the markers*. The draft is the agenda; update it live after each answer.
 - **Batch by theme**, resolving each theme's branch before moving on: commands & environment → boundaries → conventions → quality bars → docs & memory → workflow.
-- **Progress counter**: `[Question 4/9]` keeps the user oriented and fatigue visible.
+- **Progress counter**: `[Question 4/9]` keeps the user oriented and fatigue visible; with a batching question tool, embed it in the question text (`[Batch 2/3 — conventions, question 1/4]`).
 - **Fatigue management**: order by impact; accept "skip / don't know / decide later" and record it as an explicit open question in the target doc — an honest unknown beats a fabricated certainty. Offer to pause; state lives in the draft, so resuming is free.
 - **Write-as-you-go (the critical rule).** Agent statelessness erases anything not captured: every answer lands in its destination file *immediately* — an AGENTS.md line, an ADR, a boundary entry — never in a summary to file later. An interrupted session then resumes exactly where it stopped.
 
@@ -42,17 +42,27 @@ Interview **relentlessly** until shared understanding — depth is licensed, not
 | Change-coupling rules (what must accompany a bugfix, feature, API change) | AGENTS.md definition of done; sensor-promotion candidates |
 | Load-bearing conventions (confirmed from archaeology) | AGENTS.md conventions, or promoted to a lint rule |
 | Architecture rationale, rejected alternatives | ADRs |
-| Intent, roadmap, product judgment | product-specs, design-docs |
+| Intent and intended behaviour per capability | product-specs/ (evidence-triggered — rubric in `docs-structure.md`) |
+| Design history outside the repo, multi-decision rationale | design-docs/ (rescued with provenance) or ADRs |
 | Tolerated debt and its reasons | tech-debt-tracker |
 | Quality bars, risk appetite per area | sensor thresholds; quality-score.md seeds |
 | Org policy (security, data) | security-guidelines.md + derived review prompts |
 | Terminology | glossary in design-docs |
 
+## Spec and design-doc triage *(retrofit, improve)*
+
+Product-specs and design-docs are evidence-triggered (the rubric is in `docs-structure.md`), and half the evidence is human-held — these questions gather it. They are product facts, not AX preferences: the user names what is ambiguous, normative, or critical; whether specs exist then follows from the triggers by convention ("would you like specs?" stays forbidden).
+
+- **Adjudication**: "When a test fails or behaviour surprises someone, what decides bug vs. intended today?" Recommend from the audit ("I found no in-repo source — it's issue threads and your judgment, correct?"). A durable answer that already exists is routed to, not duplicated; "nothing durable" is the trigger.
+- **Candidates**: "The audit found intent gaps at (X) and (Y) — evidence: (recurring question / agent mistake / criticality). Which of these behaviours matter enough to pin down as a contract now?" Present a ranked shortlist with the evidence attached; accept "none yet" — the change coupling backfills later, and deferred candidates go on the roadmap.
+- **Normativity** *(libraries/frameworks)*: "Is the behaviour documented on (site) a promise downstream users may rely on, or a description that may change? Which modules' behaviour do downstream projects depend on hardest?" The answer separates spec candidates from ARCHITECTURE.md index entries — and fixes how the semver boundary reads.
+- **Design-history rescue**: "Where does design rationale live outside the repo — wiki, shared docs, issue threads? Which of those still describe reality?" Every named source becomes a rescue candidate with provenance and an `unverified` trust label until checked.
+
 ## Greenfield question bank
 
 With no code to audit, the interview leads (phase order 0 → 4 → 5 → 6). Themes in dependency order; every theme is a product or technical fact — none asks how to design the AX layer, which follows from the answers by convention. Ask with a recommended answer wherever the earlier answers imply one.
 
-**1. Product intent and users** → *product-specs, project brief*
+**1. Product intent and users** → *product-specs/product-brief.md*
 What is being built, for whom, and what does success look like in 6 months? What's explicitly out of scope for v1? (Recommend nothing here — this is pure discovery; everything else depends on it.)
 
 **2. Stack choice, guided by affordances** → *ADR*
