@@ -2,17 +2,6 @@
 
 Load this when building (Phase 5) or planning (the roadmap). Every technique is classified guide/sensor × computational/inferential; pick by gap, not by novelty.
 
-**Contents**
-
-- [Choosing what to build](#choosing-what-to-build)
-- [Computational guides](#computational-guides)
-- [Inferential guides](#inferential-guides)
-- [Computational sensors](#computational-sensors)
-  - [Self-correction messages](#self-correction-messages-the-highest-leverage-idea)
-- [Inferential sensors](#inferential-sensors)
-- [Drift and runtime sensors](#drift-and-runtime-sensors)
-- [Operating the control system over time](#operating-the-control-system-over-time)
-
 ## Choosing what to build
 
 Three selection lenses, applied in order:
@@ -27,8 +16,8 @@ Three selection lenses, applied in order:
 
 - *In-session (continuous)*: typecheck, lint, fast tests + coverage, SAST, dependency rules, secrets scan in pre-commit, incremental mutation testing.
 - *Post-integration*: re-run all in-session sensors on clean infrastructure, plus the expensive ones — full mutation testing, deep review skills.
-- *Scheduled drift detection*: dead-code detection, coverage-quality analysis, dependency freshness, modularity/security/data reviews, doc-gardening.
-- *Runtime*: SLO degradation feeding improvement suggestions; LLM judges sampling output quality; log-anomaly flagging.
+- *Scheduled drift detection*: dead-code detection, coverage-quality analysis, dependency scanning and freshness, modularity/security/data reviews, doc-gardening, quality-grade updates.
+- *Runtime*: SLO degradation feeding improvement suggestions back as issues/PRs; LLM judges sampling output quality; log-anomaly flagging.
 
 **3. Affordances — what does this codebase make cheap?** A typed language makes type checking a free sensor; clean module boundaries make structural rules expressible; a constraining framework abstracts away whole error classes; fast tooling makes in-session sensing viable. Start with what the codebase affords (in legacy code, usually maintainability sensors) and improve affordances incrementally. **Variety reduction**: committing to a topology ("CRUD service on JVM", "data dashboard in Node") narrows what an agent can produce, which is what makes a comprehensive control set achievable. Favor dependencies that can be fully internalized and reasoned about in-repo — "boring" technology models better; sometimes a small, well-tested in-repo reimplementation beats an opaque library.
 
@@ -111,10 +100,6 @@ Write these messages when you wire each sensor in Phase 5 — a sensor with a st
 - **LLM-as-judge on runtime signals** — sampling response quality, flagging log anomalies, proposing SLO-driven improvements.
 - **Caveats** — cost and non-determinism (not every commit); noise management (legitimate patterns flagged as issues need a suppression mechanism or noise compounds); feedback overload can send an agent into over-engineering spirals; green dashboards breed false confidence.
 
-## Drift and runtime sensors
-
-Placement summary for the sensors that run on a cadence, not per-change: dead-code detection, coverage-quality analysis, dependency scanning and freshness, scheduled modularity/security/data reviews, doc-gardening, quality-grade updates — against the codebase; SLO trends and sampled-quality judges feeding suggestions back as issues/PRs — against the running system.
-
 ## Operating the control system over time
 
 The setup you ship is a seed. These are the maintenance practices to hand over with it:
@@ -124,7 +109,7 @@ The setup you ship is a seed. These are the maintenance practices to hand over w
 - **Guide/sensor balance review.** Once a sensor set is trusted, which guides can be deleted (context reclaimed)? Where do guides and sensors contradict each other? Are sensors pushing complexity sideways (a max-lines rule squeezing complexity into prop-drilling chains)?
 - **Model evolution invalidates controls.** Controls encode assumptions about what models can't do, and those go stale — workarounds built for one model become dead weight on the next. Schedule "is this control still earning its cost?" reviews alongside the sensor-history analysis. Early candidate: evidence-capture mandates — there are first reports of newer models over-verifying, re-checking work that is already green.
 - **Instruction rot is the default.** Doc-gardening + mechanical freshness checks + the active/completed and accepted/superseded lifecycles are not optional at scale.
-- **Security posture.** Skills and agent-readable docs are an attack surface: unsigned skill registries have carried malware; docs are a prompt-injection channel; pre-commit secret scanning protects against the agent itself. Pin and review third-party skills; single-source instead of vendoring.
+- **Security posture.** Skills and agent-readable docs are an attack surface: docs are a prompt-injection channel, and pre-commit secret scanning protects against the agent itself. Third-party skills get the dependency treatment from the skills entry above: pin, review, single-source.
 - **Don't optimize the score.** Track the honest test; use readiness scores only to find neglect.
 - **The human role stays load-bearing.** A good AX setup doesn't eliminate human input — it directs it where it matters: intent specification, judgment calls sensors can't make, and steering the control system itself.
 

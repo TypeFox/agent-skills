@@ -335,6 +335,73 @@ class TestAnchorLinks:
         assert not checker.findings
 
 
+class TestGeneralizations:
+    def test_quantified_claim_over_directory_is_warning(self, tmp_path):
+        # The observed failure: a coverage claim about a directory the session
+        # never enumerated, written as if observed.
+        (tmp_path / "src").mkdir()
+        doc = write(tmp_path, "AGENTS.md",
+                    "Tests mirror the layout: one test file per `src/` module.\n")
+        checker = run_checker(tmp_path, doc)
+        assert not errors(checker)
+        assert "one test file per" in cited(warnings(checker))[0]
+
+    def test_every_claim_over_directory_is_warning(self, tmp_path):
+        (tmp_path / "src").mkdir()
+        doc = write(tmp_path, "AGENTS.md",
+                    "Every module in `src/` has a matching fixture.\n")
+        checker = run_checker(tmp_path, doc)
+        assert len(warnings(checker)) == 1
+
+    def test_rule_is_not_a_claim(self, tmp_path):
+        # A stated invariant is prescriptive, not an observation to enumerate.
+        (tmp_path / "src").mkdir()
+        doc = write(tmp_path, "AGENTS.md",
+                    "Every new module under `src/` must ship with a test.\n")
+        checker = run_checker(tmp_path, doc)
+        assert not checker.findings
+
+    def test_directory_before_the_quantifier_not_judged(self, tmp_path):
+        # A convention describing the directory, not a claim about its
+        # contents — the quantifier scopes over "user-facing change".
+        (tmp_path / "changes").mkdir()
+        doc = write(tmp_path, "AGENTS.md",
+                    "- `changes/` — one Markdown fragment per user-facing change.\n")
+        checker = run_checker(tmp_path, doc)
+        assert not warnings(checker)
+
+    def test_quantifier_without_directory_not_judged(self, tmp_path):
+        doc = write(tmp_path, "AGENTS.md", "Every release is tagged.\n")
+        checker = run_checker(tmp_path, doc)
+        assert not checker.findings
+
+    def test_directory_without_quantifier_not_judged(self, tmp_path):
+        (tmp_path / "src").mkdir()
+        doc = write(tmp_path, "AGENTS.md", "Application code lives in `src/`.\n")
+        checker = run_checker(tmp_path, doc)
+        assert not warnings(checker)
+
+    def test_separate_sentences_do_not_pair(self, tmp_path):
+        # Conservative by design: quantifier and directory must co-occur in one
+        # sentence, so ordinary neighbouring prose never trips the check.
+        (tmp_path / "src").mkdir()
+        doc = write(tmp_path, "AGENTS.md",
+                    "Handlers live in `src/`. Everything else is generated.\n")
+        checker = run_checker(tmp_path, doc)
+        assert not warnings(checker)
+
+    def test_claim_inside_code_fence_not_judged(self, tmp_path):
+        (tmp_path / "src").mkdir()
+        doc = write(tmp_path, "AGENTS.md", """\
+            ```sh
+            # every module in `src/` has a test
+            ls
+            ```
+            """)
+        checker = run_checker(tmp_path, doc)
+        assert not warnings(checker)
+
+
 class TestProsePointers:
     def test_dead_pointer_in_fence_comment_is_error(self, tmp_path):
         # The observed failure mode: a commands block promising an "open

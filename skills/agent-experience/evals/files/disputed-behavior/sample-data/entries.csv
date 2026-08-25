@@ -1,0 +1,6 @@
+date,project,minutes,description
+2026-08-03,acme-portal,7,standup call
+2026-08-03,acme-portal,45,checkout flow review
+2026-08-03,beta-migration,3,quick sync
+2026-08-04,acme-portal,12,bugfix pairing
+2026-08-04,beta-migration,50,schema mapping

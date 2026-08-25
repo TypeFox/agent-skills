@@ -1,8 +1,11 @@
 <!--
 One file per capability — a stable feature area (auth, routing, viewport) —
-never per change (change-shaped state belongs in an exec plan). Create only on
-an evidence trigger (see references/docs-structure.md), never for coverage:
-N modules → N specs is the failure shape, not diligence.
+never per change (change-shaped state belongs in an exec plan). It holds
+*current intended behaviour* and is updated whenever that behaviour changes;
+*why* a behaviour was chosen is one decision with its options — that is an ADR
+(assets/adr-template.md), frozen when made. Create a spec only on an evidence
+trigger (see references/docs-structure.md), never for coverage: N modules →
+N specs is the failure shape, not diligence.
 Content comes from the human (interview answers) and from verified behaviour
 (tests, captured output) — a spec inferred from the code restates the code
 and starts drifting at the next refactor.

@@ -1,4 +1,9 @@
 ---
+# This file records *one decision and why it was made*, frozen at the moment it
+# was made. What the capability is *supposed to do now* — current intended
+# behaviour, the bug-vs-intended adjudicator — belongs in a product-spec
+# (assets/product-spec-template.md), which stays living; a file that holds both
+# inherits both lifecycles and satisfies neither.
 # Frontmatter is optional — the record's substance is the decision and its why.
 # `status` is the one field worth keeping: it makes the lifecycle mechanically
 # checkable (check_docs.py verifies supersession edges and that root docs cite

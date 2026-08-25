@@ -42,7 +42,7 @@ The litmus test for every surviving line: *would removing it cause a mistake the
 1. Start from `assets/AGENTS.template.md` — it encodes the section order above with per-section guidance comments.
 2. Fill sections **only from verified facts**: Phase 2's executed commands, Phase 1's inventory, confirmed conventions. Mark everything else `(to be confirmed)` for the interview. Markers stand for *project facts* only — never for AX design choices, which the skill's defaults settle.
 3. Delete any section that would only restate ecosystem defaults, and delete all guidance comments before commit.
-4. Never ship raw generation. `/init`-style scaffolds and this template are drafts to be edited against reality — the evidence above ties unedited generated files, redundant with what the model already infers, to worse outcomes than no file at all.
+4. Never ship raw generation. `/init`-style scaffolds and this template are drafts to be edited against reality — the evidence above ties unedited generated files to worse outcomes than no file at all.
 
 ## Projections and the multi-tool ecosystem
 

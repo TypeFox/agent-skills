@@ -23,6 +23,10 @@ What is checked
 - directional prose pointers ("see the open questions below") point at
   content that exists in that direction — flagged only when *none* of the
   pointer's significant words appears there, so ordinary prose never trips it
+- universal claims about a directory's contents ("one test file per `src/`
+  module") are flagged for enumeration — the predicate is not machine-decidable,
+  so this reports the shape (quantifier + claim verb + a cited directory) as a
+  warning and leaves the verdict to the author
 - exec-plan frontmatter graph edges (`depends-on`, `discovered-from`,
   `relates-to`) name plan files that exist under docs/exec-plans/
 - ADR frontmatter lifecycle: `superseded-by` targets exist, `status:
@@ -114,6 +118,20 @@ POINTER_STOPWORDS = {
     "remaining", "following", "preceding",
 }
 
+# A universal claim about a directory's contents ("every module under `src/`
+# has a test") is the fabrication family that most reliably survives
+# self-review: it reads as observed fact, is almost never enumerated, and
+# nothing downstream re-checks it. The predicate is not decidable here, so the
+# *shape* is what is flagged — quantifier + claim verb + a cited directory.
+# Rules are deliberately not matched: "every new module must have a test"
+# states an invariant to enforce, not an observation to verify, and modals are
+# absent from the claim-verb list for exactly that reason.
+GENERALIZATION = re.compile(
+    r"\b(?:every|each|all)\b[^.;]{0,40}?"
+    r"\b(?:is|are|has|have|contains?|includes?|exports?|lives?|gets?|uses?)\b"
+    r"|\bone\b[^.;]{0,40}?\bper\b", re.IGNORECASE)
+SENTENCE_SPLIT = re.compile(r"(?<=[.;])\s+")
+
 
 def parse_frontmatter(lines):
     """Minimal YAML-subset frontmatter parser: flat keys with scalar,
@@ -155,6 +173,11 @@ WHY_DOC_GRAPH = ("the frontmatter graph is the agents' task and decision "
 WHY_DEAD_POINTER = ("a pointer to content that does not exist teaches agents "
                     "the doc cannot be trusted — every future session burns "
                     "context searching for it or, worse, invents it.")
+WHY_UNVERIFIED_CLAIM = ("a universal claim reads as observed fact, and agents "
+                        "that have just read a doc are measurably less likely "
+                        "to verify by running things — so one counter-example "
+                        "in the directory becomes ground truth every future "
+                        "session inherits.")
 
 
 def github_slug(text: str):
@@ -477,6 +500,7 @@ class Checker:
                     self.check_command_line(line, rel, lineno, doc_dir, npm, make, just,
                                             which_check=True)
                 continue
+            self.check_generalizations(line, rel, lineno, doc_dir)
             for m in INLINE_CODE.finditer(line):
                 span = m.group(1).strip()
                 if " " in span:
@@ -686,6 +710,44 @@ class Checker:
                 "lives, or drop the pointer.",
                 WHY_DEAD_POINTER))
 
+    def check_generalizations(self, line, rel, lineno, doc_dir):
+        for sentence in SENTENCE_SPLIT.split(line):
+            m = GENERALIZATION.search(sentence)
+            if not m:
+                continue
+            # The quantifier scopes over what follows it: a directory named
+            # *before* it is the subject being described ("`changes/` — one
+            # fragment per user-facing change"), not the set being claimed
+            # about, so only later citations count.
+            dirs = self.cited_dirs(sentence[m.start():], doc_dir)
+            if not dirs:
+                continue
+            self.checked += 1
+            self.findings.append(Finding(
+                "warning", rel, lineno, m.group(0).strip().replace("`", ""),
+                f"this generalizes over the contents of `{dirs[0]}` — a claim "
+                f"nothing here can decide, and the one self-review reliably "
+                f"waves through because it just wrote it.",
+                f"enumerate `{dirs[0]}` this session and keep the sentence only "
+                f"if it holds for every entry; otherwise drop the quantifier and "
+                f"name what you actually verified, or restate it as a rule the "
+                f"repo enforces.",
+                WHY_UNVERIFIED_CLAIM))
+
+    def cited_dirs(self, sentence, doc_dir):
+        """Backtick-quoted tokens in this sentence that name a directory —
+        either explicitly (trailing '/') or by resolving to one in the repo."""
+        found = []
+        for m in INLINE_CODE.finditer(sentence):
+            tok = m.group(1).strip()
+            if (not tok or " " in tok or SKIP_CHARS & set(tok)
+                    or tok.startswith(("/", "~", "http"))):
+                continue
+            if (tok.endswith("/") or (doc_dir / tok).is_dir()
+                    or (self.root / tok).is_dir()):
+                found.append(tok)
+        return found
+
     def check_path(self, token, rel, lineno, doc_dir):
         # Slash tokens are only judged when their first segment is a real
         # directory (else `application/json` and friends false-positive) —
@@ -801,7 +863,8 @@ def main():
     ap.add_argument("paths", nargs="*", default=["."],
                     help="repo root (default .) or explicit .md files")
     ap.add_argument("--strict", action="store_true",
-                    help="treat warnings (PATH lookups, missing Makefile) as errors")
+                    help="treat warnings (PATH lookups, missing Makefile, "
+                         "unverified generalizations) as errors")
     ap.add_argument("--exclude", action="append", default=[], metavar="GLOB",
                     help="skip discovered docs whose repo-relative path matches "
                          "this glob (repeatable; * also crosses '/'); files "
