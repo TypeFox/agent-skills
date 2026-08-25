@@ -1,0 +1,5 @@
+[project]
+name = "relnotes"
+description = "Assembles CHANGELOG.md from one-line change fragments"
+requires-python = ">=3.8"
+dynamic = ["version"]

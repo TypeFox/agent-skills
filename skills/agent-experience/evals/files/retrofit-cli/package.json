@@ -1,0 +1,13 @@
+{
+  "name": "tablr",
+  "version": "0.3.1",
+  "description": "Render CSV files as aligned text tables in the terminal",
+  "bin": {
+    "tablr": "src/cli.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "lint": "node scripts/lint.mjs"
+  },
+  "license": "MIT"
+}
