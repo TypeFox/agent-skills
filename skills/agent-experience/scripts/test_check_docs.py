@@ -240,17 +240,29 @@ class TestInlinePathChecks:
         assert cited(errors(checker)) == ["guides/setup.md"]
 
     def test_unanchored_non_md_token_skipped(self, tmp_path):
-        # `application/json`-style tokens: first segment is no directory here,
-        # so the matcher must stay silent.
+        # `application/json`-style tokens: no path-like extension, so they
+        # never even look like paths — silent, and no skip-note noise either.
         doc = write(tmp_path, "AGENTS.md", "Send `application/json` bodies.")
         checker = run_checker(tmp_path, doc)
         assert not checker.findings and checker.checked == 0
+        assert not checker.skipped
 
-    def test_build_dir_paths_skipped(self, tmp_path):
+    def test_unanchored_pathlike_token_recorded_as_skip(self, tmp_path):
+        # F2's observed escape: a real-looking nested path whose first
+        # segment doesn't anchor was dropped without any signal, so the doc
+        # shipped believed-covered. The skip must be recorded for --verbose.
+        doc = write(tmp_path, "AGENTS.md", "Bundled via `extension/esbuild.mjs`.")
+        checker = run_checker(tmp_path, doc)
+        assert not checker.findings and checker.checked == 0
+        assert [s[2] for s in checker.skipped] == ["extension/esbuild.mjs"]
+        assert "extension" in checker.skipped[0][3]  # names the segment
+
+    def test_build_dir_paths_skipped_but_recorded(self, tmp_path):
         (tmp_path / "dist").mkdir()
         doc = write(tmp_path, "AGENTS.md", "Ship `dist/bundle.js` only.")
         checker = run_checker(tmp_path, doc)
         assert not checker.findings
+        assert [s[2] for s in checker.skipped] == ["dist/bundle.js"]
 
     def test_bare_filename_not_checked(self, tmp_path):
         doc = write(tmp_path, "AGENTS.md", "Add a `Makefile` if you like.")
@@ -262,6 +274,80 @@ class TestInlinePathChecks:
         doc = write(tmp_path, "docs/guide.md", "See `setup/install.md`.")
         checker = run_checker(tmp_path, doc)
         assert not errors(checker)
+
+
+# --- cross-repo references (repo:path) ---
+
+class TestSplitCrossRepo:
+    @pytest.mark.parametrize("token,expected", [
+        ("sprotty:docs/design.md", ("sprotty", "docs/design.md")),
+        ("sprotty:docs/", ("sprotty", "docs/")),
+        ("sprotty:README.md", ("sprotty", "README.md")),
+        ("my-repo:config/Makefile", ("my-repo", "config/Makefile")),
+        ("sprotty:docs/design.md#routing", ("sprotty", "docs/design.md#routing")),
+    ])
+    def test_recognized(self, token, expected):
+        assert cd.split_cross_repo(token) == expected
+
+    @pytest.mark.parametrize("token", [
+        "docs/design.md",         # no colon — a plain local path
+        "https://example.com/a.md",
+        "mailto:a@b.md",
+        "12:30",                  # tail is no file reference
+        "key:value",
+        "C:/absolute.md",         # path part must not be absolute
+        "repo:../up.md",          # no parent traversal
+        "repo:./x.md",
+        "repo:src/image.png",     # unknown extension stays out
+    ])
+    def test_rejected(self, token):
+        assert cd.split_cross_repo(token) is None
+
+
+class TestCrossRepoRefs:
+    def test_live_sibling_path_is_clean(self, tmp_path):
+        write(tmp_path, "sibling/docs/design.md")
+        root = tmp_path / "repo"
+        doc = write(root, "AGENTS.md", "See `sibling:docs/design.md`.")
+        checker = run_checker(root, doc)
+        assert not checker.findings and checker.checked == 1
+
+    def test_dead_sibling_path_is_error(self, tmp_path):
+        # F3: with the sibling checked out, a dead cross-repo path fails
+        # instead of being indistinguishable from prose.
+        write(tmp_path, "sibling/docs/other.md")
+        root = tmp_path / "repo"
+        doc = write(root, "AGENTS.md", "See `sibling:docs/gone.md`.")
+        checker = run_checker(root, doc)
+        assert cited(errors(checker)) == ["sibling:docs/gone.md"]
+
+    def test_missing_sibling_checkout_is_skipped(self, tmp_path):
+        root = tmp_path / "repo"
+        doc = write(root, "AGENTS.md", "See `sprotty:docs/design.md`.")
+        checker = run_checker(root, doc)
+        assert not checker.findings and checker.checked == 0
+        assert len(checker.skipped) == 1  # visible under --verbose
+
+    def test_bare_filename_with_repo_prefix_checked(self, tmp_path):
+        # Unlike a bare `CHANGELOG.md` in prose, the prefix makes this an
+        # explicit location claim — so it is judged.
+        (tmp_path / "sibling").mkdir()
+        root = tmp_path / "repo"
+        doc = write(root, "AGENTS.md", "See `sibling:CHANGELOG.md`.")
+        checker = run_checker(root, doc)
+        assert cited(errors(checker)) == ["sibling:CHANGELOG.md"]
+
+    def test_cross_repo_markdown_link_checked(self, tmp_path):
+        write(tmp_path, "sibling/docs/design.md")
+        root = tmp_path / "repo"
+        doc = write(root, "AGENTS.md", "[design](sibling:docs/gone.md)")
+        checker = run_checker(root, doc)
+        assert cited(errors(checker)) == ["sibling:docs/gone.md"]
+
+    def test_uri_scheme_link_target_not_judged(self, tmp_path):
+        doc = write(tmp_path, "AGENTS.md", "[ext](vscode:extension/foo.bar)")
+        checker = run_checker(tmp_path, doc)
+        assert not checker.findings and checker.checked == 0
 
 
 # --- markdown links ---
@@ -605,12 +691,14 @@ class TestRunnerChecks:
         assert not checker.findings
 
     def test_unresolvable_workspace_is_skipped(self, tmp_path):
-        # Conservative by design: a workspace we can't locate suppresses the
-        # check instead of judging the script against the wrong manifest.
+        # Conservative by design: an npm/pnpm workspace we can't locate
+        # suppresses the check instead of judging the script against the
+        # wrong manifest — but the skip is recorded for --verbose.
         write(tmp_path, "package.json", '{"scripts": {"build": "x"}}')
         doc = write(tmp_path, "AGENTS.md", "Run `npm run gone -w mystery`.")
         checker = run_checker(tmp_path, doc)
         assert not checker.findings
+        assert len(checker.skipped) == 1 and "mystery" in checker.skipped[0][2]
 
     def test_all_workspaces_flag_skipped(self, tmp_path):
         write(tmp_path, "package.json", '{"scripts": {"build": "x"}}')
@@ -633,14 +721,54 @@ class TestRunnerChecks:
         checker = run_checker(tmp_path, doc)
         assert cited(errors(checker)) == ["yarn run gone"]
 
-    def test_yarn_workspace_bare_command_not_judged(self, tmp_path):
-        # `yarn workspace ws <cmd>` may target a binary or yarn builtin, not a
-        # script — only the explicit run/test/start forms are judged.
+    def test_yarn_workspace_bare_script_form_checked(self, tmp_path):
+        # Yarn allows omitting `run`; the idiomatic short form must have
+        # sensor coverage too (F1).
         write(tmp_path, "pkg/package.json",
               '{"name": "pkg", "scripts": {"build": "x"}}')
+        doc = write(tmp_path, "AGENTS.md", "Use `yarn workspace pkg build`.")
+        checker = run_checker(tmp_path, doc)
+        assert not checker.findings and checker.checked == 1
+
+    def test_yarn_workspace_bare_unknown_script_is_warning(self, tmp_path):
+        # The short form may also target a binary, and binaries may simply
+        # not be installed here — so unknown names warn instead of failing.
+        write(tmp_path, "pkg/package.json",
+              '{"name": "pkg", "scripts": {"build": "x"}}')
+        doc = write(tmp_path, "AGENTS.md",
+                    "Use `yarn workspace pkg no-such-cmd-abcxyz`.")
+        checker = run_checker(tmp_path, doc)
+        assert not errors(checker)
+        assert cited(warnings(checker)) == [
+            "yarn workspace pkg no-such-cmd-abcxyz"]
+
+    def test_yarn_workspace_bare_binary_not_judged(self, tmp_path):
+        # A run-less token that resolves as an installed binary is yarn's
+        # other meaning of the shorthand — clean, not a dead script.
+        write(tmp_path, "pkg/package.json",
+              '{"name": "pkg", "scripts": {"build": "x"}}')
+        write(tmp_path, "node_modules/.bin/tsc")
         doc = write(tmp_path, "AGENTS.md", "Use `yarn workspace pkg tsc`.")
         checker = run_checker(tmp_path, doc)
         assert not checker.findings
+
+    def test_yarn_builtin_after_workspace_not_judged(self, tmp_path):
+        write(tmp_path, "pkg/package.json",
+              '{"name": "pkg", "scripts": {"build": "x"}}')
+        doc = write(tmp_path, "AGENTS.md", "Use `yarn workspace pkg add lodash`.")
+        checker = run_checker(tmp_path, doc)
+        assert not checker.findings
+
+    def test_yarn_nonexistent_workspace_is_error(self, tmp_path):
+        # F1's observed escape: `yarn workspace nonexistent-package build`
+        # passed silently because unresolvable workspaces were skipped. The
+        # positional value IS a workspace name, so a dead one is an error.
+        write(tmp_path, "pkg/package.json",
+              '{"name": "pkg", "scripts": {"build": "x"}}')
+        doc = write(tmp_path, "AGENTS.md",
+                    "Run `yarn workspace nonexistent-package build`.")
+        checker = run_checker(tmp_path, doc)
+        assert cited(errors(checker)) == ["yarn workspace nonexistent-package"]
 
     def test_pnpm_filter_resolves_workspace(self, tmp_path):
         write(tmp_path, "packages/cli/package.json",
@@ -915,6 +1043,21 @@ class TestMain:
                                                  capsys):
         assert self.run_main(monkeypatch, [str(tmp_path / "nope.md")]) == 2
         capsys.readouterr()
+
+    def test_verbose_lists_skipped_tokens(self, tmp_path, monkeypatch, capsys):
+        write(tmp_path, "AGENTS.md", "Bundled via `extension/esbuild.mjs`.")
+        assert self.run_main(monkeypatch, ["--verbose", str(tmp_path)]) == 0
+        out = capsys.readouterr().out
+        assert "extension/esbuild.mjs" in out and "Not judged" in out
+
+    def test_skip_count_hints_at_verbose(self, tmp_path, monkeypatch, capsys):
+        # Without --verbose the boundary is still visible as a count, so a
+        # clean run no longer reads as "everything cited was checked".
+        write(tmp_path, "AGENTS.md", "Bundled via `extension/esbuild.mjs`.")
+        assert self.run_main(monkeypatch, [str(tmp_path)]) == 0
+        out = capsys.readouterr().out
+        assert "1 token(s) not judged (--verbose lists them)" in out
+        assert "extension/esbuild.mjs" not in out
 
     def test_repo_without_docs_exits_zero(self, tmp_path, monkeypatch, capsys):
         assert self.run_main(monkeypatch, [str(tmp_path)]) == 0

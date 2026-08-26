@@ -28,7 +28,7 @@ docs/
 └── quality-score.md          # per-domain quality grades, tracked over time
 ```
 
-Everything is indexed and cross-linked; AGENTS.md points into it; CI validates the knowledge base is current and structurally correct (`check_docs.py` covers commands and paths); a doc-gardening agent handles semantic staleness.
+Everything is indexed and cross-linked; AGENTS.md points into it; CI validates the knowledge base is current and structurally correct (the skill's `check_docs.py` covers the command/path/graph slice when a session runs it); a doc-gardening agent handles semantic staleness.
 
 ## Routing a fact to its artifact
 
@@ -148,6 +148,8 @@ A library or framework repo serves **two agent audiences over disjoint channels*
 6. Provenance on anything mirrored from outside.
 
 **The external-pointer rule.** Link out only where the agent has a fetch path (`gh` CLI for issues/PRs, an MCP connector for the tracker); otherwise the target is invisible and the pointer is dead weight. Pattern: pointer + one-line mirrored summary + provenance link. Never vendor full copies — they drift, and drifted copies actively misinform (see the AX standards).
+
+**The cross-repo reference rule.** A file in a sibling repository cited as a plain path (`docs/design-docs/edge-routing.md`) is indistinguishable from a local path: freshness checks fail it — or worse, a same-named local file makes it pass while meaning the wrong file. Write sibling-repo citations as `repo:path` (e.g. `` `sprotty:docs/design-docs/edge-routing.md` ``), naming the repo by its checkout directory name. `check_docs.py` understands the form: it verifies the path inside a sibling checkout (`../repo`) when one exists and skips it otherwise (`--verbose` lists such skips), and the prefix guarantees the reference is never mistaken for a local path. Where no sibling-checkout convention exists, fall back to the external-pointer rule above — a URL plus a one-line mirrored summary.
 
 ## Sources
 

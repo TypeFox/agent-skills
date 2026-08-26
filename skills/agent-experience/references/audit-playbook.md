@@ -57,13 +57,15 @@ For each: record the exact working invocation, required flags, prerequisite serv
 
 Timings measured in a warm working copy — dependencies installed, caches hot, builds incremental — understate what a fresh clone or agent sandbox pays. Label every timing **warm** or **fresh**; force freshness where it's cheap (a `clean` before the build, which also verifies the clean command); and never extrapolate a number you didn't measure — an invented timing is a fabrication like any other. Where install cost matters, a fresh-clone probe in a temp directory is the honest measurement.
 
+Exit codes are evidence too — capture them unpiped: `cmd | tail` reports the pipe's exit status, not the command's, so a failing check piped through a pager or filter records a misleading 0.
+
 Record along the way:
 
 - **Discrepancies** between documented and actual commands — first-class findings. They seed the fix list, the doc-gardening backlog, and the `check_docs.py` CI check. Repair immediately only when the fix is answer-independent — unambiguous breakage with exactly one correct repair. Anything whose *why* is still open gets a `(to be confirmed)` marker instead: the interview routinely invalidates early repairs, and a repair that needs a rationale you don't have invites inventing one.
 - **Sandbox friction**: network access needed mid-build, credentials, OS assumptions, services that must already be running. Sandboxability gaps are AX gaps — anything the agent needs should stand up inside a coding-agent sandbox without ceremony.
 - **Affordance probes** (they set what the roadmap can reach): Is the language typed — is type checking a free sensor, or is adding types a prerequisite investment? Are module boundaries clean enough to express as import rules? Does a constraining framework provide conventions the agent can lean on? Are build/test tools fast enough for in-session feedback?
 
-Run `scripts/check_docs.py <repo-root>` over existing agent docs to mechanically catch cited-but-missing commands and paths. Discovery skips gitignored files; pass `--exclude <glob>` for tracked docs that are intentionally broken (test fixtures, example corpora). It exits non-zero if gitignore filtering discarded every doc it found — a gate that silently discovers nothing would otherwise report success forever. (The Phase 5 CI install adds `--require-docs`, which extends that guarantee to docs deleted or renamed outright; during the audit itself, a repo with no agent docs yet is a normal state, not a failure.)
+Run `scripts/check_docs.py <repo-root>` over existing agent docs to mechanically catch cited-but-missing commands and paths. Discovery skips gitignored files; pass `--exclude <glob>` for tracked docs that are intentionally broken (test fixtures, example corpora). It exits non-zero if gitignore filtering discarded every doc it found — a gate that silently discovers nothing would otherwise report success forever. (During the audit itself, a repo with no agent docs yet is a normal state, not a failure; on a re-audit of a repo known to have agent docs, add `--require-docs` so docs deleted or renamed outright fail too.) The script runs from the skill against the target repo — never copy it into the repo: a copy stops evolving with the skill.
 
 **Done when** a verified command block exists (exact invocations + timings), backed by captured output, with discrepancies and friction listed.
 
@@ -90,7 +92,7 @@ A quick yes/no pass to spot obvious neglect — useful in Phase 1 to orient and 
 4. Scope boundaries stated (never-touch files, generated dirs, secrets policy)?
 5. Definition of done stated (what proof before claiming completion; which artifacts must accompany each kind of change)?
 6. Fast in-session sensors exist (typecheck, lint, fast tests) and CI mirrors them?
-7. Docs freshness is mechanically checked (commands/paths verified, e.g. `check_docs.py` in CI)?
+7. Docs freshness is mechanically checked (cited commands and paths verified — a recurring `check_docs.py` run, or the repo's own tooling)?
 8. Monorepo/large repo: nested per-package agent files where the root map can't carry the detail?
 
 **Scores are proxies.** A repo can pass every mechanical check and remain miserable to work in — an accurate-but-unhelpful AGENTS.md, a fast suite that tests nothing, documented-but-violated boundaries. Use readiness checks like coverage numbers: excellent for revealing neglect, useless to maximize. The honest test stays: ticket in, green suite and accepted diff out, reliably.
@@ -102,7 +104,7 @@ Default order, foundational → sophisticated. Each step is small and individual
 1. **Verified command surface + hand-written root AGENTS.md + CLAUDE.md projection.** The map and the verbs. Highest leverage, lowest cost.
 2. **Fast in-session sensors**: typecheck, lint with agent-failure-mode rules, fast tests, secrets scan in pre-commit — each with self-correction messages.
 3. **Boundaries and definition-of-done** in AGENTS.md; CI mirrors the in-session sensors.
-4. **Minimal docs/ nucleus** per the Phase 3 triage (usually `docs/ARCHITECTURE.md` + `docs/adr/` + `docs/exec-plans/`) + doc-freshness checks (`check_docs.py` in CI).
+4. **Minimal docs/ nucleus** per the Phase 3 triage (usually `docs/ARCHITECTURE.md` + `docs/adr/` + `docs/exec-plans/`) + a recurring doc-freshness routine (re-run the skill's `check_docs.py` in re-audit sessions; a CI-installable check waits on the checker shipping through a package registry — never copy the script into the repo).
 5. **Structural rules** encoding the layer diagram (dependency-cruiser / ArchUnit / import-linter), plus the new-file-must-live-in-known-structure rule.
 6. **Skills** for the recurring procedures discovered in the audit (how-to-test, review, release, bootstrap).
 7. **Scheduled inferential sensors** (modularity review, security/data review, doc-gardening) and a GC cadence.

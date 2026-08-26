@@ -11,12 +11,19 @@ relative markdown links from the docs and verifies each against the repo.
 What is checked
 - task-runner invocations resolve: `npm run X` / `npm test|start` /
   `yarn|pnpm run X` against package.json scripts — workspace-targeted forms
-  (`npm run X -w ws`, `pnpm --filter ws run X`, `yarn workspace ws run X`)
-  against the named workspace's package.json — `make X` against Makefile
-  targets, `just X` against justfile recipes
+  (`npm run X -w ws`, `pnpm --filter ws run X`, `yarn workspace ws run X`,
+  and yarn's run-less shorthand `yarn workspace ws X`) against the named
+  workspace's package.json. A yarn workspace name that matches no package is
+  itself an error — the value is positional and unambiguous. A shorthand
+  token that is neither a script nor a findable binary is a warning, not an
+  error, because the binary may simply not be installed here
 - script invocations point at existing files: `python foo.py`, `node foo.js`,
   `bash foo.sh`, `./foo`
 - backtick-quoted repo paths exist (root-relative or doc-relative)
+- cross-repo references written as `repo:path` (backticked or as link
+  targets) resolve inside a sibling checkout `../repo` when one exists, and
+  are skipped otherwise — the explicit form also keeps a sibling-repo path
+  from being mistaken for (or coincidentally matching) a local one
 - relative markdown link targets exist
 - intra-document anchor links (`[…](#section)`) resolve to a heading or
   explicit id in the same file
@@ -39,13 +46,17 @@ The matcher is conservative by design: false negatives over false positives.
 Tokens with placeholders (<...>, {...}, $VAR, *), URLs, absolute paths, and
 build-output dirs (dist/, build/, ...) are skipped. A clean run therefore does
 not prove the docs are complete — only that nothing cited is verifiably dead.
+--verbose lists every token that was seen but deliberately not judged, with
+the reason — the coverage boundary made visible, so an author can tell
+"checked and fine" apart from "never checked at all".
 
 Usage
     check_docs.py [REPO_ROOT]            # discover and check agent docs
     check_docs.py FILE.md [FILE.md ...]  # check specific files
     check_docs.py --strict ...           # promote warnings to errors
+    check_docs.py --verbose ...          # also list tokens seen but not judged
     check_docs.py --exclude 'fixtures/*' .   # skip fixture docs by glob
-    check_docs.py --require-docs .       # fail when no docs are found (CI)
+    check_docs.py --require-docs .       # fail when no docs are found
 Discovery skips gitignored files (when root is its own work tree, or a
 non-ignored directory inside one) and any repo-relative path matched by an
 --exclude glob — deliberately-broken fixtures and generated workspaces would
@@ -53,13 +64,14 @@ otherwise fail the check. Files named explicitly on the command line are
 always checked. If filtering removes every doc it found, that is an error
 rather than a quiet pass: a gate that discovers nothing reports success
 forever.
-Exit code: 1 if any error (CI-gate ready), 0 otherwise.
+Exit code: 1 if any error, 0 otherwise.
 
-To install as a CI gate, copy this file into the target repo (e.g. scripts/)
-and add a job step:  python3 scripts/check_docs.py --require-docs .
-(--require-docs makes a run that checks nothing fail: without it, deleting or
-renaming the last agent doc returns the gate to "nothing to check", exit 0,
-forever.)
+Run this script from the skill against the target repo — do not copy it into
+target repos: a copy stops evolving with the original. (Distribution through a
+package registry, so CI could install it, is future work.) On a re-audit of a
+repo known to have agent docs, add --require-docs so a run that checks nothing
+fails: without it, deleting or renaming the last agent doc returns the check
+to "nothing to check", exit 0, forever.
 Python 3.8+, stdlib only.
 """
 
@@ -87,6 +99,15 @@ SHELL_BUILTINS = {"cd", "export", "source", "echo", "set", "exit", "true",
                   "false", "alias", "unset", "eval", "exec", "trap", "wait",
                   "if", "then", "else", "fi", "for", "while", "do", "done",
                   "case", "esac", "time", "env", "sudo", "watch", "xargs"}
+# Yarn built-in subcommands that may legitimately follow `yarn workspace ws`
+# without naming a package.json script (`yarn workspace ws add lodash`).
+# Anything else in that position is yarn's run-less script/binary shorthand.
+YARN_COMMANDS = {"add", "remove", "upgrade", "upgrade-interactive", "up",
+                 "link", "unlink", "pack", "publish", "version", "versions",
+                 "info", "install", "audit", "outdated", "why", "licenses",
+                 "list", "exec", "node", "dlx", "bin", "cache", "config",
+                 "set", "run", "create", "init", "import", "help", "global",
+                 "workspace", "workspaces", "focus"}
 DOC_NAMES = {"AGENTS.md", "AGENTS.override.md", "CLAUDE.md", "GEMINI.md"}
 
 INLINE_CODE = re.compile(r"`([^`\n]+)`")
@@ -426,6 +447,33 @@ def looks_like_path(token: str):
     return ext.lower() in KNOWN_EXTS
 
 
+CROSS_REPO = re.compile(r"^([A-Za-z0-9][A-Za-z0-9._-]*):([A-Za-z0-9._/#-]+)$")
+
+
+def split_cross_repo(token: str):
+    """(repo, path) when token is a `repo:path` cross-repo reference, else None.
+
+    The colon form is the explicit idiom for citing a file in a sibling
+    checkout: a sibling path written plainly is indistinguishable from a local
+    one — it fails the local check, or worse, a same-named local file makes it
+    pass while meaning the wrong file. Only tokens whose tail looks like a
+    file reference qualify, so `12:30`, `key:value`, URI schemes, and Windows
+    drive paths stay out.
+    """
+    m = CROSS_REPO.match(token)
+    if not m:
+        return None
+    repo, path = m.groups()
+    if path.startswith(("/", "./", "-")) or ".." in path:
+        return None
+    tail = path.rstrip("/").split("#")[0].split("/")[-1]
+    ext = tail.rsplit(".", 1)[-1] if "." in tail else ""
+    if not (path.endswith("/") or tail in KNOWN_FILES
+            or ext.lower() in KNOWN_EXTS):
+        return None
+    return repo, path
+
+
 def first_segment_anchored(token: str, root: Path, doc_dir: Path):
     """For slash paths: only judge tokens whose first segment exists as a dir
     (otherwise it may be a MIME type, URL fragment, etc. — skip)."""
@@ -459,9 +507,19 @@ class Checker:
     def __init__(self, root: Path):
         self.root = root
         self.findings = []
+        self.skipped = []  # (rel, lineno, token, reason) — seen, not judged
         self.checked = 0
         self._adr_index = None
         self._pkg_index = None
+
+    def note_skip(self, rel, lineno, token, reason):
+        """Record a token the matcher saw but deliberately did not judge.
+
+        Silent skips are the coverage gap F-class: a doc author reads a clean
+        run as "everything cited was checked" while the checker never judged
+        the token at all. --verbose surfaces this list.
+        """
+        self.skipped.append((rel, lineno, token, reason))
 
     def check_file(self, doc: Path):
         doc_dir = doc.parent
@@ -506,7 +564,7 @@ class Checker:
                 if " " in span:
                     self.check_command_line(span, rel, lineno, doc_dir, npm, make, just,
                                             which_check=False)
-                elif looks_like_path(span):
+                elif looks_like_path(span) or split_cross_repo(span):
                     self.check_path(span, rel, lineno, doc_dir)
             for m in MD_LINK.finditer(line):
                 target = m.group(1)
@@ -514,6 +572,12 @@ class Checker:
                     self.check_anchor(target, rel, lineno, anchors)
                 elif (not target.startswith(("http", "mailto:", "/"))
                         and not SKIP_CHARS & set(target)):
+                    xr = split_cross_repo(target)
+                    if xr:
+                        self.check_cross_repo(xr, target, rel, lineno)
+                        continue
+                    if re.match(r"^[A-Za-z][A-Za-z0-9+.-]*:", target):
+                        continue  # URI scheme (tel:, vscode:, …), not a path
                     clean = target.split("#")[0]
                     if clean and not (doc_dir / clean).exists() and not (self.root / clean).exists():
                         self.checked += 1
@@ -610,6 +674,28 @@ class Checker:
                 except (json.JSONDecodeError, OSError):
                     return None
         return self.package_index().get(ws)
+
+    def workspace_exists(self, ws, doc_dir):
+        """Whether ws names a package in this repo — by directory or by name.
+        Distinct from workspace_scripts returning None: a package.json that
+        exists but fails to parse is a real workspace with unknowable
+        scripts, not a dead reference."""
+        ws = ws.rstrip("./")
+        return (any((base / ws / "package.json").is_file()
+                    for base in (self.root, doc_dir))
+                or ws in self.package_index())
+
+    def binary_available(self, name, ws, doc_dir):
+        """Whether a node binary of this name is findable — hoisted or
+        workspace-local node_modules/.bin, or PATH. Absence is weak evidence
+        (nothing may be installed here), which is why the caller warns rather
+        than fails on it."""
+        for base in (self.root, doc_dir):
+            for d in (base / "node_modules" / ".bin",
+                      base / ws.rstrip("./") / "node_modules" / ".bin"):
+                if (d / name).exists():
+                    return True
+        return shutil.which(name) is not None
 
     def package_index(self):
         """Package name → scripts for every package.json under the repo root
@@ -749,19 +835,57 @@ class Checker:
         return found
 
     def check_path(self, token, rel, lineno, doc_dir):
+        xr = split_cross_repo(token)
+        if xr:
+            self.check_cross_repo(xr, token, rel, lineno)
+            return
+        if "/" in token and token.lstrip("./").split("/")[0] in BUILD_DIRS:
+            self.note_skip(rel, lineno, token,
+                           "under a build/output directory, which may "
+                           "legitimately not exist — not judged")
+            return
         # Slash tokens are only judged when their first segment is a real
         # directory (else `application/json` and friends false-positive) —
         # except .md references, which are unambiguous doc cross-links.
         if ("/" in token and not token.endswith(".md")
                 and not first_segment_anchored(token, self.root, doc_dir)):
-            return
-        if "/" in token and token.lstrip("./").split("/")[0] in BUILD_DIRS:
+            seg = token.lstrip("./").split("/")[0]
+            self.note_skip(rel, lineno, token,
+                           f'first segment "{seg}" is not a directory next '
+                           f"to this doc or at the repo root, so this may "
+                           f"not be a repo path — not judged; if it is one, "
+                           f"cite it relative to this doc or the root")
             return
         self.checked += 1
         if not path_exists(token, self.root, doc_dir):
             self.findings.append(Finding(
                 "error", rel, lineno, token, "this path does not exist in the repo.",
                 "correct the path, restore the file, or remove the stale reference."))
+
+    def check_cross_repo(self, xr, token, rel, lineno):
+        """Judge a `repo:path` reference against a sibling checkout ../repo.
+
+        Without the sibling checked out there is nothing to judge against, so
+        the token is skipped (visible under --verbose) rather than failed —
+        the explicit form has already done its other job of never being
+        mistaken for a local path.
+        """
+        repo, path = xr
+        sibling = self.root.parent / repo
+        if not sibling.is_dir():
+            self.note_skip(rel, lineno, token,
+                           f'cross-repo reference — no sibling checkout "../'
+                           f'{repo}" to judge it against')
+            return
+        self.checked += 1
+        clean = path.rstrip("/").split("#")[0]
+        if not (sibling / clean).exists():
+            self.findings.append(Finding(
+                "error", rel, lineno, token,
+                f'the sibling checkout of "{repo}" has no "{clean}".',
+                "correct the path, or update the sibling checkout if it is "
+                "stale — cross-repo references are judged whenever the named "
+                "repo is checked out next to this one."))
 
     def check_command_line(self, line, rel, lineno, doc_dir, npm, make, just,
                            which_check):
@@ -806,17 +930,57 @@ class Checker:
             if ws is not None:
                 npm = self.workspace_scripts(ws, doc_dir)
                 if npm is None:
-                    return  # unresolvable workspace — skip rather than guess
+                    if ws == "*" or SKIP_CHARS & set(ws) or ws.startswith("!"):
+                        return  # placeholder / every-workspace — nothing to judge
+                    if head == "yarn" and not self.workspace_exists(ws, doc_dir):
+                        # yarn's form is positional and unambiguous: the value
+                        # IS a workspace name, so one that matches no package
+                        # is a dead reference, not an unparseable filter.
+                        self.checked += 1
+                        fail(f"yarn workspace {ws}",
+                             f'no workspace named "{ws}" exists in this repo'
+                             f"{suggest(ws, self.package_index())}.",
+                             "correct the workspace name, or add the package "
+                             "the doc refers to.")
+                    else:
+                        self.note_skip(rel, lineno, f"{head} … {ws}",
+                                       f'workspace "{ws}" could not be '
+                                       f"resolved to a package.json — the "
+                                       f"script was not judged")
+                    return
+            bare = False
             script = None
             if rest[:1] == ["run"] and len(rest) > 1:
                 script = rest[1]
             elif rest[:1] in (["test"], ["start"]):
                 script = rest[0]
+            elif (head == "yarn" and ws is not None and rest
+                  and not rest[0].startswith("-")
+                  and rest[0] not in YARN_COMMANDS):
+                # yarn allows omitting `run`: `yarn workspace ws build`. The
+                # token may name a script or an installed binary — scripts are
+                # judged here, unknown names fall back to a binary lookup.
+                script, bare = rest[0], True
             if "--if-present" in rest:
                 script = None  # missing script is explicitly tolerated
             if script and npm is not None:
                 self.checked += 1
-                if script not in npm:
+                if script in npm:
+                    pass
+                elif bare:
+                    if not self.binary_available(script, ws, doc_dir):
+                        self.findings.append(Finding(
+                            "warning", rel, lineno,
+                            f"yarn workspace {ws} {script}",
+                            f'workspace "{ws}"\'s package.json has no script '
+                            f'"{script}"{suggest(script, npm)}, and no binary '
+                            f"of that name is findable (node_modules/.bin, "
+                            f"PATH).",
+                            "if this names a script, correct it; if it names "
+                            "a binary this environment merely lacks, ignore — "
+                            "or use the explicit `run` form, which is judged "
+                            "strictly."))
+                else:
                     where = (f'workspace "{ws}"\'s package.json' if ws
                              else "package.json")
                     fail(f"{head} {'run ' if rest[:1] == ['run'] else ''}{script}",
@@ -865,6 +1029,12 @@ def main():
     ap.add_argument("--strict", action="store_true",
                     help="treat warnings (PATH lookups, missing Makefile, "
                          "unverified generalizations) as errors")
+    ap.add_argument("--verbose", "-v", action="store_true",
+                    help="also list tokens that were seen but not judged "
+                         "(unanchored paths, build-dir paths, unresolvable "
+                         "workspaces, cross-repo references without a sibling "
+                         "checkout) — the coverage boundary a clean run says "
+                         "nothing about")
     ap.add_argument("--exclude", action="append", default=[], metavar="GLOB",
                     help="skip discovered docs whose repo-relative path matches "
                          "this glob (repeatable; * also crosses '/'); files "
@@ -938,8 +1108,20 @@ def main():
     warnings = [f for f in checker.findings if f.level == "warning"]
     for f in errors + warnings:
         print(f.render(), end="\n\n")
-    print(f"check_docs: {len(docs)} doc(s), {checker.checked} reference(s) checked — "
-          f"{len(errors)} error(s), {len(warnings)} warning(s).")
+    if args.verbose and checker.skipped:
+        print(f"Not judged — {len(checker.skipped)} token(s) the matcher saw "
+              f"but deliberately did not check:")
+        for rel, lineno, token, reason in checker.skipped:
+            print(f"  ~ {rel}:{lineno} — `{token}` — {reason}")
+        print()
+    summary = (f"check_docs: {len(docs)} doc(s), {checker.checked} "
+               f"reference(s) checked — {len(errors)} error(s), "
+               f"{len(warnings)} warning(s)")
+    if checker.skipped:
+        summary += f", {len(checker.skipped)} token(s) not judged"
+        if not args.verbose:
+            summary += " (--verbose lists them)"
+    print(summary + ".")
     if errors or (args.strict and warnings):
         print("Result: FAIL — the docs cite things that don't exist; fix the "
               "docs or the repo so agents stop inheriting dead instructions.")
