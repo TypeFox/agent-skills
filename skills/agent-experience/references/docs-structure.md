@@ -28,7 +28,7 @@ docs/
 └── quality-score.md          # per-domain quality grades, tracked over time
 ```
 
-Everything is indexed and cross-linked; AGENTS.md points into it; CI validates the knowledge base is current and structurally correct (`check_docs.py` covers commands and paths); a doc-gardening agent handles semantic staleness.
+Everything is indexed and cross-linked; AGENTS.md points into it; CI validates the knowledge base is current and structurally correct (the skill's `check_docs.py` covers the command/path/graph slice when a session runs it); a doc-gardening agent handles semantic staleness.
 
 ## Routing a fact to its artifact
 
@@ -98,6 +98,8 @@ Agent-specific wiring:
 
 `docs/product-specs/` holds **current intended behaviour, one file per capability** — a stable feature area (auth, routing, checkout), never a change (change-shaped state is an exec plan). Its job is **adjudication**: when a test fails or behaviour surprises, the spec answers the one question code cannot answer about itself — *bug or intended?* That role is also why staleness is disqualifying here: agents that have just read a doc are measurably *less* likely to verify by running things, so a stale spec doesn't merely mislead — it displaces the check that would have caught it.
 
+How much a spec must carry scales with review autonomy: while a human reviews every diff, a thin spec is recoverable — the reviewer catches what it omits; the more changes land without review, the more the spec is the only thing standing between intent and output, so it earns behaviour promises, edge cases, and (where the *how* matters) the intended approach.
+
 A spec must earn three things, and the triage below exists to enforce that:
 
 - **Existence** — it states human-held intent the code can't reveal: purpose, behaviour promises, deliberate non-promises, tolerated limitations. A spec inferred from the code restates the code — redundant on day one, contradicting it after the next refactor. The AGENTS.md generation evidence (see `agents-md.md`) applies with full force to docs/.
@@ -146,8 +148,11 @@ A library or framework repo serves **two agent audiences over disjoint channels*
 4. Explicit lifecycle on everything: active/completed for plans, accepted/superseded for ADRs, trust labels on design docs, same-change behaviour coupling for product specs.
 5. Docs merge through review like code; agents may draft, humans (or reviewer agents) adjudicate.
 6. Provenance on anything mirrored from outside.
+7. Stability gradient: the root map changes rarely; detail docs change with the code. Detail-doc bulk is licensed only by an enforced update loop — the steering loop's coupling (SKILL.md) or a doc-gardening cadence; a detailed doc with no loop is drift with a head start.
 
 **The external-pointer rule.** Link out only where the agent has a fetch path (`gh` CLI for issues/PRs, an MCP connector for the tracker); otherwise the target is invisible and the pointer is dead weight. Pattern: pointer + one-line mirrored summary + provenance link. Never vendor full copies — they drift, and drifted copies actively misinform (see the AX standards).
+
+**The cross-repo reference rule.** A file in a sibling repository cited as a plain path (`docs/design-docs/edge-routing.md`) is indistinguishable from a local path: freshness checks fail it — or worse, a same-named local file makes it pass while meaning the wrong file. Write sibling-repo citations as `repo:path` (e.g. `` `sprotty:docs/design-docs/edge-routing.md` ``), naming the repo by its checkout directory name. `check_docs.py` understands the form: it verifies the path inside a sibling checkout (`../repo`) when one exists and skips it otherwise (`--verbose` lists such skips), and the prefix guarantees the reference is never mistaken for a local path. Where no sibling-checkout convention exists, fall back to the external-pointer rule above — a URL plus a one-line mirrored summary.
 
 ## Sources
 

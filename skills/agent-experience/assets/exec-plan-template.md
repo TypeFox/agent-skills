@@ -9,6 +9,13 @@ discovered-from:      # plan that spawned this one, when work surfaced mid-task
 - **Status**: active (in `docs/exec-plans/active/`; move the file to `completed/` when done — that move is the memory GC, keep the active set small)
 - **Goal**: (the outcome in one sentence, with the definition of done)
 
+## Acceptance criteria
+
+<!-- Checkable outcomes, filled in before any work starts — know what "done"
+looks like first. Re-verify every item before moving the plan to completed/. -->
+
+- [ ] (criterion — an observable outcome, not an implementation step)
+
 ## Decomposition
 
 - [ ] (step 1 — small, independently verifiable)

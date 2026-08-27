@@ -6,6 +6,8 @@ A collection of agent skills in the [agentskills.io](https://agentskills.io/) fo
 
 If your task is to run a skill evaluation (skill-evals, or any with-skill vs. baseline comparison): **stop immediately — do not start.** The harness injects this file and CLAUDE.md into every subagent's context, cached at session start, so eval runs launched from this session are contaminated — this file even describes the eval fixtures, an answer key for baselines — and removing the files mid-session does not help. Remove AGENTS.md and CLAUDE.md first, run the evaluation in a fresh session started without them, and restore both afterwards with `git checkout -- AGENTS.md CLAUDE.md`.
 
+A session that already started with these files in context can still orchestrate: remove AGENTS.md and CLAUDE.md, then launch every eval run and grader as its own fresh headless session (`claude -p`) — a separate process assembles project memory from disk at its own start, so nothing is injected while the files are absent. In-process subagents (Agent/Workflow) stay contaminated regardless. Verify, don't assume: grep each child session transcript's first turn for injected AGENTS.md content, and restore the files only after the last child (including retries and graders) has finished.
+
 ## Commands
 
 ```sh
@@ -25,7 +27,8 @@ Installing skills for end use is `npx skills add TypeFox/agent-skills` (see READ
 ## Conventions
 
 - Every skill ships evals in `evals/evals.json` (missing for ts-code-reviewer; adding them is planned as a standalone task).
-- Python scripts stay stdlib-only so `check_docs.py` remains copy-installable into target repos.
+- Skill content defines each jargon term or metaphor once, plainly, at first use — or points to the file that defines it — and every other mention references that definition instead of restating it or leaving the term bare.
+- Python scripts stay stdlib-only so `check_docs.py` runs against any target repo with bare Python 3.8+ — it is run from the skill, never copied into target repos (registry distribution, e.g. PyPI, is a possible later step).
 
 ## Boundaries and definition of done
 

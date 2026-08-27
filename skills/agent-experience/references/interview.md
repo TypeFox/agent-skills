@@ -17,21 +17,25 @@ Questions investigate **intent, scope, technical architecture, workflow, risk ap
 
 ## Core protocol
 
-Interview **relentlessly** until shared understanding — depth is licensed, not rude; sustained interrogation surfaces requirements the user didn't know they had. The rules that make it work:
+Interview **relentlessly** until shared understanding — depth is licensed, not rude; sustained interrogation surfaces requirements the user didn't know they had. Map the open markers as a **design tree** — every decision branches into the decisions that hang off it (stack before boundaries; boundaries before quality bars) — and work it in **rounds**:
 
-- **Termination is a goal, not a count**: continue until you're confident you understand the underlying intent — then stop.
-- **Walk the decision tree in dependency order.** Decisions have prerequisites; resolve each branch before the branches that depend on it (stack before boundaries; boundaries before quality bars). Don't fire questions randomly.
-- **One question at a time** — protects the user's working memory and yields clean, attributable answers. Where the runtime's question tool presents a batch with option lists, one *themed batch* per call is the faithful adaptation: a single theme, dependency-ordered within it, never mixed themes.
+- **Ask the frontier, wait, recompute.** The frontier is every question whose prerequisites are already settled — what you can ask *now* without guessing at answers you haven't heard yet. Ask the whole frontier in one round, numbered so answers stay attributable; a question whose answer depends on another question still open in this round belongs to a *later* round. Each round's answers reshape the tree: settled decisions push the frontier outward and unblock what depended on them. Where the runtime's question tool caps a batch, a round spans several calls — the round boundary is dependency, never the tool's batch size.
 - **Recommended answer with every question.** Transform open questions into confirm/correct decisions: "Based on your CI config, I'd say deploys are the sensitive path — correct?" This is cheaper for the user and shows your repo analysis. Use the native question tool with options where available, the recommended answer listed first.
+- **Facts are your job; decisions are the user's.** A frontier question that turns out to need an environment fact goes back to the repo (or a subagent), never to the user — and an in-flight lookup is just an unsettled prerequisite: only its downstream questions wait for it; ask the rest of the frontier now.
 - **Escalate depth on signal**: follow up on a brief answer only where a downstream decision depends on it — when a branch is blocked, not for completeness.
+- **Termination is an empty frontier, not a count**: the interview is done when every branch has been visited and nothing is left silently assumed — then stop.
 
 ## Session mechanics
 
 - **Draft-with-placeholders first** (Phase 3), then interview *only the markers*. The draft is the agenda; update it live after each answer.
-- **Batch by theme**, resolving each theme's branch before moving on: commands & environment → boundaries → conventions → quality bars → docs & memory → workflow.
-- **Progress counter**: `[Question 4/9]` keeps the user oriented and fatigue visible; with a batching question tool, embed it in the question text (`[Batch 2/3 — conventions, question 1/4]`).
+- **Group each round by theme** for legibility: commands & environment → boundaries → conventions → quality bars → docs & memory → workflow. The order tracks the dependency structure, so themes usually *are* the rounds — but the round boundary is dependency, and a round mixes themes freely when everything in it is genuinely unblocked.
+- **Progress counter**: `[Round 2 — question 4/6]` keeps the user oriented and fatigue visible; with a batching question tool, embed it in the question text.
 - **Fatigue management**: order by impact; accept "skip / don't know / decide later" and record it as an explicit open question in the target doc — an honest unknown beats a fabricated certainty. Offer to pause; state lives in the draft, so resuming is free.
 - **Write-as-you-go (the critical rule).** Agent statelessness erases anything not captured: every answer lands in its destination file *immediately* — an AGENTS.md line, an ADR, a boundary entry — never in a summary to file later. An interrupted session then resumes exactly where it stopped.
+
+## Unattended sessions
+
+An autonomous harness ("the user cannot answer mid-task questions") or a headless run inverts the pacing, not the protocol: front-load all drafting, settling every prerequisite yourself with labeled defaults, and pre-record every marker as an open question in its destination artifact — the artifacts must be complete even if no answer ever comes. What remains is then a single frontier; ask it as one final round if a question channel exists at all. Where none does — or the knowledge-holder is someone other than whoever launched the run — ship the open questions as a **questionnaire** artifact instead of scattered markers: one document, questions most-important-first (async may get exactly one pass), an answer stub under each, a one-line *why this matters* wherever a question could be misread or invite a throwaway answer. The next attended session (or the knowledge-holder directly) fills it in, and the answers land through the theme→destination map as usual.
 
 ## Theme → destination map
 
@@ -48,6 +52,8 @@ Interview **relentlessly** until shared understanding — depth is licensed, not
 | Quality bars, risk appetite per area | sensor thresholds; quality-score.md seeds |
 | Org policy (security, data) | security-guidelines.md + derived review prompts |
 | Terminology | glossary in design-docs |
+
+Answers that *reject* a recommendation may produce no artifact of their own but are decisions like any other: record them with rationale in the exec plan's decision log — or an ADR when architectural — so the next session doesn't re-propose what the user already declined.
 
 ## Spec and design-doc triage *(retrofit, improve)*
 
@@ -89,5 +95,5 @@ Greenfield is also where fabrication is cheapest: with no repo to contradict you
 
 ## Sources
 
-- Pocock — the "grill-me" pattern: https://www.aihero.dev/my-grill-me-skill-has-gone-viral
+- Pocock — the "grill-me" pattern: https://www.aihero.dev/my-grill-me-skill-has-gone-viral — and its living form, the `grilling` (frontier rounds) and `to-questionnaire` (async questionnaire) skills: https://github.com/mattpocock/skills/tree/main/skills/productivity
 - agentpatterns — grill-me anti-patterns (why output must feed durable artifacts): https://www.agentpatterns.ai/agent-design/grill-me-technique/
