@@ -44,7 +44,11 @@ What is checked
 
 The matcher is conservative by design: false negatives over false positives.
 Tokens with placeholders (<...>, {...}, $VAR, *), URLs, absolute paths, and
-build-output dirs (dist/, build/, ...) are skipped. A clean run therefore does
+build-output dirs (dist/, build/, ...) are skipped. So is an extension-less
+`./name` in prose that resolves nowhere: that shape is how docs cite
+illustrative import specifiers (`./BlogArticleCard`), whose anchor folder is
+named in the surrounding prose, not the repo root — in command position
+`./name` is an executable claim and stays judged. A clean run therefore does
 not prove the docs are complete — only that nothing cited is verifiably dead.
 --verbose lists every token that was seen but deliberately not judged, with
 the reason — the coverage boundary made visible, so an author can tell
@@ -834,7 +838,7 @@ class Checker:
                 found.append(tok)
         return found
 
-    def check_path(self, token, rel, lineno, doc_dir):
+    def check_path(self, token, rel, lineno, doc_dir, command_pos=False):
         xr = split_cross_repo(token)
         if xr:
             self.check_cross_repo(xr, token, rel, lineno)
@@ -856,6 +860,23 @@ class Checker:
                            f"not be a repo path — not judged; if it is one, "
                            f"cite it relative to this doc or the root")
             return
+        # An extension-less `./name` in prose is the shape of an illustrative
+        # import specifier (`./BlogArticleCard`): its anchor folder is named
+        # in the surrounding prose, not the repo root, so a failed lookup here
+        # proves nothing. Judged only when it resolves, carries a known
+        # extension, or sits in command position (an executable claim).
+        if not command_pos and token.startswith("./") and not token.endswith("/"):
+            last = token.split("#")[0].split("/")[-1]
+            ext = last.rsplit(".", 1)[-1] if "." in last else ""
+            if (last not in KNOWN_FILES and ext.lower() not in KNOWN_EXTS
+                    and not path_exists(token, self.root, doc_dir)):
+                self.note_skip(rel, lineno, token,
+                               "extension-less ./ token that resolves neither "
+                               "from this doc nor the repo root — reads as an "
+                               "illustrative import specifier, not a repo "
+                               "path — not judged; if it names a real file, "
+                               "cite it with its extension or root-relative")
+                return
         self.checked += 1
         if not path_exists(token, self.root, doc_dir):
             self.findings.append(Finding(
@@ -905,9 +926,9 @@ class Checker:
             if head in ("python", "python3", "node", "bash", "sh", "ruby") and len(tokens) > 1:
                 arg = next((t for t in tokens[1:] if not t.startswith("-")), None)
                 if arg and looks_like_path(arg):
-                    self.check_path(arg, rel, lineno, doc_dir)
+                    self.check_path(arg, rel, lineno, doc_dir, command_pos=True)
             elif head.startswith("./"):
-                self.check_path(head, rel, lineno, doc_dir)
+                self.check_path(head, rel, lineno, doc_dir, command_pos=True)
             elif (which_check and head not in SHELL_BUILTINS and "/" not in head
                   and head.isascii() and re.fullmatch(r"[A-Za-z0-9_.+-]+", head)):
                 self.checked += 1

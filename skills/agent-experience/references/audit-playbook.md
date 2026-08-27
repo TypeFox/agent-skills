@@ -13,7 +13,7 @@ Enumerate what exists, by category. Globs are indicative starting points, not an
 | **Agent instruction files** | `AGENTS.md`, `AGENTS.override.md`, `CLAUDE.md`, `.claude/**` (skills, agents, commands, rules, settings, hooks), `.cursor/rules`, `.cursorrules`, `.github/copilot-instructions.md`, `.github/instructions/**`, `GEMINI.md`, `.windsurf/**`, `.codex/**`, nested variants in subdirectories |
 | **Human docs** | `README*`, `CONTRIBUTING*`, `docs/**`, `ARCHITECTURE*`, `adr`/`decisions` directories, wiki links referenced from the repo |
 | **Command surface** | `Makefile`, `justfile`, `package.json` scripts, `pyproject.toml`/`tox`/`nox`, `Taskfile`, gradle/maven tasks, shell scripts in `scripts/` and `bin/` |
-| **Verification configs** | test frameworks and configs, coverage config, lint/format configs (eslint, ruff, checkstyle, prettier…), type-checker configs, structural tools (dependency-cruiser, ArchUnit, import-linter), mutation testing (stryker), SAST (semgrep), secret scanners |
+| **Verification configs** | test frameworks and configs, coverage config, lint/format configs (eslint, ruff, checkstyle, prettier…), type-checker configs, structural tools (dependency-cruiser, ArchUnit, import-linter), mutation testing (stryker), SAST (semgrep), secret scanners — and, inside each config, keys that no longer bind in the tool's current version (a renamed or removed rule id silently no-ops, so the intended disable or enable never happens): stale config keys are dead references too |
 | **CI/CD** | `.github/workflows/**`, GitLab/Jenkins/other pipelines — every job is a declared sensor; note stages, gating vs. advisory, runtimes |
 | **Hooks** | `.pre-commit-config.yaml`, husky, lefthook; agent-runtime hooks in `.claude/settings*` |
 | **Environment** | `.devcontainer/**`, Dockerfiles, compose files, `flake.nix`, `.tool-versions`/asdf/mise, lockfiles |
@@ -57,7 +57,7 @@ For each: record the exact working invocation, required flags, prerequisite serv
 
 Timings measured in a warm working copy — dependencies installed, caches hot, builds incremental — understate what a fresh clone or agent sandbox pays. Label every timing **warm** or **fresh**; force freshness where it's cheap (a `clean` before the build, which also verifies the clean command); and never extrapolate a number you didn't measure — an invented timing is a fabrication like any other. Where install cost matters, a fresh-clone probe in a temp directory is the honest measurement.
 
-Exit codes are evidence too — capture them unpiped: `cmd | tail` reports the pipe's exit status, not the command's, so a failing check piped through a pager or filter records a misleading 0.
+Exit codes are evidence too — capture them unpiped, per *run it, don't read it* (the trap fires on the very first command you run, so hold the standard from the start, not from this section on).
 
 Record along the way:
 

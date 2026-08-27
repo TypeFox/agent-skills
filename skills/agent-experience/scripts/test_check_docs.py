@@ -269,6 +269,27 @@ class TestInlinePathChecks:
         checker = run_checker(tmp_path, doc)
         assert not checker.findings and checker.checked == 0
 
+    def test_extensionless_dot_slash_prose_recorded_as_skip(self, tmp_path):
+        # The observed false positive: an illustrative import specifier
+        # ("Same folder: relative, e.g. `./BlogArticleCard`") whose anchor
+        # folder is named in prose, not the repo root — a skip, not an error.
+        doc = write(tmp_path, "AGENTS.md",
+                    "Same folder: relative, e.g. `./BlogArticleCard`.")
+        checker = run_checker(tmp_path, doc)
+        assert not checker.findings and checker.checked == 0
+        assert [s[2] for s in checker.skipped] == ["./BlogArticleCard"]
+
+    def test_extensionless_dot_slash_prose_resolving_is_clean(self, tmp_path):
+        write(tmp_path, "tools/helper.py")
+        doc = write(tmp_path, "AGENTS.md", "Helpers live in `./tools`.")
+        checker = run_checker(tmp_path, doc)
+        assert not checker.findings and checker.checked == 1
+
+    def test_dot_slash_with_extension_still_error_in_prose(self, tmp_path):
+        doc = write(tmp_path, "AGENTS.md", "Run `./missing.sh` once.")
+        checker = run_checker(tmp_path, doc)
+        assert cited(errors(checker)) == ["./missing.sh"]
+
     def test_doc_relative_paths_resolve(self, tmp_path):
         write(tmp_path, "docs/setup/install.md")
         doc = write(tmp_path, "docs/guide.md", "See `setup/install.md`.")
@@ -614,6 +635,17 @@ class TestShellFences:
             """)
         checker = run_checker(tmp_path, doc)
         assert "./bootstrap.sh" in cited(errors(checker))
+
+    def test_extensionless_dot_slash_command_still_checked(self, tmp_path):
+        # In command position `./name` is an executable claim, so the
+        # import-specifier leniency for prose tokens must not apply here.
+        doc = write(tmp_path, "AGENTS.md", """\
+            ```bash
+            ./bootstrap
+            ```
+            """)
+        checker = run_checker(tmp_path, doc)
+        assert "./bootstrap" in cited(errors(checker))
 
     def test_compound_commands_split_and_env_prefix_dropped(self, tmp_path):
         write(tmp_path, "package.json", '{"scripts": {"build": "x"}}')
