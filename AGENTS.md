@@ -25,6 +25,7 @@ Installing skills for end use is `npx skills add TypeFox/agent-skills` (see READ
 ## Conventions
 
 - Every skill ships evals in `evals/evals.json` (missing for ts-code-reviewer; adding them is planned as a standalone task).
+- Skill content defines each jargon term or metaphor once, plainly, at first use — or points to the file that defines it — and every other mention references that definition instead of restating it or leaving the term bare.
 - Python scripts stay stdlib-only so `check_docs.py` runs against any target repo with bare Python 3.8+ — it is run from the skill, never copied into target repos (registry distribution, e.g. PyPI, is a possible later step).
 
 ## Boundaries and definition of done
