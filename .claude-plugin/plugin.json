@@ -1,0 +1,31 @@
+{
+  "name": "typefox-agent-skills",
+  "version": "1.0.0",
+  "description": "TypeFox's agent skills for open source technologies: agent experience (AX), idiomatic Go and Go documentation, Eclipse Dash license checks, VS Code extension publishing, TypeScript code review, and skill evaluation.",
+  "author": {
+    "name": "TypeFox",
+    "url": "https://www.typefox.io"
+  },
+  "homepage": "https://agentskills.io/",
+  "repository": "https://github.com/TypeFox/agent-skills",
+  "license": "MIT",
+  "keywords": [
+    "typefox",
+    "skills",
+    "go",
+    "typescript",
+    "agent-experience",
+    "eclipse",
+    "vscode",
+    "code-review"
+  ],
+  "skills": [
+    "./skills/agent-experience",
+    "./skills/eclipse-license-check",
+    "./skills/go-documentation",
+    "./skills/idiomatic-go",
+    "./skills/publish-vscode-extension",
+    "./skills/skill-evals",
+    "./skills/ts-code-reviewer"
+  ]
+}
