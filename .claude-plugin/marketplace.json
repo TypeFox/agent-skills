@@ -1,0 +1,26 @@
+{
+  "name": "typefox",
+  "owner": {
+    "name": "TypeFox",
+    "url": "https://www.typefox.io"
+  },
+  "description": "TypeFox's agent skills for open source technologies, as an installable Claude Code plugin.",
+  "plugins": [
+    {
+      "name": "typefox-agent-skills",
+      "source": "./",
+      "description": "TypeFox's agent skills for open source technologies: agent experience (AX), idiomatic Go and Go documentation, Eclipse Dash license checks, VS Code extension publishing, TypeScript code review, and skill evaluation.",
+      "category": "engineering",
+      "keywords": [
+        "typefox",
+        "skills",
+        "go",
+        "typescript",
+        "agent-experience",
+        "eclipse",
+        "vscode",
+        "code-review"
+      ]
+    }
+  ]
+}

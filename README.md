@@ -14,6 +14,13 @@ npx skills add TypeFox/agent-skills
 npx skills add TypeFox/agent-skills -s <skill-name>
 ```
 
+Or install this repo as a Claude Code plugin:
+
+```sh
+/plugin marketplace add TypeFox/agent-skills
+/plugin install typefox-agent-skills@typefox
+```
+
 Skills are activated automatically when their trigger conditions match your conversation context. See the [agent skills documentation](https://agentskills.io/) for details on how skills work and how to manage them.
 
 ## Writing Skills
