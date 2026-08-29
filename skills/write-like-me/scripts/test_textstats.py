@@ -52,6 +52,80 @@ def test_ai_markers():
     assert r["per_1k"]["ai_vocabulary"] >= 3 / r["stats"]["words"] * 1000 - 0.01
 
 
+def hits(text, name):
+    r = textstats.measure(text)
+    return round(r["per_1k"][name] * r["stats"]["words"] / 1000)
+
+
+def test_contrast_frames():
+    assert hits("Performance has to be a tested feature, not an afterthought.", "ai_comma_not") == 1
+    assert hits("The scarce resource is not typing speed. It is judgment.", "ai_split_reframe") == 1
+    assert hits("We built a bridge rather than an agent. Instead of guessing, measure. Instead, we removed it.", "ai_rather_than") == 3
+    assert hits("It runs without building everything from scratch.", "ai_without_benefit") == 1
+    assert hits("It works without the whole thing.", "ai_without_benefit") == 0
+
+
+def test_reveal_frames():
+    assert hits("Here is the point. The first proof: an OCT plugin for IntelliJ.", "ai_colon_punchline") == 1
+    assert hits("Requirements: Node 18 and npm. A very long setup clause that runs well past the length limit before the colon: no.", "ai_colon_punchline") == 0
+    assert hits("The result is a faster parser. Here's the unexpected part: it also helps agents. "
+                "That is the idea behind Baukasten.", "ai_nominal_reveal") == 3
+    assert hits("That changes today. This is where LLVM comes in. This matters commercially.", "ai_verdict_opener") == 3
+    assert hits("What if the agent joined the session instead? That is the idea behind the OCT Agent.", "ai_question_answer") == 1
+    assert hits("What happens when a coding agent joins your session?", "ai_what_if") == 1
+    assert hits("Four principles carry the sensor side. We learned two things the hard way.", "ai_enumeration_announcement") == 2
+
+
+def test_significance_and_signposting():
+    assert hits("That matters because these decisions run often. Why notebooks matter now.", "ai_significance_tail") == 2
+    assert hits("For DSL architects, this is the relevant question.", "ai_significance_tail") == 1
+    assert hits("The serializer is the one worth weighing most carefully. Specs deserve special respect here.", "ai_worth_noting") == 2
+    assert hits("It resolves left recursion natively, eliminating the need to refactor.", "ai_participial_tail") == 1
+    assert hits("This article looks at three of them. We'll close with the open problem.", "ai_meta_signpost") == 2
+    assert hits("Consider a state machine. Picture the tooling you'd want.", "ai_scene_imperative") == 2
+    assert hits("Real-time collaboration shouldn't stop at the edge of the ecosystem.\n\nParser performance rarely "
+                "determines the architecture.", "ai_negated_opener") == 2
+    assert hits("Custom development therefore shifts toward integration. Therefore, we stop.", "ai_medial_therefore") == 1
+    assert hits("It is fast, and therefore cheap.", "ai_medial_therefore") == 0
+
+
+def test_stance_and_vocabulary():
+    assert hits("What the software actually does is genuinely useful; real expertise solves real problems.", "ai_authenticity") == 4
+    assert hits("Every fact traces to a source; it never guesses and always runs exactly once.", "ai_absolutizer") == 4
+    assert hits("No hype, no magic. Software engineering, not magic.", "ai_anti_hype") == 3
+    assert hits("Adoption is increasingly rapid; the transformation is faster than ever.", "ai_trend_word") == 3
+    assert hits("It bridges the gap between silos and removes friction.", "ai_spatial_metaphor") == 4
+    assert hits("Table stakes by now; it does the heavy lifting under the hood.", "ai_stock_idiom") == 3
+    assert hits("Different windows into the same domain that experts share.", "ai_same_x") == 1
+    assert hits("Clean, human-readable rules and a sleek, robust interface.", "ai_adjective_stack") == 2
+    assert hits("A transformative, blazing-fast engine with actionable insights.", "ai_vocabulary") == 3
+
+
+def test_generic_counters_and_heading_stats():
+    text = ("# Delete the Tree: Rethinking Language Tooling\n\n## What it takes\n\n"
+            "- **Native performance.** Programs run as machine code.\n- *Panels.* Each panel is a widget.\n\n"
+            "**Verify by execution.** Never trust prose — a rule, not a suggestion — and it compounds. "
+            "Gartner explicitly cautions against roughly 21% overhead, i.e. an IDE-grade, theme-aware \"citizen developer\" "
+            "experience built deliberately and quietly, **which is the whole point of the exercise** in order to ship.")
+    r = textstats.measure(text)
+    s = r["stats"]
+    assert s["colon_heading_share"] == 0.5
+    assert s["heading_title_case_share"] == 0.5
+    n = lambda name: round(r["per_1k"][name] * s["words"] / 1000)
+    assert n("label_lead") == 3
+    assert n("clause_bold") == 1
+    assert n("em_dash_appositive") == 2
+    assert n("source_as_agent") == 1
+    assert n("hedged_number") == 1
+    assert n("scholarly_connective") == 2
+    assert n("hyphen_compound") == 2
+    assert n("scare_quote") == 1
+    assert n("deliberate_adverb") == 2
+    assert n("quiet_adverb") == 1
+    assert textstats.is_title_case("Delete the Tree: Rethinking Language Tooling")
+    assert not textstats.is_title_case("What this means if you're evaluating language tooling")
+
+
 def test_measure_pattern_units_and_verdict():
     r = textstats.measure("First: one. Second: two. Third thing.\n\nAnother paragraph here.")
     per_1k = {"id": "punctuation/colon", "regex": ":", "unit": "per_1k_words", "rate": 200.0, "range": [150.0, 260.0]}

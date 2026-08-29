@@ -215,3 +215,11 @@ def test_cli_validate_fix_and_merge_roundtrip(tmp_path):
     assert merged["patterns"][0]["tier"] == 1
     assert styledb.main(["tiers", str(out)]) == 0
     assert styledb.main(["render", str(out), "--setting", "soft"]) == 0
+
+
+def test_dimensions_match_taxonomy():
+    import pathlib
+    import re
+    taxonomy = pathlib.Path(__file__).resolve().parent.parent / "references" / "taxonomy.md"
+    headings = re.findall(r"^### ([a-z-]+)\s*$", taxonomy.read_text(encoding="utf-8"), re.M)
+    assert headings == styledb.DIMENSIONS

@@ -2,7 +2,7 @@ import structure_check as sc
 
 ORIGINAL = """# Title
 
-Intro paragraph with 3 numbers and a [link](https://example.com/x).
+Intro paragraph with 3 numbers, `readFile()`, and a [link](https://example.com/x).
 
 Second paragraph.
 
@@ -74,6 +74,16 @@ def test_quote_link_and_number_invariants():
     assert "link dropped or changed: https://example.com/x" in joined
     assert "numbers missing from rewrite: 42" in joined
     assert any("numbers not in original: 43" in w for w in warnings)
+
+
+def test_inline_code_must_stay_verbatim():
+    rewritten = ORIGINAL.replace("`readFile()`", "`readFileSync()`")
+    errors, warnings = sc.compare(ORIGINAL, rewritten)
+    assert any("inline code missing from rewrite: `readFile()`" in e for e in errors)
+    assert any("inline code not in original: `readFileSync()`" in w for w in warnings)
+    # Moving the identifier within the sentence is not a violation.
+    moved = ORIGINAL.replace("3 numbers, `readFile()`, and", "`readFile()`, 3 numbers, and")
+    assert sc.compare(ORIGINAL, moved)[0] == []
 
 
 def test_cli_exit_code(tmp_path, capsys):

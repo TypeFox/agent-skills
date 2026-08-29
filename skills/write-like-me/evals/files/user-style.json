@@ -981,8 +981,8 @@
       "tier_reason": "present in fewer than 3 documents; single register; fewer than 3 quotes"
     },
     {
-      "id": "attitude-adverbs/stance-adverb",
-      "dimension": "attitude-adverbs",
+      "id": "tone-markers/stance-adverb",
+      "dimension": "tone-markers",
       "marker": "stance-adverb",
       "description": "'Honestly' and 'actually' mark the admission or the real point, about twice per piece.",
       "kind": "presence",
@@ -1392,8 +1392,8 @@
       "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
     },
     {
-      "id": "summaries/summary-opener",
-      "dimension": "summaries",
+      "id": "signposting/summary-opener",
+      "dimension": "signposting",
       "marker": "summary-opener",
       "description": "Never opens a closing paragraph with 'In conclusion', 'Overall', 'In summary'.",
       "kind": "absence",
@@ -1526,7 +1526,7 @@
       "regex": "\\b(?:it[’']s worth noting|it is worth noting|it[’']s important to note|it is important to note|notably|importantly|crucially)\\b",
       "ignore_case": true,
       "instead": [
-        "attitude-adverbs/stance-adverb"
+        "tone-markers/stance-adverb"
       ],
       "rate": 0.0,
       "spread": 1.0,
@@ -1646,8 +1646,8 @@
       "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)"
     },
     {
-      "id": "scene-setting/era-opener",
-      "dimension": "scene-setting",
+      "id": "paragraph-openers/era-opener",
+      "dimension": "paragraph-openers",
       "marker": "era-opener",
       "description": "Never opens with 'In today's …' scene-setting.",
       "kind": "absence",
