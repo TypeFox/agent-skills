@@ -6,7 +6,7 @@ description: >-
 
 # Write like me
 
-Machine-written drafts carry a recognisable voice that is not the user's. This skill moves a draft toward the user's own voice as the step *before* their manual polish — never a replacement for it — using a **style-pattern DB**: a JSON profile of the user's writing habits, each habit backed by counts and verbatim quotes from documents the user wrote by hand. The DB format is in [references/db-schema.md](references/db-schema.md); the dimensions along which habits are recorded in [references/taxonomy.md](references/taxonomy.md).
+Machine-written drafts carry a recognizable voice that is not the user's. This skill moves a draft toward the user's own voice as the step *before* their manual polish — never a replacement for it — using a **style-pattern DB**: a JSON profile of the user's writing habits, each habit backed by counts and verbatim quotes from documents the user wrote by hand. The DB format is in [references/db-schema.md](references/db-schema.md); the dimensions along which habits are recorded in [references/taxonomy.md](references/taxonomy.md).
 
 Two founding rules sit under everything. **The user's profile has veto power**: where the draft already matches the user, nothing moves, even if the construction is machine-typical — a user who writes with em dashes keeps them. **Converge on rates, not extremes**: every rewrite targets the user's measured frequency, never zero and never "always"; that is the guard against caricature.
 
@@ -24,9 +24,9 @@ Extraction is never implicit. A processing request with no profile does not turn
 1. **Locate.** Use the path the request names, otherwise the default `$HOME/.skills/write-like-me/user-style.json`.
 2. **Missing profile in process mode → stop.** Deliver no rewrite; a rewrite without a profile would be a generic "humanize" pass, which is precisely the caricature this skill exists to avoid. Reply with the path you checked and these instructions, then end the turn:
    - Gather 8 or more documents you wrote by hand — roughly 6,000 words; blog posts, emails, docs, notes; sole-authored; mixed lengths.
-   - Ask for extraction with the paths, for example: *"write-like-me: extract my style from ~/writing/posts/*.md and ~/writing/emails/*.txt"*. The paths are required.
+   - Ask for extraction with the paths, for example: _"write-like-me: extract my style from ~/writing/posts/*.md and ~/writing/emails/*.txt"_. The paths are required.
    - Review the rendered profile when asked, then repeat the rewrite request.
-   In extract mode a missing file at the default path is the normal starting state; an existing one is refreshed only after saying so, with the old file backed up beside it (`user-style.json.bak`).
+   In extract mode a missing file at the default path is the normal starting state; an existing one is refreshed only after saying so, with the old file backed up beside it (`user-style_old.json`).
 3. **Version check.** Run `python3 scripts/styledb.py info PROFILE` (paths in this file are relative to the skill directory). Exit 0: proceed. Exit 2: the DB is older than the skill — apply [references/migration.md](references/migration.md) first. Exit 3: the DB is newer than this skill — stop and tell the user to update the skill. A DB with `partial: true` is an unmerged extraction part; refuse it and point at the merge command in technique.md.
 4. **Review status.** `review.status: pending` means the user never confirmed the profile. Proceed, but say so in the report and offer the review round.
 
@@ -88,3 +88,4 @@ All stdlib Python 3.8+, run from the skill directory; `--help` on each.
 - Invents replacement phrasings the profile has no evidence for — the fallback is "remove or flag", not "make something up".
 - Adds, drops, or reorders claims, sections, list items, code, tables, links, or numbers.
 - Edits the profile during processing, or persists an extraction the user has not been told is unreviewed.
+- Stores potentially confidential content in the profile: names of other people, companies, products, identifying figures. Evidence quotes are redacted with bracketed placeholders while the pattern is kept (rule 5 in technique.md); doubtful cases go to the user in the review round.

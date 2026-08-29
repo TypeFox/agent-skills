@@ -17,7 +17,9 @@ Subcommands
   validate DB [--corpus-dir DIR] [--fix]
                                  schema check; with --corpus-dir every evidence
                                  quote is verified verbatim against its source
-                                 document; --fix rewrites derived fields
+                                 document (entries marked "redacted": true are
+                                 exempt — see technique.md rule 5); --fix
+                                 rewrites derived fields
                                  (rate, spread, range, coverage, tier)
   merge DB... -o OUT [--partial] union of corpus manifests and patterns from
                                  several (partial) DBs, derived fields
@@ -270,6 +272,10 @@ def validate(db: Dict[str, Any], corpus_dir: Optional[str] = None) -> Tuple[List
         for ev in p.get("evidence", []):
             if ev.get("doc") not in docs:
                 e("pattern {}: evidence references unknown document {!r}".format(pid, ev.get("doc")))
+            elif ev.get("redacted"):
+                if not re.search(r"\[[^\]]+\]", ev.get("quote", "")):
+                    w("pattern {}: redacted quote has no [placeholder]; was anything actually removed? {!r}".format(
+                        pid, ev.get("quote", "")[:60]))
             elif corpus_dir and docs[ev["doc"]].get("path"):
                 import os
                 path = os.path.join(corpus_dir, docs[ev["doc"]]["path"])
