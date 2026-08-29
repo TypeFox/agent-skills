@@ -3,8 +3,12 @@
 
 write-like-me rewrites voice, never shape or content: the heading outline, the
 sequence of blocks inside every section (paragraphs, lists, code, tables,
-quotes), list item counts, and verbatim material (code, tables, quotes, URLs,
-numbers) must survive a rewrite, and paragraph counts should where possible.
+quotes), list item counts, and verbatim material (code blocks, inline code,
+tables, quotes, URLs, numbers) must survive a rewrite, and paragraph counts
+should where possible. Inline code spans are the mechanical half of the
+"subject vocabulary is content, not voice" invariant (processing.md Step 4):
+identifiers in backticks are checked here; names and technical terms in plain
+prose are checked by reading the diff.
 Reading two versions side by side does not reliably catch a merged paragraph
 or a dropped list item; this check does, mechanically, so the rewrite loop can
 run it after every pass.
@@ -13,8 +17,9 @@ Usage
   structure_check.py ORIGINAL REWRITTEN [--json]
 
 Reports ERROR lines for hard violations (outline, block sequence, list item
-counts, code/table/quote text, URLs, numbers dropped) and WARN lines for soft
-ones (paragraph count per section, heading wording, numbers added). Exit 1 when
+counts, code/table/quote text, URLs, numbers, inline code dropped) and WARN
+lines for soft ones (paragraph count per section, heading wording, numbers or
+inline code added). Exit 1 when
 any ERROR was found, 0 otherwise.
 
 Stdlib only, Python 3.8+.
@@ -36,6 +41,7 @@ BLOCKQUOTE_RE = re.compile(r"^\s*>")
 FENCE_RE = re.compile(r"^\s*(```|~~~)")
 URL_RE = re.compile(r"https?://[^\s)>\]]+|\]\(([^)\s]+)\)")
 NUMBER_RE = re.compile(r"(?<![\w/])\d[\d,.]*\d|(?<![\w/])\d")
+INLINE_CODE_RE = re.compile(r"`([^`\n]+)`")
 
 
 def parse(text: str) -> List[Dict[str, Any]]:
@@ -213,6 +219,15 @@ def compare(original: str, rewritten: str) -> Tuple[List[str], List[str]]:
         errors.append("numbers missing from rewrite: {}".format(", ".join(sorted(missing))))
     if added:
         warnings.append("numbers not in original: {}".format(", ".join(sorted(added))))
+
+    a_code = Counter(INLINE_CODE_RE.findall(a_text))
+    b_code = Counter(INLINE_CODE_RE.findall(b_text))
+    missing_code = [c for c in a_code if b_code[c] < a_code[c]]
+    added_code = [c for c in b_code if a_code[c] < b_code[c]]
+    if missing_code:
+        errors.append("inline code missing from rewrite: {}".format(", ".join("`{}`".format(c) for c in sorted(missing_code))))
+    if added_code:
+        warnings.append("inline code not in original: {}".format(", ".join("`{}`".format(c) for c in sorted(added_code))))
     return errors, warnings
 
 

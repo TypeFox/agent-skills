@@ -51,7 +51,7 @@ Full procedure with the table classes, rule-derivation rules, and the report tem
 1. **Measure** — `python3 scripts/textstats.py measure INPUT --db PROFILE`: built-in counters plus every measurable profile pattern with a match/gap verdict. Read for the judged patterns.
 2. **Compare** — a three-way table (AI evidence / draft / user), sorted by draft-vs-user gap; classify rows as do-not-touch, rewrite (high or low confidence), or neutral; apply the setting.
 3. **Derive rules** — one per rewrite row; replacements come from the profile's evidence and `instead` references, never from invention; targets are the user's rates.
-4. **Fix invariants** — facts, numbers, links, quotes, code, tables, heading outline, block sequence per section, list item counts, no new claims; paragraph count per section wherever possible. Ask once which earlier manual decisions must survive.
+4. **Fix invariants** — facts, numbers, links, quotes, code, tables, heading outline, block sequence per section, list item counts, no new claims; subject vocabulary (technical terms, product and people's names, identifiers) stays verbatim — the profile decides how it is presented, never what it is; paragraph count per section wherever possible. Ask once which earlier manual decisions must survive.
 5. **Rewrite the whole body** — rhythm and paragraph shape do not respond to sentence patching.
 6. **Converge** — re-measure and run `python3 scripts/structure_check.py INPUT REWRITTEN`; targeted edits until rewrite rows match and the structure check has no errors.
 7. **Report and hand over** — before/after table, do-not-touch list, rows left for the manual pass, side effects, open judgment calls. Write `<name>.styled.<ext>` next to a file input (never overwrite the input unless asked); print the body once when the input was pasted.
@@ -64,7 +64,7 @@ Full procedure, review protocol, and the parallel-extraction protocol: [referenc
 
 1. **Intake** — enumerate the named documents with register and the word count from `textstats.py`; state the corpus-size guidance (≥8 documents, ≥6,000 words) when the corpus falls short, and continue with the shortfall on record (it lowers tiers, it does not block).
 2. **Vet** — flag documents whose AI-marker counts are outliers against the rest; the user confirms or drops.
-3. **Read** — every document in full, along the taxonomy, capturing verbatim quotes as you go; note absences and what the user does *instead*.
+3. **Read** — every document in full, along the taxonomy, capturing verbatim quotes as you go; note absences and what the user does *instead*. Subject vocabulary and code examples are skipped: terms, names, and identifiers are the topic, not the voice (rule 6 in technique.md); only the user's handling of them (backticks, abbreviations, jargon level) is a pattern.
 4. **Count** — a counter per candidate, run over every document; noisy counters demoted to judged.
 5. **Validate** — `python3 scripts/styledb.py validate DB --fix --corpus-dir ROOT` computes rates, spread, coverage, tiers, and verifies every quote.
 6. **Review** — render with `styledb.py render`, walk the user through WRONG / OVERSTATED / MISSING / NEEDS_NUANCE; persist as reviewed, or as pending with that fact in the handover if the user is unavailable.
@@ -80,12 +80,13 @@ All stdlib Python 3.8+, run from the skill directory; `--help` on each.
 |---|---|
 | `scripts/styledb.py` | `info` (version check), `validate [--fix] [--corpus-dir]`, `merge`, `render [--setting]`, `tiers` |
 | `scripts/textstats.py` | `measure FILE... [--db DB]` — counters per 1k words, DB patterns with match/gap; `counters` lists definitions |
-| `scripts/structure_check.py` | `ORIGINAL REWRITTEN` — outline, block sequence, list counts, verbatim blocks, links, numbers; exit 1 on a violation |
+| `scripts/structure_check.py` | `ORIGINAL REWRITTEN` — outline, block sequence, list counts, verbatim blocks, inline code, links, numbers; exit 1 on a violation |
 
 ## What this skill never does
 
 - Rewrites without a profile, or builds a profile from documents the user did not name.
 - Invents replacement phrasings the profile has no evidence for — the fallback is "remove or flag", not "make something up".
 - Adds, drops, or reorders claims, sections, list items, code, tables, links, or numbers.
+- Treats the subject as the style: no profile pattern is built on a technical term, a product or people's name, a code identifier, or a code example, and a rewrite never replaces one.
 - Edits the profile during processing, or persists an extraction the user has not been told is unreviewed.
 - Stores potentially confidential content in the profile: names of other people, companies, products, identifying figures. Evidence quotes are redacted with bracketed placeholders while the pattern is kept (rule 5 in technique.md); doubtful cases go to the user in the review round.
