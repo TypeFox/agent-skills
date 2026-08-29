@@ -8,6 +8,7 @@ Four founding rules shape every step:
 2. **Reading discovers, counters rank.** Counters do not find the voice — they cannot see a concession structure or a kitchen metaphor. Reading finds candidates; counters order them by size, make them reproducible, and later drive convergence.
 3. **Rates, not extremes.** Record what the author does at the rate they do it. "Uses colons" is not a pattern; "3.1 colons per 1k words, range 1.2–4.8" is.
 4. **What the author *doesn't* do is data.** Absence patterns (em dashes: 0 across 6,000 words) are the do-not-introduce list and are as valuable as presence patterns.
+5. **Nothing confidential lands in the DB.** The DB outlives the corpus, gets rendered, merged, and quoted in reports, so a quote is copied into it only if it could be shown to a stranger. When the passage that evidences a pattern carries potentially confidential information — names of persons other than the author, companies, products, customers, internal project names, figures, dates that identify an event — rewrite the quote so the pattern stays intact and the information is gone: `"Sam needed the docs build"` becomes `"[colleague] needed the docs build"`, keeping the punctuation, rhythm, and construction the quote is there to show. Mark the entry `"redacted": true`; the validator then skips the verbatim check for it (and expects a bracketed placeholder). Redact rather than drop: a pattern whose only evidence was confidential still deserves its entry. The author's own name is not confidential in their own profile. When in doubt, redact, and raise it in the review round — the author decides what may stay.
 
 ## Step 1 — Corpus intake
 
@@ -22,6 +23,8 @@ The corpus must be the author's own hand. Measure every document with `textstats
 ## Step 3 — Close reading
 
 Read every document in full — paragraph shape, openers, and closers do not survive excerpting. Walk the taxonomy dimension by dimension and note candidates with the quote and the document they came from, as you go (a candidate without a quote is not a candidate). Note also the *absences*: constructions common in machine prose that never appear.
+
+Capture quotes with rule 5 in force: redact while copying, not in a later sweep — a sweep over a finished DB reliably misses the name buried in the middle of a long quote. Keep a list of what you redacted for the review round.
 
 Two reading habits matter. First, distinguish voice from format: a pattern that appears across registers (article and email and docs) is voice; a pattern confined to one register is a format convention — keep it, but restrict it in `note` ("emails only") so processing can respect the register of the input. Second, for every absence, note what the author does *instead* — the construction that occupies the slot an em dash or bullet list would occupy in machine prose. Those `instead` references are what the rewrite rules will use as replacement material.
 
@@ -48,6 +51,9 @@ Render the profile (`styledb.py render DB.json`) and walk the author through it,
 | OVERSTATED | I do this, but not that much | `tier_override` down, or restrict `range`; note why |
 | MISSING | I do this and you did not catch it (author points at evidence) | add the pattern with the quotes the author points to, then count it |
 | NEEDS_NUANCE | only in emails / only when explaining code | `review.verdict: nuanced`, restriction in `note` |
+| CONFIDENTIAL | this quote (or this pattern's regex, or this `note`) must not be stored as it is | redact further, or replace the quote with another occurrence, or drop the pattern; the author's word is final |
+
+Open the round with the redactions made under rule 5 and the doubts left — the author is the only one who knows which names and figures matter.
 
 Automated reading reliably finds habits the author is unaware of; the author reliably finds habits the reading missed. Neither replaces the other, and only the reviewed profile is persisted as `review.status: reviewed`. If the author is not available for the round, persist with `review.status: pending`, say so in the handover, and treat the DB as usable but unreviewed — processing works from it, and the report of the first processing run is a good moment to hold the review.
 
@@ -63,7 +69,7 @@ A large corpus (dozens of documents, or documents long enough that two of them f
 
 **Phase B — count.** Give every subagent the *full* candidate list (every pattern's id, description, and counter) and its subset of documents again; it measures every candidate on every document in its subset and writes `partial-B-<n>.json`. Merge again, this time without `--partial`, run `validate --fix --corpus-dir`, and proceed to the review round. Skip Phase B only when the corpus is small enough that one agent counted everything (then Phase A already has full coverage).
 
-The subagent brief for either phase carries: the taxonomy and db-schema references (paths), the founding rules above, the document subset with ids and registers, the phase (discover or count), the candidate list for Phase B, the output path, and the instruction to run `styledb.py validate --corpus-dir` on its own part before finishing. Subagents never write the final DB path; the orchestrating run merges, validates, reviews, and persists.
+The subagent brief for either phase carries: the taxonomy and db-schema references (paths), the founding rules above (rule 5 spelled out — subagents copy quotes, so they are where redaction happens), the document subset with ids and registers, the phase (discover or count), the candidate list for Phase B, the output path, and the instruction to run `styledb.py validate --corpus-dir` on its own part before finishing. Subagents never write the final DB path; the orchestrating run merges, validates, reviews, and persists.
 
 ## Maintainer note: the AI corpus
 
