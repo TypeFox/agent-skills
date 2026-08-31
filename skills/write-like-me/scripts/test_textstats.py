@@ -138,6 +138,9 @@ def test_measure_pattern_units_and_verdict():
     assert textstats.measure_pattern(share, r) == 0.5
     assert textstats.verdict(0.5, share) == "match"
     assert textstats.measure_pattern(stat, r) == r["stats"]["sentence_len_median"]
+    counter = {"id": "punctuation/colon-elaboration", "stat": "colon", "unit": "per_1k_words", "rate": 200.0}
+    assert textstats.measure_pattern(counter, r) == r["per_1k"]["colon"] == v
+    assert textstats.measure_pattern({"id": "x/unknown", "stat": "no_such_counter"}, r) is None
     assert textstats.verdict(0.0, absent) == "match"
     assert textstats.verdict(1.2, absent) == "gap"
     assert textstats.verdict(400.0, per_1k) == "gap"

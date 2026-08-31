@@ -44,6 +44,13 @@ from typing import Any, Dict, List, Optional, Tuple
 
 CURRENT_DB_VERSION = 1
 
+try:  # ships next to this script; names a DB pattern may reference in `stat`
+    import textstats
+    KNOWN_STATS = set(textstats.STATS_HELP) | set(textstats.COUNTERS)
+    BUILTIN_COUNTERS = set(textstats.COUNTERS)
+except ImportError:  # pragma: no cover
+    KNOWN_STATS = BUILTIN_COUNTERS = None
+
 # Keep in sync with references/taxonomy.md (the taxonomy is the authority).
 DIMENSIONS = [
     "punctuation",
@@ -256,6 +263,14 @@ def validate(db: Dict[str, Any], corpus_dir: Optional[str] = None) -> Tuple[List
                 re.compile(p["regex"])
             except re.error as exc:
                 e("pattern {}: invalid regex: {}".format(pid, exc))
+        stat = p.get("stat")
+        if stat and KNOWN_STATS is not None:
+            if stat not in KNOWN_STATS:
+                e("pattern {}: unknown stat {!r} (see textstats.py counters)".format(pid, stat))
+            elif stat in BUILTIN_COUNTERS and p.get("unit", "per_1k_words") != "per_1k_words":
+                e("pattern {}: built-in counter {!r} counts per 1k words; unit must be per_1k_words".format(pid, stat))
+        if p.get("measurement") == "counted" and not p.get("regex") and not stat:
+            w("pattern {}: counted without regex or stat; processing cannot re-measure it".format(pid))
         entries = p.get("documents", [])
         if not entries:
             e("pattern {}: documents[] is empty; every pattern needs per-document counts".format(pid))
@@ -369,6 +384,10 @@ def merge(dbs: List[Dict[str, Any]], partial: bool = False) -> Dict[str, Any]:
                 q["notes"].append("merge: differing regex dropped: {}".format(p["regex"]))
             if not q.get("regex") and p.get("regex"):
                 q["regex"] = p["regex"]
+            if q.get("stat") and p.get("stat") and q["stat"] != p["stat"]:
+                q["notes"].append("merge: differing stat dropped: {}".format(p["stat"]))
+            if not q.get("stat") and p.get("stat"):
+                q["stat"] = p["stat"]
             if q.get("tier_override") is None and p.get("tier_override") is not None:
                 q["tier_override"] = p["tier_override"]
             for ref in p.get("instead", []):
