@@ -62,7 +62,7 @@ Inputs beyond ~3,000 words, or several documents at once, are processed in secti
 
 Full procedure, review protocol, and the parallel-extraction protocol: [references/technique.md](references/technique.md). The spine:
 
-1. **Intake** — enumerate the named documents with register and the word count from `textstats.py`; state the corpus-size guidance (≥8 documents, ≥6,000 words) when the corpus falls short, and continue with the shortfall on record (it lowers tiers, it does not block).
+1. **Intake** — enumerate the named documents with register and the word count from `textstats.py`; state the corpus-size guidance (≥8 documents, ≥6,000 words) when the corpus falls short, and continue with the shortfall on record (it lowers tiers, it does not block). When one register carries more than about half the words (a thesis next to posts and emails), ask the user how to cap or down-weight it before reading — rates are corpus-normalized, so the big source would otherwise define the profile (technique.md).
 2. **Vet** — flag documents whose AI-marker counts are outliers against the rest; the user confirms or drops.
 3. **Read** — every document in full, along the taxonomy, capturing verbatim quotes as you go; note absences and what the user does *instead*. Subject vocabulary and code examples are skipped: terms, names, and identifiers are the topic, not the voice (rule 6 in technique.md); only the user's handling of them (backticks, abbreviations, jargon level) is a pattern.
 4. **Count** — a counter per candidate, run over every document; noisy counters demoted to judged.
@@ -88,5 +88,6 @@ All stdlib Python 3.8+, run from the skill directory; `--help` on each.
 - Invents replacement phrasings the profile has no evidence for — the fallback is "remove or flag", not "make something up".
 - Adds, drops, or reorders claims, sections, list items, code, tables, links, or numbers.
 - Treats the subject as the style: no profile pattern is built on a technical term, a product or people's name, a code identifier, or a code example, and a rewrite never replaces one.
+- Records or applies non-native grammar errors as style: the calques listed in [references/german-l1-guidance.md](references/german-l1-guidance.md) stay out of the profile and out of every rewrite (correct-but-distinctive constructions are style and stay in); when the corpus shows such errors, they come back as review-round feedback instead.
 - Edits the profile during processing, or persists an extraction the user has not been told is unreviewed.
 - Stores potentially confidential content in the profile: names of other people, companies, products, identifying figures. Evidence quotes are redacted with bracketed placeholders while the pattern is kept (rule 5 in technique.md); doubtful cases go to the user in the review round.

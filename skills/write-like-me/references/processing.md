@@ -32,6 +32,8 @@ Then apply the strictness setting: drop rewrite rows whose effective tier exceed
 
 One mechanical rule per rewrite row: *what to find, what to replace it with, how many to leave*. The replacement construction comes from author-DB evidence — the pattern's own quotes, or the `instead` references of an absence pattern — never from invention. If the DB offers no replacement (an absence pattern without `instead`, an evidence list that shows the habit but not a substitute), the rule is "remove where the sentence survives removal, otherwise flag", not "make something up".
 
+Because rules come only from the DB, non-native grammar errors can never enter a rewrite: extraction keeps them out of the DB by design ([german-l1-guidance.md](german-l1-guidance.md)), so there is nothing to apply — and a request to write "with all my quirks" cannot widen that, since processing has no source for such forms. Where the input itself contains one, leave it (fixing grammar is outside this skill's scope) and note it in the report.
+
 Targets are rates: for an em-dash row with author rate 0.4/1k and range 0–1.1, the rule leaves roughly 0–1 per 1,000 words in place, choosing the ones that read most like the author's own uses. Register restrictions in `note` apply: a pattern marked "emails only" is not a target for a blog post.
 
 ## Step 4 — Invariants

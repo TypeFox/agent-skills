@@ -17,6 +17,8 @@ The request names the documents (extraction never goes looking for documents on 
 
 Guidance to state when the corpus falls short, then proceed anyway with the shortfall on record: at least ~8 documents and ~6,000 words, sole-authored, fully hand-written, mixed lengths, every document tagged with a register. A small corpus is not a reason to stop; it is a reason for lower tiers (the tier rules encode this: fewer documents means fewer patterns reach tier 1) and for a warning in the DB's `note`s.
 
+**Register balance.** Corpora often mix sources of very different sizes — a thesis next to blog posts and emails. Rates are corpus-normalized, so a source carrying most of the words turns the DB into a profile of that register, with every other register's habits demoted to tier 3. When one register carries more than about half the words, stop and ask the user before reading: whether to cap the dominant source (keep its most prose-like parts and leave the rest out of the manifest), and whether to down-weight it deliberately — academic material such as a dissertation is a common candidate, because its register differs from the business writing the profile will mostly serve. Record the decision and the capping in the manifest and the DB `note`s; with a smaller imbalance, balancing by selection is a judgment call to make and report, not to ask about.
+
 ## Step 2 — Authenticity vetting
 
 The corpus must be the author's own hand. Measure every document with `textstats.py measure` and look for outliers on high-signal AI markers — em dashes, `ai_colon_punchline`, `ai_comma_not`, `ai_rather_than`, `ai_verdict_opener`, `ai_authenticity`, `label_lead`, and `ai_vocabulary` for older-style output (the AI-typical dimensions in taxonomy.md rank them) — relative to the other documents: "this one has 12 em dashes per 1k words, your others have 0 — was it AI-assisted?" Pre-AI-era documents are the clean anchor; recent documents are admitted when the author certifies them as hand-written (`vetting: certified`) and they double as a drift check on the older anchor. Record the outcome per document; drop what the author drops. Until the AI DB ships, the built-in `ai_*` counters are the vetting instrument.
@@ -24,6 +26,8 @@ The corpus must be the author's own hand. Measure every document with `textstats
 ## Step 3 — Close reading
 
 Read every document in full — paragraph shape, openers, and closers do not survive excerpting. Walk the taxonomy dimension by dimension and note candidates with the quote and the document they came from, as you go (a candidate without a quote is not a candidate). Note also the *absences*: constructions common in machine prose that never appear. Apply rule 6 while reading: a recurring word is a candidate only if it is independent of the subject, and code examples are skipped entirely — read past them to the prose that introduces and follows them, which is where the voice is.
+
+One boundary on candidates: a construction that is a grammar error rather than a style choice — non-native calques above all — is never a candidate, no matter how often the corpus repeats it. Collect such findings separately (quotes redacted under rule 5) and bring them to the review round as feedback instead; [german-l1-guidance.md](german-l1-guidance.md) draws the style-vs-error boundary for German-native authors and lists the known calques with their corrections.
 
 Capture quotes with rule 5 in force: redact while copying, not in a later sweep — a sweep over a finished DB reliably misses the name buried in the middle of a long quote. Keep a list of what you redacted for the review round.
 
@@ -54,7 +58,7 @@ Render the profile (`styledb.py render DB.json`) and walk the author through it,
 | NEEDS_NUANCE | only in emails / only when explaining code | `review.verdict: nuanced`, restriction in `note` |
 | CONFIDENTIAL | this quote (or this pattern's regex, or this `note`) must not be stored as it is | redact further, or replace the quote with another occurrence, or drop the pattern; the author's word is final |
 
-Open the round with the redactions made under rule 5 and the doubts left — the author is the only one who knows which names and figures matter.
+Open the round with the redactions made under rule 5 and the doubts left — the author is the only one who knows which names and figures matter. Deliver the non-native error findings here too (see [german-l1-guidance.md](german-l1-guidance.md)): what was noticed, with the suggested English forms. They are feedback about the corpus, not negotiable pattern candidates — they stay out of the DB either way.
 
 Automated reading reliably finds habits the author is unaware of; the author reliably finds habits the reading missed. Neither replaces the other, and only the reviewed profile is persisted as `review.status: reviewed`. If the author is not available for the round, persist with `review.status: pending`, say so in the handover, and treat the DB as usable but unreviewed — processing works from it, and the report of the first processing run is a good moment to hold the review.
 

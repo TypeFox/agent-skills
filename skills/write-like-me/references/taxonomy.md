@@ -31,8 +31,15 @@ The two halves below are not "human" and "machine" markers. Author-voice dimensi
 | exclamation | exclamation mark | `!` |
 | question-mark | question mark in prose | `\?` |
 | ellipsis | ellipsis | `\.\.\.\|…` |
-| oxford-comma | comma before the final *and* in a series | judged (sample series) |
+| oxford-comma | comma before the final *and* in a series; may be conditional (short noun series without, long or clausal series with) | judged (sample series) |
 | quote-style | straight vs. curly quotes, single vs. double | judged |
+| fronted-adverbial-comma | comma or no comma after a short fronted adverbial or sentence-initial *Therefore/Hence/Thus/Otherwise/Of course* ("Therefore the aim is…" vs. "Therefore, the aim is…") | no-comma form: `(?:^\|(?<=[.!?]\s))(?:Therefore\|Hence\|Thus\|Otherwise\|Of course\|Probably)\s+(?!,)[a-z]` |
+| connective-comma | which sentence-initial connectives always take the comma while others never do (*However,* yes, *Therefore* no) — record per member, paired with `fronted-adverbial-comma` | `(?:^\|(?<=[.!?]\s))(?:However\|Furthermore\|Moreover\|Additionally\|In addition\|In contrast),` |
+| latin-abbreviation-comma | comma or no comma after mid-sentence *e.g.* / *i.e.* ("editors, e.g. VS Code" vs. "editors, e.g., VS Code") | `\b(?:e\.\s?g\.\|i\.\s?e\.)\s+(?!,)\w` vs. `\b(?:e\.\s?g\.\|i\.\s?e\.),` |
+| comma-splice | independent clauses joined by a bare comma ("Please try again, it should work now.") — an informal-register habit; record the register | judged |
+| subordinator-comma | comma habit per subordinator (a comma before every *since* clause but none before *because*, comma before *but also*) | judged (sample clauses) |
+| slash-alternative | spaced slash for alternatives ("X / Y", "and / or") | `\s/\s` (strip paths and URLs first) |
+| lead-in-colon | colon-terminated lead-in line before a block — code, list, bare URL ("Here's an example snippet:") — a different function from `colon-elaboration`, which measures colons inside running prose | `:\s*$` per source line |
 
 ### sentence-rhythm
 
@@ -59,6 +66,8 @@ How paragraphs and the piece open; the last three rows are the openers machine p
 | topic-opener | paragraph opens with the topic noun and states a fact about it ("The language server runs in a web worker…") | judged |
 | meta-opener | paragraph opens by announcing or evaluating its own topic instead of stating it ("Specs deserve special respect here.", "One limit is worth stating plainly.") | judged; `significance-tails/worth-noting` catches part of it |
 | connective-opener | paragraph opens with a discourse connective (*So, But, And, However*) | `^(?:So\|But\|And\|However\|Now)\b` with `share_of_paragraphs` |
+| existential-opener | sentence opens with *There is/are/exists* ("There are several ways to…") — sentence-level, unlike the rows above | `(?:^\|(?<=[.!?]\s))There (?:is\|are\|was\|were\|exists?)\b` |
+| demonstrative-subject | sentence opens with anaphoric *This* + verb as a mechanical hand-off ("This is realized with…", "This means that…") — the evaluative subset is `reveal-frames/verdict-opener` | `(?:^\|(?<=[.!?]\s))This\s+(?:is\|was\|means\|allows\|enables\|leads\|results\|makes\|can\|could\|would\|has\|confirms\|indicates)\b` |
 | era-opener | time-anchoring change claims: "In today's fast-paced world", "As development environments become increasingly fragmented", "Notebooks have quietly become", "Until now, …", "That changes today." (11 hits in 9 docs; the 2023 "ever-evolving landscape" form is absent) | `\b(?:in today[’']s\|in the (?:modern\|ever-evolving\|rapidly)\|in an era\|in a world where\|as \w+ (?:become\|becomes\|grow\|grows) increasingly\|(?:has\|have) quietly become\|until now\|that changes today)\b` |
 | imagine-opener | "Imagine / Consider / Picture / Suppose / Think of …" as a scene-setting imperative (0.3/1k, 7 docs) | built-in `ai_scene_imperative` |
 | negated-opener | piece or paragraph opens by negating a status quo: "Real-time collaboration shouldn't stop at the edge of the TypeScript ecosystem.", "Parser performance rarely determines…" (0.5/1k, 7 docs; all five short-form documents open this way) | built-in `ai_negated_opener` with `share_of_paragraphs` |
@@ -76,15 +85,38 @@ How paragraphs and the piece open; the last three rows are the openers machine p
 
 ### connectives
 
+A class row (`formal-connective`, `scholarly-connective`) records a family's rate; the `-form` rows record which member of the family the author prefers — often the stronger signal, because member preferences are near-categorical (an author who writes *for instance* may never write *for example*).
+
 | marker | definition | measure |
 |---|---|---|
 | so-initial | sentence starts with *So* | `(?:^\|(?<=[.!?]\s))So\b` |
-| which-means | *which means* / *meaning* as a consequence connector | `\bwhich means\b` |
+| medial-so | clauses joined with *, so* | `,\s+so\b` |
+| which-means | *which means* / *this means* / *that means* / *meaning* as a consequence connector | `\b(?:which\|this\|that) means\b` |
 | because-initial | sentence starts with *Because* | `(?:^\|(?<=[.!?]\s))Because\b` |
 | and-but-initial | sentence starts with *And* or *But* | `(?:^\|(?<=[.!?]\s))(?:And\|But)\b` |
-| formal-connective | sentence-initial *Additionally, Furthermore, Moreover, However, Therefore, Thus, Consequently* | built-in `ai_connective_opener` |
+| formal-connective | sentence-initial *Additionally, Furthermore, Moreover, However, Therefore, Thus, Consequently* | built-in `ai_connective_opener` (comma habit: `punctuation/connective-comma`) |
 | medial-therefore | *therefore / consequently / thus* placed after the subject instead of sentence-initially ("Custom development therefore shifts toward…") | built-in `ai_medial_therefore` |
-| scholarly-connective | *e.g., i.e., in order to, in contrast, as well as, such as, for instance* | built-in `scholarly_connective` |
+| scholarly-connective | *e.g., i.e., in order to, in contrast, as well as, such as, for instance* | built-in `scholarly_connective` (class rate; the member rows below carry the signal) |
+| purpose-form | the preferred purpose construction — *in order to* vs. *so that* vs. *such that* vs. bare *to*; the value names the member | per-member regex: `\bin order to\b`, `\bso that\b`, `\bsuch that\b` |
+| example-introducer | the preferred example form — sentence-initial *For instance,* vs. *For example,*; *e.g.* for noun examples (comma habit: `punctuation/latin-abbreviation-comma`) | `\bfor instance\b` vs. `\bfor example\b` |
+| causal-form | the preferred cause connective — *, since* vs. *because* vs. *as* | `,\s+since\b` vs. `\bbecause\b` |
+| contrast-form | the preferred contrast connective — *, while* vs. *whereas* vs. *although* vs. *, but* | `,\s+while\b` vs. `\bwhereas\b` vs. `\b[Aa]lthough\b` |
+| additive-form | the preferred additive — *Furthermore* vs. *Moreover* vs. *In addition* vs. *Additionally* | `(?:^\|(?<=[.!?]\s))(?:Furthermore\|Moreover\|Additionally\|In addition)\b` per member |
+| comma-hence | consequence attached with *, hence / , thus / , therefore* ("…, hence losing the ability to…") | `,\s+(?:hence\|thus\|therefore)\b` |
+| sentential-which | *, which* relative clause on the whole preceding clause ("…, which means that…", "…, which is not surprising") | `,\s+which (?:is\|was\|means\|makes\|leads\|results\|allows\|enables\|would\|could\|can\|might\|has\|have\|helps\|gives)\b` |
+| anaphoric-such | sentence opens with *Such (a)* picking up the previous sentence ("Such a custom language can…") | `(?:^\|(?<=[.!?]\s))Such\b` |
+
+### grammar-habits
+
+Recurring grammatical constructions the author reaches for — correct English, but marked choices that machine prose almost never makes; in a non-native author they are often shaped by the first language. Only correct English belongs here: constructions that are actually errors are never recorded as patterns and are handled as review-round feedback instead — see [german-l1-guidance.md](german-l1-guidance.md) for the boundary and the error list.
+
+| marker | definition | measure |
+|---|---|---|
+| participial-premodifier | participle, often with an adverb, placed before the noun instead of a relative clause after it ("the already discussed advantage", "the employed metric", "the resulting diagram") | `\b(?:the\|these\|those\|their\|its\|our\|all\|both) (?:already \|yet \|newly \|previously )?(?:involved\|employed\|discussed\|mentioned\|presented\|described\|proposed\|achieved\|obtained\|resulting\|remaining\|contained\|affected\|required\|selected\|considered\|introduced\|determined\|computed\|generated\|aforementioned) \w+` (seed list; extend per corpus) |
+| instrumental-with | *with* where *by* or *using* is the plainer choice, after participles ("implemented with", "represented with horizontal bars") | `\b(?:implemented\|realized\|realised\|represented\|encoded\|drawn\|processed\|defined\|modeled\|modelled\|generated\|created\|built\|done\|configured\|described\|specified\|solved\|computed\|visualized)\s+with\b` |
+| back-reference-determiner | *the respective / the corresponding / the given* as back-reference determiners ("the respective layout algorithm") | `\bthe (?:respective\|corresponding\|given)\b` |
+| framing-preposition | *with respect to / regarding / in the context of / concerning* framing the topic of a clause | `\b(?:with respect to\|regarding\|in the context of\|concerning)\b` |
+| section-hand-off | *in the following* as a forward hand-off ("are presented in the following") | `\bin the following\b` |
 
 ### voice-and-person
 
@@ -93,7 +125,11 @@ How paragraphs and the piece open; the last three rows are the openers machine p
 | first-singular | I / me / my | built-in `first_person_singular` |
 | first-plural | we / our / us | built-in `first_person_plural` |
 | second-person | you / your | built-in `second_person` |
-| passive | passive constructions | judged (regexes are too noisy) |
+| passive | passive constructions | judged (regexes are too noisy; `modal-passive` counts the modal subset) |
+| modal-passive | modal + passive infinitive ("can be embedded", "must be defined") — the countable core of `passive` | `\b(?:can\|cannot\|could\|may\|might\|should\|must)\s+(?:not\s+)?be\s+\w+(?:ed\|en\|wn\|lt\|t)\b` |
+| modal-profile | rate per modal verb (*can, could, would, should, may, might, must, shall*): which modal carries hypotheticals, which obligation, which are never used | one count per modal: `\bwould\b`, `\bcan\b`, … |
+| pronoun-roles | which person does which job — *I* for claims and decisions, *we* for procedure or team, passive for the rest — and person switching within one document | judged |
+| imperative | imperative addressed to the reader ("Run the generator", "Open the file") | judged (verb-initial sentences; the *Please* form is `tone-markers/request-form`) |
 | impersonal | *one*, *the reader*, agentless constructions | judged |
 
 ### tone-markers
@@ -103,10 +139,14 @@ How paragraphs and the piece open; the last three rows are the openers machine p
 | humor-aside | joke or wry remark, usually parenthetical | judged |
 | self-deprecation | author at own expense | judged |
 | bluntness | flat verdicts ("This is wrong.") | judged |
-| hedging | *perhaps, maybe, I think, arguably, probably, relatively, comparatively* | `\b(?:perhaps\|maybe\|I think\|arguably\|I suspect\|probably\|likely\|relatively\|comparatively\|somewhat)\b` |
+| hedging | *perhaps, maybe, I think, arguably, probably, possibly, quite, rather, partly, somewhat, a possible X, might* | `\b(?:perhaps\|maybe\|I think\|arguably\|I suspect\|probably\|possibly\|likely\|relatively\|comparatively\|somewhat\|quite\|partly\|a possible\|might)\b\|\brather\b(?! than)` |
+| opinion-marker | explicit opinion tag: *I think / I believe / I guess / I assume / I hope / in my opinion* | `\bI (?:think\|believe\|guess\|suppose\|assume\|hope\|expect)\b\|\bin my opinion\b` |
+| litotes | understatement by negation ("not that important", "not ideal", "not too big") | `\bnot (?:too\|that\|very\|so\|really\|quite\|entirely\|necessarily\|ideal\|perfect)\b` (noisy: also plain negation) |
+| politeness-formula | the author's courtesy profile: thanks form ("Thanks for the [noun]!"), apology rate, greeting and small-talk habits — usually register-bound (email) | judged; `\b[Tt]hanks? (?:you )?for\b` for the thanks form |
+| request-form | how the author asks: *Please* + imperative, *Could you*, *It would be great if*, *Shall we* — register-bound (email) | `(?:^\|(?<=[.!?]\s))Please [a-z]+\|\bCould you\b\|\b[Ii]t would be (?:great\|nice\|good\|helpful)\b` |
 | enthusiasm | *love, great, brilliant, neat* | judged, or an author-specific regex |
 | reassurance | comforting the reader ("If you're not sure, that's a normal place to be.") | judged |
-| stance-adverb | *actually, honestly, frankly, obviously, basically, simply, really, just* | `\b(?:actually\|honestly\|frankly\|obviously\|basically\|simply\|really\|just)\b` |
+| stance-adverb | *actually, honestly, frankly, obviously, basically, simply, really, just, of course* | `\b(?:actually\|honestly\|frankly\|obviously\|basically\|simply\|really\|just\|of course)\b` |
 | deliberate-adverb | *deliberately, explicitly, precisely, intentionally, by design* — marking every choice as intended | built-in `deliberate_adverb` |
 | quiet-adverb | *quietly, silently, rarely, seldom, politely, happily* — understated drama ("has quietly become", "rarely determines") | built-in `quiet_adverb` |
 | author-specific | an adverb this author leans on (extraction names it) | regex for that word |
@@ -128,7 +168,7 @@ How paragraphs and the piece open; the last three rows are the openers machine p
 | italic | italic spans | built-in `italic` |
 | clause-bold | bold applied to a whole clause, thesis sentence, or statistic (25+ characters) rather than a term | built-in `clause_bold` |
 | caps | all-caps words for emphasis | `\b[A-Z]{3,}\b` (exclude acronyms by reading) |
-| intensifier | *very, extremely, incredibly, absolutely* | `\b(?:very\|extremely\|incredibly\|absolutely\|totally)\b` |
+| intensifier | *very, extremely, incredibly, absolutely* — record which member dominates (*very* alone is a different habit than a spread) | `\b(?:very\|extremely\|incredibly\|absolutely\|totally)\b` per member |
 | repetition | deliberate word or structure repetition, including anaphoric runs ("It means… It means… It means…") | judged |
 
 ### lists
@@ -140,7 +180,8 @@ How paragraphs and the piece open; the last three rows are the openers machine p
 | label-led-item | list item or paragraph opening with a bold or italic label ("**Verify by execution.** Never trust prose…", "*Panels.* Each panel…") — record which: bold vs. italic, colon vs. period, bullet vs. run-in paragraph | built-in `label_lead` |
 | inline-enumeration | series carried in prose ("two things: X and Y") | judged |
 | numbered-vs-bulleted | preference when a list is used | judged |
-| parallel-grammar | every item in a list shares one syntactic shape ("Label: verb + object" throughout) | judged |
+| parallel-grammar | every item in a list shares one syntactic shape ("Label: verb + object" throughout); record the item shape too — lowercase noun phrase with trailing comma, full sentence, or continuation of a colon-ended lead-in sentence | judged |
+| correlative-pair | correlative *both/either/neither* with the preposition repeated ("both with X and with Y") | `\b(?:both\|either\|neither)\s+(?:in\|with\|for\|on\|at\|by\|from\|to)\b` (confirm the repetition by reading) |
 
 ### headings
 
@@ -149,15 +190,16 @@ How paragraphs and the piece open; the last three rows are the openers machine p
 | heading-density | headings per 1k words | `stat: headings_per_1k` |
 | heading-case | sentence case vs. title case | `stat: heading_title_case_share` (confirm by reading) |
 | colon-heading | "Hook: Subtitle" headings ("Delete the Tree: Rethinking Language Tooling", "The problem: no single tool does it all") | `stat: colon_heading_share` |
-| heading-form | noun phrase, verb phrase, gerund ("Architecting the guides"), question, full-sentence claim ("Parser performance is an architectural concern"), "Why X matters" | judged |
+| heading-form | noun phrase, verb phrase, gerund ("Architecting the guides"), question, imperative or exclamative ("Try it!"), full-sentence claim ("Parser performance is an architectural concern"), "Why X matters" | judged |
 | heading-length | typical words per heading | judged |
 
 ### opener-closer
 
 | marker | definition | measure |
 |---|---|---|
-| opener-type | how the piece starts: incident, question, claim, definition, negated premise (see `paragraph-openers/negated-opener`) | judged |
-| closer-type | how it ends: punchline, trailing thought, call to action, summary | judged |
+| opener-type | how the piece starts: incident, question, claim, definition, status report (*I* + past-tense deed, an email habit), negated premise (see `paragraph-openers/negated-opener`) | judged |
+| closer-type | how it ends: punchline, trailing thought, call to action, summary, check-question ("Is this ok?", "What do you think?") | judged |
+| pointer-closer | paragraph or section closes on a cross-reference or pointer sentence ("An example is shown in Figure 4.5.", "as shown in the figure below") | judged; `content-conventions/artifact-pointer` counts the references |
 | slogan-closer | final line is a detachable aphorism or verbless slogan ("There is no plug-and-play AI solution. There is engineering.", "Map, not manual.") | judged |
 | sign-off | email/letter sign-off form ("Cheers, Jo") | regex for the form |
 
@@ -171,7 +213,9 @@ How paragraphs and the piece open; the last three rows are the openers machine p
 | favourite-word | a topic-independent word the author overuses (*fiddly*, *neat*, *the trick is*) — never a term of the subject | regex for that word |
 | compound-spelling | open vs. closed compounds ("code base" vs. "codebase", "web site" vs. "website") | judged; regex for the pair once found |
 | abbreviation | initialisms vs. written-out terms ("PRs" vs. "pull requests", "LSP" vs. "the Language Server Protocol") | judged; regex for the pair once found |
-| hyphen-compound | coined hyphenated modifiers (*IDE-grade, theme-aware, agent-ready, seat-priced*) | built-in `hyphen_compound` (noisy: *-based* and *-specific* are excluded as ordinary) |
+| hyphen-compound | coined hyphenated modifiers (*IDE-grade, theme-aware, agent-ready, seat-priced*) | built-in `hyphen_compound` (noisy: *-based* and *-specific* are excluded as ordinary — `based-compound` counts them) |
+| based-compound | *-based / -driven / -oriented* compounds as the default modifier ("form-based", "data-driven") — for some authors the main compound habit, which `hyphen-compound` excludes by design | `\b\w+-(?:based\|driven\|oriented)\b` |
+| contraction-selectivity | which contractions are used and which never appear (*don't, it's, I'd* freely; *isn't, aren't, can't* never) | negated-*be/can* subset `\b(?:isn\|aren\|wasn\|weren\|can\|couldn\|doesn\|didn\|hasn\|haven\|shouldn\|wouldn)['’]t\b` against built-in `contraction` |
 | numerals | digits vs. spelled-out numbers | judged |
 | hedged-number | a precise figure wrapped in a vagueness hedge ("roughly $6.3–6.4 trillion", "approximately 21%") | built-in `hedged_number` |
 | jargon-level | plain words vs. field terminology | judged |
@@ -181,7 +225,12 @@ How paragraphs and the piece open; the last three rows are the openers machine p
 | marker | definition | measure |
 |---|---|---|
 | code-reference | how code identifiers appear (backticks, prose, both) | judged |
-| link-placement | links inline on a phrase vs. bare URL vs. footnote | judged |
+| link-placement | links inline on a phrase vs. bare URL on its own line (often under a colon lead-in) vs. footnote; anchor-text style (descriptive phrase vs. "here") | judged on the raw source (counters strip URLs, so they cannot see this) |
+| term-introduction | how coinages are introduced: *called / so-called / we call / named*, italics or quotes at first definition | `\b(?:so-called\|called\|we call)\b` (noisy: *called* has other senses) |
+| artifact-pointer | capitalized cross-references to document artifacts ("Figure 4.5", "(see Section 2.3)", "Listing 7") | `\b(?:Section\|Figure\|Table\|Chapter\|Listing)\s+\d` |
+| self-reference | how the author refers to the current work and their own prior work ("this thesis", *here* for "in this work", own papers cited in the third person) | judged |
+| time-anchoring | dated history recaps and concrete time anchors ("In January 2017 we released…", "since the 2019 rewrite") | judged |
+| semantic-line-breaks | one sentence per line in the markup source — invisible after rendering, so it needs the raw source file | `[.!?]\n(?=[A-Z])` on the raw source |
 | citation | how sources are credited: link, title, name in prose | judged |
 | source-as-agent | an institution as grammatical agent of a reporting verb, unlinked ("Gartner explicitly cautions", "Deloitte says") | built-in `source_as_agent` (noisy: also matches people) |
 | name-drop-list | a comma list of vendors, tools, or companies as credibility ("Arduino, ARM, Smartface, and VUEngine") | judged |
@@ -214,7 +263,7 @@ Setup-then-payoff sentence shapes that tell the reader what to find significant.
 | marker | definition | measure |
 |---|---|---|
 | colon-punchline | short setup, colon, payoff in running prose: "The first proof: an OCT plugin for IntelliJ." (2.5/1k, 13 docs for the sentence-initial form the counter measures; any prose colon before a lowercase payoff runs at 8/1k in all 19 docs) | built-in `ai_colon_punchline` |
-| nominal-reveal | abstract-noun subject announcing the payoff: "The result is…", "The good news:", "Here's the unexpected part:", "That is the idea behind X" (0.9/1k, 10 docs) | built-in `ai_nominal_reveal` |
+| nominal-reveal | abstract-noun subject announcing the payoff: "The result is…", "The good news:", "Here's the unexpected part:", "That is the idea behind X" (0.9/1k, 10 docs) — the equative frame is an author habit too ("The only problem is that…", "Another advantage is…"): record on both sides with the corpus's own nouns | built-in `ai_nominal_reveal` (seed nouns are AI-tuned; extend for the author side) |
 | verdict-opener | sentence-initial *That/This* + evaluative verb: "That changes today.", "This is where LLVM comes in.", "That favors businesses selling capability" (1.9/1k, 11 docs) | built-in `ai_verdict_opener` |
 | question-answer | a rhetorical question immediately answered by the next sentence: "What if the agent joined the session instead? That is the idea behind…" (0.7/1k, 10 docs) | built-in `ai_question_answer` (noisy: also counts structuring questions) |
 | what-if | "What if…?", "What happens when…?" as a hook (0.4/1k, 7 docs; produced by every model for the same brief) | built-in `ai_what_if` |
@@ -226,7 +275,7 @@ Setup-then-payoff sentence shapes that tell the reader what to find significant.
 |---|---|---|
 | significance-tail | a tail telling the reader why to care: "…, highlighting the importance of …", "That matters because…", "Why X matters", "For decision makers, this signals…" (0.4/1k, 6 docs; the *matters* family — the 2023 *highlighting* form is absent) | built-in `ai_significance_tail` |
 | worth-noting | "it's worth noting", "worth knowing / weighing / flagging", "deserves special respect", *notably, importantly, crucially* (0.4/1k, 5 docs) | built-in `ai_worth_noting` |
-| participial-tail | main clause plus a present-participle benefit: "…, enabling natural language design and eliminating manual refactoring" (0.6/1k, 8 docs) | built-in `ai_participial_tail` |
+| participial-tail | main clause plus a present-participle benefit: "…, enabling natural language design and eliminating manual refactoring" (0.6/1k, 8 docs) — also an author habit as a result tail ("…, thus decoupling…", "…, hence losing…"): record on both sides, widening the verb list per corpus | built-in `ai_participial_tail` (seed verbs are AI-tuned; extend for the author side) |
 
 ### rule-of-three
 
