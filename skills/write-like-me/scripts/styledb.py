@@ -338,6 +338,15 @@ def validate(db: Dict[str, Any], corpus_dir: Optional[str] = None) -> Tuple[List
         for ref in p.get("instead", []):
             if ref not in {q.get("id") for q in db.get("patterns", [])}:
                 w("pattern {}: 'instead' references unknown pattern {}".format(pid, ref))
+        displaces = p.get("displaces")
+        if displaces is not None:
+            if not isinstance(displaces, list) or not all(
+                    isinstance(x, str) and x.strip() for x in displaces):
+                e("pattern {}: 'displaces' must be a list of the word forms the author "
+                  "does not use".format(pid))
+            elif p.get("kind") == "absence":
+                w("pattern {}: 'displaces' on an absence pattern; absences name their "
+                  "replacements in 'instead'".format(pid))
     return errors, warnings
 
 
@@ -418,6 +427,10 @@ def merge(dbs: List[Dict[str, Any]], partial: bool = False) -> Dict[str, Any]:
                 q.setdefault("instead", [])
                 if ref not in q["instead"]:
                     q["instead"].append(ref)
+            for form in p.get("displaces", []):
+                q.setdefault("displaces", [])
+                if form not in q["displaces"]:
+                    q["displaces"].append(form)
     for q in patterns.values():
         notes = q.pop("notes", [])
         if notes:
@@ -498,6 +511,8 @@ def render(db: Dict[str, Any], setting: str = "hard", dimension: Optional[str] =
             lines.append("  {}".format(p.get("description", "")))
             if p.get("instead"):
                 lines.append("  Instead: {}".format(", ".join(p["instead"])))
+            if p.get("displaces"):
+                lines.append("  Never uses: {}".format(", ".join(p["displaces"])))
             for ev in p.get("evidence", [])[:2]:
                 lines.append("  > {} — *{}*".format(ev.get("quote", "").strip(), ev.get("doc", "?")))
             if p.get("note"):

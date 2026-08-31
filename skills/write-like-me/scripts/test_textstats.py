@@ -1,5 +1,6 @@
 import json
 
+import styledb
 import textstats
 
 SAMPLE = """---
@@ -145,15 +146,54 @@ def test_measure_pattern_units_and_verdict():
     assert textstats.verdict(1.2, absent) == "gap"
     assert textstats.verdict(400.0, per_1k) == "gap"
     wide = {"id": "connectives/so-initial", "unit": "per_1k_words", "rate": 3.2, "range": [0.0, 5.5]}
-    assert textstats.verdict(0.0, wide) == "low"
+    assert textstats.verdict(0.0, wide) == "low"  # no spread recorded: the range test decides
     assert textstats.verdict(3.0, wide) == "match"
     assert textstats.verdict(5.4, wide) == "match"
     assert textstats.verdict(9.0, wide) == "gap"
 
 
+def test_zero_against_a_habit_of_most_documents_is_absent_not_low():
+    # One corpus document without the habit puts 0 into the range, so the range test alone
+    # calls an input with none of it "low" — and processing leaves lean rows alone. These are
+    # the additive rows, the ones that make a rewrite sound like the author, so they get a
+    # verdict of their own.
+    habitual = {"id": "connectives/so-initial", "unit": "per_1k_words", "rate": 3.2,
+                "range": [0.0, 5.5], "spread": 0.8}
+    assert textstats.verdict(0.0, habitual) == "absent"
+    assert textstats.verdict(0.4, habitual) == "low"  # present but thin: still a lean row
+    assert textstats.verdict(3.0, habitual) == "match"
+    occasional = dict(habitual, spread=0.4)
+    assert textstats.verdict(0.0, occasional) == "low"  # not a habit of most documents
+    absence = {"id": "punctuation/em-dash", "kind": "absence", "rate": 0.0,
+               "range": [0.0, 0.0], "spread": 1.0}
+    assert textstats.verdict(0.0, absence) == "match"  # zero is the point of an absence
+
+
+def test_a_pattern_the_input_is_too_short_to_express_is_not_a_target():
+    # 3.2 per 1k predicts 0.2 occurrences in a 64-word note, so neither the zero the input
+    # has nor the one a rewrite would add says anything about the author's habit — and the
+    # one would land at 15.6 per 1k, five times their rate.
+    habitual = {"id": "connectives/so-initial", "unit": "per_1k_words", "rate": 3.2,
+                "range": [0.0, 5.5], "spread": 0.8}
+    short = {"words": 64, "sentences": 5, "paragraphs": 1}
+    assert textstats.verdict(0.0, habitual, short) == "too-short"
+    assert textstats.verdict(15.6, habitual, short) == "too-short"  # neither is evidence
+    assert textstats.verdict(0.0, habitual, {"words": 1000}) == "absent"  # expressible again
+    assert textstats.verdict(0.0, habitual) == "absent"  # no stats: length unknown
+    # absences hold at any length — zero is expressible in a one-line note
+    absence = {"id": "punctuation/em-dash", "kind": "absence", "regex": "—", "rate": 0.0,
+               "range": [0.0, 0.0], "spread": 1.0}
+    assert textstats.verdict(15.6, absence, short) == "gap"
+    # a share over five sentences or one paragraph is as coarse as its denominator
+    share = {"id": "sentence-rhythm/one-sentence-paragraph", "unit": "share_of_paragraphs",
+             "rate": 0.19, "range": [0.0, 0.33], "spread": 0.8}
+    assert textstats.verdict(0.0, share, short) == "too-short"
+    assert textstats.verdict(0.0, share, {"paragraphs": 12}) == "absent"
+
+
 def test_cli_json_with_db(tmp_path, capsys):
     doc = tmp_path / "doc.md"
-    doc.write_text("Plain text: one sentence with a colon. And another.", encoding="utf-8")
+    doc.write_text("Plain text: one sentence with a colon. And another one after it.", encoding="utf-8")
     db = tmp_path / "db.json"
     db.write_text(json.dumps({"patterns": [
         {"id": "punctuation/colon", "regex": ":", "unit": "per_1k_words", "rate": 100.0, "range": [50.0, 150.0], "tier": 1},
@@ -167,3 +207,99 @@ def test_cli_json_with_db(tmp_path, capsys):
     assert textstats.main(["measure", str(doc), "--db", str(db)]) == 0
     assert "punctuation/colon" in capsys.readouterr().out
     assert textstats.main(["counters"]) == 0
+
+
+def test_gap_is_the_size_of_the_edit_in_occurrences():
+    # The comparison table sorts by gap, so gap has to mean the same thing on every axis:
+    # how many places a rewrite would have to change. Rows nothing should touch are 0.
+    stats = {"words": 500, "sentences": 40, "paragraphs": 10}
+    habit = {"id": "voice-and-person/first-singular", "unit": "per_1k_words", "rate": 45.0,
+             "range": [22.0, 76.0], "spread": 1.0}
+    assert textstats.gap_size(0.0, habit, stats) == 22.5   # 45 per 1k over 500 words
+    assert textstats.gap_size(20.0, habit, stats) == 12.5  # thin: still 12 places short
+    assert textstats.gap_size(45.0, habit, stats) == 0.0   # match: nothing to edit
+    share = {"id": "sentence-rhythm/short-punch", "unit": "share_of_sentences", "rate": 0.4,
+             "range": [0.3, 0.5], "spread": 1.0}
+    assert textstats.gap_size(0.15, share, stats) == 10.0  # ten sentences short of the share
+    absence = {"id": "punctuation/em-dash", "kind": "absence", "unit": "per_1k_words",
+               "rate": 0.0, "range": [0.0, 0.0], "spread": 1.0}
+    assert textstats.gap_size(6.0, absence, stats) == 3.0  # three em dashes to take out
+    length = {"id": "sentence-rhythm/median", "stat": "sentence_len_median", "unit": "words",
+              "rate": 12.0, "range": [10.0, 14.0]}
+    assert textstats.gap_size(19.0, length, stats) == 7.0  # not a count: the axis's own scale
+    occasional = {"id": "connectives/so-initial", "unit": "per_1k_words", "rate": 3.2,
+                  "range": [0.0, 5.5], "spread": 0.8}
+    assert textstats.gap_size(0.0, occasional, {"words": 64}) == 0.0  # too-short: no evidence
+    assert textstats.gap_size(0.0, {"id": "x/judged"}, stats) is None  # no rate to compare to
+
+
+def test_classes_say_what_the_rewrite_would_do_with_each_row():
+    habit = {"id": "voice-and-person/first-singular", "unit": "per_1k_words", "rate": 45.0,
+             "range": [22.0, 76.0], "spread": 1.0}
+    assert textstats.classify(45.0, habit, "match") == "do-not-touch"
+    assert textstats.classify(0.0, habit, "absent") == "add"
+    assert textstats.classify(20.0, habit, "low") == "lean"
+    assert textstats.classify(90.0, habit, "high") == "lean"
+    # `gap` splits by side: over the author's range is a removal, under it is the additive half
+    assert textstats.classify(120.0, habit, "gap") == "remove"
+    assert textstats.classify(5.0, habit, "gap") == "add"
+    absence = {"id": "punctuation/em-dash", "kind": "absence", "rate": 0.0, "range": [0.0, 0.0]}
+    assert textstats.classify(6.0, absence, "gap") == "remove"
+    assert textstats.classify(0.0, habit, "too-short") == "neutral"
+
+
+def test_strictness_ceilings_agree_with_the_db_script():
+    # The tables are duplicated so that either script runs on its own; a change to one that
+    # missed the other would gate rewrites differently depending on which one was asked.
+    assert textstats.SETTING_MAX_TIER == styledb.SETTING_MAX_TIER
+    overridden = {"tier": 3, "tier_override": 1}
+    assert textstats.effective_tier(overridden) == styledb.effective_tier(overridden) == 1
+    assert textstats.effective_tier({"tier": 2}) == styledb.effective_tier({"tier": 2}) == 2
+
+
+def comparison_rows(out):
+    """The classified DB rows of a measure run, in the order they were printed."""
+    return [l for l in out.splitlines()
+            if l.startswith(("add", "remove", "lean", "do-not-touch", "neutral"))]
+
+
+def test_sort_gap_and_setting_build_the_comparison_table(tmp_path, capsys):
+    doc = tmp_path / "note.md"
+    doc.write_text("Notes: I fixed it. The cause: DNS, not a timeout — the retry backs off "
+                   "now. One more thing: I push the follow-up tomorrow after the review.",
+                   encoding="utf-8")
+    db = tmp_path / "db.json"
+    db.write_text(json.dumps({"patterns": [
+        {"id": "punctuation/colon-elaboration", "regex": r":(?=\s)", "unit": "per_1k_words",
+         "rate": 100.0, "range": [50.0, 150.0], "spread": 1.0, "tier": 1},
+        {"id": "punctuation/em-dash", "regex": "—", "kind": "absence", "unit": "per_1k_words",
+         "rate": 0.0, "range": [0.0, 0.0], "spread": 1.0, "tier": 3},
+        {"id": "connectives/so-initial", "regex": r"(?:^|(?<=[.!?]\s))So", "unit": "per_1k_words",
+         "rate": 200.0, "range": [100.0, 300.0], "spread": 1.0, "tier": 1},
+    ]}), encoding="utf-8")
+
+    assert textstats.main(["measure", str(doc), "--db", str(db), "--sort-gap",
+                           "--setting", "medium"]) == 0
+    rows = comparison_rows(capsys.readouterr().out)
+    ids = [next(t for t in r.split() if "/" in t) for r in rows]
+    # the missing habit is the biggest edit, the one em dash the smallest, the colons no edit
+    assert ids == ["connectives/so-initial", "punctuation/em-dash", "punctuation/colon-elaboration"]
+    assert rows[0].startswith("add ")            # tier 1: inside the medium ceiling
+    assert rows[1].startswith("remove [manual]")  # tier 3: above it, so the author's call
+    assert rows[2].startswith("do-not-touch")
+
+    # the columns are opt-in: without the flags the table is the one the other steps read
+    assert textstats.main(["measure", str(doc), "--db", str(db)]) == 0
+    plain = capsys.readouterr().out
+    assert comparison_rows(plain) == []
+    assert "punctuation/em-dash" in plain
+
+    assert textstats.main(["measure", str(doc), "--db", str(db), "--setting", "soft",
+                           "--json"]) == 0
+    patterns = json.loads(capsys.readouterr().out)[str(doc)]["patterns"]
+    for row in patterns.values():
+        # a gap above zero means exactly "this row asks for an edit"
+        assert (row["gap"] > 0) == (row["class"] in textstats.EDITING_CLASSES)
+    assert patterns["connectives/so-initial"]["dropped_by_setting"] is False
+    assert patterns["punctuation/em-dash"]["dropped_by_setting"] is True
+    assert patterns["punctuation/colon-elaboration"]["dropped_by_setting"] is False
