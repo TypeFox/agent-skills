@@ -66,6 +66,8 @@ Automated reading reliably finds habits the author is unaware of; the author rel
 
 Write the DB to its location (the default user path unless the request named another), run `validate` once more on the written file, and hand over: the profile rendered as markdown, the list of tier-1 patterns in one line each, the shortfalls (corpus size, unreviewed status, judged-only dimensions), and the exact command that re-renders the profile later.
 
+Offer sealing as the last step: `styledb.py seal DB` drops the corpus paths, the DB's only reference into the corpus filesystem, once the review round has settled the redactions. Sealing removes the filenames that rule 5 cannot redact (a path can name a customer or a client project), and costs quote re-verification: `validate --corpus-dir` on a sealed DB checks nothing and warns. It is the author's call, so ask rather than seal by default, and skip it while the corpus is still growing — an incremental re-extraction wants the paths. [db-schema.md](db-schema.md) has the rules; `seal` refuses an unreviewed or partial DB.
+
 ## Parallel extraction with subagents
 
 A large corpus (dozens of documents, or documents long enough that two of them fill a context window) is extracted by several subagents in parallel, each producing a *partial* DB, merged with `styledb.py merge`. Because tiers depend on coverage, run it in two phases:

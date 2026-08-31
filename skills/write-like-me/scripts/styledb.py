@@ -24,6 +24,11 @@ Subcommands
   merge DB... -o OUT [--partial] union of corpus manifests and patterns from
                                  several (partial) DBs, derived fields
                                  recomputed from the merged per-document data
+  seal DB [-o OUT]               finalize a reviewed DB: drop corpus.documents[]
+                                 .path, the DB's only reference into the corpus
+                                 filesystem, and stamp corpus.sealed. Ends quote
+                                 re-verification; everything processing reads is
+                                 untouched (see references/db-schema.md)
   render DB [--setting soft|medium|hard] [--dimension D]
                                  human-readable markdown profile, filtered to
                                  the tiers the setting applies
@@ -37,6 +42,7 @@ Stdlib only, Python 3.8+.
 from __future__ import annotations
 
 import argparse
+import datetime
 import json
 import re
 import sys
@@ -226,6 +232,21 @@ def validate(db: Dict[str, Any], corpus_dir: Optional[str] = None) -> Tuple[List
         if not d.get("register"):
             e("document {}: register is required".format(did))
         docs[did] = d
+    sealed = corpus.get("sealed")
+    if sealed is not None:
+        if not isinstance(sealed, str):
+            e("corpus.sealed must be a date string")
+        still_pathed = sorted(did for did, d in docs.items() if d.get("path"))
+        if still_pathed:
+            e("corpus is marked sealed but {} document(s) still carry a path: {}".format(
+                len(still_pathed), ", ".join(still_pathed)))
+    if corpus_dir:
+        unverifiable = sorted(did for did, d in docs.items() if not d.get("path"))
+        if unverifiable:
+            w("--corpus-dir given, but {} of {} documents carry no path{}; "
+              "their evidence quotes were NOT verified: {}".format(
+                  len(unverifiable), len(docs),
+                  " (DB sealed {})".format(sealed) if sealed else "", ", ".join(unverifiable)))
     if db.get("kind") == "user" and not db.get("partial"):
         if len(docs) < 8:
             w("corpus has {} documents; guidance is >=8 for a stable profile".format(len(docs)))
@@ -350,6 +371,9 @@ def merge(dbs: List[Dict[str, Any]], partial: bool = False) -> Dict[str, Any]:
                     doc["id"], prev.get("words"), doc.get("words")))
             docs.setdefault(doc["id"], doc)
     out["corpus"]["documents"] = list(docs.values())
+    sealed = [d.get("corpus", {}).get("sealed") for d in dbs]
+    if all(sealed):  # a mixed merge keeps the paths it has and stays unsealed
+        out["corpus"]["sealed"] = max(str(x) for x in sealed)
 
     patterns: Dict[str, Dict[str, Any]] = {}
     for d in dbs:
@@ -403,6 +427,29 @@ def merge(dbs: List[Dict[str, Any]], partial: bool = False) -> Dict[str, Any]:
     return out
 
 
+# ---------------------------------------------------------------- seal
+
+def seal(db: Dict[str, Any], date: Optional[str] = None) -> int:
+    """Drop every corpus path and stamp corpus.sealed; return paths dropped.
+
+    Sealing removes the DB's only dependency on the corpus filesystem — nothing
+    else in the manifest points at a file, and processing never reads the
+    manifest at all. It is irreversible: `validate --corpus-dir` can no longer
+    check a quote, so it belongs after the review round, not before.
+    """
+    if db.get("partial"):
+        raise ValueError("cannot seal a partial DB: merge the parts, review, then seal")
+    status = db.get("review", {}).get("status")
+    if status != "reviewed":
+        raise ValueError(
+            "cannot seal a DB with review.status {!r}: sealing ends quote verification, "
+            "so the review round comes first (references/technique.md)".format(status))
+    docs = db.setdefault("corpus", {}).setdefault("documents", [])
+    dropped = sum(1 for d in docs if d.pop("path", None) is not None)
+    db["corpus"]["sealed"] = date or datetime.date.today().isoformat()
+    return dropped
+
+
 # ---------------------------------------------------------------- render
 
 def fmt_rate(p: Dict[str, Any]) -> str:
@@ -421,9 +468,10 @@ def render(db: Dict[str, Any], setting: str = "hard", dimension: Optional[str] =
     max_tier = SETTING_MAX_TIER[setting]
     lines = ["# Style profile ({} DB, db_version {})".format(db.get("kind"), db.get("db_version")), ""]
     corpus = db.get("corpus", {})
-    lines.append("Corpus: {} documents, {} words; review: {}.".format(
+    lines.append("Corpus: {} documents, {} words; review: {}{}.".format(
         len(corpus.get("documents", [])), corpus.get("total_words", "?"),
-        db.get("review", {}).get("status", "?")))
+        db.get("review", {}).get("status", "?"),
+        "; sealed {}".format(corpus["sealed"]) if corpus.get("sealed") else ""))
     lines.append("Setting: {} (tiers <= {}).".format(setting, max_tier))
     lines.append("")
     by_dim: Dict[str, List[Dict[str, Any]]] = {}
@@ -474,6 +522,7 @@ def cmd_info(args: argparse.Namespace) -> int:
         "skill_db_version": CURRENT_DB_VERSION,
         "partial": bool(db.get("partial")),
         "documents": len(corpus.get("documents", [])),
+        "sealed": corpus.get("sealed"),
         "total_words": corpus.get("total_words"),
         "patterns": len(db.get("patterns", [])),
         "tier_counts": tiers,
@@ -532,6 +581,25 @@ def cmd_merge(args: argparse.Namespace) -> int:
     return 1 if errors else 0
 
 
+def cmd_seal(args: argparse.Namespace) -> int:
+    db = load(args.db)
+    try:
+        dropped = seal(db)
+    except ValueError as exc:
+        print("ERROR: " + str(exc))
+        return 1
+    out = args.output or args.db
+    save(out, db)
+    errors, warnings = validate(db)
+    for msg in warnings:
+        print("WARN: " + msg)
+    for msg in errors:
+        print("ERROR: " + msg)
+    print("sealed {}: dropped {} corpus path(s); quotes can no longer be verified "
+          "against the corpus".format(out, dropped))
+    return 1 if errors else 0
+
+
 def cmd_render(args: argparse.Namespace) -> int:
     print(render(load(args.db), args.setting, args.dimension), end="")
     return 0
@@ -556,6 +624,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     s.add_argument("--fix", action="store_true"); s.set_defaults(fn=cmd_validate)
     s = sub.add_parser("merge"); s.add_argument("dbs", nargs="+"); s.add_argument("-o", "--output", required=True)
     s.add_argument("--partial", action="store_true"); s.set_defaults(fn=cmd_merge)
+    s = sub.add_parser("seal"); s.add_argument("db"); s.add_argument("-o", "--output")
+    s.set_defaults(fn=cmd_seal)
     s = sub.add_parser("render"); s.add_argument("db")
     s.add_argument("--setting", choices=sorted(SETTING_MAX_TIER), default="hard")
     s.add_argument("--dimension"); s.set_defaults(fn=cmd_render)

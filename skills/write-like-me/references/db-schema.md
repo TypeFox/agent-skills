@@ -1,6 +1,6 @@
 # Style-pattern DB format
 
-The DB is JSON, written only by extraction and by merge, read by processing. Users never edit it; `scripts/styledb.py render` produces the human-readable profile whenever someone needs to see what is in it. `scripts/styledb.py validate` is the authority on what is legal; this document explains the fields and the rules behind them.
+The DB is JSON, written only by extraction, by merge, and by `seal`, read by processing. Users never edit it; `scripts/styledb.py render` produces the human-readable profile whenever someone needs to see what is in it. `scripts/styledb.py validate` is the authority on what is legal; this document explains the fields and the rules behind them.
 
 ## Versioning
 
@@ -40,10 +40,11 @@ Bump the version when an old DB would be read incorrectly by the new skill: a re
 | `kind` | `user` or `ai` |
 | `partial` | true for a subagent's partial result that still awaits merge; processing refuses partial DBs |
 | `corpus.documents[].id` | stable slug, used by every `documents[]` and `evidence[]` entry |
-| `corpus.documents[].path` | path relative to the corpus root the DB was built from; needed for `validate --corpus-dir` quote verification, otherwise informational |
+| `corpus.documents[].path` | optional: path relative to the corpus root the DB was built from; needed for `validate --corpus-dir` quote verification, otherwise informational. `styledb.py seal` drops it — see [Sealing](#sealing) |
 | `corpus.documents[].words` | word count as `textstats.py` counts it — rates are normalized against this number, so use the script, not an editor's count |
 | `corpus.documents[].register` | document type: `article`, `email`, `docs`, `note`, `thesis`, … (free string, consistent within a DB) |
 | `corpus.documents[].sole_authored`, `vetting` | intake facts: sole-authored flag; vetting outcome `confirmed`, `certified` (recent, author certified as hand-written), or `dropped` |
+| `corpus.sealed` | date the DB was sealed, meaning every `path` has been dropped on purpose; absent while the DB still carries paths |
 | `review.status` | `pending` until the author has walked through the rendered profile, then `reviewed` |
 
 ## Pattern entries
@@ -119,3 +120,18 @@ Why tiers work as the strictness dial: a low-evidence pattern is exactly the one
 - the result is `partial: false` unless `--partial` is given, and `review.status` is `pending` — a merge always precedes the review round, never replaces it.
 
 Because tiers depend on coverage, a two-phase parallel extraction (discover candidates in parallel, then count the merged candidate list over every document, then merge again) yields far better tiers than a single parallel pass — see [technique.md](technique.md).
+
+## Sealing
+
+`styledb.py seal DB [-o OUT]` finalizes a reviewed DB: it drops `path` from every corpus document and stamps `corpus.sealed` with the date.
+
+`path` is the DB's only reference into the corpus filesystem — nothing else in the manifest points at a file, and processing never reads the manifest at all: a rewrite works from the pattern entries alone (`description`, the counter, `rate`, `range`, `tier`, `instead`, `evidence`). Sealing is therefore not what makes processing corpus-independent; it makes the *file names* go away. That is worth doing because filenames are the one place rule 5 of [technique.md](technique.md) cannot reach: `clients/acme/proposal-v3.md` names a customer that no redacted quote would have kept.
+
+What sealing keeps, and why none of it is a dependency on the corpus:
+
+- `id`, `words`, `register` are the keys and denominators of every derived number. `rate`, `spread`, `range`, `coverage`, `registers`, and every tier are computed from `patterns[].documents[]` against them, so dropping them would leave `validate --fix` unable to recompute and turn the numbers into assertions nobody can check.
+- `date`, `sole_authored`, `vetting` are the record that intake vetting happened — some thirty bytes per document, and the only evidence in the DB that the corpus was the author's own hand.
+
+The cost is verification. On a sealed DB `validate --corpus-dir` can check no quote; it now warns instead of passing silently, so a clean run never means "verified" when nothing was verifiable. Seal after the review round for that reason: `seal` refuses a DB whose `review.status` is still `pending`, and refuses a partial DB, because merging is where document entries from the other parts still arrive. Re-extraction stays possible after sealing, but the author has to name the documents again (see [migration.md](migration.md)).
+
+A merge of sealed parts stays sealed; a merge mixing sealed and unsealed parts keeps the paths it has and drops the stamp, because some quotes are verifiable again.

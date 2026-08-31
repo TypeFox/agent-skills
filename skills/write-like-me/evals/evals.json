@@ -79,7 +79,7 @@
       ],
       "assertions": [
         "db-validates-with-quotes-verified: `python3 skills/write-like-me/scripts/styledb.py validate profile/jo-style.json --corpus-dir <workspace>/evals/files` exits 0 — schema-conformant, every evidence quote found verbatim in its source document, tiers consistent with the computed ones.",
-        "manifest-complete: the corpus manifest lists all five documents with a register each, word counts matching textstats.py within ±5%, and a vetting outcome per document.",
+        "manifest-complete: the corpus manifest lists all five documents with a register each, word counts matching textstats.py within ±5%, and a vetting outcome per document. Every document still carries its path and the DB is not sealed: sealing is offered only after the review round, which did not happen here.",
         "absence-patterns-with-instead: at least three absence patterns are recorded (em dash, semicolon, summary opener, formal connective, significance tail, or era opener), each with zero counts in every measured document and at least one with an `instead` reference to a presence pattern.",
         "presence-patterns-with-evidence: at least eight presence patterns exist, each with at least two verbatim quotes and per-document counts covering all five documents, including at least one that is counted by regex or stat (not only judged).",
         "register-nuance-recorded: at least one pattern is restricted to a register in its note or documents[] (bullet lists in docs only, or the email sign-off), rather than generalized across the corpus or omitted.",

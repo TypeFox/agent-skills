@@ -18,4 +18,4 @@ re-extraction where it is not):
 1. …
 ```
 
-Prefer a mechanical migration when the old data can be mapped; fall back to "re-run extraction on the corpus recorded in the DB manifest" when it cannot — the manifest exists so that a re-extraction is always possible.
+Prefer a mechanical migration when the old data can be mapped; fall back to "re-run extraction on the corpus recorded in the DB manifest" when it cannot — the manifest exists so that a re-extraction is always possible. A sealed DB (see [db-schema.md](db-schema.md)) still lists its documents by id, register, and word count, but no longer by path: such a re-extraction starts by asking the author which files those ids refer to.
