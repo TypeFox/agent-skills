@@ -35,7 +35,7 @@ Two reading habits matter. First, distinguish voice from format: a pattern that 
 
 ## Step 4 — Quantification
 
-Turn every strong impression into a counter: a regex or a `textstats.py` stat, applied to every document, normalized per 1k words (or the unit that fits). Sanity-check each new regex on two documents by printing its matches — a counter that fires on link URLs, code, or an unrelated construction is noisy. Demote noisy counters to `measurement: judged` with the count estimated from reading, and say so in `note`; a judged pattern is still a pattern, it just cannot reach tier 1.
+Turn every strong impression into a counter: a regex, or a `textstats.py` statistic or built-in counter referenced by name in `stat`, applied to every document, normalized per 1k words (or the unit that fits). Sanity-check each new regex on two documents by printing its matches — a counter that fires on link URLs, code, or an unrelated construction is noisy. Demote noisy counters to `measurement: judged` with the count estimated from reading, and say so in `note`; a judged pattern is still a pattern, it just cannot reach tier 1.
 
 Measure every candidate over every document, including the ones where the reading did not notice it — coverage is what makes spread and tiers meaningful. Then write the pattern entries and run:
 

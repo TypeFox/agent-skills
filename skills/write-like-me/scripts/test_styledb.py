@@ -167,6 +167,30 @@ def test_merge_unions_documents_and_evidence_and_recomputes_tiers():
     assert errors == []
 
 
+def test_validate_checks_stat_names_and_units():
+    ok = pattern("punctuation/em-dash", {"d1": 0, "d2": 0}, kind="absence", quotes=0, stat="em_dash")
+    typo = pattern("punctuation/semicolon", {"d1": 1}, stat="semi_colon")
+    unit = pattern("punctuation/colon-elaboration", {"d1": 1}, stat="colon", unit="share_of_sentences")
+    median = pattern("sentence-rhythm/median-length", {"d1": 1}, stat="sentence_len_median", unit="words")
+    errors, warnings = styledb.validate(make_db([ok, typo, unit, median]))
+    joined = "\n".join(errors)
+    assert "em-dash" not in joined and "median-length" not in joined
+    assert "unknown stat 'semi_colon'" in joined
+    assert "unit must be per_1k_words" in joined
+    assert not any("counted without regex or stat" in w for w in warnings)
+    _, warnings = styledb.validate(make_db([pattern("punctuation/colon", {"d1": 1})]))
+    assert any("counted without regex or stat" in w for w in warnings)
+
+
+def test_merge_keeps_first_stat_and_notes_conflicts():
+    a = make_db([pattern("punctuation/colon", {"d1": 4}, stat="colon")], docs=DOCS[:1])
+    b = make_db([pattern("punctuation/colon", {"d2": 2}, stat="semicolon")], docs=DOCS[1:2])
+    merged = styledb.merge([a, b])
+    p = merged["patterns"][0]
+    assert p["stat"] == "colon"
+    assert "differing stat dropped: semicolon" in p["note"]
+
+
 def test_merge_rejects_conflicts():
     a = make_db([pattern("punctuation/colon", {"d1": 4})], docs=DOCS[:1])
     b = make_db([pattern("punctuation/colon", {"d1": 5})], docs=DOCS[:1])

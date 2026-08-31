@@ -14,7 +14,8 @@ way.
 Usage
   textstats.py measure FILE... [--db DB...] [--json]
       One column per file. With --db, every DB pattern that carries a `regex`
-      or `stat` field is measured on each file and shown next to the DB's rate
+      or `stat` field (a statistic or a built-in counter, by name) is measured
+      on each file and shown next to the DB's rate
       and per-document range, with a verdict: `gap` when the input falls
       outside the per-document range (widened by a small tolerance); `low` or
       `high` when it is inside the range but under half or over twice the
@@ -262,7 +263,10 @@ def measure_pattern(pattern: Dict[str, Any], result: Dict[str, Any]) -> Optional
     doc: Document = result["_doc"]
     unit = pattern.get("unit", "per_1k_words")
     if pattern.get("stat"):
-        return result["stats"].get(pattern["stat"])
+        name = pattern["stat"]
+        if name in result["stats"]:
+            return result["stats"][name]
+        return result["per_1k"].get(name)  # a built-in counter referenced by name
     regex = pattern.get("regex")
     if not regex:
         return None

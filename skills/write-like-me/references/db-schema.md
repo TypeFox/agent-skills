@@ -56,7 +56,7 @@ Bump the version when an old DB would be read incorrectly by the new skill: a re
   "description": "Never uses em dashes; asides go in parentheses, consequences after a colon.",
   "kind": "absence",
   "measurement": "counted",
-  "regex": "—|--",
+  "stat": "em_dash",
   "unit": "per_1k_words",
   "documents": [{"id": "blog-fs-mocks", "count": 0}, {"id": "email-release", "count": 0}],
   "evidence": [],
@@ -76,7 +76,7 @@ Bump the version when an old DB would be read incorrectly by the new skill: a re
 | `description` | one sentence that defines the habit plainly; this is what the rewrite rule is derived from, so say what the author does, not only what they avoid |
 | `kind` | `presence` (the author does this) or `absence` (the author never does this — the do-not-introduce list) |
 | `measurement` | `counted` when a regex or stat produced the numbers; `judged` when reading produced them and the counts are estimates. Counted beats judged in tiering because judged rates drift |
-| `regex` / `stat` / `ignore_case` | the counter. `textstats.py measure --db` evaluates it on any input, so the DB's rates and the input's rates use the same definition. Absent for judged patterns |
+| `regex` / `stat` / `ignore_case` | the counter: a regex, or in `stat` the name of a statistic or built-in counter from `textstats.py counters` — `validate` rejects unknown names and a built-in counter with a unit other than `per_1k_words`, and warns when a counted pattern has neither. `measure --db` evaluates it on any input, so DB rates and input rates use the same definition. Absent for judged patterns |
 | `unit` | `per_1k_words` (default), `share_of_sentences`, `share_of_paragraphs`, `words` (for length stats), `count` |
 | `documents[]` | per-document evidence: `count` (and `rate` for non-per-1k units). One entry per document *measured*; a document with no entry was not measured for this pattern, which lowers coverage |
 | `evidence[]` | verbatim quotes with their document id. Required for presence patterns; `validate --corpus-dir` checks each quote appears in its source. An entry with `"redacted": true` had confidential content replaced by a bracketed placeholder (`[colleague]`, `[company]`, `[product]`) under rule 5 of technique.md; the validator skips the verbatim check for it and warns if no placeholder is present. Absence patterns carry none — their evidence is the zero counts |
@@ -114,7 +114,7 @@ Why tiers work as the strictness dial: a low-evidence pattern is exactly the one
 `styledb.py merge A.json B.json … -o OUT.json` produces one DB from several partial ones (same `db_version`, same `kind`):
 
 - corpus documents are unioned by id; the same id with different word counts is an error (the parts measured different files under one name);
-- patterns are unioned by id; `documents[]` entries are unioned by document id (conflicting counts for one document are an error — two parts measured the same document differently, which means their counters differ), `evidence[]` is unioned with duplicates dropped, `registers` recomputed, `measurement` becomes `judged` if any part judged, `instead` unioned, notes concatenated, the first non-null `tier_override` kept, differing regexes reported in `note` and the first kept;
+- patterns are unioned by id; `documents[]` entries are unioned by document id (conflicting counts for one document are an error — two parts measured the same document differently, which means their counters differ), `evidence[]` is unioned with duplicates dropped, `registers` recomputed, `measurement` becomes `judged` if any part judged, `instead` unioned, notes concatenated, the first non-null `tier_override` kept, differing regexes or stat names reported in `note` and the first kept;
 - derived fields and tiers are recomputed from the merged per-document data;
 - the result is `partial: false` unless `--partial` is given, and `review.status` is `pending` — a merge always precedes the review round, never replaces it.
 
