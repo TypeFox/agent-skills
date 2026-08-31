@@ -6,9 +6,11 @@ description: >-
 
 # Write like me
 
-Machine-written drafts carry a recognizable voice that is not the user's. This skill moves a draft toward the user's own voice as the step *before* their manual polish — never a replacement for it — using a **style-pattern DB**: a JSON profile of the user's writing habits, each habit backed by counts and verbatim quotes from documents the user wrote by hand. The DB format is in [references/db-schema.md](references/db-schema.md); the dimensions along which habits are recorded in [references/taxonomy.md](references/taxonomy.md).
+Machine-written drafts carry a recognizable voice that is not the user's. This skill moves a draft toward the user's own voice as the step *before* their manual polish — never a replacement for it — using a **style-pattern DB**: a JSON profile of the user's writing habits, each habit backed by counts and verbatim quotes from documents the user wrote by hand. The DB format is in [references/db-schema.md](references/db-schema.md); the dimensions along which habits are recorded in [references/taxonomy.md](references/taxonomy.md). Those files say **author** where this one says user — the same person, the one whose hand-written documents the profile is built from and who is asking for the rewrite.
 
-Two founding rules sit under everything. **The user's profile has veto power**: where the draft already matches the user, nothing moves, even if the construction is machine-typical — a user who writes with em dashes keeps them. **Converge on rates, not extremes**: every rewrite targets the user's measured frequency, never zero and never "always"; that is the guard against caricature.
+**The picture behind both modes.** The taxonomy's dimensions are the axes of a style space, and a profile marks out the region of it the user's own writing occupies: one measured band per axis (a `range`, not a point), with the tier saying how well that band is known. Extraction draws the region; processing moves a draft into it, axis by axis and in whichever direction each axis is off — machine prose has a region of its own, and where the two overlap there is nothing to do. The region is roomy, and all of it is the user's voice, so a rewrite has real freedom about where in it to land: strictness decides which axes it may move along at all, tone decides where along them to aim. It is a map, not a metric — the axes carry different units and there is no distance to compute, which is why the comparison table ranks rows one at a time instead of scoring the document as a whole.
+
+Two founding rules fall out of that picture. **The user's profile has veto power**: a coordinate already inside the region does not move, even where the construction is machine-typical — a user who writes with em dashes keeps them. **Converge on rates, not extremes**: the region is a box drawn around real documents, so its corners — every habit at once, each at its maximum — are precisely the places none of the user's writing occupies. That corner is caricature, and aiming at measured rates is what keeps a rewrite out of it.
 
 ## Modes
 
@@ -26,8 +28,8 @@ Extraction is never implicit. A processing request with no profile does not turn
    - Gather 8 or more documents you wrote by hand — roughly 6,000 words; blog posts, emails, docs, notes; sole-authored; mixed lengths.
    - Ask for extraction with the paths, for example: _"write-like-me: extract my style from ~/writing/posts/*.md and ~/writing/emails/*.txt"_. The paths are required.
    - Review the rendered profile when asked, then repeat the rewrite request.
-   In extract mode a missing file at the default path is the normal starting state; an existing one is refreshed only after saying so, with the old file backed up beside it (`user-style_old.json`).
-3. **Version check.** Run `python3 scripts/styledb.py info PROFILE` (paths in this file are relative to the skill directory). Exit 0: proceed. Exit 2: the DB is older than the skill — apply [references/migration.md](references/migration.md) first. Exit 3: the DB is newer than this skill — stop and tell the user to update the skill. A DB with `partial: true` is an unmerged extraction part; refuse it and point at the merge command in technique.md.
+   In extract mode a missing file at the default path is the normal starting state; replacing a profile that *is* there has its own rules (technique.md, Step 6) — the short of it is that the old one is never gone.
+3. **Version check.** Run `python3 scripts/styledb.py info PROFILE` (script paths in this file are relative to the skill directory; PROFILE is absolute — see Scripts). Exit 0: proceed. Exit 2: the DB is older than the skill — apply [references/migration.md](references/migration.md) first. Exit 3: the DB is newer than this skill — stop and tell the user to update the skill. A DB with `partial: true` is an unmerged extraction part; refuse it and point at the merge command in technique.md.
 4. **Review status.** `review.status: pending` means the user never confirmed the profile. Proceed, but say so in the report and offer the review round.
 
 **TODO (maintainers):** the AI style-pattern DB does not ship yet — see the README in `data/`. Until it does, the AI-evidence column of the comparison table comes from the built-in `ai_*` counters in `scripts/textstats.py` and from the user's absence patterns.
@@ -44,23 +46,29 @@ Every pattern carries an evidence tier (1 strong, 2 moderate, 3 weak; rules in d
 
 A softer setting leaves more machine voice in place; a harder one risks applying a habit the corpus only weakly supports. Tiers gate *which* patterns are eligible; the gap between draft and profile still decides the order of work. Patterns dropped by the setting are listed in the report so the user sees what a harder run would touch.
 
+## Tone steering (process mode)
+
+Strictness is one dial, tone the other: strictness says how much evidence an edit needs, tone says which end of the user's own range to aim for. A request like "more formal", "warmer, less clinical", or "keep it factual but friendly" is written down as a short **tone brief** — the axes named, where the user wants this document on each, one sentence of intent — and carried through every step, including into chunk subagents. No request means no brief, and the profile's rates stay the targets.
+
+The brief steers selection among the forms the profile attests; it never reaches past them. It introduces no construction the profile has no evidence for, overrides no absence pattern, and moves no target beyond the ends of the user's measured range — where a request needs a **register** the corpus does not contain, the report says so instead of inventing it. (A register is the document type each corpus document is tagged with — article, email, docs, note — and the profile's only record of how formal the user gets.) It does outrank the do-not-touch veto, within the range, because the veto answers "is this machine voice?" and not "is this the register the user asked for"; every row it moves is named in the report. The brief's shape, the axes, and the four precedence rules: [references/processing.md](references/processing.md).
+
 ## Process mode in brief
 
-Full procedure with the table classes, rule-derivation rules, and the report template: [references/processing.md](references/processing.md). The spine, per input document:
+Full procedure with the table classes, rule-derivation rules, and the report template: [references/processing.md](references/processing.md). What follows is a summary of it, kept short enough to read at a glance; where the two disagree the reference is right, and a change to one belongs in both. The spine, per input document:
 
-1. **Measure** — `python3 scripts/textstats.py measure INPUT --db PROFILE`: built-in counters plus every measurable profile pattern with a match/gap verdict. Read for the judged patterns.
-2. **Compare** — a three-way table (AI evidence / draft / user), sorted by draft-vs-user gap; classify rows as do-not-touch, rewrite (high or low confidence), or neutral; apply the setting.
-3. **Derive rules** — one per rewrite row; replacements come from the profile's evidence and `instead` references, never from invention; targets are the user's rates.
+1. **Measure** — `python3 scripts/textstats.py measure INPUT --db PROFILE --sort-gap --setting SETTING`: built-in counters plus every measurable profile pattern with a verdict — `match`, `gap`, `absent` (a habit of most of the user's documents that the draft never shows), `low`/`high`, `too-short` (the input cannot express this rate: see Short inputs in processing.md). The two flags add the comparison table's own columns: what a rewrite would do with each row, the size of that edit with the largest first, and a `[manual]` mark on every row the setting's tier ceiling drops. Read for the judged patterns.
+2. **Compare** — the three-way table (AI evidence / draft / user). The measurable rows arrive sorted and classified as do-not-touch, remove, add, lean, or neutral; what you add is the AI-evidence column — which splits the remove rows into high and low confidence — the judged patterns, an example per row, and the tone brief's targets.
+3. **Derive rules** — one per rewrite row, removals and additions alike; replacements come from the profile's evidence, `displaces`, and `instead` references, never from invention; targets are the user's rates, shifted inside the range by the tone brief.
 4. **Fix invariants** — facts, numbers, links, quotes, code, tables, heading outline, block sequence per section, list item counts, no new claims; subject vocabulary (technical terms, product and people's names, identifiers) stays verbatim — the profile decides how it is presented, never what it is; paragraph count per section wherever possible. Ask once which earlier manual decisions must survive.
-5. **Rewrite the whole body** — rhythm and paragraph shape do not respond to sentence patching.
-6. **Converge** — re-measure and run `python3 scripts/structure_check.py INPUT REWRITTEN`; targeted edits until rewrite rows match and the structure check has no errors.
-7. **Report and hand over** — before/after table, do-not-touch list, rows left for the manual pass, side effects, open judgment calls. Write `<name>.styled.<ext>` next to a file input (never overwrite the input unless asked); print the body once when the input was pasted.
+5. **Rewrite the whole body** — rhythm and paragraph shape do not respond to sentence patching, and it is where the added habits and the tone brief land without a seam.
+6. **Converge** — re-measure and run `python3 scripts/structure_check.py INPUT REWRITTEN`; targeted edits until the remove rows match, no add row still reads `absent`, and the structure check has no errors. `too-short` rows are not targets.
+7. **Hand over** — text that lives in this session comes back printed in the reply; a file input gets `<name>.styled.<ext>` beside it (never overwrite unless asked). A document carries the full report — before/after table with each row's direction, do-not-touch list including what tone moved, rows left for the manual pass, side effects, open judgment calls; a short input carries one line, and the report on request.
 
-Inputs beyond ~3,000 words, or several documents at once, are processed in section-aligned chunks by subagents that receive the same rule set; measurement, rules, and convergence stay on the whole document. Protocol in processing.md.
+Inputs beyond ~3,000 words, or several documents at once, are processed in section-aligned chunks by subagents that receive the same rule set and the same tone brief; measurement, rules, and convergence stay on the whole document. Protocol in processing.md.
 
 ## Extract mode in brief
 
-Full procedure, review protocol, and the parallel-extraction protocol: [references/technique.md](references/technique.md). The spine:
+Full procedure, review protocol, and the parallel-extraction protocol: [references/technique.md](references/technique.md) — again the authority, and again summarized here. The steps below group its work differently: counting and validation are one step there, so the numbering does not line up after step 3. The spine:
 
 1. **Intake** — enumerate the named documents with register and the word count from `textstats.py`; state the corpus-size guidance (≥8 documents, ≥6,000 words) when the corpus falls short, and continue with the shortfall on record (it lowers tiers, it does not block). When one register carries more than about half the words (a thesis next to posts and emails), ask the user how to cap or down-weight it before reading — rates are corpus-normalized, so the big source would otherwise define the profile (technique.md).
 2. **Vet** — flag documents whose AI-marker counts are outliers against the rest; the user confirms or drops.
@@ -74,18 +82,18 @@ Large corpora are split across subagents that each write a partial DB, merged wi
 
 ## Scripts
 
-All stdlib Python 3.8+, run from the skill directory; `--help` on each.
+All stdlib Python 3.8+, run from the skill directory; `--help` on each. Only the `scripts/…` paths are relative to it: resolve the input, the profile, and the output to absolute paths before running, or a relative input is looked for inside the skill folder and the rewrite lands beside the wrong file.
 
 | script | purpose |
 |---|---|
 | `scripts/styledb.py` | `info` (version check), `validate [--fix] [--corpus-dir]`, `merge`, `seal` (drop corpus paths from a reviewed DB), `render [--setting]`, `tiers` |
-| `scripts/textstats.py` | `measure FILE... [--db DB]` — counters per 1k words, DB patterns with match/gap; `counters` lists definitions |
+| `scripts/textstats.py` | `measure FILE... [--db DB] [--sort-gap] [--setting S]` — counters per 1k words, DB patterns with a verdict each, and with the flags the comparison table's class and gap columns plus the setting's tier ceiling; `counters` lists definitions |
 | `scripts/structure_check.py` | `ORIGINAL REWRITTEN` — outline, block sequence, list counts, verbatim blocks, inline code, links, numbers; exit 1 on a violation |
 
 ## What this skill never does
 
 - Rewrites without a profile, or builds a profile from documents the user did not name.
-- Invents replacement phrasings the profile has no evidence for — the fallback is "remove or flag", not "make something up".
+- Invents replacement phrasings the profile has no evidence for — the fallback is "remove or flag", not "make something up". A tone request steers among the forms the profile attests; it licenses no new ones.
 - Adds, drops, or reorders claims, sections, list items, code, tables, links, or numbers.
 - Treats the subject as the style: no profile pattern is built on a technical term, a product or people's name, a code identifier, or a code example, and a rewrite never replaces one.
 - Records or applies non-native grammar errors as style: the calques listed in [references/german-l1-guidance.md](references/german-l1-guidance.md) stay out of the profile and out of every rewrite (correct-but-distinctive constructions are style and stay in); when the corpus shows such errors, they come back as review-round feedback instead.

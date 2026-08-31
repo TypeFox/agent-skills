@@ -13,6 +13,7 @@ Bump the version when an old DB would be read incorrectly by the new skill: a re
 - User DB default: `$HOME/.skills/write-like-me/user-style.json`. Voice belongs to the person, not to a project, so the default is user-scoped. A request can name another path ("use the profile at …"); the named path then wins for that invocation only.
 - AI DB: `data/ai-style-patterns.json` inside the skill (not shipped yet — see the README in `data/`).
 - Partial DBs from parallel extraction: anywhere the orchestrating run chooses (a scratch directory), merged into the final path with `styledb.py merge`.
+- `<name>_old.json` beside a destination that already held a profile: the previous file, kept by extraction as a one-step undo before it overwrites (Step 6 of [technique.md](technique.md)).
 
 ## Header
 
@@ -82,6 +83,7 @@ Bump the version when an old DB would be read incorrectly by the new skill: a re
 | `documents[]` | per-document evidence: `count` (and `rate` for non-per-1k units). One entry per document *measured*; a document with no entry was not measured for this pattern, which lowers coverage |
 | `evidence[]` | verbatim quotes with their document id. Required for presence patterns; `validate --corpus-dir` checks each quote appears in its source. An entry with `"redacted": true` had confidential content replaced by a bracketed placeholder (`[colleague]`, `[company]`, `[product]`) under rule 5 of technique.md; the validator skips the verbatim check for it and warns if no placeholder is present. Absence patterns carry none — their evidence is the zero counts |
 | `instead` | for absence patterns: ids of the constructions the author uses where the absent one would appear. The rewrite rule takes its replacement from these, never from invention |
+| `displaces` | for presence patterns: the word forms the author does *not* use in the slot this pattern fills (`["for example", "e.g."]` under a *for instance* pattern). The mirror of `instead`, and what makes a rewrite a substitution the DB can point at instead of a family processing has to rediscover by reading a corpus it no longer has |
 | `rate`, `spread`, `range`, `coverage`, `registers` | derived; recomputed by `validate --fix` and by `merge`. `rate` is corpus-normalized (total count / total measured words × 1000 for per-1k units, word-weighted mean otherwise); `spread` is the share of measured documents where the pattern occurs (for absences: where it is absent); `range` is the min–max per-document rate and is the convergence target band in processing; `coverage` is measured documents / corpus documents |
 | `tier`, `tier_reason` | derived evidence tier, see below |
 | `tier_override` | set by the review round; wins over `tier` |
@@ -90,7 +92,7 @@ Bump the version when an old DB would be read incorrectly by the new skill: a re
 
 ## Evidence tiers
 
-Tiers order patterns by how much corpus evidence stands behind them, and processing uses them as the strictness dial: **soft** applies tier 1 only, **medium** (default) tiers 1–2, **hard** all three. The tier says how *sure* the DB is that a habit is the author's voice; it says nothing about how *large* the habit's gap to the input is — the processing table still sorts rows by gap. `styledb.py tiers DB` prints the computed tier and the reason per pattern.
+Tiers order patterns by how much corpus evidence stands behind them, and processing uses them as the strictness dial: **soft** applies tier 1 only, **medium** (default) tiers 1–2, **hard** all three. The tier says how *sure* the DB is that a habit is the author's voice; it says nothing about how *large* the habit's gap to the input is — the processing table sorts rows by that gap and marks the ones the ceiling drops, both from `textstats.py measure --sort-gap --setting`. `styledb.py tiers DB` prints the computed tier and the reason per pattern.
 
 Presence patterns:
 
@@ -115,7 +117,7 @@ Why tiers work as the strictness dial: a low-evidence pattern is exactly the one
 `styledb.py merge A.json B.json … -o OUT.json` produces one DB from several partial ones (same `db_version`, same `kind`):
 
 - corpus documents are unioned by id; the same id with different word counts is an error (the parts measured different files under one name);
-- patterns are unioned by id; `documents[]` entries are unioned by document id (conflicting counts for one document are an error — two parts measured the same document differently, which means their counters differ), `evidence[]` is unioned with duplicates dropped, `registers` recomputed, `measurement` becomes `judged` if any part judged, `instead` unioned, notes concatenated, the first non-null `tier_override` kept, differing regexes or stat names reported in `note` and the first kept;
+- patterns are unioned by id; `documents[]` entries are unioned by document id (conflicting counts for one document are an error — two parts measured the same document differently, which means their counters differ), `evidence[]` is unioned with duplicates dropped, `registers` recomputed, `measurement` becomes `judged` if any part judged, `instead` and `displaces` unioned, notes concatenated, the first non-null `tier_override` kept, differing regexes or stat names reported in `note` and the first kept;
 - derived fields and tiers are recomputed from the merged per-document data;
 - the result is `partial: false` unless `--partial` is given, and `review.status` is `pending` — a merge always precedes the review round, never replaces it.
 
@@ -125,7 +127,7 @@ Because tiers depend on coverage, a two-phase parallel extraction (discover cand
 
 `styledb.py seal DB [-o OUT]` finalizes a reviewed DB: it drops `path` from every corpus document and stamps `corpus.sealed` with the date.
 
-`path` is the DB's only reference into the corpus filesystem — nothing else in the manifest points at a file, and processing never reads the manifest at all: a rewrite works from the pattern entries alone (`description`, the counter, `rate`, `range`, `tier`, `instead`, `evidence`). Sealing is therefore not what makes processing corpus-independent; it makes the *file names* go away. That is worth doing because filenames are the one place rule 5 of [technique.md](technique.md) cannot reach: `clients/acme/proposal-v3.md` names a customer that no redacted quote would have kept.
+`path` is the DB's only reference into the corpus filesystem — nothing else in the manifest points at a file, and processing never reads the manifest at all: a rewrite works from the pattern entries alone (`description`, the counter, `rate`, `range`, `spread`, `tier`, `instead`, `displaces`, `evidence`). Sealing is therefore not what makes processing corpus-independent; it makes the *file names* go away. That is worth doing because filenames are the one place rule 5 of [technique.md](technique.md) cannot reach: `clients/acme/proposal-v3.md` names a customer that no redacted quote would have kept.
 
 What sealing keeps, and why none of it is a dependency on the corpus:
 

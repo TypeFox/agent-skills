@@ -12,15 +12,26 @@ fields of style-DB patterns so DB rates and input rates are computed the same
 way.
 
 Usage
-  textstats.py measure FILE... [--db DB...] [--json]
+  textstats.py measure FILE... [--db DB...] [--sort-gap] [--setting S] [--json]
       One column per file. With --db, every DB pattern that carries a `regex`
       or `stat` field (a statistic or a built-in counter, by name) is measured
-      on each file and shown next to the DB's rate
-      and per-document range, with a verdict: `gap` when the input falls
-      outside the per-document range (widened by a small tolerance); `low` or
-      `high` when it is inside the range but under half or over twice the
+      on each file and shown next to the DB's rate and per-document range, with
+      a verdict: `too-short` when the input is too small for the pattern's rate
+      to predict even one occurrence, so no count in it is evidence either way;
+      `absent` when the input has none of a habit the author shows in most
+      documents (the additive case, which the range test alone would miss
+      whenever one corpus document put a 0 in the range); `gap` when the input
+      falls outside the per-document range (widened by a small tolerance); `low`
+      or `high` when it is inside the range but under half or over twice the
       corpus rate (the author does this, just not in every document); `match`
       otherwise.
+      --sort-gap and --setting add the two columns the processing comparison
+      table is built from (references/processing.md, Step 2): each row's
+      `class` — what a rewrite would do with it — and its `gap`, how big that
+      edit is on the first file. --sort-gap orders rows by the gap, largest
+      first; --setting soft|medium|hard marks `[manual]` every row whose
+      evidence tier is above that setting's ceiling. Both are mechanical steps
+      the rewrite would otherwise redo by hand for every pattern in the DB.
   textstats.py counters
       List the built-in counters and their definitions.
 
@@ -54,6 +65,17 @@ HR_RE = re.compile(r"^\s*(?:-{3,}|\*{3,}|_{3,})\s*$")
 BLOCKQUOTE_RE = re.compile(r"^\s*>\s?")
 WORD_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9'’\-]*")
 SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])[\"'”’)\]]*\s+(?=[\"'“‘(\[]?[A-Z0-9])")
+
+# Share of the author's documents that must show a habit before an input with none of it
+# is called `absent` rather than merely low; matches the tier-1 spread rule in db-schema.md.
+SPREAD_ABSENT = 0.6
+
+# Strictness ceilings, mirroring SETTING_MAX_TIER in styledb.py (db-schema.md defines them).
+# Duplicated rather than imported so that either script still runs on its own.
+SETTING_MAX_TIER = {"soft": 1, "medium": 2, "hard": 3}
+
+# The row classes that lead to an edit, and which the strictness setting therefore gates.
+EDITING_CLASSES = ("remove", "add", "lean")
 
 # name -> (regex, flags, description)
 # Grouped by the taxonomy dimension that names the counter (references/taxonomy.md).
@@ -284,22 +306,122 @@ def measure_pattern(pattern: Dict[str, Any], result: Dict[str, Any]) -> Optional
     return round(sum(1 for u in units if re.search(regex, u, flags)) / len(units), 3)
 
 
-def verdict(value: Optional[float], pattern: Dict[str, Any]) -> str:
+def unit_denominator(pattern: Dict[str, Any], stats: Optional[Dict[str, Any]]) -> Optional[float]:
+    """The factor that turns this pattern's rate into a count of occurrences in a document.
+
+    None when the unit is not a rate over the document (raw counts, length stats in words),
+    or when the document's stats are not at hand — in both cases the pattern's own value is
+    already the comparable number.
+    """
+    if not stats:
+        return None
+    unit = pattern.get("unit", "per_1k_words")
+    if unit == "per_1k_words":
+        return stats.get("words", 0) / 1000.0
+    if unit == "share_of_sentences":
+        return float(stats.get("sentences", 0))
+    if unit == "share_of_paragraphs":
+        return float(stats.get("paragraphs", 0))
+    return None
+
+
+def expected_occurrences(pattern: Dict[str, Any], stats: Optional[Dict[str, Any]]) -> Optional[float]:
+    """How many occurrences the author's own rate predicts in a document this size.
+
+    Below one, the rate says nothing about this document: the author would have produced
+    none either, so a zero count is not evidence of anything and neither is a single one.
+    """
+    if not stats or pattern.get("rate") is None or pattern.get("kind") == "absence":
+        return None
+    denom = unit_denominator(pattern, stats)
+    return None if denom is None else float(pattern["rate"]) * denom
+
+
+def verdict(value: Optional[float], pattern: Dict[str, Any],
+            stats: Optional[Dict[str, Any]] = None) -> str:
     if value is None or pattern.get("rate") is None:
         return "n/a"
     if pattern.get("kind") == "absence":
         return "match" if value == 0 else "gap"
-    rng = pattern.get("range") or [pattern["rate"], pattern["rate"]]
+    # Rates quantize: in a document of N words one occurrence is worth 1000/N, so a habit
+    # the author's rate predicts less than once here cannot be a target in either
+    # direction — chasing it would put the text far past the author's own rate.
+    expected = expected_occurrences(pattern, stats)
+    if expected is not None and expected < 1.0:
+        return "too-short"
+    rate = float(pattern["rate"])
+    # A habit the author shows in most documents and the input shows not at all is the
+    # additive case, and it needs its own verdict: one corpus document without the habit
+    # puts 0 inside the range, so the range test below would report "inside the range,
+    # merely low" and the rewrite would leave the author's most recognizable habits out.
+    # The 0.6 spread is the one the tier-1 rule already asks for (db-schema.md).
+    if value == 0 and rate > 0 and float(pattern.get("spread") or 0.0) >= SPREAD_ABSENT:
+        return "absent"
+    rng = pattern.get("range") or [rate, rate]
     lo, hi = float(rng[0]), float(rng[1])
     tol = max(0.1 * max(abs(lo), abs(hi)), 0.5 if pattern.get("unit", "per_1k_words") == "per_1k_words" else 0.05)
     if not (lo - tol <= value <= hi + tol):
         return "gap"
-    rate = float(pattern["rate"])
     if rate > 0 and value < 0.5 * rate:
         return "low"
     if rate > 0 and value > 2.0 * rate:
         return "high"
     return "match"
+
+
+def effective_tier(pattern: Dict[str, Any]) -> int:
+    """The tier a strictness setting is compared against: the review round's override, else
+    the derived tier. Mirrors effective_tier in styledb.py."""
+    override = pattern.get("tier_override")
+    if isinstance(override, int) and 1 <= override <= 3:
+        return override
+    return int(pattern.get("tier", 3))
+
+
+def classify(value: Optional[float], pattern: Dict[str, Any], verd: str) -> str:
+    """What a rewrite would do with this row — the Step 2 classes of processing.md.
+
+    `remove` and `add` are the rewrite rows, `lean` the ones a substitution can shift where
+    the input already offers a slot, `do-not-touch` a coordinate already inside the author's
+    region, `neutral` a row that says nothing either way. The high- against low-confidence
+    split inside `remove` needs the AI-evidence column and stays with the reader; an absence
+    row (author rate 0) is the high-confidence case by rule.
+    """
+    if verd == "match":
+        return "do-not-touch"
+    if verd == "absent":
+        return "add"
+    if verd in ("low", "high"):
+        return "lean"
+    if verd == "gap":
+        rate = float(pattern.get("rate") or 0.0)
+        rng = pattern.get("range") or [rate, rate]
+        return "remove" if float(value) > float(rng[1]) else "add"
+    return "neutral"
+
+
+def gap_size(value: Optional[float], pattern: Dict[str, Any],
+             stats: Optional[Dict[str, Any]] = None,
+             verd: Optional[str] = None) -> Optional[float]:
+    """How big the edit is: the distance from the author's rate, in occurrences of this document.
+
+    This is the comparison table's sort key and only that — a per-row number, never summed
+    across rows, because the axes measure different things and a document has no single
+    distance to the author (SKILL.md). Eight missing "I"s outrank one stray em dash because
+    eight sentences are involved, not because the em dash matters less; the class says what
+    kind of edit it is. Rows a rewrite has no business touching are 0 whatever the arithmetic
+    says — `match` is already the author's, and in a `too-short` row no count is evidence —
+    so a gap above 0 means exactly "this row asks for an edit".
+    """
+    if value is None or pattern.get("rate") is None:
+        return None
+    if verd is None:
+        verd = verdict(value, pattern, stats)
+    if verd in ("match", "too-short"):
+        return 0.0
+    delta = abs(float(value) - float(pattern["rate"]))
+    denom = unit_denominator(pattern, stats)
+    return round(delta * denom if denom is not None else delta, 2)
 
 
 def fmt(v: Any) -> str:
@@ -319,17 +441,29 @@ def cmd_measure(args: argparse.Namespace) -> int:
     for path in args.db or []:
         with open(path, encoding="utf-8") as fh:
             dbs.append((path, json.load(fh)))
+    max_tier = SETTING_MAX_TIER.get(args.setting or "", 3)
     if args.json:
         out = {}
         for path, r in results:
-            entry = {"stats": r["stats"], "per_1k": r["per_1k"], "patterns": {}}
+            rows = []
             for _, db in dbs:
                 for p in db.get("patterns", []):
                     v = measure_pattern(p, r)
-                    if v is not None:
-                        entry["patterns"][p["id"]] = {"value": v, "db_rate": p.get("rate"),
-                                                      "db_range": p.get("range"), "tier": p.get("tier"),
-                                                      "verdict": verdict(v, p)}
+                    if v is None:
+                        continue
+                    verd = verdict(v, p, r["stats"])
+                    cls = classify(v, p, verd)
+                    row = {"value": v, "db_rate": p.get("rate"), "db_range": p.get("range"),
+                           "tier": p.get("tier"), "verdict": verd,
+                           "gap": gap_size(v, p, r["stats"], verd), "class": cls}
+                    if args.setting:
+                        row["dropped_by_setting"] = (cls in EDITING_CLASSES
+                                                     and effective_tier(p) > max_tier)
+                    rows.append((p["id"], row))
+            if args.sort_gap:
+                rows.sort(key=lambda t: -(t[1]["gap"] or 0.0))
+            entry = {"stats": r["stats"], "per_1k": r["per_1k"],
+                     "patterns": {pid: row for pid, row in rows}}
             out[path] = entry
         print(json.dumps(out, indent=2))
         return 0
@@ -342,19 +476,39 @@ def cmd_measure(args: argparse.Namespace) -> int:
     print("{:<32}".format("per 1k words") + "".join("{:>{w}}".format(n[-width:], w=width + 2) for n in names))
     for key in COUNTERS:
         print("{:<32}".format(key) + "".join("{:>{w}}".format(fmt(r["per_1k"][key]), w=width + 2) for _, r in results))
+    classified = bool(args.sort_gap or args.setting)
     for db_path, db in dbs:
         print()
         print("DB patterns from {} (measurable ones only)".format(db_path))
-        head = "{:<40}{:>5}{:>12}{:>16}".format("pattern", "tier", "db rate", "db range")
-        print(head + "".join("{:>{w}}".format(n[-width:], w=width + 2) for n in names))
+        rows = []
         for p in db.get("patterns", []):
             values = [measure_pattern(p, r) for _, r in results]
             if all(v is None for v in values):
                 continue
+            verdicts = [verdict(v, p, r["stats"]) for v, (_, r) in zip(values, results)]
+            gap = gap_size(values[0], p, results[0][1]["stats"], verdicts[0])
+            cls = classify(values[0], p, verdicts[0])
+            if args.setting and cls in EDITING_CLASSES and effective_tier(p) > max_tier:
+                cls += " [manual]"
+            rows.append((p, values, verdicts, gap, cls))
+        if classified:
+            note = ["class and gap for {}".format(names[0])]
+            if args.setting:
+                note.append("setting {} ([manual] = tier above {})".format(args.setting, max_tier))
+            if args.sort_gap:
+                rows.sort(key=lambda t: -(t[3] or 0.0))
+                note.append("largest gap first")
+            print("  " + "; ".join(note))
+        head = "{:<16}{:>6}  ".format("class", "gap") if classified else ""
+        head += "{:<40}{:>5}{:>12}{:>16}".format("pattern", "tier", "db rate", "db range")
+        print(head + "".join("{:>{w}}".format(n[-width:], w=width + 2) for n in names))
+        for p, values, verdicts, gap, cls in rows:
             rng = p.get("range")
             rng_s = "{}–{}".format(fmt(rng[0]), fmt(rng[1])) if rng else "-"
-            row = "{:<40}{:>5}{:>12}{:>16}".format(p["id"][:40], p.get("tier", "-"), fmt(p.get("rate")), rng_s)
-            row += "".join("{:>{w}}".format("{} {}".format(fmt(v), verdict(v, p)), w=width + 2) for v in values)
+            row = "{:<16}{:>6}  ".format(cls, fmt(gap)) if classified else ""
+            row += "{:<40}{:>5}{:>12}{:>16}".format(p["id"][:40], p.get("tier", "-"), fmt(p.get("rate")), rng_s)
+            row += "".join("{:>{w}}".format("{} {}".format(fmt(v), vd), w=width + 2)
+                           for v, vd in zip(values, verdicts))
             print(row)
     return 0
 
@@ -373,6 +527,10 @@ def main(argv: Optional[List[str]] = None) -> int:
     sub = ap.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("measure"); s.add_argument("files", nargs="+")
     s.add_argument("--db", action="append"); s.add_argument("--json", action="store_true")
+    s.add_argument("--sort-gap", action="store_true",
+                   help="order DB rows by the size of the edit they ask for, largest first")
+    s.add_argument("--setting", choices=sorted(SETTING_MAX_TIER),
+                   help="strictness ceiling: mark [manual] the rows whose tier is above it")
     s.set_defaults(fn=cmd_measure)
     s = sub.add_parser("counters"); s.set_defaults(fn=cmd_counters)
     args = ap.parse_args(argv)

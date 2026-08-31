@@ -167,6 +167,26 @@ def test_merge_unions_documents_and_evidence_and_recomputes_tiers():
     assert errors == []
 
 
+def test_displaces_lists_the_forms_the_author_never_uses():
+    # The mirror of `instead`: an absence names the patterns that fill its slot, a presence
+    # pattern names the family members it displaces, so a rewrite can substitute without
+    # re-reading the corpus.
+    a = make_db([pattern("connectives/example-introducer", {"d1": 4},
+                         displaces=["for example"])], docs=DOCS[:1])
+    b = make_db([pattern("connectives/example-introducer", {"d2": 2},
+                         displaces=["for example", "e.g."])], docs=DOCS[1:2])
+    merged = styledb.merge([a, b])
+    assert merged["patterns"][0]["displaces"] == ["for example", "e.g."]
+    assert styledb.validate(merged)[0] == []
+    assert "Never uses: for example, e.g." in styledb.render(merged)
+    broken = make_db([pattern("connectives/example-introducer", {"d1": 4}, displaces="for example")])
+    assert any("'displaces' must be a list" in msg for msg in styledb.validate(broken)[0])
+    misplaced = make_db([pattern("punctuation/em-dash", {"d1": 0}, kind="absence", quotes=0,
+                                 displaces=["—"])])
+    assert any("absences name their replacements in 'instead'" in msg
+               for msg in styledb.validate(misplaced)[1])
+
+
 def test_validate_checks_stat_names_and_units():
     ok = pattern("punctuation/em-dash", {"d1": 0, "d2": 0}, kind="absence", quotes=0, stat="em_dash")
     typo = pattern("punctuation/semicolon", {"d1": 1}, stat="semi_colon")
