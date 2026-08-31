@@ -204,6 +204,100 @@ def test_merge_rejects_conflicts():
         styledb.merge([a, b])
 
 
+def reviewed_db(patterns, **extra):
+    db = make_db(patterns, **extra)
+    db["review"] = {"status": "reviewed", "date": "2026-08-31", "reviewer": "the author"}
+    return db
+
+
+def test_seal_drops_paths_stamps_the_date_and_keeps_everything_processing_reads():
+    db = reviewed_db([pattern("punctuation/colon", {"d1": 4, "d2": 1, "d3": 2, "d4": 2, "d5": 2})])
+    styledb.recompute(db)
+    before = copy.deepcopy(db["patterns"])
+    assert styledb.seal(db, date="2026-08-31") == 5
+    assert db["corpus"]["sealed"] == "2026-08-31"
+    assert not any("path" in d for d in db["corpus"]["documents"])
+    assert all(d["words"] and d["register"] and d["id"] for d in db["corpus"]["documents"])
+    assert db["patterns"] == before
+    errors, _ = styledb.validate(db)
+    assert not errors
+
+
+def test_seal_is_idempotent():
+    db = reviewed_db([pattern("punctuation/colon", {"d1": 4, "d2": 1, "d3": 2, "d4": 2, "d5": 2})])
+    styledb.seal(db, date="2026-08-31")
+    assert styledb.seal(db, date="2026-09-01") == 0
+    assert db["corpus"]["sealed"] == "2026-09-01"
+
+
+@pytest.mark.parametrize("change,message", [
+    ({"review": {"status": "pending"}}, "review round comes first"),
+    ({"partial": True}, "merge the parts"),
+])
+def test_seal_refuses_before_the_review_round_and_on_partials(change, message):
+    db = reviewed_db([pattern("punctuation/colon", {"d1": 4})])
+    db.update(change)
+    with pytest.raises(ValueError, match=message):
+        styledb.seal(db)
+    assert db["corpus"]["documents"][0]["path"] == "d1.md"
+
+
+def test_validate_warns_when_corpus_dir_cannot_verify_a_sealed_db(tmp_path):
+    p = pattern("punctuation/colon", {"d1": 4}, quotes=1)
+    db = reviewed_db([p], docs=DOCS[:1])
+    styledb.seal(db, date="2026-08-31")
+    errors, warnings = styledb.validate(db, corpus_dir=str(tmp_path))
+    assert not errors
+    assert [w for w in warnings if "NOT verified" in w and "sealed 2026-08-31" in w]
+
+
+def test_validate_rejects_a_sealed_db_that_still_carries_paths():
+    db = reviewed_db([pattern("punctuation/colon", {"d1": 4})], docs=DOCS[:1])
+    db["corpus"]["sealed"] = "2026-08-31"
+    errors, _ = styledb.validate(db)
+    assert [e for e in errors if "marked sealed" in e and "d1" in e]
+
+
+def test_merge_seals_the_result_only_when_every_part_is_sealed():
+    a = reviewed_db([pattern("punctuation/colon", {"d1": 4, "d2": 1}, quotes=2)], docs=DOCS[:2], partial=True)
+    b = reviewed_db([pattern("punctuation/colon", {"d3": 2}, quotes=2)], docs=DOCS[2:3], partial=True)
+    a["corpus"]["sealed"] = "2026-08-30"
+    mixed = styledb.merge([copy.deepcopy(a), copy.deepcopy(b)])
+    assert "sealed" not in mixed["corpus"]
+    b["corpus"]["sealed"] = "2026-08-31"
+    for doc in b["corpus"]["documents"]:
+        doc.pop("path", None)
+    for doc in a["corpus"]["documents"]:
+        doc.pop("path", None)
+    both = styledb.merge([a, b])
+    assert both["corpus"]["sealed"] == "2026-08-31"
+    assert not styledb.validate(both)[0]
+
+
+def test_cli_seal_writes_to_output_and_leaves_the_input_alone(tmp_path):
+    src = tmp_path / "db.json"
+    out = tmp_path / "sealed.json"
+    db = reviewed_db([pattern("punctuation/colon", {"d1": 4, "d2": 1, "d3": 2, "d4": 2, "d5": 2})])
+    styledb.recompute(db)
+    src.write_text(json.dumps(db), encoding="utf-8")
+    assert styledb.main(["seal", str(src), "-o", str(out)]) == 0
+    assert "path" in json.loads(src.read_text())["corpus"]["documents"][0]
+    sealed = json.loads(out.read_text())
+    assert "path" not in sealed["corpus"]["documents"][0]
+    assert sealed["corpus"]["sealed"]
+    assert styledb.main(["seal", str(src)]) == 0
+    assert "path" not in json.loads(src.read_text())["corpus"]["documents"][0]
+
+
+def test_cli_seal_refuses_an_unreviewed_db(tmp_path, capsys):
+    path = tmp_path / "db.json"
+    path.write_text(json.dumps(make_db([pattern("punctuation/colon", {"d1": 4})], docs=DOCS[:1])),
+                    encoding="utf-8")
+    assert styledb.main(["seal", str(path)]) == 1
+    assert "review round comes first" in capsys.readouterr().out
+    assert "path" in json.loads(path.read_text())["corpus"]["documents"][0]
+
+
 def test_render_filters_by_setting():
     t1 = pattern("punctuation/colon", {"d1": 4, "d2": 1, "d3": 2, "d4": 2, "d5": 2})
     t3 = pattern("imagery/kitchen-metaphors", {"d1": 1}, quotes=1)

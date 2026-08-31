@@ -68,7 +68,7 @@ Full procedure, review protocol, and the parallel-extraction protocol: [referenc
 4. **Count** — a counter per candidate, run over every document; noisy counters demoted to judged.
 5. **Validate** — `python3 scripts/styledb.py validate DB --fix --corpus-dir ROOT` computes rates, spread, coverage, tiers, and verifies every quote.
 6. **Review** — render with `styledb.py render`, walk the user through WRONG / OVERSTATED / MISSING / NEEDS_NUANCE; persist as reviewed, or as pending with that fact in the handover if the user is unavailable.
-7. **Persist** — to the named path or the default, then `validate` once more.
+7. **Persist** — to the named path or the default, then `validate` once more; on a reviewed profile, offer `styledb.py seal DB`, which drops the corpus paths so no filename survives in the DB (technique.md).
 
 Large corpora are split across subagents that each write a partial DB, merged with `python3 scripts/styledb.py merge PART... -o DB` — two phases (discover, then count the merged candidates everywhere) so that tiers reflect full coverage.
 
@@ -78,7 +78,7 @@ All stdlib Python 3.8+, run from the skill directory; `--help` on each.
 
 | script | purpose |
 |---|---|
-| `scripts/styledb.py` | `info` (version check), `validate [--fix] [--corpus-dir]`, `merge`, `render [--setting]`, `tiers` |
+| `scripts/styledb.py` | `info` (version check), `validate [--fix] [--corpus-dir]`, `merge`, `seal` (drop corpus paths from a reviewed DB), `render [--setting]`, `tiers` |
 | `scripts/textstats.py` | `measure FILE... [--db DB]` — counters per 1k words, DB patterns with match/gap; `counters` lists definitions |
 | `scripts/structure_check.py` | `ORIGINAL REWRITTEN` — outline, block sequence, list counts, verbatim blocks, inline code, links, numbers; exit 1 on a violation |
 
