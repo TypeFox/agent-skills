@@ -51,6 +51,7 @@ DIMENSIONS = [
     "paragraph-openers",
     "argument-structure",
     "connectives",
+    "grammar-habits",
     "voice-and-person",
     "tone-markers",
     "imagery",
