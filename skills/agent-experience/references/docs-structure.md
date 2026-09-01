@@ -11,7 +11,7 @@ The full layout, for orientation — **propose the minimal subset the project ac
 ```
 AGENTS.md                     # the ~100-line map (see agents-md.md)
 docs/
-├── ARCHITECTURE.md           # domain map, package layering, invariants
+├── ARCHITECTURE.md           # domain structure, package layering, invariants
 ├── design-docs/
 │   ├── index.md              # catalogued, with verification status
 │   └── core-beliefs.md       # golden principles (see techniques.md)
@@ -40,12 +40,12 @@ The recurring boundary question — product-specs, design-docs, an ADR, or ARCHI
 | where things live, what may depend on what, structural invariants | ARCHITECTURE.md |
 | what a capability is *supposed to do* — current intended behaviour | `product-specs/` — living, updated with the behaviour |
 | why it is built this way: one decision, its options and consequences | `adr/` — immutable, superseded never edited |
-| why it is built this way: a whole design — strategy, trade-offs, rejected alternatives | `design-docs/` — point-in-time, dated, indexed with a trust label |
+| how a system delivers its promises — the implementation strategy: structure, mechanisms, the trade-offs and rejected alternatives that shaped it | `design-docs/` — one per system, kept true to the design as built, indexed with a trust label |
 | in-flight multi-session task state | `exec-plans/active/` |
 | how users consume the product | the external docs site / user docs — the repo keeps the topic→URL map, never a copy |
 | anything derivable from code (API surface, schema) | `generated/` — regenerated in CI, never hand-edited |
 
-The mnemonic: ARCHITECTURE.md is the **map**, product-specs are the **promises**, ADRs and design docs are the **reasons** (one decision vs. a whole design), exec plans are the **work**. A document that tries to be two of these inherits both lifecycles and satisfies neither.
+The mnemonic: ARCHITECTURE.md is the **structure**, product-specs are the **promises**, design docs are the **strategy**, ADRs are the **reasons**, exec plans are the **work**. A document that tries to be two of these inherits both lifecycles and satisfies neither.
 
 ## Per-artifact guidance
 
@@ -53,7 +53,7 @@ The mnemonic: ARCHITECTURE.md is the **map**, product-specs are the **promises**
 |---|---|---|---|
 | **AGENTS.md** | Map + irreducible always-on rules | Always — any repo an agent touches | Every-line litmus test; cited commands verified |
 | **ARCHITECTURE.md** | Where things live, boundaries, layering, invariants | More than a handful of modules, or any monorepo | Update on structural change; back with structural tests so drift is caught mechanically |
-| **design-docs/ + core-beliefs** | Point-in-time design rationale — strategy, trade-offs, rejected alternatives; operating principles | A design an ADR can't hold; design history worth rescuing (see the design-docs section) | Dated, never silently rewritten; index with trust labels; garden regularly |
+| **design-docs/ + core-beliefs** | Per-system implementation strategy as built — structure, mechanisms, trade-offs, rejected alternatives; operating principles | A design-time trigger fires — the design is contested, spans modules, or carries risk (see the design-docs section); design history worth rescuing | Updated with the design in the same change, amendments dated; index with trust labels; garden regularly |
 | **adr/** | One decision per file: context, options, decision, consequences | The moment ≥2 people or ≥1 agent make architectural choices, or "why" questions recur | Append-only; supersede, never edit |
 | **exec-plans/** | Multi-session task state: plan, progress log, decision log | Work spanning multiple sessions or context windows | active → completed lifecycle is mandatory GC; small ephemeral plans stay out |
 | **tech-debt-tracker** | Known, tolerated debt with its business rationale | As soon as debt is consciously deferred | Fed by GC agents; pruned on payoff |
@@ -122,20 +122,32 @@ Per spec (use `assets/product-spec-template.md`): intent (2–4 sentences) → b
 
 Greenfield seeds the directory with a single `product-brief.md` — intent, users, success criteria, explicit out-of-scope, from interview theme 1 — and per-capability specs then appear spec-first as features are built.
 
-## Design docs — dated rationale with a trust label
+## Design docs — the strategy, kept true to the code
 
-`docs/design-docs/` holds **point-in-time design rationale**: for one system or initiative, the strategy chosen, the trade-offs weighed, and the alternatives *rejected* — the content that stops a future session from "helpfully" refactoring away a deliberate choice. The ADR boundary is unity of decision: one decision with its options is an ADR; a design spawning several decisions, needing real alternatives analysis, is a design doc (an "ADR" past a page is a design doc wearing the wrong name). Design docs are honest snapshots: **valid as of their date, never silently rewritten after ship** — amend or supersede, like ADRs. Rationale ages far slower than operational detail, so a design doc keeps the why and links to code and specs for the how.
+`docs/design-docs/` holds **the implementation strategy of one system or capability**: how it is built to deliver its promises — the structure, the mechanisms that span modules, the interfaces and invariants the design relies on, and the trade-offs and alternatives *rejected* along the way. It sits between the spec and the code: the spec says what the capability promises, the design doc says how the system delivers them, ARCHITECTURE.md says where it sits and what may depend on what, and ADRs hold the individual decisions — a design doc cites its ADRs, never restates them. The rejected alternatives stop a future session from "helpfully" refactoring away a deliberate choice; the mechanism description stops it from re-deriving the design from scattered code and getting it subtly wrong.
 
-The agent-era addition is the **index with a trust label**: `design-docs/index.md` lists every doc with its verification status — `verified <date>` (checked against actual code behaviour on that date), `unverified` (rescued or aged; not yet checked), `historical` (superseded by reality; kept as design history). Humans infer staleness from style and hallway context; agents can't — the label is what tells a session whether to rely or re-check. Doc-gardening maintains the labels; `check_docs.py` keeps the index's links alive.
+**When to write one** — at design time, before implementation, when at least one trigger fires:
 
-**When it earns its place:** a design an ADR can't hold — or **design history worth rescuing**, which is the main retrofit move: rationale living in wikis, Google Docs, and issue threads is invisible to agents (*repo-local or nonexistent*), so Phase 1's external-memory traces become rescue candidates, each pulled in with provenance and `unverified` until checked. Writing *new* rationale at retrofit time is rare; new design docs are written at design time, before implementation. Small repos: ADRs suffice — don't open the directory for symmetry. `core-beliefs.md` (see `techniques.md`) lives here whenever golden principles exist, at any scale.
+1. the design is uncertain or contested — several viable approaches, and the choice is not obvious from the codebase or the spec;
+2. the change spans several modules, domains, or repos, changes an API or contract, or introduces a pattern, layer, or dependency that later work will follow;
+3. the change touches a concern that gets forgotten — security, privacy, data migration, performance, operability;
+4. the design outlives its plans — work spanning several exec plans needs the one document that survives them;
+5. at retrofit: a system whose design lives only in heads or outside the repo (rescued — see below), or one where agents keep breaking a deliberate mechanism or refactoring away an intentional structure (rung 2 of the escalation ladder in SKILL.md: a dedicated doc).
+
+Abstain when none fires. A change whose design is obvious gets an exec plan: a doc that says "this is how we will implement it" without trade-offs is an implementation manual, and the code says it better. One decision is an ADR (an "ADR" past a page is a design doc wearing the wrong name); what a capability *promises* is its spec; the steps to build it are its exec plan. Greenfield opens no design doc on day one — the first arrives with the first change that trips a trigger.
+
+**Shape** — a few pages at most, the mechanism rather than a walkthrough of the code: context and scope (link the spec and the ARCHITECTURE.md entry instead of restating them) → goals and non-goals → the design (components, data flow, key interfaces by *name*, the invariants it relies on) → alternatives considered, with the trade-offs that decided against them → cross-cutting concerns → dated amendments. Every invariant the design states either cites its enforcing sensor or is marked as a promotion candidate — the audit's claims-vs-enforcement check (SKILL.md, Phase 1) applies here too. Prose that restates the code is deleted: the two-specs problem (see the product-specs section) applies to designs as much as to specs.
+
+**Lifecycle** — the doc is kept true to the design *as built*: the change that alters the design updates its doc in the same change, as a dated amendment rather than a silent rewrite, so a reader can tell the original design from what changed; when an exec plan completes, its durable design deltas merge into the design doc as its behavioural deltas merge into the spec; a design replaced wholesale gets a new doc, and the old one is marked historical. The agent-era addition is the **index with a trust label**: `design-docs/index.md` lists every doc with its verification status — `verified <date>` (checked against actual code behaviour on that date), `unverified` (rescued or aged; not yet checked), `historical` (superseded by reality; kept as design history). Humans infer staleness from style and hallway context; agents can't — the label is what tells a session whether to rely or re-check. Doc-gardening maintains the labels; `check_docs.py` keeps the index's links alive.
+
+**Rescue at retrofit.** Writing *new* designs at retrofit time is rare; the main retrofit move is **design history worth rescuing**: rationale living in wikis, Google Docs, and issue threads is invisible to agents (*repo-local or nonexistent*), so Phase 1's external-memory traces become rescue candidates, each pulled in with provenance and `unverified` until checked — whatever its size: a rescued single decision lands here too, because the trust label ADRs lack is exactly what an unchecked claim needs, and it becomes an ADR once verified. Small repos: ADRs suffice — don't open the directory for symmetry. `core-beliefs.md` (see `techniques.md`) lives here whenever golden principles exist, at any scale.
 
 ## The library/framework case
 
 A library or framework repo serves **two agent audiences over disjoint channels**, and the per-feature documentation question splits along that line. *Consumer agents* — downstream developers' assistants — read the published docs site, the package README, the shipped typings, `llms.txt`; they never clone this repo. *Contributor agents* clone the repo and read AGENTS.md and docs/. So:
 
 - **Usage narrative stays on the site** (tutorials, recipes, reference); the repo keeps the topic→URL map (the external-pointer rule), never copies.
-- **The default home for per-module knowledge is a module index in ARCHITECTURE.md**: one short entry per feature module — purpose, key public symbols by name, invariants, extension points, dependencies on other modules. That is the answer to "where do our 21 feature modules get documented?": in the codemap index, not in 21 spec files. Mature agent-forward frameworks (Svelte, pydantic-ai, Airflow) converge on exactly this — minimal instruction files, boundaries, conventions; none maintains a per-feature spec tree.
+- **The default home for per-module knowledge is a module index in ARCHITECTURE.md**: one short entry per feature module — purpose, key public symbols by name, invariants, extension points, dependencies on other modules. That is the answer to "where do our 21 feature modules get documented?": in the module index, not in 21 spec files. Mature agent-forward frameworks (Svelte, pydantic-ai, Airflow) converge on exactly this — minimal instruction files, boundaries, conventions; none maintains a per-feature spec tree.
 - **A standalone product-spec exists only where a behaviour contract is load-bearing** — downstream code relies on the promised behaviour and semver hangs on it. For a library, documented behaviour *defines* the compatibility contract (Rust's API-evolution RFC: behaviour outside the documented contract "is permitted to change in minor revisions") — which is also why *deliberately not promised* is the section that earns hardest here. A wire protocol, a routing algorithm's guarantees, an undo/redo lifecycle: spec candidates. A hover effect: an index entry.
 - **Mechanize the API surface**: a committed, PR-diffed API report (api-extractor or the ecosystem equivalent) under `docs/generated/` turns signature compatibility into a computational sensor; prose contracts then carry only what signatures can't — ordering, lifecycle, semantics.
 - **The repo↔site topology is an interview question, not an assumption.** If the site's content source can move into the code repo with the site syncing from it (the Svelte model), docs and code change in one reviewed PR — the strongest freshness mechanism available. Where the site stays separate, keep the pointer model honest: bidirectional link checks, no vendored copies. Migration is an org-level decision — a roadmap proposal, never a default action.
@@ -145,7 +157,7 @@ A library or framework repo serves **two agent audiences over disjoint channels*
 1. Single source of truth per fact; pointers everywhere else.
 2. No duplication of the README or of anything a linter already enforces.
 3. Freshness is mechanically checked: link/structure lint in CI, commands, paths, and frontmatter-graph verification (`check_docs.py`), doc-gardening for semantics.
-4. Explicit lifecycle on everything: active/completed for plans, accepted/superseded for ADRs, trust labels on design docs, same-change behaviour coupling for product specs.
+4. Explicit lifecycle on everything: active/completed for plans, accepted/superseded for ADRs, trust labels and dated amendments on design docs, same-change coupling for product specs and design docs.
 5. Docs merge through review like code; agents may draft, humans (or reviewer agents) adjudicate.
 6. Provenance on anything mirrored from outside.
 7. Stability gradient: the root map changes rarely; detail docs change with the code. Detail-doc bulk is licensed only by an enforced update loop — the steering loop's coupling (SKILL.md) or a doc-gardening cadence; a detailed doc with no loop is drift with a head start.
@@ -162,10 +174,11 @@ A library or framework repo serves **two agent audiences over disjoint channels*
 - Unblocked — why memory hubs don't adjudicate: https://getunblocked.com/blog/team-memory-hubs-ai-agents/
 - Beads — the dependency-metadata model the exec-plan frontmatter distills: https://github.com/steveyegge/beads
 - Böckeler — spec-first / spec-anchored / spec-as-source, and why unmaintained specs fail: https://www.martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html
-- OpenSpec — capability-shaped living specs, per-change deltas merged on archive: https://github.com/Fission-AI/OpenSpec
+- OpenSpec — capability-shaped living specs, per-change deltas merged on archive; design.md optional by default, required for high-risk or ambiguity-prone changes: https://github.com/Fission-AI/OpenSpec
 - Eisele — the two-specs problem; what a spec keeps after implementation: https://stackoverflow.blog/2026/08/21/dispatches-from-o-reilly-the-right-amount-of-spec-for-agentic-development
 - Pebblous — measured agent doc traffic; docs displacing verification: https://blog.pebblous.ai/report/agent-facing-documentation-behaviour-2026-08/en/
 - Adzic — Specification by Example ten years on (how spec suites rot): https://gojko.net/2020/03/17/sbe-10-years.html
-- Ubl — Design Docs at Google (shape and real lifecycle): https://www.industrialempathy.com/posts/design-docs-at-google/
+- Ubl — Design Docs at Google (when to write one, shape, real lifecycle): https://www.industrialempathy.com/posts/design-docs-at-google/
+- SSD Nodes — DESIGN.md for agents: invariants and rejected alternatives, written when reviewers keep saying "we do it differently here": https://www.ssdnodes.com/learn/design-md-for-ai-agents
 - matklad — ARCHITECTURE.md, the codemap and module index: https://matklad.github.io/2021/02/06/ARCHITECTURE.md.html
 - Rust RFC 1105 — documented behaviour as the semver contract: https://rust-lang.github.io/rfcs/1105-api-evolution.html

@@ -45,9 +45,9 @@ An autonomous harness ("the user cannot answer mid-task questions") or a headles
 | Never-touch paths, secrets, deploy sensitivity | AGENTS.md boundaries |
 | Change-coupling rules (what must accompany a bugfix, feature, API change) | AGENTS.md definition of done; sensor-promotion candidates |
 | Load-bearing conventions (confirmed from archaeology) | AGENTS.md conventions, or promoted to a lint rule |
-| Architecture rationale, rejected alternatives | ADRs |
+| Rationale for one decision, the options it rejected | ADRs |
 | Intent and intended behaviour per capability | product-specs/ (evidence-triggered — rubric in `docs-structure.md`) |
-| Design history outside the repo, multi-decision rationale | design-docs/ (rescued with provenance) or ADRs |
+| How a system is built and why — design history outside the repo, or a design living only in heads | design-docs/ (rescued with provenance) |
 | Tolerated debt and its reasons | tech-debt-tracker |
 | Quality bars, risk appetite per area | sensor thresholds; quality-score.md seeds |
 | Org policy (security, data) | security-guidelines.md + derived review prompts |
@@ -62,7 +62,7 @@ Product-specs and design-docs are evidence-triggered (the rubric is in `docs-str
 - **Adjudication**: "When a test fails or behaviour surprises someone, what decides bug vs. intended today?" Recommend from the audit ("I found no in-repo source — it's issue threads and your judgment, correct?"). A durable answer that already exists is routed to, not duplicated; "nothing durable" is the trigger.
 - **Candidates**: "The audit found intent gaps at (X) and (Y) — evidence: (recurring question / agent mistake / criticality). Which of these behaviours matter enough to pin down as a contract now?" Present a ranked shortlist with the evidence attached; accept "none yet" — the change coupling backfills later, and deferred candidates go on the roadmap.
 - **Normativity** *(libraries/frameworks)*: "Is the behaviour documented on (site) a promise downstream users may rely on, or a description that may change? Which modules' behaviour do downstream projects depend on hardest?" The answer separates spec candidates from ARCHITECTURE.md index entries — and fixes how the semver boundary reads.
-- **Design-history rescue**: "Where does design rationale live outside the repo — wiki, shared docs, issue threads? Which of those still describe reality?" Every named source becomes a rescue candidate with provenance and an `unverified` trust label until checked.
+- **Design-doc candidates**: "Where does design rationale live outside the repo — wiki, shared docs, issue threads? Which of those still describe reality?" Every named source becomes a rescue candidate with provenance and an `unverified` trust label until checked. And: "Which system do agents or new teammates keep getting wrong at the mechanism level — breaking a deliberate invariant, refactoring away an intentional structure?" Recommend from the audit (recurring review comments, reverted agent changes); a named system with that evidence is a design-doc candidate under the triggers in `docs-structure.md`.
 
 ## Greenfield question bank
 
