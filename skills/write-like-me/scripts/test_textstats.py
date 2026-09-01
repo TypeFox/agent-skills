@@ -45,7 +45,7 @@ def test_ai_markers():
     text = ("This is not just a tool, it's a philosophy. It highlights the importance of care. "
             "Additionally, we ship fast, cheap, and reliable code. In conclusion, delve into the robust landscape.")
     r = textstats.measure(text)
-    assert r["per_1k"]["ai_not_just"] > 0
+    assert r["per_1k"]["ai_not_but"] == 0  # the comma form is split-reframe territory, not not-but
     assert r["per_1k"]["ai_significance_tail"] > 0
     assert r["per_1k"]["ai_connective_opener"] > 0
     assert r["per_1k"]["ai_triad"] > 0
@@ -150,6 +150,16 @@ def test_measure_pattern_units_and_verdict():
     assert textstats.verdict(3.0, wide) == "match"
     assert textstats.verdict(5.4, wide) == "match"
     assert textstats.verdict(9.0, wide) == "gap"
+
+
+def test_share_of_headings_is_a_unit():
+    r = textstats.measure("# Hook: Subtitle\n\n## Plain heading\n\nBody text here.")
+    colon = {"id": "headings/colon-heading", "regex": ":", "unit": "share_of_headings",
+             "rate": 0.5, "range": [0.2, 1.0], "spread": 1.0}
+    assert textstats.measure_pattern(colon, r) == 0.5
+    assert textstats.verdict(0.5, colon, r["stats"]) == "match"
+    # the gap counts headings, the unit's own denominator
+    assert textstats.gap_size(0.0, colon, {"headings": 4}) == 2.0
 
 
 def test_zero_against_a_habit_of_most_documents_is_absent_not_low():
@@ -261,6 +271,35 @@ def comparison_rows(out):
     """The classified DB rows of a measure run, in the order they were printed."""
     return [l for l in out.splitlines()
             if l.startswith(("add", "remove", "lean", "do-not-touch", "neutral"))]
+
+
+def test_ai_db_rows_are_evidence_not_rewrite_rows(tmp_path, capsys):
+    # The AI DB's rates are the machine's, so `match` there means machine-typical; classing
+    # its rows as if they were targets would tell the rewrite to keep the machine's em dashes.
+    doc = tmp_path / "draft.md"
+    doc.write_text("A draft \u2014 with one dash. " + "More words follow here. " * 60, encoding="utf-8")
+    user = tmp_path / "user.json"
+    user.write_text(json.dumps({"kind": "user", "patterns": [
+        {"id": "punctuation/em-dash", "regex": "\u2014", "kind": "absence", "unit": "per_1k_words",
+         "rate": 0.0, "range": [0.0, 0.0], "spread": 1.0, "tier": 1}]}), encoding="utf-8")
+    ai = tmp_path / "ai.json"
+    ai.write_text(json.dumps({"kind": "ai", "patterns": [
+        {"id": "punctuation/em-dash", "regex": "\u2014", "unit": "per_1k_words",
+         "rate": 7.5, "range": [0.0, 15.0], "spread": 0.95, "tier": 1}]}), encoding="utf-8")
+
+    assert textstats.main(["measure", str(doc), "--db", str(user), "--db", str(ai),
+                           "--sort-gap", "--setting", "medium"]) == 0
+    out = capsys.readouterr().out
+    assert len(comparison_rows(out)) == 1 and comparison_rows(out)[0].startswith("remove")
+    assert "AI DB patterns from" in out
+    assert any(l.startswith("punctuation/em-dash") and l.rstrip().endswith("match") for l in out.splitlines())
+
+    assert textstats.main(["measure", str(doc), "--db", str(user), "--db", str(ai),
+                           "--setting", "medium", "--json"]) == 0
+    entry = json.loads(capsys.readouterr().out)[str(doc)]
+    assert entry["patterns"]["punctuation/em-dash"]["class"] == "remove"  # the same id, kept apart
+    ai_row = entry["ai_patterns"]["punctuation/em-dash"]
+    assert ai_row["verdict"] == "match" and "class" not in ai_row and "gap" not in ai_row
 
 
 def test_sort_gap_and_setting_build_the_comparison_table(tmp_path, capsys):

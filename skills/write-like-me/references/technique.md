@@ -21,7 +21,7 @@ Guidance to state when the corpus falls short, then proceed anyway with the shor
 
 ## Step 2 — Authenticity vetting
 
-The corpus must be the author's own hand. Measure every document with `textstats.py measure` and look for outliers on high-signal AI markers — em dashes, `ai_colon_punchline`, `ai_comma_not`, `ai_rather_than`, `ai_verdict_opener`, `ai_authenticity`, `label_lead`, and `ai_vocabulary` for older-style output (the AI-typical dimensions in taxonomy.md rank them) — relative to the other documents: "this one has 12 em dashes per 1k words, your others have 0 — was it AI-assisted?" Pre-AI-era documents are the clean anchor; recent documents are admitted when the author certifies them as hand-written (`vetting: certified`) and they double as a drift check on the older anchor. Record the outcome per document; drop what the author drops. Until the AI DB ships, the built-in `ai_*` counters are the vetting instrument.
+The corpus must be the author's own hand. Measure every document with `textstats.py measure` and look for outliers on high-signal AI markers — em dashes, `ai_colon_punchline`, `ai_comma_not`, `ai_rather_than`, `ai_verdict_opener`, `ai_authenticity`, `label_lead`, and `ai_vocabulary` for older-style output (the AI-typical dimensions in taxonomy.md rank them) — relative to the other documents: "this one has 12 em dashes per 1k words, your others have 0 — was it AI-assisted?" Pre-AI-era documents are the clean anchor; recent documents are admitted when the author certifies them as hand-written (`vetting: certified`) and they double as a drift check on the older anchor. Record the outcome per document; drop what the author drops. The shipped AI DB (`data/ai-style-patterns.json`) says which markers are high-signal and at what machine rates; its `ai_*` counters are the vetting instrument.
 
 ## Step 3 — Close reading
 
@@ -48,7 +48,7 @@ python3 scripts/styledb.py tiers DB.json
 
 ## Step 5 — Review round
 
-Render the profile (`styledb.py render DB.json`) and walk the author through it, dimension by dimension. Feedback lands in four categories, each with a concrete effect on the DB:
+Open the round with a short list of specific questions, each with a recommended default, so that one reply can close it: the redactions made under rule 5 and every name still in a quote, the rows at a tier boundary or under a `register_scope`, the judged rows whose counts are reading estimates, and the decisions taken along the way. The rendered profile (`styledb.py render DB.json`) is the supporting material behind the questions, not the ask — on its own it is long and leaves the author guessing what to do with it. Feedback lands in these categories, each with a concrete effect on the DB:
 
 | verdict | meaning | effect |
 |---|---|---|
@@ -58,7 +58,7 @@ Render the profile (`styledb.py render DB.json`) and walk the author through it,
 | NEEDS_NUANCE | only in emails / only when explaining code | `review.verdict: nuanced`, restriction in `note` |
 | CONFIDENTIAL | this quote (or this pattern's regex, or this `note`) must not be stored as it is | redact further, or replace the quote with another occurrence, or drop the pattern; the author's word is final |
 
-Open the round with the redactions made under rule 5 and the doubts left — the author is the only one who knows which names and figures matter. Deliver the non-native error findings here too (see [german-l1-guidance.md](german-l1-guidance.md)): what was noticed, with the suggested English forms. They are feedback about the corpus, not negotiable pattern candidates — they stay out of the DB either way.
+The redaction questions come first — the author is the only one who knows which names and figures matter. Deliver the non-native error findings in the same list (see [german-l1-guidance.md](german-l1-guidance.md)): what was noticed, with the suggested English forms. They are feedback about the corpus, not negotiable pattern candidates — they stay out of the DB either way.
 
 Automated reading reliably finds habits the author is unaware of; the author reliably finds habits the reading missed. Neither replaces the other, and only the reviewed profile is persisted as `review.status: reviewed`. If the author is not available for the round, persist with `review.status: pending`, say so in the handover, and treat the DB as usable but unreviewed — processing works from it, and the report of the first processing run is a good moment to hold the review.
 
@@ -80,7 +80,7 @@ Offer sealing as the last step: `styledb.py seal DB` drops the corpus paths, the
 
 ## Parallel extraction with subagents
 
-A large corpus (dozens of documents, or documents long enough that two of them fill a context window) is extracted by several subagents in parallel, each producing a *partial* DB, merged with `styledb.py merge`. Because tiers depend on coverage, run it in two phases:
+A large corpus (roughly 50,000 words or more — below that one agent reads everything and Phase B below is redundant — or documents long enough that two of them fill a context window) is extracted by several subagents in parallel, each producing a *partial* DB, merged with `styledb.py merge`. Because tiers depend on coverage, run it in two phases:
 
 **Phase A — discover.** Partition the corpus into subsets of roughly equal word count (3–6 documents each). Each subagent runs Steps 3–4 on its subset and writes `partial-A-<n>.json` with `partial: true`, listing only its own documents in the manifest. Merge the parts: `styledb.py merge partial-A-*.json -o candidates.json --partial`. The merged candidate list is the union of everything anyone noticed.
 
@@ -90,4 +90,8 @@ The subagent brief for either phase carries: the taxonomy and db-schema referenc
 
 ## Maintainer note: the AI corpus
 
-The AI DB is built with the same steps from a corpus of machine-generated documents: diverse model families and agent products, genre-matched to expected inputs (technical posts, documentation, reports), roughly 15–30 documents, including both plainly-prompted and style-prompted generations so that only markers surviving prompting variance are kept. The maintainers are corpus owners and reviewers; the completeness check runs against an external catalog of AI-writing signs, and catalog patterns absent from the corpus are either provoked with additional corpus tasks or entered at tier 3. The manifest records which models and agents produced each document, and the DB is refreshed when a new model generation visibly shifts the distribution.
+The AI DB is built with the same steps from a corpus of machine-generated documents: diverse model families and agent products, genre-matched to expected inputs (technical posts, documentation, reports), roughly 15–30 documents, including both plainly-prompted and style-prompted generations so that only markers surviving prompting variance are kept. The maintainers are corpus owners and reviewers; the completeness check runs against an external catalog of AI-writing signs, and catalog patterns absent from the corpus are either provoked with additional corpus tasks or entered at tier 3. The manifest records which model or agent produced each document (`generator`), and the DB is refreshed when a new model generation visibly shifts the distribution.
+
+Three of the steps read differently for this corpus. Step 2's vetting is provenance, not authenticity: the `generator` field, taken on the maintainers' word, and a document produced by more than one model is `sole_authored: false`. Rule 4 yields no absence patterns — across a multi-model corpus nothing is exactly zero — so a near-absent tell (summary openers, sentence-initial *Furthermore*) is a tier-3 presence row whose note says that its presence in a draft marks older-generation output and its absence proves nothing. Rule 5 keeps people's names out of the quotes as usual, but product names may stay, because the corpus itself ships in the repository and the DB adds no exposure; for the same reason the DB is not sealed — its paths point into the public corpus, and re-verification wants them.
+
+The first extraction (August 2026, 23 documents) ships at `data/ai-style-patterns.json`. Its corpus recorded the generator per document but not the prompt style, and its one email thread carries a fifth of the words; the plainly-prompted vs. style-prompted split and shorter email threads are the open items for the next refresh.

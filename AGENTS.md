@@ -22,7 +22,7 @@ Installing skills for end use is `npx skills add TypeFox/agent-skills` (see READ
 
 ## Why and where
 
-- `skills/<name>/` — one skill per folder: `SKILL.md` (frontmatter `name` matches the folder; `description` states when to trigger *and* when not to), `references/` for detail docs loaded on demand, `evals/evals.json` for eval definitions, optional `assets/`, `scripts/`, and `data/` (bundled data files the skill reads, e.g. write-like-me's AI style-pattern DB once it exists).
+- `skills/<name>/` — one skill per folder: `SKILL.md` (frontmatter `name` matches the folder; `description` states when to trigger *and* when not to), `references/` for detail docs loaded on demand, `evals/evals.json` for eval definitions, optional `assets/`, `scripts/`, and `data/` (bundled data files the skill reads, e.g. write-like-me's AI style-pattern DB).
 - `skills/<name>-workspace/` — gitignored eval output, recreated by skill-evals runs.
 - To create or modify a skill use the skill-creator skill; to measure whether it helps use skill-evals (both installable per README).
 

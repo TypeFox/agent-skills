@@ -18,7 +18,8 @@ Subcommands
                                  schema check; with --corpus-dir every evidence
                                  quote is verified verbatim against its source
                                  document (entries marked "redacted": true are
-                                 exempt — see technique.md rule 5); --fix
+                                 exempt — see technique.md rule 5), and a miss
+                                 reports the nearest verbatim form; --fix
                                  rewrites derived fields
                                  (rate, spread, range, coverage, tier)
   merge DB... -o OUT [--partial] union of corpus manifests and patterns from
@@ -85,7 +86,7 @@ DIMENSIONS = [
 
 KINDS = ("presence", "absence")
 MEASUREMENTS = ("counted", "judged")
-UNITS = ("per_1k_words", "share_of_sentences", "share_of_paragraphs", "words", "count")
+UNITS = ("per_1k_words", "share_of_sentences", "share_of_paragraphs", "share_of_headings", "words", "count")
 DB_KINDS = ("user", "ai")
 SETTING_MAX_TIER = {"soft": 1, "medium": 2, "hard": 3}
 ID_RE = re.compile(r"^[a-z0-9-]+/[a-z0-9-]+$")
@@ -108,14 +109,54 @@ def doc_index(db: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
     return {d["id"]: d for d in db.get("corpus", {}).get("documents", [])}
 
 
+def scoped_docs(pattern: Dict[str, Any], docs: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
+    """The corpus documents a pattern is derived over: all of them, or — with a
+    `register_scope` — only those in the listed registers. Spread is otherwise
+    corpus-wide, so a habit near-obligatory in one register could never leave tier 3."""
+    scope = pattern.get("register_scope")
+    if not scope:
+        return docs
+    return {did: d for did, d in docs.items() if d.get("register") in scope}
+
+
 def normalize_ws(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
+
+
+FOLD = {"\u2019": "'", "\u2018": "'", "\u201c": '"', "\u201d": '"', "\u2014": "-", "\u2013": "-"}
+
+
+def nearest_quote(source: str, quote: str) -> Optional[str]:
+    """The verbatim source span a quote was retyped from, or None.
+
+    Folds what quote-copying most often drifts on — case, curly vs. straight
+    quotes and apostrophes, dash kinds, Markdown emphasis markers — and returns
+    the source text at the match so the DB entry can be corrected by pasting.
+    """
+    def fold(text: str):
+        chars, index = [], []
+        for i, ch in enumerate(text):
+            if ch in "*_":
+                continue
+            chars.append(FOLD.get(ch, ch).lower())
+            index.append(i)
+        return "".join(chars), index
+
+    needle, _ = fold(quote)
+    haystack, index = fold(source)
+    if not needle:
+        return None
+    at = haystack.find(needle)
+    if at < 0:
+        return None
+    return source[index[at]:index[at + len(needle) - 1] + 1]
 
 
 # ---------------------------------------------------------------- derived fields
 
 def compute_stats(pattern: Dict[str, Any], docs: Dict[str, Dict[str, Any]]) -> None:
     """Recompute rate, spread, range, coverage, registers from documents[]."""
+    docs = scoped_docs(pattern, docs)
     entries = [e for e in pattern.get("documents", []) if e.get("id") in docs]
     n_docs = len(docs)
     measured_words = sum(docs[e["id"]]["words"] for e in entries)
@@ -150,7 +191,7 @@ def compute_tier(pattern: Dict[str, Any], docs: Dict[str, Dict[str, Any]]) -> Tu
     """Evidence tier: 1 = strong, 2 = moderate, 3 = weak. See db-schema.md."""
     if "_present" not in pattern:
         compute_stats(pattern, docs)
-    corpus_registers = {d.get("register", "unknown") for d in docs.values()}
+    corpus_registers = {d.get("register", "unknown") for d in scoped_docs(pattern, docs).values()}
     quotes = len(pattern.get("evidence", []))
     counted = pattern.get("measurement") == "counted"
     coverage = pattern.get("coverage", 0.0)
@@ -231,6 +272,9 @@ def validate(db: Dict[str, Any], corpus_dir: Optional[str] = None) -> Tuple[List
             e("document {}: words must be a positive integer".format(did))
         if not d.get("register"):
             e("document {}: register is required".format(did))
+        if db.get("kind") == "ai" and not d.get("generator"):
+            w("document {}: no generator recorded; an AI corpus names the model or agent "
+              "behind every document (technique.md, maintainer note)".format(did))
         docs[did] = d
     sealed = corpus.get("sealed")
     if sealed is not None:
@@ -322,9 +366,12 @@ def validate(db: Dict[str, Any], corpus_dir: Optional[str] = None) -> Tuple[List
                 except OSError:
                     w("pattern {}: cannot open {} to verify quote".format(pid, path))
                     continue
-                if normalize_ws(ev.get("quote", "")) not in source:
-                    e("pattern {}: quote not found verbatim in {}: {!r}".format(
-                        pid, docs[ev["doc"]]["path"], ev.get("quote", "")[:60]))
+                quote = normalize_ws(ev.get("quote", ""))
+                if quote not in source:
+                    near = nearest_quote(source, quote)
+                    e("pattern {}: quote not found verbatim in {}: {!r}{}".format(
+                        pid, docs[ev["doc"]]["path"], quote[:60],
+                        "; nearest verbatim form: {!r}".format(near) if near else ""))
         if p.get("tier") not in (1, 2, 3):
             e("pattern {}: tier must be 1, 2, or 3 (run `validate --fix` to compute it)".format(pid))
         elif docs and all(entry.get("id") in docs for entry in entries):
@@ -338,6 +385,15 @@ def validate(db: Dict[str, Any], corpus_dir: Optional[str] = None) -> Tuple[List
         for ref in p.get("instead", []):
             if ref not in {q.get("id") for q in db.get("patterns", [])}:
                 w("pattern {}: 'instead' references unknown pattern {}".format(pid, ref))
+        scope = p.get("register_scope")
+        if scope is not None:
+            if not isinstance(scope, list) or not all(isinstance(x, str) and x.strip() for x in scope):
+                e("pattern {}: 'register_scope' must be a list of registers".format(pid))
+            else:
+                for reg in scope:
+                    if reg not in {d.get("register") for d in docs.values()}:
+                        w("pattern {}: 'register_scope' names register {!r}, which no corpus "
+                          "document has".format(pid, reg))
         displaces = p.get("displaces")
         if displaces is not None:
             if not isinstance(displaces, list) or not all(
@@ -423,6 +479,10 @@ def merge(dbs: List[Dict[str, Any]], partial: bool = False) -> Dict[str, Any]:
                 q["stat"] = p["stat"]
             if q.get("tier_override") is None and p.get("tier_override") is not None:
                 q["tier_override"] = p["tier_override"]
+            if q.get("register_scope") and p.get("register_scope") and q["register_scope"] != p["register_scope"]:
+                q["notes"].append("merge: differing register_scope dropped: {}".format(p["register_scope"]))
+            if not q.get("register_scope") and p.get("register_scope"):
+                q["register_scope"] = p["register_scope"]
             for ref in p.get("instead", []):
                 q.setdefault("instead", [])
                 if ref not in q["instead"]:
@@ -505,6 +565,8 @@ def render(db: Dict[str, Any], setting: str = "hard", dimension: Optional[str] =
             rng = p.get("range")
             rng_s = " (range {}–{})".format(rng[0], rng[1]) if rng and p.get("kind") != "absence" else ""
             regs = ", ".join(p.get("registers", [])) or "-"
+            if p.get("register_scope"):
+                regs += " (scope: {})".format(", ".join(p["register_scope"]))
             lines.append("- **{}** — tier {}{}: {}{}; spread {:.0%}; registers: {}; {}".format(
                 p["marker"], tier, " (overridden)" if p.get("tier_override") else "", tag, rng_s,
                 p.get("spread", 0.0), regs, p.get("measurement", "?")))

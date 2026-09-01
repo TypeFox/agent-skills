@@ -1,8 +1,8 @@
 # Processing procedure
 
-Processing rewrites AI-generated text toward the author's voice, as the step *before* the author's own polish, never as a replacement for it. It reads the author's DB (and the AI DB once it ships) and never writes either. Vocabulary is defined in [taxonomy.md](taxonomy.md) and [db-schema.md](db-schema.md); the mode rules, DB lookup, and strictness settings are in SKILL.md.
+Processing rewrites AI-generated text toward the author's voice, as the step *before* the author's own polish, never as a replacement for it. It reads the author's DB and the skill's AI DB (`data/ai-style-patterns.json`) and never writes either. Vocabulary is defined in [taxonomy.md](taxonomy.md) and [db-schema.md](db-schema.md); the mode rules, DB lookup, and strictness settings are in SKILL.md.
 
-The stance that makes it work: the author's DB has veto power over every edit. Where the input already matches the author, nothing moves — even when the AI DB (or the built-in AI counters) flags the construction as machine-typical. An author who genuinely writes with em dashes keeps them. And every rewrite targets the author's *rate*, never zero and never "always": the guard against caricature.
+The stance that makes it work: the author's DB has veto power over every edit. Where the input already matches the author, nothing moves — even when the AI DB flags the construction as machine-typical. An author who genuinely writes with em dashes keeps them. And every rewrite targets the author's *rate*, never zero and never "always": the guard against caricature.
 
 What that looks like in practice: the profile is a region in style space (SKILL.md), the input arrives with coordinates of its own, and processing moves the ones sitting outside — each in whichever direction it is off. Taking out what the machine put in is only half of that; the other half is bringing in what the author would have written instead, because a draft stripped of its machine tics still does not sound like anyone in particular. The two halves appear throughout as *remove* rows and *add* rows.
 
@@ -33,12 +33,12 @@ Where the brief does its work: choosing which of the author's habits to bring in
 Run the counters over each input document (per document — different generators leave different marks, and the report is aggregated afterwards):
 
 ```sh
-python3 scripts/textstats.py measure INPUT.md --db USER_DB.json --sort-gap --setting medium
+python3 scripts/textstats.py measure INPUT.md --db USER_DB.json --db data/ai-style-patterns.json --sort-gap --setting medium
 ```
 
 `--setting` takes the strictness the request implies (SKILL.md), and the two flags add the columns Step 2 is built from — they cost nothing here, and one run is better than two.
 
-The output has two parts: the built-in stats and counters (the `ai_*` rows stand in for the AI DB until it ships), and every measurable DB pattern with the input's value, the DB rate and range, and a verdict:
+The output has two parts: the built-in stats and counters, and every measurable DB pattern — the author's and the AI DB's — with the input's value, the DB rate and range, and a verdict. The AI DB's rows print without class or gap: their rates are the machine's, so `match` there means machine-typical, and they feed the AI-evidence column of Step 2 instead of being rewrite rows. The author-DB verdicts:
 
 | verdict | meaning |
 |---|---|
@@ -88,7 +88,7 @@ The replacement construction comes from author-DB evidence — the pattern's own
 
 Because rules come only from the DB, non-native grammar errors can never enter a rewrite: extraction keeps them out of the DB by design ([german-l1-guidance.md](german-l1-guidance.md)), so there is nothing to apply — and a request to write "with all my quirks" cannot widen that, since processing has no source for such forms. Where the input itself contains one, leave it (fixing grammar is outside this skill's scope) and note it in the report.
 
-Targets are rates: for an em-dash row with author rate 0.4/1k and range 0–1.1, the rule leaves roughly 0–1 per 1,000 words in place, choosing the ones that read most like the author's own uses. A tone brief shifts that target within the range (see Tone steering above); register restrictions in `note` apply: a pattern marked "emails only" is not a target for a blog post.
+Targets are rates: for an em-dash row with author rate 0.4/1k and range 0–1.1, the rule leaves roughly 0–1 per 1,000 words in place, choosing the ones that read most like the author's own uses. A tone brief shifts that target within the range (see Tone steering above); a pattern with a `register_scope` is a target only for an input in one of those registers: an emails-only sign-off is not a target for a blog post.
 
 ## Step 4 — Invariants
 
