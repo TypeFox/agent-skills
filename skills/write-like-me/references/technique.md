@@ -4,7 +4,7 @@ One procedure builds every style-pattern DB: the author's DB from their hand-wri
 
 Six founding rules shape every step:
 
-1. **Evidence-paired patterns only.** A pattern enters the DB with verbatim quotes and per-document counts, or not at all. `styledb.py validate --corpus-dir` checks the quotes; a quote that cannot be found is a fabricated pattern.
+1. **Evidence-paired patterns only.** A pattern enters the DB with verbatim quotes and per-document counts, or not at all. `styledb.py validate --corpus-dir` checks the quotes and re-runs each counter over the documents; a quote that cannot be found, or a count the corpus does not reproduce, is a fabricated pattern.
 2. **Reading discovers, counters rank.** Counters do not find the voice — they cannot see a concession structure or a kitchen metaphor. Reading finds candidates; counters order them by size, make them reproducible, and later drive convergence.
 3. **Rates, not extremes.** Record what the author does at the rate they do it. "Uses colons" is not a pattern; "3.1 colons per 1k words, range 1.2–4.8" is. The range is the point: each pattern fixes one band of the region the profile stands for (SKILL.md), and a band a rewrite can aim anywhere inside is worth more than a number it has to hit.
 4. **What the author *doesn't* do is data.** Absence patterns (em dashes: 0 across 6,000 words) are the do-not-introduce list and are as valuable as presence patterns.
@@ -17,7 +17,12 @@ The request names the documents (extraction never goes looking for documents on 
 
 Guidance to state when the corpus falls short, then proceed anyway with the shortfall on record: at least ~8 documents and ~6,000 words, sole-authored, fully hand-written, mixed lengths, every document tagged with a register. A small corpus is not a reason to stop; it is a reason for lower tiers (the tier rules encode this: fewer documents means fewer patterns reach tier 1) and for a warning in the DB's `note`s.
 
-**Register balance.** Corpora often mix sources of very different sizes — a thesis next to blog posts and emails. Rates are corpus-normalized, so a source carrying most of the words turns the DB into a profile of that register, with every other register's habits demoted to tier 3. When one register carries more than about half the words, stop and ask the user before reading: whether to cap the dominant source (keep its most prose-like parts and leave the rest out of the manifest), and whether to down-weight it deliberately — academic material such as a dissertation is a common candidate, because its register differs from the business writing the profile will mostly serve. Record the decision and the capping in the manifest and the DB `note`s; with a smaller imbalance, balancing by selection is a judgment call to make and report, not to ask about.
+**Register balance.** Corpora often mix sources of very different sizes — a thesis next to blog posts and emails. Rates are corpus-normalized, so a source carrying most of the words turns the DB into a profile of that register. When one register carries more than about half the words, stop and ask the user before reading; with a smaller imbalance, decide and report rather than ask. There are two remedies and they are not interchangeable:
+
+- **Weight the registers** (`corpus.register_weights` in [db-schema.md](db-schema.md)): a share per register, pooled so that each register contributes its share of every rate whatever number of words it brought. This is what a request like "balance all my registers equally" asks for — write every share as 1 — and it also serves the graded version ("count the dissertation for a quarter": `{"thesis": 1, "article": 4, "email": 4}`). Nothing is discarded, so coverage, quotes and tiers are untouched. Every register in the manifest must appear in the map or `validate` errors, and the weighting is set once on the finished DB, not on the parts of a parallel extraction.
+- **Cap the source**: keep its most prose-like parts and leave the rest out. This is the right remedy only when the excluded text is not writing the profile should learn from at all — transcribed interviews inside a thesis, quoted material, a co-authored chapter. It costs words, and words are tiers: absence patterns need 3,000 measured words to reach tier 1, presence patterns need every document measured. A capped document must be written out as its own file that `documents[].path` points at, because `validate --corpus-dir` re-runs every counter over the whole file it finds there and will contradict counts taken from an excerpt.
+
+Weighting moves the target rates and only those: spread, range, coverage and the tiers count documents, so a weighting can shift where in the author's range a rewrite aims but can neither widen that range nor turn a thin register into strong evidence. Say so when the user asks for it, and record the decision — the shares chosen, or what was capped and why — in the manifest and the DB `note`s.
 
 ## Step 2 — Authenticity vetting
 
@@ -44,7 +49,7 @@ python3 scripts/styledb.py validate DB.json --fix --corpus-dir CORPUS_ROOT
 python3 scripts/styledb.py tiers DB.json
 ```
 
-`--fix` computes rates, spread, ranges, coverage, and tiers from the per-document data; `--corpus-dir` verifies every quote. Fix every error; read every warning.
+`--fix` computes rates, spread, ranges, coverage, and tiers from the per-document data; `--corpus-dir` verifies every quote and re-counts every counted pattern against its source. `CORPUS_ROOT` is the directory each `documents[].path` is relative to — point it one level off and nothing is verified, which is why an unreachable source is an error and not a warning. Fix every error; read every warning.
 
 ## Step 5 — Review round
 
@@ -74,7 +79,7 @@ Writing that destination is the one step of an extraction that can destroy somet
 
 Growing a profile is a different operation from replacing it. When the author has simply written more since last time, extract the new documents into a partial DB and `styledb.py merge` it with the existing one: the old evidence survives, rates and tiers are recomputed over the union, and `review.status` returns to pending so the round happens again. Because tiers follow coverage, count the existing patterns on the new documents as well — the two-phase rule of the parallel protocol below applies to an incremental extraction too, or the old patterns are demoted for missing counts they could have had. Replace when the corpus is being redrawn; merge when it is growing.
 
-Then hand over: the profile rendered as markdown, the list of tier-1 patterns in one line each, the shortfalls (corpus size, unreviewed status, judged-only dimensions), and the exact command that re-renders the profile later.
+Then hand over: the profile rendered as markdown, the list of tier-1 patterns in one line each, the shortfalls (corpus size, unreviewed status, judged-only dimensions), and the exact command that re-renders the profile later. The rendering is part of the deliverable, so it goes in the reply itself or in a file that outlives the run — one written to a scratch path and cleared up afterwards was never handed over, whatever the transcript shows.
 
 Offer sealing as the last step: `styledb.py seal DB` drops the corpus paths, the DB's only reference into the corpus filesystem, once the review round has settled the redactions. Sealing removes the filenames that rule 5 cannot redact (a path can name a customer or a client project), and costs quote re-verification: `validate --corpus-dir` on a sealed DB checks nothing and warns. It is the author's call, so ask rather than seal by default, and skip it while the corpus is still growing — an incremental re-extraction wants the paths. [db-schema.md](db-schema.md) has the rules; `seal` refuses an unreviewed or partial DB.
 

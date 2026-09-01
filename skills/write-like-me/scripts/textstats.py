@@ -407,6 +407,145 @@ def classify(value: Optional[float], pattern: Dict[str, Any], verd: str) -> str:
     return "neutral"
 
 
+def is_enumeration(pattern: Dict[str, Any]) -> bool:
+    """True when the counter is a list of literal forms rather than a general rule.
+
+    Such a counter sees only the members it names, so `match` on its row says the named
+    forms are at the author's rate and says nothing about the rest of the family — the
+    `-ize` a British-spelling alternation never listed. Detected structurally: an
+    alternation whose branches are plain words.
+    """
+    rx = pattern.get("regex")
+    if not rx or "|" not in rx:
+        return False
+    bare = re.sub(r"\\b|\(\?:|\(\?i\)|[()]", "", rx)
+    return bool(re.fullmatch(r"[\w' -]+(?:\|[\w' -]+)+", bare))
+
+
+def ai_evidence(pattern: Dict[str, Any], direction: str, ai_verdicts: Dict[str, str]) -> str:
+    """The confidence behind a remove row — the comparison table's AI-evidence column.
+
+    `high` where the machine side backs the removal: an AI DB row of the same taxonomy id
+    measuring the input at machine-typical rates, or one of the author's own absence
+    patterns (rate 0, high-confidence by rule). `low` where nothing machine-side does, so
+    the excess could be a generator quirk or an effect of the topic. Only removals carry
+    one; processing.md Step 2.
+    """
+    if direction != "remove":
+        return "—"
+    if pattern.get("kind") == "absence" or not float(pattern.get("rate") or 0.0):
+        return "high"
+    return "high" if ai_verdicts.get(pattern["id"]) in ("match", "high") else "low"
+
+
+DIRECTIONS = {"add": "add", "remove": "remove", "lean": "keep"}
+
+# The two taxonomy dimensions whose rows describe document shape rather than prose. What
+# the author does when they choose the shape says nothing about the shape an input already
+# has, and structure_check.py owns that: a row here never licenses adding or removing a
+# list or a heading (processing.md Step 6).
+STRUCTURAL_DIMENSIONS = ("lists", "headings")
+
+
+def is_structural(pattern: Dict[str, Any]) -> bool:
+    return pattern["id"].split("/", 1)[0] in STRUCTURAL_DIMENSIONS
+
+
+def cmd_report_table(args: argparse.Namespace, results: List[Tuple[str, Dict[str, Any]]],
+                     dbs: List[Tuple[str, Dict[str, Any]]], max_tier: int) -> int:
+    """The report's measured sections as markdown, so no figure in them is retyped.
+
+    Everything here is a transcription of this run's own measurement of the delivered
+    file; the sections the counters cannot fill — not-converged, side effects, open
+    questions — stay with the writer (processing.md Step 7).
+    """
+    _, first = results[0]
+    ai_verdicts = {}
+    for _, db in dbs:
+        if db.get("kind") != "ai":
+            continue
+        for p in db.get("patterns", []):
+            v = measure_pattern(p, first)
+            if v is not None:
+                ai_verdicts[p["id"]] = verdict(v, p, first["stats"])
+    two = len(results) > 1
+    rows, keep, manual, judged = [], [], [], []
+    enum = structural = False
+    for _, db in dbs:
+        if db.get("kind") == "ai":
+            continue
+        for p in db.get("patterns", []):
+            values = [measure_pattern(p, r) for _, r in results]
+            if values[0] is None:
+                if all(v is None for v in values):
+                    judged.append(p)
+                continue
+            verd = verdict(values[0], p, first["stats"])
+            cls = classify(values[0], p, verd)
+            name = p["id"] + (" [enum]" if is_enumeration(p) else "")
+            enum = enum or name.endswith("[enum]")
+            if is_structural(p):
+                name += " [structural]"
+                structural = True
+            rng = p.get("range")
+            rate = "{} ({})".format(fmt(p.get("rate")),
+                                    "{}–{}".format(fmt(rng[0]), fmt(rng[1])) if rng else "-")
+            if cls == "do-not-touch":
+                keep.append("- {} — input {}, author {}".format(name, fmt(values[0]), rate))
+                continue
+            if cls not in DIRECTIONS:
+                continue
+            if args.setting and effective_tier(p) > max_tier:
+                manual.append("- {} — tier {} is above the {} setting's ceiling of {}"
+                              .format(name, effective_tier(p), args.setting, max_tier))
+                continue
+            cells = [name, DIRECTIONS[cls], str(p.get("tier", "-")),
+                     ai_evidence(p, DIRECTIONS[cls], ai_verdicts), fmt(values[0])]
+            if two:
+                cells.append(fmt(values[-1]))
+            cells += [rate, verdict(values[-1], p, results[-1][1]["stats"])
+                      if values[-1] is not None else "-"]
+            rows.append((gap_size(values[0], p, first["stats"], verd) or 0.0, cells))
+    rows.sort(key=lambda t: -t[0])
+    head = ["pattern", "direction", "tier", "AI evidence", "input"]
+    if two:
+        head.append("rewritten")
+    head += ["author rate (range)", "verdict"]
+    sys.stderr.write(
+        "report table: measured from {}. Paste it; do not retype a figure, and do not "
+        "carry one over from an earlier convergence round. The not-converged, side-effect "
+        "and open-question sections are yours to write.\n".format(
+            " and ".join(n for n, _ in results)))
+    if enum:
+        sys.stderr.write(
+            "[enum] marks a counter that enumerates forms: `match` there covers only the "
+            "forms it names, so read for the rest of the family before calling it done.\n")
+    if structural:
+        sys.stderr.write(
+            "[structural] marks a row about document shape. It describes what the author "
+            "writes when the shape is theirs to choose, and never licenses adding or "
+            "removing a list or a heading the input has: the structure invariant wins and "
+            "the row goes to the report as inapplicable to this input.\n")
+    print("## Before / after")
+    print("| " + " | ".join(head) + " |")
+    print("|" + "---|" * len(head))
+    for _, cells in rows:
+        print("| " + " | ".join(cells) + " |")
+    print()
+    print("## Do-not-touch (input already matched the author)")
+    print("\n".join(keep) if keep else "- none")
+    if args.setting:
+        print()
+        print("## Left for the manual pass")
+        print("\n".join(manual) if manual else "- none")
+    print()
+    print("## Read for these (judged patterns — no counter, so no row above)")
+    print("\n".join("- {} (tier {}) — {}".format(p["id"], p.get("tier", "-"),
+                                                  p.get("description", ""))
+                    for p in judged) if judged else "- none")
+    return 0
+
+
 def gap_size(value: Optional[float], pattern: Dict[str, Any],
              stats: Optional[Dict[str, Any]] = None,
              verd: Optional[str] = None) -> Optional[float]:
@@ -477,9 +616,21 @@ def cmd_measure(args: argparse.Namespace) -> int:
                      "patterns": {pid: row for pid, row in rows}}
             if ai_rows:
                 entry["ai_patterns"] = {pid: row for pid, row in ai_rows}
+            judged = {}
+            for _, db in dbs:
+                if db.get("kind") == "ai":
+                    continue
+                for p in db.get("patterns", []):
+                    if measure_pattern(p, r) is None:
+                        judged[p["id"]] = {"tier": p.get("tier"),
+                                           "description": p.get("description", "")}
+            if judged:
+                entry["judged_patterns"] = judged
             out[path] = entry
         print(json.dumps(out, indent=2))
         return 0
+    if args.report_table:
+        return cmd_report_table(args, results, dbs, max_tier)
     names = [p for p, _ in results]
     width = max(28, *(len(n) for n in names))
     print("{:<32}".format("stat") + "".join("{:>{w}}".format(n[-width:], w=width + 2) for n in names))
@@ -526,10 +677,29 @@ def cmd_measure(args: argparse.Namespace) -> int:
             rng = p.get("range")
             rng_s = "{}–{}".format(fmt(rng[0]), fmt(rng[1])) if rng else "-"
             row = "{:<16}{:>6}  ".format(cls, fmt(gap)) if classified else ""
-            row += "{:<40}{:>5}{:>12}{:>16}".format(p["id"][:40], p.get("tier", "-"), fmt(p.get("rate")), rng_s)
+            pid = p["id"] + ("" if ai else
+                             (" [enum]" if is_enumeration(p) else "") +
+                             (" [structural]" if is_structural(p) else ""))
+            row += "{:<40}{:>5}{:>12}{:>16}".format(pid[:40], p.get("tier", "-"), fmt(p.get("rate")), rng_s)
             row += "".join("{:>{w}}".format("{} {}".format(fmt(v), vd), w=width + 2)
                            for v, vd in zip(values, verdicts))
             print(row)
+        if not ai and any(is_enumeration(p) for p, _, _, _, _ in rows):
+            print("  [enum] = the counter enumerates forms; `match` covers only the ones it "
+                  "names, so read for the rest of the family")
+        if not ai and any(is_structural(p) for p, _, _, _, _ in rows):
+            print("  [structural] = a row about document shape; it never licenses adding or "
+                  "removing a list or a heading the input has")
+        if not ai:
+            judged = [p for p in db.get("patterns", [])
+                      if all(measure_pattern(p, r) is None for _, r in results)]
+            if judged:
+                print()
+                print("  read for these — no counter, so no row above and no verdict; "
+                      "each one still gets a class and a line in the report")
+                for p in judged:
+                    print("  {:<40}{:>5}  {}".format(
+                        p["id"][:40], p.get("tier", "-"), p.get("description", "")))
     return 0
 
 
@@ -546,7 +716,12 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("measure"); s.add_argument("files", nargs="+")
-    s.add_argument("--db", action="append"); s.add_argument("--json", action="store_true")
+    s.add_argument("--db", action="append")
+    g = s.add_mutually_exclusive_group()
+    g.add_argument("--json", action="store_true")
+    g.add_argument("--report-table", action="store_true",
+                   help="the report's measured sections as markdown, AI-evidence column "
+                        "filled, so no figure in the report is retyped")
     s.add_argument("--sort-gap", action="store_true",
                    help="order DB rows by the size of the edit they ask for, largest first")
     s.add_argument("--setting", choices=sorted(SETTING_MAX_TIER),

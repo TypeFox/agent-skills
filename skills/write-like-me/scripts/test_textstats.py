@@ -342,3 +342,128 @@ def test_sort_gap_and_setting_build_the_comparison_table(tmp_path, capsys):
     assert patterns["connectives/so-initial"]["dropped_by_setting"] is False
     assert patterns["punctuation/em-dash"]["dropped_by_setting"] is True
     assert patterns["punctuation/colon-elaboration"]["dropped_by_setting"] is False
+
+
+def test_judged_patterns_are_listed_even_though_they_have_no_row(tmp_path, capsys):
+    # A judged pattern carries no counter, so it gets no verdict and no row — and a rewrite
+    # driven by the table alone would never hear of it. `measure` names it instead.
+    doc = tmp_path / "draft.md"
+    doc.write_text("A draft. " + "More words follow here. " * 60, encoding="utf-8")
+    db = tmp_path / "user.json"
+    db.write_text(json.dumps({"kind": "user", "patterns": [
+        {"id": "punctuation/colon", "regex": ":", "unit": "per_1k_words",
+         "rate": 5.0, "range": [1.0, 9.0], "spread": 1.0, "tier": 1},
+        {"id": "opener-closer/closer-punch", "measurement": "judged", "tier": 2,
+         "description": "Ends on a one-line punch, never a summary paragraph.",
+         "unit": "per_1k_words", "rate": 2.4, "range": [0.0, 4.5], "spread": 0.6}]}),
+        encoding="utf-8")
+
+    assert textstats.main(["measure", str(doc), "--db", str(db)]) == 0
+    out = capsys.readouterr().out
+    assert "read for these" in out
+    assert "opener-closer/closer-punch" in out
+    assert "Ends on a one-line punch" in out
+
+    assert textstats.main(["measure", str(doc), "--db", str(db), "--json"]) == 0
+    entry = json.loads(capsys.readouterr().out)[str(doc)]
+    assert "opener-closer/closer-punch" not in entry["patterns"]
+    assert entry["judged_patterns"]["opener-closer/closer-punch"]["tier"] == 2
+
+
+def test_ai_db_judged_patterns_are_not_offered_as_a_reading_list(tmp_path, capsys):
+    doc = tmp_path / "draft.md"
+    doc.write_text("A draft. " + "More words follow here. " * 60, encoding="utf-8")
+    ai = tmp_path / "ai.json"
+    ai.write_text(json.dumps({"kind": "ai", "patterns": [
+        {"id": "tone-markers/vagueness", "measurement": "judged", "tier": 1,
+         "description": "Judged on the machine side.", "unit": "per_1k_words",
+         "rate": 3.0, "range": [0.0, 6.0], "spread": 0.8}]}), encoding="utf-8")
+    assert textstats.main(["measure", str(doc), "--db", str(ai)]) == 0
+    assert "read for these" not in capsys.readouterr().out
+
+
+def _db(patterns):
+    return {"db_version": 1, "patterns": patterns}
+
+
+REPORT_DB = _db([
+    {"id": "punctuation/em-dash", "kind": "absence", "measurement": "counted",
+     "stat": "em_dash", "unit": "per_1k_words", "tier": 2, "rate": 0.0,
+     "range": [0.0, 0.0], "spread": 1.0, "description": "No em dashes."},
+    {"id": "voice-and-person/first-plural", "kind": "presence", "measurement": "counted",
+     "stat": "first_person_plural", "unit": "per_1k_words", "tier": 2, "rate": 4.0,
+     "range": [0.0, 8.0], "spread": 0.8, "description": "Rare team we."},
+    {"id": "spelling-lexical/british-spelling", "kind": "presence", "measurement": "counted",
+     "regex": r"\b(?:behaviour|colour|organised)\b", "ignore_case": True,
+     "unit": "per_1k_words", "tier": 2, "rate": 5.0, "range": [2.0, 9.0], "spread": 0.8,
+     "description": "British spelling."},
+    {"id": "lists/no-lists", "kind": "absence", "measurement": "counted",
+     "stat": "list_items", "unit": "per_1k_words", "tier": 1, "rate": 0.0,
+     "range": [0.0, 0.0], "spread": 1.0, "description": "A series is carried in prose."},
+    {"id": "opener-closer/closer-punch", "kind": "presence", "measurement": "judged",
+     "unit": "per_1k_words", "tier": 2, "rate": 1.0, "range": [0.0, 2.0], "spread": 0.6,
+     "description": "Ends on a punch."},
+])
+
+
+def test_is_enumeration_separates_a_word_list_from_a_general_rule():
+    named = {"id": "x/y", "regex": r"\b(?:behaviour|colour|organised)\b"}
+    general = {"id": "x/z", "regex": r"(?:^|(?<=[.!?]\s))(?:And|But)\b"}
+    assert textstats.is_enumeration(named)
+    assert not textstats.is_enumeration(general)
+    assert not textstats.is_enumeration({"id": "x/w", "stat": "em_dash"})
+
+
+def test_structural_rows_are_the_shape_dimensions_only():
+    assert textstats.is_structural({"id": "lists/no-lists"})
+    assert textstats.is_structural({"id": "headings/colon-heading"})
+    assert not textstats.is_structural({"id": "punctuation/em-dash"})
+
+
+def test_report_table_fills_the_ai_evidence_column_and_marks_the_risky_rows(tmp_path, capsys):
+    doc = tmp_path / "draft.md"
+    doc.write_text("We shipped it — twice. " + "We measured the thing again here. " * 200
+                   + "\n\n- one\n- two\n", encoding="utf-8")
+    db = tmp_path / "user.json"
+    db.write_text(json.dumps(REPORT_DB), encoding="utf-8")
+    ai = tmp_path / "ai.json"
+    ai.write_text(json.dumps({"kind": "ai", "patterns": [
+        {"id": "punctuation/em-dash", "measurement": "counted", "stat": "em_dash",
+         "unit": "per_1k_words", "tier": 1, "rate": 3.0, "range": [1.0, 6.0],
+         "spread": 0.9, "description": "Machine em dashes."}]}), encoding="utf-8")
+    assert textstats.main(["measure", str(doc), "--db", str(db), "--db", str(ai),
+                           "--setting", "medium", "--report-table"]) == 0
+    cap = capsys.readouterr()
+    out, err = cap.out, cap.err
+    # the author's own absence row is high-confidence by rule, and so is the AI-corroborated one
+    assert "| punctuation/em-dash | remove | 2 | high |" in out
+    # a presence row with no machine-side backing is a low-confidence removal
+    assert "| voice-and-person/first-plural | remove | 2 | low |" in out
+    # add rows carry no AI evidence at all
+    assert "| spelling-lexical/british-spelling [enum] | add | 2 | — |" in out
+    # the shape row is marked, and the judged pattern still gets its checklist line
+    assert "lists/no-lists [structural]" in out
+    assert "- opener-closer/closer-punch (tier 2)" in out
+    assert "## Do-not-touch" in out and "## Left for the manual pass" in out
+    # the guidance is on stderr, so a redirected table stays paste-ready
+    assert "do not retype a figure" in err
+    assert "[enum]" in err and "[structural]" in err
+    assert "do not retype" not in out
+
+
+def test_report_table_adds_a_rewritten_column_for_a_second_file(tmp_path, capsys):
+    db = tmp_path / "user.json"
+    db.write_text(json.dumps(REPORT_DB), encoding="utf-8")
+    before = tmp_path / "a.md"
+    before.write_text("We shipped it — twice. " + "We measured it again here. " * 200,
+                      encoding="utf-8")
+    after = tmp_path / "b.md"
+    after.write_text("I shipped it, twice. " + "I measured it again here. " * 200,
+                     encoding="utf-8")
+    assert textstats.main(["measure", str(before), str(after), "--db", str(db),
+                           "--report-table"]) == 0
+    out = capsys.readouterr().out
+    assert "| pattern | direction | tier | AI evidence | input | rewritten |" in out
+    row = [ln for ln in out.splitlines() if ln.startswith("| punctuation/em-dash |")][0]
+    assert row.split("|")[6].strip() == "0"      # the rewritten column, measured not recalled
+    assert row.rstrip("| ").endswith("match")

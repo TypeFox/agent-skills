@@ -18,10 +18,15 @@ Subcommands
                                  schema check; with --corpus-dir every evidence
                                  quote is verified verbatim against its source
                                  document (entries marked "redacted": true are
-                                 exempt — see technique.md rule 5), and a miss
-                                 reports the nearest verbatim form; --fix
-                                 rewrites derived fields
-                                 (rate, spread, range, coverage, tier)
+                                 exempt — see technique.md rule 5), a miss
+                                 reports the nearest verbatim form, and every
+                                 counted pattern's per-document counts are
+                                 re-run from the corpus; a source the paths do
+                                 not reach is an error, since nothing asked for
+                                 was verified; --fix rewrites derived fields
+                                 (rate, spread, range, coverage, tier), pooling
+                                 rates under corpus.register_weights when the
+                                 manifest carries one
   merge DB... -o OUT [--partial] union of corpus manifests and patterns from
                                  several (partial) DBs, derived fields
                                  recomputed from the merged per-document data
@@ -45,6 +50,7 @@ from __future__ import annotations
 import argparse
 import datetime
 import json
+import os
 import re
 import sys
 from typing import Any, Dict, List, Optional, Tuple
@@ -56,6 +62,7 @@ try:  # ships next to this script; names a DB pattern may reference in `stat`
     KNOWN_STATS = set(textstats.STATS_HELP) | set(textstats.COUNTERS)
     BUILTIN_COUNTERS = set(textstats.COUNTERS)
 except ImportError:  # pragma: no cover
+    textstats = None
     KNOWN_STATS = BUILTIN_COUNTERS = None
 
 # Keep in sync with references/taxonomy.md (the taxonomy is the authority).
@@ -154,8 +161,50 @@ def nearest_quote(source: str, quote: str) -> Optional[str]:
 
 # ---------------------------------------------------------------- derived fields
 
-def compute_stats(pattern: Dict[str, Any], docs: Dict[str, Dict[str, Any]]) -> None:
-    """Recompute rate, spread, range, coverage, registers from documents[]."""
+DEFAULT_REGISTER_SHARE = 1.0
+
+
+def register_weights(db: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    """The corpus's register weighting, or None when rates pool by words alone."""
+    weights = (db.get("corpus") or {}).get("register_weights")
+    return weights if isinstance(weights, dict) and weights else None
+
+
+def pool_by_register(per_doc: List[float], words: List[int], registers: List[str],
+                     weights: Dict[str, Any]) -> float:
+    """Corpus rate under a register weighting: a share-weighted mean of the per-register
+    rates, each of those the word-weighted mean of its own documents.
+
+    Shares proportional to the registers' word counts reproduce the unweighted rate,
+    which is what a corpus without `register_weights` computes; equal shares make a
+    400-word email register count as much as a 40,000-word thesis. A register the
+    weighting does not name falls back to share 1 so a malformed DB still produces
+    numbers — `validate` reports the omission as an error rather than letting it stand.
+    """
+    totals: Dict[str, List[float]] = {}
+    for rate, doc_words, register in zip(per_doc, words, registers):
+        acc = totals.setdefault(register, [0.0, 0.0])
+        acc[0] += rate * doc_words
+        acc[1] += doc_words
+    num = den = 0.0
+    for register, (weighted, register_words) in totals.items():
+        if not register_words:
+            continue
+        share = float(weights.get(register, DEFAULT_REGISTER_SHARE))
+        num += share * (weighted / register_words)
+        den += share
+    return num / den if den else 0.0
+
+
+def compute_stats(pattern: Dict[str, Any], docs: Dict[str, Dict[str, Any]],
+                  weights: Optional[Dict[str, Any]] = None) -> None:
+    """Recompute rate, spread, range, coverage, registers from documents[].
+
+    `weights` is the corpus's `register_weights`, and it moves `rate` alone: `spread`,
+    `range` and `coverage` count documents, and so do the tier rules that read them. A
+    weight says how much a register should define the author's target rate, never how
+    well a habit is evidenced.
+    """
     docs = scoped_docs(pattern, docs)
     entries = [e for e in pattern.get("documents", []) if e.get("id") in docs]
     n_docs = len(docs)
@@ -173,6 +222,10 @@ def compute_stats(pattern: Dict[str, Any], docs: Dict[str, Dict[str, Any]]) -> N
         per_doc = [float(e.get("rate", 0.0)) for e in entries]
         rate = (sum(r * docs[e["id"]]["words"] for r, e in zip(per_doc, entries))
                 / measured_words) if measured_words else 0.0
+    if weights:
+        rate = pool_by_register(per_doc, [docs[e["id"]]["words"] for e in entries],
+                                [docs[e["id"]].get("register", "unknown") for e in entries],
+                                weights)
     if pattern.get("kind") == "absence":
         present = [e for e in entries if e.get("count", 0) == 0]
     else:
@@ -187,10 +240,11 @@ def compute_stats(pattern: Dict[str, Any], docs: Dict[str, Dict[str, Any]]) -> N
     pattern["_measured_words"] = measured_words
 
 
-def compute_tier(pattern: Dict[str, Any], docs: Dict[str, Dict[str, Any]]) -> Tuple[int, str]:
+def compute_tier(pattern: Dict[str, Any], docs: Dict[str, Dict[str, Any]],
+                 weights: Optional[Dict[str, Any]] = None) -> Tuple[int, str]:
     """Evidence tier: 1 = strong, 2 = moderate, 3 = weak. See db-schema.md."""
     if "_present" not in pattern:
-        compute_stats(pattern, docs)
+        compute_stats(pattern, docs, weights)
     corpus_registers = {d.get("register", "unknown") for d in scoped_docs(pattern, docs).values()}
     quotes = len(pattern.get("evidence", []))
     counted = pattern.get("measurement") == "counted"
@@ -233,15 +287,68 @@ def effective_tier(pattern: Dict[str, Any]) -> int:
 
 def recompute(db: Dict[str, Any]) -> None:
     docs = doc_index(db)
+    weights = register_weights(db)
     for p in db.get("patterns", []):
-        compute_stats(p, docs)
-        p["tier"], p["tier_reason"] = compute_tier(p, docs)
+        compute_stats(p, docs, weights)
+        p["tier"], p["tier_reason"] = compute_tier(p, docs, weights)
         p.pop("_present", None)
         p.pop("_measured_words", None)
     db["corpus"]["total_words"] = sum(d.get("words", 0) for d in docs.values())
 
 
 # ---------------------------------------------------------------- validate
+
+class CorpusReader:
+    """Reads each corpus document once, for quote verification and for recounting."""
+
+    def __init__(self, corpus_dir: str) -> None:
+        self.root = corpus_dir
+        self._text: Dict[str, Optional[str]] = {}
+        self._measured: Dict[str, Any] = {}
+
+    def text(self, doc: Dict[str, Any]) -> Optional[str]:
+        did = doc["id"]
+        if did not in self._text:
+            try:
+                with open(os.path.join(self.root, doc["path"]), encoding="utf-8") as fh:
+                    self._text[did] = fh.read()
+            except OSError:
+                self._text[did] = None
+        return self._text[did]
+
+    def path(self, doc: Dict[str, Any]) -> str:
+        return os.path.join(self.root, doc["path"])
+
+    def measured(self, doc: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        did = doc["id"]
+        if did not in self._measured:
+            body = self.text(doc)
+            self._measured[did] = None if body is None or textstats is None \
+                else textstats.measure(body)
+        return self._measured[did]
+
+
+def recount(pattern: Dict[str, Any], entry: Dict[str, Any],
+            measured: Dict[str, Any]) -> Optional[Tuple[float, float, str]]:
+    """(recorded, from the corpus, unit) for one documents[] entry, or None when the
+    counter cannot be re-run — a judged pattern, a pattern with neither regex nor stat,
+    or a stat this build of textstats does not know."""
+    if textstats is None or pattern.get("measurement") != "counted":
+        return None
+    if not (pattern.get("regex") or pattern.get("stat")):
+        return None
+    value = textstats.measure_pattern(pattern, measured)
+    if value is None:
+        return None
+    unit = pattern.get("unit", "per_1k_words")
+    if unit == "per_1k_words":
+        words = measured["stats"].get("words") or 0
+        return float(entry.get("count", 0)), value * words / 1000.0, "occurrences"
+    recorded = entry.get("rate", entry.get("count"))
+    if recorded is None:
+        return None
+    return float(recorded), float(value), unit
+
 
 def validate(db: Dict[str, Any], corpus_dir: Optional[str] = None) -> Tuple[List[str], List[str]]:
     errors: List[str] = []
@@ -284,6 +391,37 @@ def validate(db: Dict[str, Any], corpus_dir: Optional[str] = None) -> Tuple[List
         if still_pathed:
             e("corpus is marked sealed but {} document(s) still carry a path: {}".format(
                 len(still_pathed), ", ".join(still_pathed)))
+    weights = corpus.get("register_weights")
+    if weights is not None:
+        present = {d.get("register") for d in docs.values() if d.get("register")}
+        if not isinstance(weights, dict) or not weights:
+            e("corpus.register_weights must be a non-empty object mapping register to share")
+            weights = None
+        else:
+            for register in sorted(weights, key=str):
+                share = weights[register]
+                if isinstance(share, bool) or not isinstance(share, (int, float)) or share <= 0:
+                    e("corpus.register_weights[{!r}] must be a positive number: the share of "
+                      "the pooled rate that register carries".format(register))
+                elif register not in present:
+                    w("corpus.register_weights names register {!r}, which no corpus document "
+                      "carries; it contributes nothing".format(register))
+            for register in sorted(present - set(weights)):
+                e("corpus.register_weights does not name register {!r}, which {} corpus "
+                  "document(s) carry; an unnamed register falls back to share 1, so name "
+                  "every register or drop the weighting (technique.md, Step 1)".format(
+                      register, sum(1 for d in docs.values() if d.get("register") == register)))
+        if db.get("partial"):
+            w("corpus.register_weights on a partial DB: weighting is a whole-corpus "
+              "decision and belongs on the merged DB, where every register is present")
+    weights = register_weights(db)
+    reader = CorpusReader(corpus_dir) if corpus_dir else None
+    if reader:
+        for did in sorted(docs):
+            if docs[did].get("path") and reader.text(docs[did]) is None:
+                e("cannot open {}; --corpus-dir must be the root the documents[].path "
+                  "entries are relative to, and nothing in {} was verified against it"
+                  .format(reader.path(docs[did]), did))
     if corpus_dir:
         unverifiable = sorted(did for did, d in docs.items() if not d.get("path"))
         if unverifiable:
@@ -342,6 +480,20 @@ def validate(db: Dict[str, Any], corpus_dir: Optional[str] = None) -> Tuple[List
         for entry in entries:
             if entry.get("id") not in docs:
                 e("pattern {}: documents[] references unknown document {!r}".format(pid, entry.get("id")))
+            elif reader and docs[entry["id"]].get("path"):
+                measured = reader.measured(docs[entry["id"]])
+                if measured is None:
+                    continue  # already reported once, against the document
+                got = recount(p, entry, measured)
+                if got is None:
+                    continue
+                recorded, measured_value, unit = got
+                tol = 0.5 if unit == "occurrences" else max(0.02, 0.02 * abs(recorded))
+                if abs(recorded - measured_value) > tol:
+                    e("pattern {}: documents[{}] records {:g} {} but the counter finds "
+                      "{:g} in the source; re-run the counter (the recorded numbers are "
+                      "what rate, range and tier are computed from)".format(
+                          pid, entry["id"], recorded, unit, round(measured_value, 2)))
         if p.get("kind") == "absence":
             if p.get("measurement") != "counted":
                 e("pattern {}: absence patterns must be counted, not judged".format(pid))
@@ -357,15 +509,11 @@ def validate(db: Dict[str, Any], corpus_dir: Optional[str] = None) -> Tuple[List
                 if not re.search(r"\[[^\]]+\]", ev.get("quote", "")):
                     w("pattern {}: redacted quote has no [placeholder]; was anything actually removed? {!r}".format(
                         pid, ev.get("quote", "")[:60]))
-            elif corpus_dir and docs[ev["doc"]].get("path"):
-                import os
-                path = os.path.join(corpus_dir, docs[ev["doc"]]["path"])
-                try:
-                    with open(path, encoding="utf-8") as fh:
-                        source = normalize_ws(fh.read())
-                except OSError:
-                    w("pattern {}: cannot open {} to verify quote".format(pid, path))
-                    continue
+            elif reader and docs[ev["doc"]].get("path"):
+                body = reader.text(docs[ev["doc"]])
+                if body is None:
+                    continue  # already reported once, against the document
+                source = normalize_ws(body)
                 quote = normalize_ws(ev.get("quote", ""))
                 if quote not in source:
                     near = nearest_quote(source, quote)
@@ -376,7 +524,7 @@ def validate(db: Dict[str, Any], corpus_dir: Optional[str] = None) -> Tuple[List
             e("pattern {}: tier must be 1, 2, or 3 (run `validate --fix` to compute it)".format(pid))
         elif docs and all(entry.get("id") in docs for entry in entries):
             snapshot = dict(p)
-            computed, _ = compute_tier(snapshot, docs)
+            computed, _ = compute_tier(snapshot, docs, weights)
             if computed != p["tier"]:
                 w("pattern {}: stored tier {} but computed tier {} (run `validate --fix`)".format(
                     pid, p["tier"], computed))
@@ -439,6 +587,16 @@ def merge(dbs: List[Dict[str, Any]], partial: bool = False) -> Dict[str, Any]:
     sealed = [d.get("corpus", {}).get("sealed") for d in dbs]
     if all(sealed):  # a mixed merge keeps the paths it has and stays unsealed
         out["corpus"]["sealed"] = max(str(x) for x in sealed)
+    weights: Dict[str, Any] = {}
+    for d in dbs:
+        for register, share in (d.get("corpus", {}).get("register_weights") or {}).items():
+            if register in weights and weights[register] != share:
+                raise ValueError("register {} has conflicting weights {} vs {}: a weighting "
+                                 "is one decision about the whole corpus".format(
+                                     register, weights[register], share))
+            weights[register] = share
+    if weights:
+        out["corpus"]["register_weights"] = weights
 
     patterns: Dict[str, Dict[str, Any]] = {}
     for d in dbs:
@@ -545,6 +703,11 @@ def render(db: Dict[str, Any], setting: str = "hard", dimension: Optional[str] =
         len(corpus.get("documents", [])), corpus.get("total_words", "?"),
         db.get("review", {}).get("status", "?"),
         "; sealed {}".format(corpus["sealed"]) if corpus.get("sealed") else ""))
+    weights = corpus.get("register_weights")
+    if weights:
+        lines.append("Rates are register-weighted ({}): every rate below is a "
+                     "share-weighted mean across registers, not a word-weighted one.".format(
+                         ", ".join("{} {:g}".format(r, weights[r]) for r in sorted(weights))))
     lines.append("Setting: {} (tiers <= {}).".format(setting, max_tier))
     lines.append("")
     by_dim: Dict[str, List[Dict[str, Any]]] = {}
@@ -601,6 +764,7 @@ def cmd_info(args: argparse.Namespace) -> int:
         "documents": len(corpus.get("documents", [])),
         "sealed": corpus.get("sealed"),
         "total_words": corpus.get("total_words"),
+        "register_weights": corpus.get("register_weights"),
         "patterns": len(db.get("patterns", [])),
         "tier_counts": tiers,
         "review_status": db.get("review", {}).get("status"),
@@ -685,9 +849,10 @@ def cmd_render(args: argparse.Namespace) -> int:
 def cmd_tiers(args: argparse.Namespace) -> int:
     db = load(args.db)
     docs = doc_index(db)
+    weights = register_weights(db)
     for p in db.get("patterns", []):
         snapshot = dict(p)
-        computed, why = compute_tier(snapshot, docs)
+        computed, why = compute_tier(snapshot, docs, weights)
         print("{}\tcomputed={}\teffective={}\t{}".format(p["id"], computed, effective_tier(p), why))
     return 0
 
