@@ -1,3 +1,5 @@
+import json
+
 import structure_check as sc
 
 ORIGINAL = """# Title
@@ -94,3 +96,24 @@ def test_cli_exit_code(tmp_path, capsys):
     assert sc.main([str(a), str(b)]) == 1
     assert "ERROR" in capsys.readouterr().out
     assert sc.main([str(a), str(a), "--json"]) == 0
+
+
+def test_an_error_is_reported_as_a_gate_not_as_advice(tmp_path, capsys):
+    original = tmp_path / "a.md"
+    original.write_text("# T\n\n- one\n- two\n- three\n", encoding="utf-8")
+    dissolved = tmp_path / "b.md"
+    dissolved.write_text("# T\n\nThree things: one, two and three.\n", encoding="utf-8")
+    assert sc.main([str(original), str(dissolved)]) == 1
+    out = capsys.readouterr().out
+    assert "NOT DELIVERABLE" in out
+    assert "no profile pattern licenses a structural change" in out
+
+    assert sc.main([str(original), str(original)]) == 0
+    assert "NOT DELIVERABLE" not in capsys.readouterr().out
+
+
+def test_json_output_carries_the_gate_verdict(tmp_path, capsys):
+    original = tmp_path / "a.md"
+    original.write_text("# T\n\n- one\n- two\n", encoding="utf-8")
+    assert sc.main([str(original), str(original), "--json"]) == 0
+    assert json.loads(capsys.readouterr().out)["deliverable"] is True

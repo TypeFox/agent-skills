@@ -47,7 +47,27 @@ Bump the version when an old DB would be read incorrectly by the new skill: a re
 | `corpus.documents[].sole_authored`, `vetting` | intake facts: sole-authored flag; vetting outcome `confirmed`, `certified` (recent, author certified as hand-written), or `dropped` |
 | `corpus.documents[].generator` | for `kind: ai`: the model or agent product that produced the document, as the maintainer note in technique.md requires; `validate` warns when an AI corpus document lacks it |
 | `corpus.sealed` | date the DB was sealed, meaning every `path` has been dropped on purpose; absent while the DB still carries paths |
+| `corpus.register_weights` | optional: register → the share of every pooled rate that register carries, when the author asked for the corpus to be balanced by register instead of by words. Absent means pooled by words. See [Register weighting](#register-weighting) |
 | `review.status` | `pending` until the author has walked through the rendered profile, then `reviewed` |
+
+## Register weighting
+
+A corpus is rarely balanced: a thesis, a year of blog posts and a handful of emails put wildly different word counts behind each register, and because rates are corpus-normalized the biggest source defines the profile. `corpus.register_weights` is the answer to "weight my registers equally" (or "count the dissertation for a quarter"):
+
+```json
+"register_weights": {"article": 1, "email": 1, "docs": 1}
+```
+
+The numbers are **shares, not multipliers**. Each register's rate is the word-weighted mean of its own documents, and the corpus rate is those per-register rates averaged by share — so equal shares make 400 words of email count as much as 40,000 words of thesis, and shares proportional to the registers' word counts reproduce exactly the unweighted number. Every register the corpus carries must be named: `validate` reports an omission as an error, because an unnamed register falls back to share 1 and a partial weighting is a silent one.
+
+**A weighting moves `rate` and nothing else.** `spread`, `range`, `coverage`, `registers` and every tier rule count documents, and they stay unweighted on purpose: a weight says how much a register should define the author's *target rate*, never how well a habit is *evidenced*. Two consequences worth knowing before setting one:
+
+- it cannot promote anything. A thin register stays thin evidence, so weighting is not a way to talk a two-document habit into tier 1;
+- processing converges on `range`, the measured per-document band, which a weighting does not move. It shifts where inside that band a rewrite aims, not how wide the band is.
+
+For a pattern with a `register_scope` the weighting is a no-op — inside one register every document already carries the same share.
+
+It is one decision about the whole corpus, so it belongs on the finished DB rather than on the parts: `merge` unions the weightings of its inputs and refuses a register with conflicting shares, and `validate` warns when a `partial` DB carries one. `styledb.py info` prints it, and `render` says on its corpus line that the rates below are weighted — a reader who does not know that would take them for word-pooled numbers.
 
 ## Pattern entries
 
@@ -81,12 +101,12 @@ Bump the version when an old DB would be read incorrectly by the new skill: a re
 | `measurement` | `counted` when a regex or stat produced the numbers; `judged` when reading produced them and the counts are estimates. Counted beats judged in tiering because judged rates drift |
 | `regex` / `stat` / `ignore_case` | the counter: a regex, or in `stat` the name of a statistic or built-in counter from `textstats.py counters` — `validate` rejects unknown names and a built-in counter with a unit other than `per_1k_words`, and warns when a counted pattern has neither. `measure --db` evaluates it on any input, so DB rates and input rates use the same definition. Absent for judged patterns |
 | `unit` | `per_1k_words` (default), `share_of_sentences`, `share_of_paragraphs`, `share_of_headings`, `words` (for length stats), `count` |
-| `documents[]` | per-document evidence: `count` (and `rate` for non-per-1k units). One entry per document *measured*; a document with no entry was not measured for this pattern, which lowers coverage. For a judged pattern an entry with `count: 0` asserts that the document was read in full for this habit and shows none of it — a document not read for it gets no entry |
-| `evidence[]` | verbatim quotes with their document id. Required for presence patterns; `validate --corpus-dir` checks each quote appears in its source. An entry with `"redacted": true` had confidential content replaced by a bracketed placeholder (`[colleague]`, `[company]`, `[product]`) under rule 5 of technique.md; the validator skips the verbatim check for it and warns if no placeholder is present. Absence patterns carry none — their evidence is the zero counts |
+| `documents[]` | per-document evidence: `count` (and `rate` for non-per-1k units). These are measurements, not estimates: for a `counted` pattern `validate --corpus-dir` re-runs the counter over each document and reports an entry the corpus does not reproduce, because everything derived — `rate`, `range`, `spread`, and through them the tier — is computed from these numbers. One entry per document *measured*; a document with no entry was not measured for this pattern, which lowers coverage. For a judged pattern an entry with `count: 0` asserts that the document was read in full for this habit and shows none of it — a document not read for it gets no entry |
+| `evidence[]` | verbatim quotes with their document id. Required for presence patterns; `validate --corpus-dir` checks each quote appears in its source; a source that `--corpus-dir` does not reach is an error rather than a warning, since a run that verified nothing must not look like a run that verified everything. An entry with `"redacted": true` had confidential content replaced by a bracketed placeholder (`[colleague]`, `[company]`, `[product]`) under rule 5 of technique.md; the validator skips the verbatim check for it and warns if no placeholder is present. Absence patterns carry none — their evidence is the zero counts |
 | `instead` | for absence patterns: ids of the constructions the author uses where the absent one would appear. The rewrite rule takes its replacement from these, never from invention |
 | `displaces` | for presence patterns: the word forms the author does *not* use in the slot this pattern fills (`["for example", "e.g."]` under a *for instance* pattern). The mirror of `instead`, and what makes a rewrite a substitution the DB can point at instead of a family processing has to rediscover by reading a corpus it no longer has |
 | `register_scope` | optional list of registers a pattern is confined to (an email sign-off, the meta-signposts of a talk abstract). The derived fields and the tier are computed over the corpus documents of those registers only, and the tier-1 register condition is waived — otherwise a habit near-obligatory in one register never leaves tier 3, because spread is corpus-wide. Processing treats such a pattern as a target only for an input in one of those registers |
-| `rate`, `spread`, `range`, `coverage`, `registers` | derived over the corpus documents (or the `register_scope` ones); recomputed by `validate --fix` and by `merge`. `rate` is corpus-normalized (total count / total measured words × 1000 for per-1k units, word-weighted mean otherwise); `spread` is the share of measured documents where the pattern occurs (for absences: where it is absent); `range` is the min–max per-document rate and is the convergence target band in processing; `coverage` is measured documents / corpus documents |
+| `rate`, `spread`, `range`, `coverage`, `registers` | derived over the corpus documents (or the `register_scope` ones); recomputed by `validate --fix` and by `merge`. `rate` is corpus-normalized (total count / total measured words × 1000 for per-1k units, word-weighted mean otherwise; the register-weighted mean instead when the manifest carries `corpus.register_weights`); `spread` is the share of measured documents where the pattern occurs (for absences: where it is absent); `range` is the min–max per-document rate and is the convergence target band in processing; `coverage` is measured documents / corpus documents |
 | `tier`, `tier_reason` | derived evidence tier, see below |
 | `tier_override` | set by the review round; wins over `tier` |
 | `review` | verdict from the review round: `confirmed`, `overstated`, `nuanced` (with the restriction in `note`), or absent if not reviewed |
@@ -118,7 +138,7 @@ Why tiers work as the strictness dial: a low-evidence pattern is exactly the one
 
 `styledb.py merge A.json B.json … -o OUT.json` produces one DB from several partial ones (same `db_version`, same `kind`):
 
-- corpus documents are unioned by id; the same id with different word counts is an error (the parts measured different files under one name);
+- corpus documents are unioned by id; the same id with different word counts is an error (the parts measured different files under one name); `register_weights` are unioned too, and a register the parts weight differently is an error — a weighting is one decision about the whole corpus;
 - patterns are unioned by id; `documents[]` entries are unioned by document id (conflicting counts for one document are an error — two parts measured the same document differently, which means their counters differ), `evidence[]` is unioned with duplicates dropped, `registers` recomputed, `measurement` becomes `judged` if any part judged, `instead` and `displaces` unioned, notes concatenated, the first non-null `tier_override` kept, differing regexes, stat names, or `register_scope`s reported in `note` and the first kept;
 - derived fields and tiers are recomputed from the merged per-document data;
 - the result is `partial: false` unless `--partial` is given, and `review.status` is `pending` — a merge always precedes the review round, never replaces it.
@@ -133,7 +153,7 @@ Because tiers depend on coverage, a two-phase parallel extraction (discover cand
 
 What sealing keeps, and why none of it is a dependency on the corpus:
 
-- `id`, `words`, `register` are the keys and denominators of every derived number. `rate`, `spread`, `range`, `coverage`, `registers`, and every tier are computed from `patterns[].documents[]` against them, so dropping them would leave `validate --fix` unable to recompute and turn the numbers into assertions nobody can check.
+- `id`, `words`, `register` are the keys and denominators of every derived number — `register` also keys `corpus.register_weights`, which survives sealing for the same reason. `rate`, `spread`, `range`, `coverage`, `registers`, and every tier are computed from `patterns[].documents[]` against them, so dropping them would leave `validate --fix` unable to recompute and turn the numbers into assertions nobody can check.
 - `date`, `sole_authored`, `vetting` (and `generator` in an AI DB) are the record that intake vetting happened — some thirty bytes per document, and the only evidence in the DB that the corpus was the author's own hand.
 
 The cost is verification. On a sealed DB `validate --corpus-dir` can check no quote; it now warns instead of passing silently, so a clean run never means "verified" when nothing was verifiable. Seal after the review round for that reason: `seal` refuses a DB whose `review.status` is still `pending`, and refuses a partial DB, because merging is where document entries from the other parts still arrive. Re-extraction stays possible after sealing, but the author has to name the documents again (see [migration.md](migration.md)).

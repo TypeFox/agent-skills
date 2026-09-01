@@ -48,7 +48,7 @@ The output has two parts: the built-in stats and counters, and every measurable 
 | `low` / `high` | inside the range but under half or over twice the author's rate — a habit the author has, just not in every document |
 | `too-short` | the input is too small for this rate to predict even one occurrence, so no count in it is evidence either way (see Short inputs, Step 2) |
 
-Judged patterns (no regex or stat) do not appear there; read the input for them with the pattern descriptions in hand and note your estimate.
+Judged patterns (no regex or stat) get no verdict, but they are not missing: `measure` lists them under **read for these** at the end of each DB's block, with tier and description. Read the input for every name on that list and note your estimate. That list is the checklist Step 2 and the report answer to — a judged pattern is never dropped for being absent from the table.
 
 ## Step 2 — Three-way comparison table
 
@@ -69,7 +69,7 @@ Rows are patterns (and any built-in AI counter with a striking value), columns a
 Three things the counters cannot see, and the table is not built until they are in it:
 
 - **The AI-evidence column**, which splits every remove row by confidence. *High*: the construction is AI-typical — an AI DB row, a built-in `ai_*` counter, or the author's own absence pattern (rate 0, and any occurrence of one is high-confidence by rule). *Low*: no AI evidence, so the excess could be a generator quirk outside the AI corpus or an effect of the topic — rewrite it only when the author pattern is tier 1 (tier 2 in the hard setting), otherwise flag it for the manual pass. `[manual]` marks the setting's own ceiling; this stricter one is yours to apply.
-- **Judged patterns**, which carry no regex or stat and so never appear in the script's table at all: place them by reading, with the estimate from Step 1 and the same five classes.
+- **Judged patterns**, which carry no regex or stat and so get no row in the script's table — only a name on its *read for these* list: place each of them by reading, with the estimate from Step 1 and the same five classes.
 - **An example per row**, from the input and from the pattern's evidence quotes. Step 3 writes rules against examples; numbers alone produce rules that match the wrong thing.
 
 Remove rows and add rows together are the *rewrite rows*: the ones that earn a rule in Step 3 and have to converge in Step 6.
@@ -78,13 +78,15 @@ Remove rows and add rows together are the *rewrite rows*: the ones that earn a r
 
 **Short inputs.** Rates quantize: in a document of N words one occurrence is worth 1000/N, so a habit the author's rate predicts less than once here is no target in either direction — `measure` marks those rows `too-short`, and they are neither rewritten nor converged. In a 64-word note that is most of a profile: an author's 3.2-per-1k *So* predicts 0.2 occurrences, and putting one in would land the note at 15.6, five times their rate — the corner of the region, reached by following the procedure. What still applies at any length is every absence pattern, because zero is expressible in one line; the judged and discourse patterns, which are read rather than counted; and the few habits frequent enough to show up in a paragraph — first person, contractions. Rows the profile measures per document rather than per 1k words (list and heading densities) describe documents, and a note is not one: leave them.
 
-The strictness setting arrives applied: `[manual]` marks every row with an action — remove, add, and lean alike — whose effective tier (the review round's override, else the derived one) is above the ceiling, soft 1 / medium 2 / hard 3. Those rows go in the report as "left for the manual pass", so the author sees what a harder setting would have touched. Do-not-touch and neutral rows never carry the mark; the setting has nothing to gate where no edit was going to happen anyway. What is left for you is the tone brief: it picks the target inside each row's range, and may add do-not-touch rows to the work (rule 4 above).
+The strictness setting arrives applied: `[manual]` marks every row with an action — remove, add, and lean alike — whose effective tier (the review round's override, else the derived one) is above the ceiling, soft 1 / medium 2 / hard 3. Those rows go in the report as "left for the manual pass", so the author sees what a harder setting would have touched. Do-not-touch and neutral rows never carry the mark; the setting has nothing to gate where no edit was going to happen anyway. The ceiling is the whole of what the setting does — every row below it is worked to its target in both directions, and the only thing that stops one short is the absence of a slot (Step 3). What is left for you is the tone brief: it picks the target inside each row's range, and may add do-not-touch rows to the work (rule 4 above).
 
 ## Step 3 — Rule derivation
 
 One mechanical rule per rewrite row: *what to find, what to replace it with, how many to leave*. On an add row the three parts point the other way — what to find is the family member the author does not use (their `displaces` list) or the slot another rewrite opened, what to put there is the author's form, and the number is how many to reach rather than how many to leave.
 
-The replacement construction comes from author-DB evidence — the pattern's own quotes, its `displaces` list, or the `instead` references of an absence pattern — never from invention. If the DB offers no replacement (an absence pattern without `instead`, an evidence list that shows the habit but not a substitute), the rule is "remove where the sentence survives removal, otherwise flag", not "make something up". Where the profile attests two forms and the rule has to pick one, the tone brief breaks the tie; with no brief, take the more frequent form and note the choice.
+The replacement construction comes from author-DB evidence — the pattern's own quotes, its `displaces` list, or the `instead` references of an absence pattern — never from invention. What a quote supplies is the *form*, never the words: transplanting a clause or a sentence out of the corpus imports the claim it made in its own document, which is a new claim under Step 4 and stays one when the corpus document happens to share the input's subject. If the DB offers no replacement (an absence pattern without `instead`, an evidence list that shows the habit but not a substitute), the rule is "remove where the sentence survives removal, otherwise flag", not "make something up". Where the profile attests two forms and the rule has to pick one, the tone brief breaks the tie; with no brief, take the more frequent form and note the choice.
+
+**Where substitution ends and manufacture begins.** Manufacture is new *content*: a claim, a number, an incident, an example, an opinion the input did not carry. Everything short of that is substitution — re-punctuating a clause into a parenthetical aside, contracting a verb, splitting or joining sentences, swapping a connective for one the pattern's `instead` or `displaces` names, moving where a sentence puts its weight. A substitution lands in a slot the input already offers or in one a removal has just opened (the `So` that takes the vacated `However`'s place is a substitution; the same `So` opening a sentence that had no connective is not). The strictness setting does not move this line: it decides which rows are eligible, not how hard an eligible row is worked, so a soft pass works its tier-1 add rows with every slot the input gives it and reports the shortfall only when the slots run out. A light touch is a shorter list of rows, never a lighter hand on each.
 
 Because rules come only from the DB, non-native grammar errors can never enter a rewrite: extraction keeps them out of the DB by design ([german-l1-guidance.md](german-l1-guidance.md)), so there is nothing to apply — and a request to write "with all my quirks" cannot widen that, since processing has no source for such forms. Where the input itself contains one, leave it (fixing grammar is outside this skill's scope) and note it in the report.
 
@@ -97,6 +99,13 @@ Always: facts, numbers, links, citations, quoted material, code, tables, section
 Subject vocabulary is content, not voice (rule 6 in [technique.md](technique.md)), so it is an invariant too: technical terms, product, library, and tool names, people's names, and code identifiers stay exactly as the input has them — not synonymized, not expanded, not abbreviated, not re-cased. The author's profile may say *how* such material is presented (`code-reference`: backticks vs. prose; `abbreviation`: "PRs" vs. "pull requests") and a rule may move an identifier into backticks or spell out an initialism the author never abbreviates; it never replaces the term itself. `structure_check.py` checks inline code spans mechanically (an identifier that vanished from its backticks is an error); names and terms in plain prose are checked by reading the diff. No rewrite row ever targets a term: a `favourite-word` or `author-specific` pattern whose word turns out to be a term of the input's subject is a topic effect — skip it and say so in the report.
 
 Paragraphs: keep the paragraph count of every section where possible. Merging or splitting a paragraph is allowed only when the author's paragraph-shape patterns demand it (a tier-1 one-sentence-paragraph habit against a wall of five-sentence paragraphs) — `structure_check.py` reports it as a warning so the report can say where and why.
+
+**Person is voice; agency is fact — and that binds in both directions.** First person is a style axis like any other, and moving a draft onto it is ordinary work: narration, opinion, evaluation and hypotheticals take the author's `I` wherever the rate asks for it. Who performed a stated action or took a stated decision is not on that axis — a team's *we stopped mocking the filesystem* stays the team's, and rewriting it to *I stopped* is a changed claim wearing a style change's clothes, however far the first-person row still sits from the author's rate. Nothing outside the input settles who acted, either: a corpus document covering the same episode is evidence about the author's forms, never about this draft's facts, so it cannot be cited to reassign an action.
+
+The two failure modes are symmetric and both are capped:
+
+- **Buying the rate with the facts.** The rewrite leaves the group at least as many stated actions as the input gave it. A conversion that ends with the first-plural row inside the author's range and the team gone from the body has moved a fact, and saying so in the report does not turn it back into a style edit.
+- **Spending the licence on the whole row.** "Every action here belongs to the team" is a reason for the *remainder* of the row, never for skipping it. Every narration, opinion, evaluation and hypothetical still converts; what is left over is then named as a row left short, with the count it reached against the count the range asked for (Step 6). A run that ends with the first-singular row still `absent`, or the first-plural row still above the author's range maximum, has not worked the row — it has declined it, and the report says so in those words.
 
 Input-specific invariants: ask once, up front, which earlier manual decisions must survive — kept phrasings, a table, a closing sentence. In an iterating workflow this is what prevents the rewrite from undoing the author's previous polish. If the user is not available, treat any passage that already reads like the author (verdict `match` at the sentence level) as protected.
 
@@ -113,9 +122,11 @@ python3 scripts/textstats.py measure INPUT.md REWRITTEN.md --db USER_DB.json --s
 python3 scripts/structure_check.py INPUT.md REWRITTEN.md
 ```
 
-Class and gap stay pinned to the first file, so every row keeps the identity it had in Step 2 while the rewritten column moves — a remove row that now reads `match` is done, not reclassified.
+Class and gap stay pinned to the first file, so every row keeps the identity it had in Step 2 while the rewritten column moves — a remove row that now reads `match` is done, not reclassified. One caveat on `match`: it says the row's *counter* is at the author's rate, not that the habit is satisfied. Where the counter enumerates forms — a spelling list, a phrase list — it sees only the members it names, so before calling such a row done, read for the ones it does not (the `-ize` the spelling regex never listed). `measure` marks those rows `[enum]`.
 
-Drive targeted edits from the deltas — each a uniqueness-asserted replacement of one passage — until the remove rows read `match`, no add row still reads `absent`, and the structure check reports no errors. Rows reading `too-short` are not convergence targets — the input cannot express them, and forcing one lands past the author's own rate. An add row that comes to rest inside the range but `low` is converged when the input simply offered no more slots; say which rows those were. Where a tone brief is in force the targets are the shifted ones, not the corpus rates — chasing the rate here is how a convergence pass undoes the tone. Check overlong sentences against the author's `long-tail` share, and the word-count change (turning fragments into sentences or the reverse shifts it) against reason. Stop when the remaining gaps are all in rows you deliberately left, or when a further edit would need invented material. Two or three rounds are normal; more than five means a rule is wrong — revisit Step 3 rather than pushing harder.
+Drive targeted edits from the deltas — each a uniqueness-asserted replacement of one passage — until no rewrite row still reads `absent` or `gap` (every remove row back to `match`, every add row inside the range), and the structure check reports no errors. Rows reading `too-short` are not convergence targets — the input cannot express them, and forcing one lands past the author's own rate. An add row that comes to rest inside the range but `low` is converged when the input simply offered no more slots; say which rows those were. Where a tone brief is in force the targets are the shifted ones, not the corpus rates — chasing the rate here is how a convergence pass undoes the tone. Check overlong sentences against the author's `long-tail` share, and the word-count change (turning fragments into sentences or the reverse shifts it) against reason. Stop when the remaining gaps are all in rows you deliberately left, or when a further edit would need invented material — and name those rows in the report, each with the reason it stopped there. A row still outside the author's range is not a converged row, so no report calls a run converged while one stands unnamed. That is the soft setting's own failure mode: a light touch legitimately leaves the tier-2 rows alone and legitimately says so, while the tier-1 rows it was allowed to move still have to move or be named. Two or three rounds are normal; more than five means a rule is wrong — revisit Step 3 rather than pushing harder.
+
+**The structure check is a gate, not advice.** A non-zero exit means the rewrite changed the document rather than its voice: it is not deliverable, the fix is always to the rewrite, and no note in the report substitutes for one. No profile row licenses a structural change — `measure` marks the rows this is about `[structural]`, the `lists` and `headings` dimensions, which record what the author writes where the shape was theirs to choose and say nothing about the shape an input already has. Where such a row and the structure disagree, the row is inapplicable to this input and goes to the report as such, next to the register-scoped rows. Warnings are the other case and do ship: a paragraph split or merge that the author's own shape patterns justify, with the report saying where and why.
 
 ## Step 7 — Verification and handover
 
@@ -130,15 +141,18 @@ medium setting, no tone brief; dropped the em dash and "it's worth noting", kept
 
 A twelve-row before/after table under a rewritten chat message is noise, and noise is what stops an author reading the handover at all. Nothing is hidden by it: everything the full report would have said — the dropped rows, the `too-short` rows, the judgment calls — is still there to give when asked.
 
+Every figure in the report is this run's own measurement of the file actually delivered — the `measure` after the last edit, not a number from an earlier convergence round and not one counted by eye. `textstats.py measure INPUT REWRITTEN --db USER_DB.json --db data/ai-style-patterns.json --setting SETTING --report-table` prints the measured sections — the before/after table with its AI-evidence column, the do-not-touch list, the manual-pass list, and the judged patterns as a checklist — as markdown to paste. What it cannot know stays yours to write: the not-converged rows and their reasons, the side effects, the open questions, and the example per row.
+
 The full report, for anything longer:
 
 ```
 # write-like-me report — <document name>
 
 Setting: <soft|medium|hard>; tone: <brief in one line, or "none — profile rates">; profile: <path>, db_version <n>, review <status>.
+<only when the profile carries corpus.register_weights: "Author rates are register-weighted (<shares>): balanced across the corpus's registers rather than pooled by its word counts. The ranges are not — they are the measured per-document band.">
 
 ## Before / after
-| pattern | direction | tier | input | rewritten | author rate (range) | verdict |
+| pattern | direction | tier | AI evidence | input | rewritten | author rate (range) | verdict |
 ...
 
 ## Do-not-touch (input already matched the author)
@@ -147,6 +161,9 @@ Setting: <soft|medium|hard>; tone: <brief in one line, or "none — profile rate
 
 ## Left for the manual pass
 - <pattern>: <why — tier above setting / low confidence / would have needed manufacture / no replacement in the DB>
+
+## Not converged (rewrite rows that came to rest outside the range)
+- <pattern>: <rewritten value vs. the range> — <no slot / would have needed manufacture / held back by an invariant>
 
 ## Side effects
 - word count <n> → <m> (<why>)
@@ -159,6 +176,10 @@ Setting: <soft|medium|hard>; tone: <brief in one line, or "none — profile rate
 ```
 
 Direction is `add` (a habit of the author's that the input lacked), `remove` (something the input carried that the author does not, or not at that rate), or `keep` (a row moved only for tone) — the column exists so the author can see at a glance that the rewrite did more than subtract.
+
+AI evidence is the confidence behind a remove row, from Step 2: `high` where the AI DB, a built-in `ai_*` counter, or one of the author's own absence patterns backs it, `low` where nothing machine-side does, `—` on every row that is not a removal. It is a column of the table and not a sentence underneath it, because a removal without it is a removal resting on intuition.
+
+Every judged pattern in the profile appears somewhere above — a row of the table, the do-not-touch list, the manual-pass list, or the not-converged list. They carry no counter, so nothing else would notice their absence.
 
 Say honestly what did not converge, in one line or in twenty.
 

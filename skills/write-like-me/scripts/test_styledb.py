@@ -239,6 +239,114 @@ def test_register_scope_derives_the_tier_inside_the_register():
     assert any("no corpus document has" in w for w in styledb.validate(db)[1])
 
 
+# --- register weighting -------------------------------------------------------
+
+LOPSIDED = [
+    {"id": "a1", "path": "a1.md", "words": 4000, "register": "article"},
+    {"id": "e1", "path": "e1.md", "words": 500, "register": "email"},
+]
+
+
+def weighted(db, weights):
+    db["corpus"]["register_weights"] = weights
+    styledb.recompute(db)
+    return db["patterns"][0]
+
+
+def test_equal_register_shares_give_a_small_register_the_same_pull_as_a_large_one():
+    # 4,000 words of articles next to 500 words of email: pooled by words the articles
+    # define the rate, which is what makes an unbalanced corpus a profile of its biggest
+    # register. Equal shares are the answer to "weight my registers equally".
+    counts = {"a1": 4, "e1": 5}  # 1.0 per 1k in articles, 10.0 in email
+    plain = make_db([pattern("punctuation/colon", counts)], docs=LOPSIDED)
+    styledb.recompute(plain)
+    assert plain["patterns"][0]["rate"] == 2.0
+
+    p = weighted(make_db([pattern("punctuation/colon", counts)], docs=LOPSIDED),
+                 {"article": 1, "email": 1})
+    assert p["rate"] == 5.5
+
+
+def test_shares_proportional_to_words_reproduce_the_unweighted_rate():
+    p = weighted(make_db([pattern("punctuation/colon", {"a1": 4, "e1": 5})], docs=LOPSIDED),
+                 {"article": 4000, "email": 500})
+    assert p["rate"] == 2.0
+
+
+def test_weighting_moves_the_rate_and_leaves_the_evidence_alone():
+    # A weight says how much a register should define the target rate, never how well the
+    # habit is evidenced: spread, range, coverage and the tier count documents either way.
+    counts = {"d1": 4, "d2": 1, "d3": 2, "d4": 2, "d5": 2}
+    plain = make_db([pattern("punctuation/colon", counts)])
+    styledb.recompute(plain)
+    before = plain["patterns"][0]
+    assert (before["rate"], before["tier"]) == (2.2, 1)
+
+    after = weighted(make_db([pattern("punctuation/colon", counts)]),
+                     {"article": 1, "email": 1, "docs": 1})
+    assert after["rate"] == 2.167
+    assert after["tier"] == 1
+    for field in ("spread", "range", "coverage", "registers"):
+        assert after[field] == before[field]
+
+
+def test_weighting_is_a_no_op_inside_a_register_scoped_pattern():
+    docs = [{"id": "e1", "path": "e1.md", "words": 500, "register": "email"},
+            {"id": "e2", "path": "e2.md", "words": 1500, "register": "email"},
+            {"id": "a1", "path": "a1.md", "words": 4000, "register": "article"}]
+    scoped = pattern("opener-closer/sign-off", {"e1": 5, "e2": 3}, register_scope=["email"])
+    p = weighted(make_db([scoped], docs=docs), {"article": 1, "email": 1})
+    assert p["rate"] == 4.0  # the word-weighted mean of the two email documents
+
+
+def test_validate_requires_the_weighting_to_name_every_register():
+    db = make_db([pattern("punctuation/colon", {"d1": 4, "d2": 1, "d3": 2, "d4": 2, "d5": 2})])
+    db["corpus"]["register_weights"] = {"article": 1, "email": 1}
+    errors, _ = styledb.validate(db)
+    assert [e for e in errors if "does not name register 'docs'" in e]
+
+
+def test_validate_checks_the_shares_and_flags_a_register_no_document_carries():
+    db = make_db([pattern("punctuation/colon", {"d1": 4, "d2": 1, "d3": 2, "d4": 2, "d5": 2})])
+    db["corpus"]["register_weights"] = {"article": 1, "email": 0, "docs": 1, "thesis": 2}
+    errors, warnings = styledb.validate(db)
+    assert [e for e in errors if "register_weights['email'] must be a positive number" in e]
+    assert [w for w in warnings if "names register 'thesis'" in w]
+    db["corpus"]["register_weights"] = []
+    assert [e for e in styledb.validate(db)[0] if "must be a non-empty object" in e]
+
+
+def test_a_partial_db_is_told_to_leave_the_weighting_to_the_merge():
+    db = make_db([pattern("punctuation/colon", {"d1": 4, "d2": 1, "d3": 2, "d4": 2, "d5": 2})],
+                 partial=True)
+    db["corpus"]["register_weights"] = {"article": 1, "email": 1, "docs": 1}
+    assert [w for w in styledb.validate(db)[1] if "whole-corpus decision" in w]
+
+
+def test_merge_unions_the_weighting_and_refuses_a_conflict():
+    a = make_db([pattern("punctuation/colon", {"d1": 4})], docs=DOCS[:1])
+    a["corpus"]["register_weights"] = {"article": 1}
+    b = make_db([pattern("punctuation/colon", {"d3": 2})], docs=DOCS[2:3])
+    b["corpus"]["register_weights"] = {"email": 1}
+    assert styledb.merge([a, b])["corpus"]["register_weights"] == {"article": 1, "email": 1}
+
+    b["corpus"]["register_weights"] = {"article": 3}
+    with pytest.raises(ValueError, match="conflicting weights"):
+        styledb.merge([a, b])
+
+
+def test_render_and_info_say_that_the_rates_are_weighted(tmp_path, capsys):
+    db = make_db([pattern("punctuation/colon", {"d1": 4, "d2": 1, "d3": 2, "d4": 2, "d5": 2})])
+    db["corpus"]["register_weights"] = {"article": 1, "email": 1, "docs": 1}
+    styledb.recompute(db)
+    assert "register-weighted (article 1, docs 1, email 1)" in styledb.render(db)
+
+    path = tmp_path / "db.json"
+    path.write_text(json.dumps(db), encoding="utf-8")
+    assert styledb.main(["info", str(path)]) == 0
+    assert "register_weights: {'article': 1, 'email': 1, 'docs': 1}" in capsys.readouterr().out
+
+
 def test_validate_warns_when_an_ai_corpus_document_names_no_generator():
     db = make_db([pattern("punctuation/colon", {"d1": 4})], docs=DOCS[:2], kind="ai")
     db["corpus"]["documents"][0]["generator"] = "GPT-5"
@@ -409,3 +517,46 @@ def test_dimensions_match_taxonomy():
     taxonomy = pathlib.Path(__file__).resolve().parent.parent / "references" / "taxonomy.md"
     headings = re.findall(r"^### ([a-z-]+)\s*$", taxonomy.read_text(encoding="utf-8"), re.M)
     assert headings == styledb.DIMENSIONS
+
+
+def corpus_db(tmp_path, patterns, text="So I waited: it worked (twice). So did the build.\n"):
+    (tmp_path / "d1.md").write_text(text, encoding="utf-8")
+    docs = [{"id": "d1", "path": "d1.md", "words": 10, "register": "article"}]
+    return make_db(patterns, docs=docs)
+
+
+def test_validate_recounts_counted_patterns_against_the_corpus(tmp_path):
+    # `validate` computes rate, range and tier from documents[].count. Nothing re-derived
+    # the counts themselves, so a DB of plausible invented numbers passed every check.
+    p = pattern("connectives/so-initial", {"d1": 7}, quotes=1,
+                evidence=[{"doc": "d1", "quote": "So I waited"}],
+                regex=r"(?:^|(?<=[.!?]\s))So\b")
+    errors, _ = styledb.validate(corpus_db(tmp_path, [p]), corpus_dir=str(tmp_path))
+    assert [e for e in errors if "records 7 occurrences but the counter finds 2" in e]
+
+    p["documents"][0]["count"] = 2
+    assert not styledb.validate(corpus_db(tmp_path, [p]), corpus_dir=str(tmp_path))[0]
+
+
+def test_recount_skips_what_no_counter_can_reproduce(tmp_path):
+    judged = pattern("tone-markers/self-deprecation", {"d1": 4}, measurement="judged",
+                     quotes=1, evidence=[{"doc": "d1", "quote": "So I waited"}])
+    uncounted = pattern("imagery/gambling", {"d1": 9}, quotes=1,
+                        evidence=[{"doc": "d1", "quote": "So I waited"}])
+    errors, warnings = styledb.validate(corpus_db(tmp_path, [judged, uncounted]),
+                                        corpus_dir=str(tmp_path))
+    assert not errors
+    assert [w for w in warnings if "counted without regex or stat" in w]
+
+
+def test_validate_errors_once_per_unreachable_corpus_document(tmp_path):
+    # Pointing --corpus-dir one level off used to warn per quote and still exit 0, so a DB
+    # of fabricated quotes passed exactly as cleanly as a verified one.
+    p = pattern("connectives/so-initial", {"d1": 2}, quotes=1,
+                evidence=[{"doc": "d1", "quote": "So I waited"},
+                          {"doc": "d1", "quote": "So did the build."}],
+                regex=r"(?:^|(?<=[.!?]\s))So\b")
+    db = corpus_db(tmp_path, [p])
+    errors, _ = styledb.validate(db, corpus_dir=str(tmp_path / "nowhere"))
+    assert len(errors) == 1
+    assert "cannot open" in errors[0] and "documents[].path" in errors[0]

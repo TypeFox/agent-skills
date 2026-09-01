@@ -20,7 +20,8 @@ Reports ERROR lines for hard violations (outline, block sequence, list item
 counts, code/table/quote text, URLs, numbers, inline code dropped) and WARN
 lines for soft ones (paragraph count per section, heading wording, numbers or
 inline code added). Exit 1 when
-any ERROR was found, 0 otherwise.
+any ERROR was found, 0 otherwise — and exit 1 is a gate, not advice: a rewrite
+that fails it is not deliverable, however well the report explains the change.
 
 Stdlib only, Python 3.8+.
 """
@@ -243,13 +244,18 @@ def main(argv: Optional[List[str]] = None) -> int:
         rewritten = fh.read()
     errors, warnings = compare(original, rewritten)
     if args.json:
-        print(json.dumps({"errors": errors, "warnings": warnings}, indent=2))
+        print(json.dumps({"errors": errors, "warnings": warnings,
+                          "deliverable": not errors}, indent=2))
     else:
         for msg in warnings:
             print("WARN: " + msg)
         for msg in errors:
             print("ERROR: " + msg)
         print("structure check: {} error(s), {} warning(s)".format(len(errors), len(warnings)))
+        if errors:
+            print("NOT DELIVERABLE: an error is a changed document, not a changed voice. "
+                  "Fix the rewrite and re-run — no profile pattern licenses a structural "
+                  "change, and no report note substitutes for one.")
     return 1 if errors else 0
 
 
