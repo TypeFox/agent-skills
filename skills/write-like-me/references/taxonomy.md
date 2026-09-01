@@ -1,6 +1,6 @@
 # Dimension taxonomy
 
-The taxonomy is the shared coordinate system of every style-pattern DB — the axes of the style space a profile marks its region in (SKILL.md): the author's DB and the AI corpus DB (once it ships) record patterns along the same dimensions, which is what makes them comparable row by row during processing. The dimension list is **closed** — the 22 `###` headings below, mirrored in order by `DIMENSIONS` in `scripts/styledb.py` (a unit test keeps the two in sync, and `styledb.py validate` rejects unknown dimensions). The marker list under each dimension is **open**: the tables define standard names so that DBs built by different runs stay joinable, and an extraction adds its own marker under the closest dimension whenever the corpus shows a habit no row names — its `description` defines it and evidence backs it.
+The taxonomy is the shared coordinate system of every style-pattern DB — the axes of the style space a profile marks its region in (SKILL.md): the author's DB and the AI corpus DB record patterns along the same dimensions, which is what makes them comparable row by row during processing. The dimension list is **closed** — the 22 `###` headings below, mirrored in order by `DIMENSIONS` in `scripts/styledb.py` (a unit test keeps the two in sync, and `styledb.py validate` rejects unknown dimensions). The marker list under each dimension is **open**: the tables define standard names so that DBs built by different runs stay joinable, and an extraction adds its own marker under the closest dimension whenever the corpus shows a habit no row names — its `description` defines it and evidence backs it.
 
 Vocabulary: a **pattern** is one measurable habit (dimension + marker) with its evidence; a **marker** is the concrete, observable form a habit takes; a **counter** is a mechanical measurement of a marker (a regex, or a statistic or built-in counter of `scripts/textstats.py`); a marker with no reliable counter is **judged** by reading instead.
 
@@ -255,7 +255,7 @@ Marked but correct grammatical constructions the author reaches for, shaped by a
 
 ## AI-typical dimensions
 
-Where machine prose shows most; an author DB records these mostly as absences, which is the evidence processing needs. The built-in `ai_*` counters of `textstats.py` implement the counters until the AI DB ships. Figures in the definitions — rate per 1k words and the number of documents showing the marker — are what the counter measures on the maintainers' 2026 AI corpus (19 documents, ~26k words; GPT, Claude, and Gemini output), for calibration, not as thresholds. In that corpus the 2023-era vocabulary (*delve, tapestry, "In conclusion"*) is nearly gone; the signal is syntactic and rhetorical — contrast frames, colon reveals, verdict sentences, authenticity words, label-led emphasis.
+Where machine prose shows most; an author DB records these mostly as absences, which is the evidence processing needs. The built-in `ai_*` counters of `textstats.py` implement the counters; the shipped AI DB (`data/ai-style-patterns.json`) is the authoritative record of their rates, spreads, tiers, and evidence on the maintainers' current corpus. Figures in the definitions — rate per 1k words and the number of documents showing the marker — are what the counter measured on the earlier 19-document 2026 corpus (~26k words; GPT, Claude, and Gemini output), for calibration, not as thresholds. In that corpus the 2023-era vocabulary (*delve, tapestry, "In conclusion"*) is nearly gone; the signal is syntactic and rhetorical — contrast frames, colon reveals, verdict sentences, authenticity words, label-led emphasis.
 
 ### contrast-frames
 
@@ -263,8 +263,7 @@ Defining a thing by what it is not, or by what it replaces.
 
 | marker | definition | measure |
 |---|---|---|
-| not-but | "not X, but Y" in one sentence (0.4/1k, 6 docs) | built-in `ai_not_but` |
-| not-just | "not just X — it's Y" | built-in `ai_not_just` |
+| not-but | "not X, but Y" or "not just X, but Y" in one sentence (0.4/1k, 6 docs) | built-in `ai_not_but` |
 | comma-not | sentence-final negated foil: "a tested feature, not an afterthought" (0.8/1k, 10 docs) | built-in `ai_comma_not` |
 | split-reframe | "X is not A. It is B." across two sentences (0.3/1k, 7 docs) | built-in `ai_split_reframe` |
 | rather-than | *rather than / instead of / Instead,* as the default contrast connector (2.4/1k, 16 docs) | built-in `ai_rather_than` |

@@ -7,9 +7,9 @@ zero and never at "always". Rates estimated by reading drift; this script makes
 them reproducible so that measuring, rewriting, and re-measuring use the same
 definitions. It carries a built-in set of generic counters (punctuation,
 sentence and paragraph shape, person, contractions, emphasis, lexical habits,
-and a stopgap set of AI-typical constructions), and it can evaluate the `regex` and `stat`
-fields of style-DB patterns so DB rates and input rates are computed the same
-way.
+and the AI-typical constructions of references/taxonomy.md), and it can
+evaluate the `regex` and `stat` fields of style-DB patterns so DB rates and
+input rates are computed the same way.
 
 Usage
   textstats.py measure FILE... [--db DB...] [--sort-gap] [--setting S] [--json]
@@ -24,7 +24,10 @@ Usage
       falls outside the per-document range (widened by a small tolerance); `low`
       or `high` when it is inside the range but under half or over twice the
       corpus rate (the author does this, just not in every document); `match`
-      otherwise.
+      otherwise. A DB of kind `ai` (the skill's data/ai-style-patterns.json)
+      is measured the same way, but its rates are the machine's: `match` there
+      means machine-typical, so its rows carry no class or gap — they are the
+      AI-evidence column of the comparison table, not rewrite rows.
       --sort-gap and --setting add the two columns the processing comparison
       table is built from (references/processing.md, Step 2): each row's
       `class` — what a rewrite would do with it — and its `gap`, how big that
@@ -41,11 +44,12 @@ and front matter. Headings and list items count toward words and punctuation
 rates but not toward sentence-length or paragraph statistics, because they are
 fragments by design.
 
-The built-in AI-marker counters (ai_*) are a stopgap until the skill ships its
-AI style-patterns DB; the DB replaces them with evidence-backed patterns. Their
-definitions follow references/taxonomy.md, whose AI-typical dimensions name the
-counter each marker uses; counters marked "noisy" there over-count by design
-and their hits are confirmed by reading.
+The built-in AI-marker counters (ai_*) are the executable definitions behind
+the AI DB's `stat` fields — the DB carries their corpus rates and evidence — and
+the fallback evidence when that DB is unavailable. Their definitions follow
+references/taxonomy.md, whose AI-typical dimensions name the counter each marker
+uses; counters marked "noisy" there over-count by design and their hits are
+confirmed by reading.
 
 Stdlib only, Python 3.8+.
 """
@@ -109,7 +113,6 @@ COUNTERS: Dict[str, Any] = {
     "source_as_agent": (r"\b[A-Z]\w+(?: [A-Z]\w+)? (?:reports|finds|found|notes|says|describes|stresses|argues|warns|cautions|explicitly|puts|projects|estimates|suggests|has flagged)\b", 0, "institution as agent of a reporting verb (Gartner cautions) (noisy: people too)"),
     # contrast-frames
     "ai_not_but": (r"\b(?:not|isn[’']t|aren[’']t|wasn[’']t|weren[’']t|no longer)\b[^.;!?\n]{1,80}?[,;—–-]?\s+but\b", re.I, "negative parallelism: not X, but Y"),
-    "ai_not_just": (r"\bnot (?:just|only|merely|simply)\b[^.;!?\n]{1,80}?[,;—–-]\s*(?:it[’']s|but|rather)", re.I, "not just X — it's Y"),
     "ai_comma_not": (r", not (?:an? |the |just |merely |simply |yet another )?[\w'’-]+(?:[ \w'’-]){0,60}[.;:—]", re.I, "sentence-final negated foil: a feature, not an afterthought"),
     "ai_split_reframe": (r"\b(?:is|are|was|were|does|do|did)(?:n[’']t| not)\b[^.!?\n]{3,120}[.!?]\s+(?:It|They|That|This)(?:[’']s| is| are| was| means)\b", 0, "X is not A. It is B. (negation and reframe in two sentences)"),
     "ai_rather_than": (r"\brather than\b|\binstead of\b|(?:^|(?<=[.!?]\s))Instead\b", re.I | re.M, "rather than / instead of / Instead,"),
@@ -299,6 +302,8 @@ def measure_pattern(pattern: Dict[str, Any], result: Dict[str, Any]) -> Optional
         units = doc.sentences
     elif unit == "share_of_paragraphs":
         units = doc.paragraphs
+    elif unit == "share_of_headings":
+        units = doc.headings
     else:
         return round(float(count(regex, flags | re.M, doc.prose)), 2)
     if not units:
@@ -322,6 +327,8 @@ def unit_denominator(pattern: Dict[str, Any], stats: Optional[Dict[str, Any]]) -
         return float(stats.get("sentences", 0))
     if unit == "share_of_paragraphs":
         return float(stats.get("paragraphs", 0))
+    if unit == "share_of_headings":
+        return float(stats.get("headings", 0))
     return None
 
 
@@ -446,16 +453,20 @@ def cmd_measure(args: argparse.Namespace) -> int:
         out = {}
         for path, r in results:
             rows = []
+            ai_rows = []  # machine rates: verdicts only, and keyed apart so ids can repeat
             for _, db in dbs:
                 for p in db.get("patterns", []):
                     v = measure_pattern(p, r)
                     if v is None:
                         continue
                     verd = verdict(v, p, r["stats"])
-                    cls = classify(v, p, verd)
                     row = {"value": v, "db_rate": p.get("rate"), "db_range": p.get("range"),
-                           "tier": p.get("tier"), "verdict": verd,
-                           "gap": gap_size(v, p, r["stats"], verd), "class": cls}
+                           "tier": p.get("tier"), "verdict": verd}
+                    if db.get("kind") == "ai":
+                        ai_rows.append((p["id"], row))
+                        continue
+                    cls = classify(v, p, verd)
+                    row.update({"gap": gap_size(v, p, r["stats"], verd), "class": cls})
                     if args.setting:
                         row["dropped_by_setting"] = (cls in EDITING_CLASSES
                                                      and effective_tier(p) > max_tier)
@@ -464,6 +475,8 @@ def cmd_measure(args: argparse.Namespace) -> int:
                 rows.sort(key=lambda t: -(t[1]["gap"] or 0.0))
             entry = {"stats": r["stats"], "per_1k": r["per_1k"],
                      "patterns": {pid: row for pid, row in rows}}
+            if ai_rows:
+                entry["ai_patterns"] = {pid: row for pid, row in ai_rows}
             out[path] = entry
         print(json.dumps(out, indent=2))
         return 0
@@ -476,20 +489,27 @@ def cmd_measure(args: argparse.Namespace) -> int:
     print("{:<32}".format("per 1k words") + "".join("{:>{w}}".format(n[-width:], w=width + 2) for n in names))
     for key in COUNTERS:
         print("{:<32}".format(key) + "".join("{:>{w}}".format(fmt(r["per_1k"][key]), w=width + 2) for _, r in results))
-    classified = bool(args.sort_gap or args.setting)
     for db_path, db in dbs:
+        ai = db.get("kind") == "ai"
+        classified = bool(args.sort_gap or args.setting) and not ai
         print()
-        print("DB patterns from {} (measurable ones only)".format(db_path))
+        if ai:
+            print("AI DB patterns from {} (machine rates: match = machine-typical; "
+                  "evidence, not rewrite rows)".format(db_path))
+        else:
+            print("DB patterns from {} (measurable ones only)".format(db_path))
         rows = []
         for p in db.get("patterns", []):
             values = [measure_pattern(p, r) for _, r in results]
             if all(v is None for v in values):
                 continue
             verdicts = [verdict(v, p, r["stats"]) for v, (_, r) in zip(values, results)]
-            gap = gap_size(values[0], p, results[0][1]["stats"], verdicts[0])
-            cls = classify(values[0], p, verdicts[0])
-            if args.setting and cls in EDITING_CLASSES and effective_tier(p) > max_tier:
-                cls += " [manual]"
+            gap = cls = None
+            if not ai:
+                gap = gap_size(values[0], p, results[0][1]["stats"], verdicts[0])
+                cls = classify(values[0], p, verdicts[0])
+                if args.setting and cls in EDITING_CLASSES and effective_tier(p) > max_tier:
+                    cls += " [manual]"
             rows.append((p, values, verdicts, gap, cls))
         if classified:
             note = ["class and gap for {}".format(names[0])]

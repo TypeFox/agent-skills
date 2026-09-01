@@ -192,9 +192,10 @@ def test_validate_checks_stat_names_and_units():
     typo = pattern("punctuation/semicolon", {"d1": 1}, stat="semi_colon")
     unit = pattern("punctuation/colon-elaboration", {"d1": 1}, stat="colon", unit="share_of_sentences")
     median = pattern("sentence-rhythm/median-length", {"d1": 1}, stat="sentence_len_median", unit="words")
-    errors, warnings = styledb.validate(make_db([ok, typo, unit, median]))
+    heads = pattern("headings/colon-heading", {"d1": 1}, stat="colon_heading_share", unit="share_of_headings")
+    errors, warnings = styledb.validate(make_db([ok, typo, unit, median, heads]))
     joined = "\n".join(errors)
-    assert "em-dash" not in joined and "median-length" not in joined
+    assert "em-dash" not in joined and "median-length" not in joined and "colon-heading" not in joined
     assert "unknown stat 'semi_colon'" in joined
     assert "unit must be per_1k_words" in joined
     assert not any("counted without regex or stat" in w for w in warnings)
@@ -203,12 +204,59 @@ def test_validate_checks_stat_names_and_units():
 
 
 def test_merge_keeps_first_stat_and_notes_conflicts():
-    a = make_db([pattern("punctuation/colon", {"d1": 4}, stat="colon")], docs=DOCS[:1])
-    b = make_db([pattern("punctuation/colon", {"d2": 2}, stat="semicolon")], docs=DOCS[1:2])
+    a = make_db([pattern("punctuation/colon", {"d1": 4}, stat="colon", register_scope=["article"])], docs=DOCS[:1])
+    b = make_db([pattern("punctuation/colon", {"d2": 2}, stat="semicolon", register_scope=["email"])], docs=DOCS[1:2])
     merged = styledb.merge([a, b])
     p = merged["patterns"][0]
     assert p["stat"] == "colon"
     assert "differing stat dropped: semicolon" in p["note"]
+    assert p["register_scope"] == ["article"]
+    assert "differing register_scope dropped: ['email']" in p["note"]
+
+
+def test_register_scope_derives_the_tier_inside_the_register():
+    # Spread is corpus-wide, so a habit near-obligatory in one register (a sign-off, the
+    # meta-signposts of a talk abstract) never leaves tier 3 unless the scope says which
+    # documents it is derived over.
+    docs = DOCS[:2] + [{"id": "e{}".format(i), "path": "e{}.md".format(i), "words": 1000, "register": "email"}
+                       for i in range(1, 4)]
+    counts = {"d1": 0, "d2": 0, "e1": 5, "e2": 5, "e3": 5}
+    unscoped = pattern("opener-closer/sign-off", counts)
+    scoped = pattern("opener-closer/sign-off", counts, register_scope=["email"])
+    db = make_db([unscoped, scoped], docs=docs)
+    styledb.recompute(db)
+    wide, narrow = db["patterns"]
+    assert wide["tier"] == 2 and "single register" in wide["tier_reason"]
+    assert wide["spread"] == 0.6 and wide["rate"] == 3.0
+    assert narrow["tier"] == 1, narrow["tier_reason"]
+    assert narrow["spread"] == 1.0 and narrow["coverage"] == 1.0 and narrow["rate"] == 5.0
+    assert narrow["registers"] == ["email"]
+    assert "scope: email" in styledb.render(db)
+    # the field is checked: a list of registers the corpus actually has
+    db["patterns"][1]["register_scope"] = "email"
+    assert any("must be a list of registers" in e for e in styledb.validate(db)[0])
+    db["patterns"][1]["register_scope"] = ["thesis"]
+    assert any("no corpus document has" in w for w in styledb.validate(db)[1])
+
+
+def test_validate_warns_when_an_ai_corpus_document_names_no_generator():
+    db = make_db([pattern("punctuation/colon", {"d1": 4})], docs=DOCS[:2], kind="ai")
+    db["corpus"]["documents"][0]["generator"] = "GPT-5"
+    errors, warnings = styledb.validate(db)
+    assert not errors
+    assert [w for w in warnings if "no generator" in w and "d2" in w] and not any("d1" in w for w in warnings)
+
+
+def test_validate_names_the_nearest_verbatim_form_for_a_retyped_quote(tmp_path):
+    (tmp_path / "d1.md").write_text("He said it\u2019s **done** \u2014 really. Then nothing.\n", encoding="utf-8")
+    p = pattern("punctuation/em-dash", {"d1": 1}, quotes=0,
+                evidence=[{"doc": "d1", "quote": "he said it's done - really."},
+                          {"doc": "d1", "quote": "never written"}])
+    errors, _ = styledb.validate(make_db([p], docs=DOCS[:1]), corpus_dir=str(tmp_path))
+    misses = [e for e in errors if "not found verbatim" in e]
+    assert len(misses) == 2
+    assert "nearest verbatim form: 'He said it\u2019s **done** \u2014 really.'" in misses[0]
+    assert "nearest" not in misses[1]
 
 
 def test_merge_rejects_conflicts():

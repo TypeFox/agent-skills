@@ -32,7 +32,7 @@ Extraction is never implicit. A processing request with no profile does not turn
 3. **Version check.** Run `python3 scripts/styledb.py info PROFILE` (script paths in this file are relative to the skill directory; PROFILE is absolute — see Scripts). Exit 0: proceed. Exit 2: the DB is older than the skill — apply [references/migration.md](references/migration.md) first. Exit 3: the DB is newer than this skill — stop and tell the user to update the skill. A DB with `partial: true` is an unmerged extraction part; refuse it and point at the merge command in technique.md.
 4. **Review status.** `review.status: pending` means the user never confirmed the profile. Proceed, but say so in the report and offer the review round.
 
-**TODO (maintainers):** the AI style-pattern DB does not ship yet — see the README in `data/`. Until it does, the AI-evidence column of the comparison table comes from the built-in `ai_*` counters in `scripts/textstats.py` and from the user's absence patterns.
+**The AI DB.** Processing also reads the skill's own AI style-pattern DB, `data/ai-style-patterns.json` (path relative to the skill directory): its rows are the AI-evidence column of the comparison table, measured in the same run (`--db PROFILE --db data/ai-style-patterns.json`). Give it the same version check (`info`); it must have `kind: ai` and `partial: false`. It ships with the skill and is written by neither mode — if it is missing or fails its checks, the rewrite proceeds with the built-in `ai_*` counters of `scripts/textstats.py` as fallback evidence, and the report says so.
 
 ## Strictness settings (process mode)
 
@@ -56,7 +56,7 @@ The brief steers selection among the forms the profile attests; it never reaches
 
 Full procedure with the table classes, rule-derivation rules, and the report template: [references/processing.md](references/processing.md). What follows is a summary of it, kept short enough to read at a glance; where the two disagree the reference is right, and a change to one belongs in both. The spine, per input document:
 
-1. **Measure** — `python3 scripts/textstats.py measure INPUT --db PROFILE --sort-gap --setting SETTING`: built-in counters plus every measurable profile pattern with a verdict — `match`, `gap`, `absent` (a habit of most of the user's documents that the draft never shows), `low`/`high`, `too-short` (the input cannot express this rate: see Short inputs in processing.md). The two flags add the comparison table's own columns: what a rewrite would do with each row, the size of that edit with the largest first, and a `[manual]` mark on every row the setting's tier ceiling drops. Read for the judged patterns.
+1. **Measure** — `python3 scripts/textstats.py measure INPUT --db PROFILE --db data/ai-style-patterns.json --sort-gap --setting SETTING`: built-in counters plus every measurable profile pattern with a verdict — `match`, `gap`, `absent` (a habit of most of the user's documents that the draft never shows), `low`/`high`, `too-short` (the input cannot express this rate: see Short inputs in processing.md). The two flags add the comparison table's own columns: what a rewrite would do with each row, the size of that edit with the largest first, and a `[manual]` mark on every row the setting's tier ceiling drops. Read for the judged patterns.
 2. **Compare** — the three-way table (AI evidence / draft / user). The measurable rows arrive sorted and classified as do-not-touch, remove, add, lean, or neutral; what you add is the AI-evidence column — which splits the remove rows into high and low confidence — the judged patterns, an example per row, and the tone brief's targets.
 3. **Derive rules** — one per rewrite row, removals and additions alike; replacements come from the profile's evidence, `displaces`, and `instead` references, never from invention; targets are the user's rates, shifted inside the range by the tone brief.
 4. **Fix invariants** — facts, numbers, links, quotes, code, tables, heading outline, block sequence per section, list item counts, no new claims; subject vocabulary (technical terms, product and people's names, identifiers) stays verbatim — the profile decides how it is presented, never what it is; paragraph count per section wherever possible. Ask once which earlier manual decisions must survive.
@@ -75,7 +75,7 @@ Full procedure, review protocol, and the parallel-extraction protocol: [referenc
 3. **Read** — every document in full, along the taxonomy, capturing verbatim quotes as you go; note absences and what the user does *instead*. Subject vocabulary and code examples are skipped: terms, names, and identifiers are the topic, not the voice (rule 6 in technique.md); only the user's handling of them (backticks, abbreviations, jargon level) is a pattern.
 4. **Count** — a counter per candidate, run over every document; noisy counters demoted to judged.
 5. **Validate** — `python3 scripts/styledb.py validate DB --fix --corpus-dir ROOT` computes rates, spread, coverage, tiers, and verifies every quote.
-6. **Review** — render with `styledb.py render`, walk the user through WRONG / OVERSTATED / MISSING / NEEDS_NUANCE; persist as reviewed, or as pending with that fact in the handover if the user is unavailable.
+6. **Review** — put the specific questions to the user (redactions, boundary rows, judged counts, decisions taken — each with a default), with `styledb.py render` as the supporting material; verdicts are WRONG / OVERSTATED / MISSING / NEEDS_NUANCE; persist as reviewed, or as pending with that fact in the handover if the user is unavailable.
 7. **Persist** — to the named path or the default, then `validate` once more; on a reviewed profile, offer `styledb.py seal DB`, which drops the corpus paths so no filename survives in the DB (technique.md).
 
 Large corpora are split across subagents that each write a partial DB, merged with `python3 scripts/styledb.py merge PART... -o DB` — two phases (discover, then count the merged candidates everywhere) so that tiers reflect full coverage.
@@ -87,7 +87,7 @@ All stdlib Python 3.8+, run from the skill directory; `--help` on each. Only the
 | script | purpose |
 |---|---|
 | `scripts/styledb.py` | `info` (version check), `validate [--fix] [--corpus-dir]`, `merge`, `seal` (drop corpus paths from a reviewed DB), `render [--setting]`, `tiers` |
-| `scripts/textstats.py` | `measure FILE... [--db DB] [--sort-gap] [--setting S]` — counters per 1k words, DB patterns with a verdict each, and with the flags the comparison table's class and gap columns plus the setting's tier ceiling; `counters` lists definitions |
+| `scripts/textstats.py` | `measure FILE... [--db DB]... [--sort-gap] [--setting S]` — counters per 1k words, DB patterns with a verdict each, and with the flags the comparison table's class and gap columns plus the setting's tier ceiling; `counters` lists definitions |
 | `scripts/structure_check.py` | `ORIGINAL REWRITTEN` — outline, block sequence, list counts, verbatim blocks, inline code, links, numbers; exit 1 on a violation |
 
 ## What this skill never does
