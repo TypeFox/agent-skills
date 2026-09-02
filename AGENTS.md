@@ -31,7 +31,7 @@ Installing skills for end use is `npx skills add TypeFox/agent-skills` (see READ
 - Every skill ships evals in `evals/evals.json` (missing for ts-code-reviewer; adding them is planned as a standalone task).
 - Skill content defines each jargon term or metaphor once, plainly, at first use — or points to the file that defines it — and every other mention references that definition instead of restating it or leaving the term bare.
 - Python scripts stay stdlib-only so they run anywhere with bare Python 3.8+ — they are run from the skill, never copied into target repos (registry distribution, e.g. PyPI, is a possible later step).
-- Skills that persist per-user state (write-like-me's style profile) keep it under `$HOME/.skills/<skill-name>/`, never in the target repo or the skill folder; the skill's schema reference (`skills/write-like-me/references/db-schema.md` for write-like-me) documents the format and carries a version number.
+- Skills that persist per-user state (write-like-me's style profile) keep it under `$HOME/.agents/<skill-name>/`, never in the target repo or the skill folder; the skill's schema reference (`skills/write-like-me/references/db-schema.md` for write-like-me) documents the format and carries a version number.
 
 ## Boundaries and definition of done
 

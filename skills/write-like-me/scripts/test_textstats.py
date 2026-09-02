@@ -467,3 +467,144 @@ def test_report_table_adds_a_rewritten_column_for_a_second_file(tmp_path, capsys
     row = [ln for ln in out.splitlines() if ln.startswith("| punctuation/em-dash |")][0]
     assert row.split("|")[6].strip() == "0"      # the rewritten column, measured not recalled
     assert row.rstrip("| ").endswith("match")
+
+
+# --- stripping fixes from the field report --------------------------------------
+
+def test_stripper_drops_comments_block_html_bare_urls_and_decodes_entities():
+    raw = ("<!-- Comment: publisher => namespace -->\n"
+           "Use `foo` here &rarr; there, see https://example.com/a?b=c for details.\n\n"
+           "<div class=\"note\">Editorial notice with many words</div>\n\n"
+           "One &mdash; dash and one; semicolon.\n")
+    r = textstats.measure(raw)
+    prose = r["_doc"].prose
+    assert "namespace" not in prose and "notice" not in prose and "example.com" not in prose
+    assert "\u2192" in prose  # the entity is decoded, not counted as a word plus a semicolon
+    assert r["stats"]["words"] == 11
+    assert r["per_1k"]["semicolon"] == round(1 / 11 * 1000, 2)
+    assert r["per_1k"]["em_dash"] == round(1 / 11 * 1000, 2)
+    # inline code is a non-word placeholder: it adds no word and feeds no `\bcode\b` regex,
+    # and a regex on the placeholder counts the author's code references
+    assert textstats.CODE_PLACEHOLDER in prose and "code" not in prose
+    assert textstats.count_pattern({"regex": "``"}, r) == 1
+
+
+def test_first_person_singular_skips_the_i_of_io():
+    assert hits("Reads from standard I/O and I/O streams.", "first_person_singular") == 0
+    assert hits("I read it; give me the file.", "first_person_singular") == 2
+
+
+def test_exclude_subtracts_overlapping_hits_from_regex_and_built_in_counters():
+    text = "This is caused by the cache. This changes everything. That is the idea."
+    r = textstats.measure(text)
+    built_in = {"id": "reveal-frames/verdict-opener", "stat": "ai_verdict_opener", "unit": "per_1k_words"}
+    assert textstats.count_pattern(built_in, r) == 3
+    assert textstats.count_pattern(dict(built_in, exclude=r"This is caused"), r) == 2
+    assert textstats.measure_pattern(dict(built_in, exclude=r"This is caused"), r) == round(2 / r["stats"]["words"] * 1000, 2)
+    own = {"id": "paragraph-openers/demonstrative-subject", "regex": r"(?:^|(?<=[.!?] ))(?:This|That)\b", "unit": "per_1k_words"}
+    assert textstats.count_pattern(own, r) == 3
+    assert textstats.count_pattern(dict(own, exclude=r"This is caused"), r) == 2
+    # an exclude that does not overlap the counter's own match subtracts nothing
+    assert textstats.count_pattern(dict(own, exclude=r"cache"), r) == 3
+    share = {"id": "x/y", "regex": r"\bThis\b", "unit": "share_of_sentences", "exclude": r"This is caused"}
+    assert textstats.measure_pattern(share, r) == round(1 / 3, 3)
+
+
+def test_count_pattern_gives_the_numerator_of_a_per_1k_statistic():
+    r = textstats.measure("Intro.\n\n- one\n- two\n- three\n")
+    assert textstats.count_pattern({"stat": "list_items_per_1k", "unit": "per_1k_words"}, r) == 3
+    assert textstats.count_pattern({"stat": "sentence_len_median", "unit": "words"}, r) is None
+    assert textstats.count_pattern({"id": "x/judged"}, r) is None
+
+
+def test_hits_prints_counts_context_and_the_db_fields(tmp_path, capsys):
+    doc = tmp_path / "d.md"
+    doc.write_text("So I waited. So did the build. Even so, fine.", encoding="utf-8")
+    assert textstats.main(["hits", str(doc), "-e", r"\bso\b", "-i", "-x", r"Even so"]) == 0
+    out = capsys.readouterr().out
+    assert "count=2 (1 excluded)  per_1k_words=" in out
+    assert "\u00abSo\u00bb I waited" in out and "(excluded)" in out
+    assert '"regex": "\\\\bso\\\\b", "ignore_case": true, "exclude": "Even so", "unit": "per_1k_words"' in out
+    # several counters, or --matrix: one line per counter with the raw count per file
+    assert textstats.main(["hits", str(doc), "-e", r"\bSo\b", "--stat", "em_dash"]) == 0
+    out = capsys.readouterr().out
+    lines = [l for l in out.splitlines() if l.startswith(("\\bSo", "em_dash"))]
+    assert lines[0].split()[-1] == "2" and lines[1].split()[-1] == "0"
+    assert textstats.main(["hits", str(doc), "--stat", "sentence_len_median"]) == 0
+    assert "sentence_len_median=" in capsys.readouterr().out
+    assert textstats.main(["hits", str(doc), "--stat", "no_such"]) == 1
+    assert textstats.main(["hits", str(doc)]) == 1
+
+
+def test_vet_lists_the_document_that_stands_out(tmp_path, capsys):
+    plain = "Plain prose sentence here. " * 30
+    a, b, c = (tmp_path / n for n in ("a.md", "b.md", "c.md"))
+    a.write_text(plain, encoding="utf-8")
+    b.write_text(plain, encoding="utf-8")
+    c.write_text("A dash \u2014 here, and honestly a real one. " * 30, encoding="utf-8")
+    assert textstats.main(["measure", str(a), str(b), str(c), "--vet"]) == 0
+    out = capsys.readouterr().out
+    flagged = [l for l in out.splitlines() if "em_dash" in l]
+    assert len(flagged) == 1 and str(c) in flagged[0] and "others: median 0" in flagged[0]
+    assert not [l for l in out.splitlines() if str(a) in l]
+    assert textstats.main(["measure", str(a), "--vet"]) == 0
+    assert "at least two documents" in capsys.readouterr().out
+
+
+SCOPED_DB = {"kind": "user", "patterns": [
+    {"id": "opener-closer/sign-off", "regex": "Cheers", "unit": "per_1k_words", "rate": 10.0,
+     "range": [6.0, 14.0], "spread": 1.0, "tier": 3, "register_scope": ["email"]},
+    {"id": "punctuation/em-dash", "regex": "\u2014", "unit": "per_1k_words", "rate": 8.0,
+     "range": [0.0, 12.0], "spread": 0.5, "tier": 3, "tier_override": 1},
+    {"id": "tone-markers/warmth", "measurement": "judged", "unit": "per_1k_words", "rate": 1.0,
+     "tier": 2, "description": "Warm.", "register_scope": ["email"]}]}
+SCOPED_AI = {"kind": "ai", "patterns": [
+    {"id": "punctuation/em-dash", "regex": "\u2014", "unit": "per_1k_words", "rate": 20.0,
+     "range": [3.0, 60.0], "spread": 0.9, "tier": 1, "register_scope": ["email"]}]}
+SCOPED_DOC = "A draft \u2014 with \u2014 dashes. " * 5 + "More words follow here. " * 40
+
+
+def test_register_sets_scoped_rows_aside_and_shows_the_effective_tier(tmp_path, capsys):
+    doc = tmp_path / "post.md"
+    doc.write_text(SCOPED_DOC, encoding="utf-8")
+    user, ai = tmp_path / "user.json", tmp_path / "ai.json"
+    user.write_text(json.dumps(SCOPED_DB), encoding="utf-8")
+    ai.write_text(json.dumps(SCOPED_AI), encoding="utf-8")
+    # without --register the scope is shown and the reader judges
+    assert textstats.main(["measure", str(doc), "--db", str(user), "--sort-gap"]) == 0
+    out = capsys.readouterr().out
+    assert [l for l in out.splitlines() if l.startswith("add") and "sign-off [scope: email]" in l]
+    assert [l for l in out.splitlines() if "tone-markers/warmth [scope: email]" in l]
+    # with it, an out-of-scope row is neutral and the override is the tier shown
+    assert textstats.main(["measure", str(doc), "--db", str(user), "--sort-gap", "--register", "article"]) == 0
+    out = capsys.readouterr().out
+    row = [l for l in out.splitlines() if "sign-off [out of scope]" in l][0]
+    assert row.startswith("neutral") and row.split()[1] == "0"
+    dash = [l for l in out.splitlines() if "punctuation/em-dash" in l][0]
+    assert dash.startswith("remove") and dash.split()[3] == "1"
+    assert textstats.main(["measure", str(doc), "--db", str(user), "--register", "email", "--json"]) == 0
+    rows = json.loads(capsys.readouterr().out)[str(doc)]
+    assert rows["patterns"]["opener-closer/sign-off"]["out_of_scope"] is False
+    assert rows["patterns"]["opener-closer/sign-off"]["class"] == "add"
+    assert rows["patterns"]["punctuation/em-dash"]["tier"] == 1
+    assert rows["judged_patterns"]["tone-markers/warmth"]["out_of_scope"] is False
+    assert textstats.main(["measure", str(doc), "--db", str(user), "--register", "article", "--json"]) == 0
+    rows = json.loads(capsys.readouterr().out)[str(doc)]["patterns"]["opener-closer/sign-off"]
+    assert rows["out_of_scope"] is True and rows["class"] == "neutral" and rows["gap"] == 0.0
+
+
+def test_report_table_lists_out_of_scope_rows_and_ignores_out_of_scope_ai_evidence(tmp_path, capsys):
+    doc = tmp_path / "post.md"
+    doc.write_text(SCOPED_DOC, encoding="utf-8")
+    user, ai = tmp_path / "user.json", tmp_path / "ai.json"
+    user.write_text(json.dumps(SCOPED_DB), encoding="utf-8")
+    ai.write_text(json.dumps(SCOPED_AI), encoding="utf-8")
+    assert textstats.main(["measure", str(doc), "--db", str(user), "--db", str(ai), "--report-table"]) == 0
+    out = capsys.readouterr().out
+    assert "| punctuation/em-dash | remove | 1 | high |" in out  # register unknown: the AI row counts
+    assert textstats.main(["measure", str(doc), "--db", str(user), "--db", str(ai), "--report-table",
+                           "--register", "article"]) == 0
+    out = capsys.readouterr().out
+    assert "| punctuation/em-dash | remove | 1 | low |" in out  # the email-scoped AI row is no evidence
+    assert "- opener-closer/sign-off [out of scope] — scoped to email; the input is article" in out
+    assert "- tone-markers/warmth [out of scope] (tier 2)" in out
