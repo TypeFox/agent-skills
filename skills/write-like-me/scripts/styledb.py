@@ -636,6 +636,27 @@ def validate(db: Dict[str, Any], corpus_dir: Optional[str] = None) -> Tuple[List
         else:
             if not p.get("evidence"):
                 e("pattern {}: presence patterns need at least one verbatim evidence quote".format(pid))
+            # The mirror of the absence check above. A presence row whose numbers sit inside the
+            # near-absence tolerance is describing a habit the author almost never has, and the
+            # presence tier rules read that rarity as weak evidence: low spread lands it in tier 3,
+            # out of scope on the medium setting, so a draft doing it forty times a page is left
+            # alone. Filed as an absence the same numbers are near-absent and tier 2 — in scope.
+            # Which one is right is the author's call, so this is a warning for the review round,
+            # never a --fix: some rare habits really are presences (the author does do this, just
+            # seldom), and the description usually says which — "bold is rare" reads as a presence,
+            # "never bolds a whole clause" as an absence written up on the wrong side.
+            probe = dict(p)
+            if bool(docs) and all(entry.get("id") in docs for entry in entries):
+                compute_stats(probe, docs, weights)
+                probe["kind"] = "absence"
+                if near_absent(probe):
+                    w("pattern {}: presence pattern, but its numbers are inside the near-absence "
+                      "tolerance ({} hit(s) in {} of {} documents, {:.2f} per 1k words). If the "
+                      "description says the author never does this, record it as an absence: it is "
+                      "tier 2 there and tier {} here, which decides whether a rewrite may touch it "
+                      "on the medium setting. Ask in the review round.".format(
+                          pid, probe["_hits"], probe["_hit_docs"], probe["_entries"],
+                          probe["_hits"] / probe["_measured_words"] * 1000, p.get("tier", 3)))
         for ev in p.get("evidence", []):
             if ev.get("doc") not in docs:
                 e("pattern {}: evidence references unknown document {!r}".format(pid, ev.get("doc")))

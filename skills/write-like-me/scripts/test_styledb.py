@@ -618,6 +618,27 @@ def test_hits_above_the_tolerance_are_still_a_presence():
     assert db["patterns"][0]["tier"] == 1
 
 
+def test_a_presence_inside_the_near_absence_tolerance_is_flagged_for_the_review_round():
+    # The mirror of the check above, and the same failure it guards against from the other side:
+    # a "never bolds a whole clause" habit filed as a presence computes to tier 3 on its low
+    # spread, so the medium setting leaves a draft that does it on every page alone. As an
+    # absence the same numbers are near-absent and tier 2. Only the author can say which it is,
+    # so it is a warning, not a --fix.
+    p = pattern("emphasis/clause-bold", {d["id"]: (1 if d["id"] in {"b1", "b2"} else 0) for d in BIG},
+                stat="clause_bold")
+    db = make_db([p], docs=BIG)
+    styledb.recompute(db)
+    assert db["patterns"][0]["tier"] == 3
+    errors, warnings = styledb.validate(db)
+    assert not errors
+    assert [w for w in warnings if "clause-bold" in w and "near-absence tolerance" in w
+            and "tier 2 there and tier 3 here" in w]
+    # a habit the author genuinely has, just not in every document, is not flagged
+    common = pattern("punctuation/colon-elaboration", {d["id"]: 20 for d in BIG}, stat="colon")
+    assert not [w for w in styledb.validate(make_db([common], docs=BIG))[1]
+                if "near-absence tolerance" in w]
+
+
 def test_a_near_absence_needs_the_per_1k_unit():
     p = pattern("lists/no-lists", {"b0": 1}, kind="absence", quotes=0, stat="list_items", unit="count",
                 documents=[{"id": d["id"], "rate": 1.0 if d["id"] == "b0" else 0.0,
