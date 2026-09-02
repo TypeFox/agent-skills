@@ -1,0 +1,5 @@
+# Bundled data
+
+`ai-style-patterns.json` is the AI style-patterns DB: patterns extracted from the maintainers' corpus of AI-generated documents (repo-root `data/write-like-me/ai-generated/`; 23 documents from the GPT, Claude, and Gemini families across articles, reports, LinkedIn posts, talk abstracts, and an email thread) with the technique in `../references/technique.md` (see its maintainer note), in the format of `../references/db-schema.md` with `"kind": "ai"`.
+
+Processing measures the input against both DBs in one run — `textstats.py measure INPUT --db USER_DB.json --db data/ai-style-patterns.json` — and uses this DB's rows as the AI-evidence column of the comparison table. Its `stat` fields reference the built-in `ai_*` counters of `../scripts/textstats.py`, so the counters remain the executable definitions; the DB adds the corpus rates, spreads, tiers, and verbatim evidence behind them, plus the `register_scope` fields and model-split notes the counters cannot carry. The DB is refreshed by re-running extract mode over the corpus when a new model generation visibly shifts the distribution.

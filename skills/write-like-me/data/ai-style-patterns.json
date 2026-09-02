@@ -1,0 +1,7816 @@
+{
+  "db_version": 1,
+  "kind": "ai",
+  "partial": false,
+  "created": "2026-08-31",
+  "tool": "write-like-me",
+  "corpus": {
+    "note": "Maintainers' AI corpus at repo data/write-like-me/ai-generated: 23 machine-generated documents (GPT, Claude Fable/Opus/Sonnet/Haiku, Gemini Pro/Flash/Thinking) across five registers. Each document carries its generator; prompt provenance (plainly-prompted vs. style-prompted) was not recorded at generation time. The email document is a two-model roleplay and is marked co-authored.",
+    "documents": [
+      {
+        "id": "agent-experience-fable",
+        "path": "ai-generated/agent-experience_fable.md",
+        "words": 2044,
+        "register": "article",
+        "generator": "Claude Fable 5",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "allstar-gemini-flash",
+        "path": "ai-generated/all-star_gemini-flash.md",
+        "words": 1104,
+        "register": "article",
+        "generator": "Gemini Flash",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "domain-ai-gpt",
+        "path": "ai-generated/domain-ai_gpt.md",
+        "words": 3855,
+        "register": "article",
+        "generator": "GPT",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "domain-ai-sonnet",
+        "path": "ai-generated/domain-ai_sonnet.md",
+        "words": 3461,
+        "register": "article",
+        "generator": "Claude Sonnet",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "email-gemini-gpt",
+        "path": "ai-generated/email_gemini-vs-gpt.txt",
+        "words": 9809,
+        "register": "email",
+        "generator": "Gemini + GPT (two-party roleplay)",
+        "sole_authored": false,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "generating-code-gemini",
+        "path": "ai-generated/generating-code_gemini-thinking.md",
+        "words": 628,
+        "register": "article",
+        "generator": "Gemini (thinking)",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "langium-governance-opus",
+        "path": "ai-generated/langium-governance_opus.md",
+        "words": 1292,
+        "register": "article",
+        "generator": "Claude Opus",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "langium-llvm-fable",
+        "path": "ai-generated/langium-llvm_fable.md",
+        "words": 1211,
+        "register": "article",
+        "generator": "Claude Fable 5",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "linkedin-gemini",
+        "path": "ai-generated/linkedin-posts_gemini.md",
+        "words": 572,
+        "register": "social",
+        "generator": "Gemini",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "linkedin-gpt",
+        "path": "ai-generated/linkedin-posts_gpt.md",
+        "words": 1169,
+        "register": "social",
+        "generator": "GPT",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "linkedin-opus",
+        "path": "ai-generated/linkedin-posts_opus.md",
+        "words": 1276,
+        "register": "social",
+        "generator": "Claude Opus",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "lionweb-sonnet",
+        "path": "ai-generated/lionweb-langium_sonnet.md",
+        "words": 1827,
+        "register": "article",
+        "generator": "Claude Sonnet",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "monaco-opus",
+        "path": "ai-generated/monaco-languageclient_opus.md",
+        "words": 1496,
+        "register": "article",
+        "generator": "Claude Opus",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "parser-performance-gpt",
+        "path": "ai-generated/parser-performance_gpt.md",
+        "words": 1632,
+        "register": "article",
+        "generator": "GPT",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "presentations-gemini",
+        "path": "ai-generated/presentations_gemini.md",
+        "words": 524,
+        "register": "abstract",
+        "generator": "Gemini",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "presentations-gpt",
+        "path": "ai-generated/presentations_gpt.md",
+        "words": 1123,
+        "register": "abstract",
+        "generator": "GPT",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "presentations-sonnet",
+        "path": "ai-generated/presentations_sonnet.md",
+        "words": 901,
+        "register": "abstract",
+        "generator": "Claude Sonnet",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "software-business-gemini",
+        "path": "ai-generated/software-business_gemini.md",
+        "words": 702,
+        "register": "report",
+        "generator": "Gemini",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "software-business-gpt",
+        "path": "ai-generated/software-business_gpt.md",
+        "words": 3521,
+        "register": "report",
+        "generator": "GPT",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "software-business-sonnet",
+        "path": "ai-generated/software-business_sonnet.md",
+        "words": 2767,
+        "register": "report",
+        "generator": "Claude Sonnet",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "textual-graphical-gpt",
+        "path": "ai-generated/textual-graphical_gpt.md",
+        "words": 1264,
+        "register": "article",
+        "generator": "GPT",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "theia-haiku",
+        "path": "ai-generated/theia-notebooks_haiku.md",
+        "words": 1007,
+        "register": "article",
+        "generator": "Claude Haiku",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "vscode-extension-gemini-pro",
+        "path": "ai-generated/vscode-extension_gemini-pro.md",
+        "words": 787,
+        "register": "article",
+        "generator": "Gemini Pro",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      }
+    ],
+    "total_words": 43972
+  },
+  "review": {
+    "status": "reviewed",
+    "date": "2026-09-01",
+    "reviewer": "Miro Spönemann (TypeFox maintainers)"
+  },
+  "patterns": [
+    {
+      "id": "punctuation/em-dash",
+      "dimension": "punctuation",
+      "marker": "em-dash",
+      "description": "Uses the em dash as the default heavy punctuation: asides, appositives, pivots, and afterthoughts all hang off a dash.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "em_dash",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 39
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 7
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 11
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 49
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 24
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 5
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 11
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 13
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 1
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 7
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 16
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 38
+        },
+        {
+          "id": "monaco-opus",
+          "count": 18
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 7
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 3
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 4
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 10
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 4
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 14
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 35
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 10
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 2
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "agent-experience-fable",
+          "quote": "An agent onboards at the start of every single task — no memory of yesterday, no hallway conversations, no colleague two desks away."
+        },
+        {
+          "doc": "monaco-opus",
+          "quote": "The result was monaco-languageclient — a bridge, and deliberately not much more."
+        },
+        {
+          "doc": "lionweb-sonnet",
+          "quote": "Langium — which we initiated and continue to build — is one of the first serious language workbenches to plug into it."
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "22 of 23 documents; spacing varies by model (spaced — for Claude/GPT prose, unspaced word—word for Gemini/Haiku).",
+      "rate": 7.459,
+      "spread": 0.957,
+      "range": [
+        0.0,
+        20.799
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "punctuation/em-dash-appositive",
+      "dimension": "punctuation",
+      "marker": "em-dash-appositive",
+      "description": "Relabels the just-said with an em dash plus appositive: a claim, then a dash, then the same thing renamed.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "em_dash_appositive",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 13
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 3
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 6
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 16
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 3
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 3
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 5
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 1
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 3
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 5
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 14
+        },
+        {
+          "id": "monaco-opus",
+          "count": 9
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 4
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 1
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 2
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 2
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 6
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 10
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 4
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "theia-haiku",
+          "quote": "For organizations building custom IDEs using Eclipse Theia—the open platform behind development environments at [company], [company], [company], and [company]—this posed an urgent question",
+          "redacted": true
+        },
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "What's missing is the architecture around them — the domain knowledge, interfaces, permissions, validation, evaluation, and user experience that turn probabilistic intelligence into something you can actually run a business on."
+        },
+        {
+          "doc": "monaco-opus",
+          "quote": "Version 10 closes that arc. monaco-languageclient is no longer just a library for LSP integration."
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 2.502,
+      "spread": 0.826,
+      "range": [
+        0.0,
+        7.663
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "punctuation/semicolon",
+      "dimension": "punctuation",
+      "marker": "semicolon",
+      "description": "Joins clauses with a semicolon occasionally; heavily model-dependent rather than a universal machine habit.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "semicolon",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 14
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 1
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 1
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 9
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 1
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 1
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 0
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 1
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 5
+        },
+        {
+          "id": "monaco-opus",
+          "count": 3
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 4
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 1
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "agent-experience-fable",
+          "quote": "Prose is for judgment; machines are for rules."
+        },
+        {
+          "doc": "email-gemini-gpt",
+          "quote": "Thursday at 10:30 AM CEST works perfectly for our technical kickoff; I will send the calendar invite shortly"
+        }
+      ],
+      "tier": 2,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "11 of 23 documents; Fable output leads at 6.8/1k while most GPT and Gemini documents have none.",
+      "rate": 0.932,
+      "spread": 0.478,
+      "range": [
+        0.0,
+        6.849
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "fewer than 3 quotes"
+    },
+    {
+      "id": "punctuation/scare-quote",
+      "dimension": "punctuation",
+      "marker": "scare-quote",
+      "description": "Puts coinages and borrowed labels in quotation marks as a distancing device.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "scare_quote",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 4
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 7
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 6
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 1
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 1
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 1
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 1
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 1
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 1
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 1
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 1
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 3
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 2
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 7
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 13
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 1
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 2
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "software-business-sonnet",
+          "quote": "DevOps is being subsumed into \"platform engineering,\""
+        },
+        {
+          "doc": "software-business-gpt",
+          "quote": "[company] already warns of \"AI-accelerated shadow IT\"",
+          "redacted": true
+        },
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "Researchers call the underlying failure mode the \"lethal trifecta\""
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "Counter is noisy (short real quotations count too); confirm hits by reading.",
+      "rate": 1.205,
+      "spread": 0.739,
+      "range": [
+        0.0,
+        4.698
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "sentence-rhythm/one-sentence-paragraph",
+      "dimension": "sentence-rhythm",
+      "marker": "one-sentence-paragraph",
+      "description": "Isolates verdict sentences as one-sentence paragraphs for drama, often several in a row.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "one_sentence_paragraph_share",
+      "unit": "share_of_paragraphs",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "rate": 0.156
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "rate": 0.433
+        },
+        {
+          "id": "domain-ai-gpt",
+          "rate": 0.665
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "rate": 0.252
+        },
+        {
+          "id": "email-gemini-gpt",
+          "rate": 0.545
+        },
+        {
+          "id": "generating-code-gemini",
+          "rate": 0.182
+        },
+        {
+          "id": "langium-governance-opus",
+          "rate": 0.129
+        },
+        {
+          "id": "langium-llvm-fable",
+          "rate": 0.143
+        },
+        {
+          "id": "linkedin-gemini",
+          "rate": 0.733
+        },
+        {
+          "id": "linkedin-gpt",
+          "rate": 0.5
+        },
+        {
+          "id": "linkedin-opus",
+          "rate": 0.297
+        },
+        {
+          "id": "lionweb-sonnet",
+          "rate": 0.304
+        },
+        {
+          "id": "monaco-opus",
+          "rate": 0.152
+        },
+        {
+          "id": "parser-performance-gpt",
+          "rate": 0.475
+        },
+        {
+          "id": "presentations-gemini",
+          "rate": 0.0
+        },
+        {
+          "id": "presentations-gpt",
+          "rate": 0.31
+        },
+        {
+          "id": "presentations-sonnet",
+          "rate": 0.0
+        },
+        {
+          "id": "software-business-gemini",
+          "rate": 0.455
+        },
+        {
+          "id": "software-business-gpt",
+          "rate": 0.527
+        },
+        {
+          "id": "software-business-sonnet",
+          "rate": 0.765
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "rate": 0.6
+        },
+        {
+          "id": "theia-haiku",
+          "rate": 0.25
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "rate": 0.143
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "This is not primarily a model problem."
+        },
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "This is not a model problem."
+        },
+        {
+          "doc": "parser-performance-gpt",
+          "quote": "That changes when the language succeeds."
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "Share of prose paragraphs with exactly one sentence; above 0.5 in a third of the corpus.",
+      "rate": 0.426,
+      "spread": 0.913,
+      "range": [
+        0.0,
+        0.765
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "sentence-rhythm/short-punch",
+      "dimension": "sentence-rhythm",
+      "marker": "short-punch",
+      "description": "Follows long explanatory sentences with very short verdict sentences and verbless fragments (\"Useful. Not sufficient.\").",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "short_sentence_share",
+      "unit": "share_of_sentences",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "rate": 0.157
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "rate": 0.143
+        },
+        {
+          "id": "domain-ai-gpt",
+          "rate": 0.394
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "rate": 0.451
+        },
+        {
+          "id": "email-gemini-gpt",
+          "rate": 0.279
+        },
+        {
+          "id": "generating-code-gemini",
+          "rate": 0.048
+        },
+        {
+          "id": "langium-governance-opus",
+          "rate": 0.267
+        },
+        {
+          "id": "langium-llvm-fable",
+          "rate": 0.185
+        },
+        {
+          "id": "linkedin-gemini",
+          "rate": 0.25
+        },
+        {
+          "id": "linkedin-gpt",
+          "rate": 0.133
+        },
+        {
+          "id": "linkedin-opus",
+          "rate": 0.253
+        },
+        {
+          "id": "lionweb-sonnet",
+          "rate": 0.035
+        },
+        {
+          "id": "monaco-opus",
+          "rate": 0.163
+        },
+        {
+          "id": "parser-performance-gpt",
+          "rate": 0.248
+        },
+        {
+          "id": "presentations-gemini",
+          "rate": 0.12
+        },
+        {
+          "id": "presentations-gpt",
+          "rate": 0.111
+        },
+        {
+          "id": "presentations-sonnet",
+          "rate": 0.0
+        },
+        {
+          "id": "software-business-gemini",
+          "rate": 0.056
+        },
+        {
+          "id": "software-business-gpt",
+          "rate": 0.231
+        },
+        {
+          "id": "software-business-sonnet",
+          "rate": 0.143
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "rate": 0.179
+        },
+        {
+          "id": "theia-haiku",
+          "rate": 0.182
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "rate": 0.143
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "Useful. Not sufficient."
+        },
+        {
+          "doc": "software-business-gpt",
+          "quote": "It is judgment."
+        },
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "Your domain will not."
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "Share of sentences with <= 8 words; the paired-epigram couplet (\"Adoption is universal. Value is rare.\") is this habit at its most visible.",
+      "rate": 0.232,
+      "spread": 0.957,
+      "range": [
+        0.0,
+        0.451
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "paragraph-openers/negated-opener",
+      "dimension": "paragraph-openers",
+      "marker": "negated-opener",
+      "description": "Opens a piece or paragraph by negating a status quo the reader supposedly assumes.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_negated_opener",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 0
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 5
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 2
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 2
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 1
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 1
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 3
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 1
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 0
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 2
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 1
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 0
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 1
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 3
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "linkedin-gpt",
+          "quote": "Real-time collaboration should not depend on which IDE your team happens to use."
+        },
+        {
+          "doc": "linkedin-opus",
+          "quote": "Real-time collaboration shouldn't stop at the edge of the TypeScript ecosystem."
+        },
+        {
+          "doc": "textual-graphical-gpt",
+          "quote": "Complex domains rarely fit neatly into a single user interface."
+        }
+      ],
+      "tier": 2,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 0.5,
+      "spread": 0.478,
+      "range": [
+        0.0,
+        2.566
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "moderate evidence"
+    },
+    {
+      "id": "paragraph-openers/imagine-opener",
+      "dimension": "paragraph-openers",
+      "marker": "imagine-opener",
+      "description": "Scene-setting imperatives (Picture, Consider, Imagine) as hooks.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_scene_imperative",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 1
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 1
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 0
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 0
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 0
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 0
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 1
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 3
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 1
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 1
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 1
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "lionweb-sonnet",
+          "quote": "Picture the tooling you'd actually want for a serious systems or software engineering project"
+        },
+        {
+          "doc": "parser-performance-gpt",
+          "quote": "Consider a language with arithmetic operators such as addition, multiplication, and exponentiation."
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 0.205,
+      "spread": 0.304,
+      "range": [
+        0.0,
+        1.838
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "report"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "connectives/and-but-initial",
+      "dimension": "connectives",
+      "marker": "and-but-initial",
+      "description": "Starts sentences with And or But as the default light connective.",
+      "kind": "presence",
+      "measurement": "counted",
+      "regex": "(?:^|(?<=[.!?]\\s))(?:And|But)\\b",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 5
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 7
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 9
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 6
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 4
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 2
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 1
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 1
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 2
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 2
+        },
+        {
+          "id": "monaco-opus",
+          "count": 1
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 1
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 2
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 1
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 9
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 4
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 1
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "And still: only 23% are scaling agents anywhere in the business."
+        },
+        {
+          "doc": "langium-governance-opus",
+          "quote": "We have no intention of doing that. But *intention* is not a control."
+        },
+        {
+          "doc": "textual-graphical-gpt",
+          "quote": "But there was an important architectural mismatch."
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 1.319,
+      "spread": 0.739,
+      "range": [
+        0.0,
+        3.165
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "connectives/so-initial",
+      "dimension": "connectives",
+      "marker": "so-initial",
+      "description": "Sentence-initial So as a consequence pivot.",
+      "kind": "presence",
+      "measurement": "counted",
+      "regex": "(?:^|(?<=[.!?]\\s))So\\b",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 2
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 0
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 5
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 1
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 1
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 0
+        },
+        {
+          "id": "monaco-opus",
+          "count": 2
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 1
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 1
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "monaco-opus",
+          "quote": "So we re-implemented large parts of the VS Code API ourselves"
+        },
+        {
+          "doc": "agent-experience-fable",
+          "quote": "So what does *agent-ready* actually mean?"
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 0.296,
+      "spread": 0.304,
+      "range": [
+        0.0,
+        1.337
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "connectives/formal-connective",
+      "dimension": "connectives",
+      "marker": "formal-connective",
+      "description": "Sentence-initial However/Furthermore/Moreover — the classic 2023 tell, now nearly gone from strong models.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_connective_opener",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 0
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 1
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 0
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 2
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 1
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 0
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 0
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 0
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 1
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 1
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "generating-code-gemini",
+          "quote": "However, the business value of a DSL hinges on execution."
+        },
+        {
+          "doc": "allstar-gemini-flash",
+          "quote": "However, as our architecture matured, Chevrotain’s interpreted nature unlocked a far greater advantage"
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "Calibration row: 5 of 23 documents, 0.14/1k overall, and only Gemini-class output. A draft full of these is old-style machine prose, but their absence proves nothing.",
+      "rate": 0.136,
+      "spread": 0.217,
+      "range": [
+        0.0,
+        1.592
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "email",
+        "report"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "voice-and-person/imperative",
+      "dimension": "voice-and-person",
+      "marker": "imperative",
+      "description": "Advice delivered as bare imperative runs (\"Calculate the power budget.\" \"Parse it.\" \"Validate them.\").",
+      "kind": "presence",
+      "measurement": "judged",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 0
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 6
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 8
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 0
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 5
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 0
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 0
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 0
+        },
+        {
+          "id": "monaco-opus",
+          "count": 2
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 2
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "If an AI-generated program must conform to a grammar, parse it."
+        },
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "Don't tell the model to \"be careful about power consumption.\" Calculate the power budget."
+        },
+        {
+          "doc": "langium-governance-opus",
+          "quote": "**Put your organization's name on it.** Comment on the proposal."
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "Counts are reading estimates over the full corpus; concentrated in advice-giving pieces.",
+      "rate": 0.523,
+      "spread": 0.217,
+      "range": [
+        0.0,
+        3.87
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "report"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "tone-markers/deliberate-adverb",
+      "dimension": "tone-markers",
+      "marker": "deliberate-adverb",
+      "description": "Marks every design choice as intended: deliberately, explicitly, by design.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "deliberate_adverb",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 3
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 7
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 1
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 6
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 2
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 3
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 2
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 2
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 2
+        },
+        {
+          "id": "monaco-opus",
+          "count": 3
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 1
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 1
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 4
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 1
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 4
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 1
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "monaco-opus",
+          "quote": "Some are deliberately plain."
+        },
+        {
+          "doc": "presentations-gpt",
+          "quote": "Its deliberately constrained semantic API encodes visual decisions into the design system."
+        },
+        {
+          "doc": "langium-llvm-fable",
+          "quote": "It's a small language, deliberately."
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 0.978,
+      "spread": 0.696,
+      "range": [
+        0.0,
+        3.562
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "tone-markers/quiet-adverb",
+      "dimension": "tone-markers",
+      "marker": "quiet-adverb",
+      "description": "Understated drama via quietly/silently/rarely (\"has quietly become\").",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "quiet_adverb",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 5
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 1
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 1
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 2
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 1
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 0
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 0
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 0
+        },
+        {
+          "id": "monaco-opus",
+          "count": 1
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 3
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 1
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 0
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 2
+        },
+        {
+          "id": "theia-haiku",
+          "count": 1
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 1
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "theia-haiku",
+          "quote": "Notebooks have quietly become the primary interface for how millions of developers work."
+        },
+        {
+          "doc": "monaco-opus",
+          "quote": "By then the shape of the project had quietly inverted."
+        }
+      ],
+      "tier": 2,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 0.432,
+      "spread": 0.478,
+      "range": [
+        0.0,
+        2.446
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email"
+      ],
+      "tier_reason": "fewer than 3 quotes"
+    },
+    {
+      "id": "tone-markers/enthusiasm",
+      "dimension": "tone-markers",
+      "marker": "enthusiasm",
+      "description": "Relentless enthusiasm and mutual validation in interactive registers: every reply opens by praising the previous message.",
+      "kind": "presence",
+      "measurement": "judged",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 0
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 0
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 14
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 4
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 0
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 0
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 0
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 0
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "email-gemini-gpt",
+          "quote": "I am thrilled to report that the leadership presentation yesterday afternoon was an absolute home run."
+        },
+        {
+          "doc": "email-gemini-gpt",
+          "quote": "You hit the nail on the head regarding the port-based ID assignment."
+        },
+        {
+          "doc": "linkedin-gemini",
+          "quote": "We are thrilled to officially launch our **domain-specific AI services**"
+        }
+      ],
+      "tier": 2,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "Register-bound: email threads and LinkedIn announcements. Counts are reading estimates.",
+      "rate": 1.403,
+      "spread": 0.5,
+      "range": [
+        0.0,
+        6.993
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "email",
+        "social"
+      ],
+      "register_scope": [
+        "email",
+        "social"
+      ],
+      "tier_reason": "judged, not counted; present in fewer than 3 documents"
+    },
+    {
+      "id": "emphasis/clause-bold",
+      "dimension": "emphasis",
+      "marker": "clause-bold",
+      "description": "Bolds whole clauses and thesis sentences mid-prose, not just terms.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "clause_bold",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 12
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 4
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 17
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 16
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 52
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 8
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 5
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 4
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 6
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 0
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 1
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 7
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 9
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 4
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 36
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 13
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 1
+        },
+        {
+          "id": "theia-haiku",
+          "count": 5
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 1
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "**The model may decide which permitted operation is useful. The surrounding software decides what is actually allowed.**"
+        },
+        {
+          "doc": "agent-experience-fable",
+          "quote": "one standard governs it all: **every fact traces to a source**"
+        },
+        {
+          "doc": "parser-performance-gpt",
+          "quote": "**a grammar is not only a language specification. It is also an executable data-processing architecture.**"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 4.571,
+      "spread": 0.783,
+      "range": [
+        0.0,
+        12.739
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "emphasis/repetition",
+      "dimension": "emphasis",
+      "marker": "repetition",
+      "description": "Deliberate anaphora runs: the same frame repeated three to seven times in consecutive sentences or paragraphs.",
+      "kind": "presence",
+      "measurement": "judged",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 0
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 3
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 2
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 0
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 1
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 0
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 0
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 0
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 1
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 0
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 2
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "A parser is a grader. A compiler is a grader. A type checker is a grader."
+        },
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "Models will change. Prices will change. Providers will change."
+        },
+        {
+          "doc": "textual-graphical-gpt",
+          "quote": "Sometimes that interface is primarily textual. Sometimes it is graphical."
+        }
+      ],
+      "tier": 3,
+      "tier_override": 2,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Review round: raised from tier 3 to tier 2 by the maintainers."
+      },
+      "note": "Counts are reading estimates (runs, not sentences).",
+      "rate": 0.205,
+      "spread": 0.217,
+      "range": [
+        0.0,
+        1.582
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "lists/label-led-item",
+      "dimension": "lists",
+      "marker": "label-led-item",
+      "description": "Opens list items and paragraphs with a bold label plus colon or period.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "label_lead",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 8
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 7
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 6
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 6
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 78
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 14
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 6
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 7
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 3
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 0
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 0
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 6
+        },
+        {
+          "id": "monaco-opus",
+          "count": 3
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 1
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 10
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 3
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 13
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 15
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 8
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "generating-code-gemini",
+          "quote": "**Readable Generator Logic:** Indenting templates to match generator control flow"
+        },
+        {
+          "doc": "theia-haiku",
+          "quote": "**The Performance Trap:** Each notebook extension bundled its own copy of the Monaco editor"
+        },
+        {
+          "doc": "agent-experience-fable",
+          "quote": "**Map, not manual.** Keep it a compact map"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 4.412,
+      "spread": 0.739,
+      "range": [
+        0.0,
+        22.293
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "headings/colon-heading",
+      "dimension": "headings",
+      "marker": "colon-heading",
+      "description": "Titles and headings in Hook: Subtitle form.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "colon_heading_share",
+      "unit": "share_of_headings",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "rate": 0.0
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "rate": 0.167
+        },
+        {
+          "id": "domain-ai-gpt",
+          "rate": 0.071
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "rate": 0.071
+        },
+        {
+          "id": "email-gemini-gpt",
+          "rate": 0.0
+        },
+        {
+          "id": "generating-code-gemini",
+          "rate": 0.571
+        },
+        {
+          "id": "langium-governance-opus",
+          "rate": 0.143
+        },
+        {
+          "id": "langium-llvm-fable",
+          "rate": 0.286
+        },
+        {
+          "id": "linkedin-gemini",
+          "rate": 0.0
+        },
+        {
+          "id": "linkedin-gpt",
+          "rate": 0.333
+        },
+        {
+          "id": "linkedin-opus",
+          "rate": 0.333
+        },
+        {
+          "id": "lionweb-sonnet",
+          "rate": 0.7
+        },
+        {
+          "id": "monaco-opus",
+          "rate": 0.545
+        },
+        {
+          "id": "parser-performance-gpt",
+          "rate": 0.125
+        },
+        {
+          "id": "presentations-gemini",
+          "rate": 0.667
+        },
+        {
+          "id": "presentations-gpt",
+          "rate": 1.0
+        },
+        {
+          "id": "presentations-sonnet",
+          "rate": 1.0
+        },
+        {
+          "id": "software-business-gemini",
+          "rate": 0.5
+        },
+        {
+          "id": "software-business-gpt",
+          "rate": 0.091
+        },
+        {
+          "id": "software-business-sonnet",
+          "rate": 0.357
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "rate": 0.0
+        },
+        {
+          "id": "theia-haiku",
+          "rate": 0.4
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "rate": 0.571
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "presentations-sonnet",
+          "quote": "One Protocol, Any IDE: Bringing Real-Time Collaboration to [product] and Beyond",
+          "redacted": true
+        },
+        {
+          "doc": "theia-haiku",
+          "quote": "Building Native Notebook Support in Eclipse Theia: How Open Source Powers Custom Development Environments"
+        },
+        {
+          "doc": "generating-code-gemini",
+          "quote": "The Formatting Dilemma: Maintainability vs. Artifact Cleanliness"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 0.218,
+      "spread": 0.826,
+      "range": [
+        0.0,
+        1.0
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "headings/heading-case",
+      "dimension": "headings",
+      "marker": "heading-case",
+      "description": "Title Case headings; strongly model-split rather than universal.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "heading_title_case_share",
+      "unit": "share_of_headings",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "rate": 0.0
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "rate": 0.833
+        },
+        {
+          "id": "domain-ai-gpt",
+          "rate": 0.071
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "rate": 0.071
+        },
+        {
+          "id": "email-gemini-gpt",
+          "rate": 0.0
+        },
+        {
+          "id": "generating-code-gemini",
+          "rate": 1.0
+        },
+        {
+          "id": "langium-governance-opus",
+          "rate": 0.0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "rate": 0.0
+        },
+        {
+          "id": "linkedin-gemini",
+          "rate": 0.0
+        },
+        {
+          "id": "linkedin-gpt",
+          "rate": 0.0
+        },
+        {
+          "id": "linkedin-opus",
+          "rate": 0.0
+        },
+        {
+          "id": "lionweb-sonnet",
+          "rate": 0.1
+        },
+        {
+          "id": "monaco-opus",
+          "rate": 0.0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "rate": 0.125
+        },
+        {
+          "id": "presentations-gemini",
+          "rate": 0.5
+        },
+        {
+          "id": "presentations-gpt",
+          "rate": 0.833
+        },
+        {
+          "id": "presentations-sonnet",
+          "rate": 1.0
+        },
+        {
+          "id": "software-business-gemini",
+          "rate": 1.0
+        },
+        {
+          "id": "software-business-gpt",
+          "rate": 0.045
+        },
+        {
+          "id": "software-business-sonnet",
+          "rate": 0.714
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "rate": 0.0
+        },
+        {
+          "id": "theia-haiku",
+          "rate": 0.9
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "rate": 0.857
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "theia-haiku",
+          "quote": "The Problem: Why Earlier Approaches Fell Short"
+        },
+        {
+          "doc": "generating-code-gemini",
+          "quote": "Architecting Scalable Code Generation for Domain-Specific Languages: An Enterprise Perspective"
+        }
+      ],
+      "tier": 2,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "Bimodal: Gemini/Haiku/GPT-report output near 1.0, Claude/GPT article output at 0.",
+      "rate": 0.204,
+      "spread": 0.609,
+      "range": [
+        0.0,
+        1.0
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "report"
+      ],
+      "tier_reason": "fewer than 3 quotes"
+    },
+    {
+      "id": "opener-closer/closer-type",
+      "dimension": "opener-closer",
+      "marker": "closer-type",
+      "description": "Closes pieces on a detachable punchline, a title echo, or a call to action rather than a summary.",
+      "kind": "presence",
+      "measurement": "judged",
+      "unit": "count",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 1,
+          "rate": 1.0
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0,
+          "rate": 0.0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 1,
+          "rate": 1.0
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 1,
+          "rate": 1.0
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 0,
+          "rate": 0.0
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0,
+          "rate": 0.0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 1,
+          "rate": 1.0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 1,
+          "rate": 1.0
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0,
+          "rate": 0.0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 1,
+          "rate": 1.0
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 2,
+          "rate": 2.0
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 1,
+          "rate": 1.0
+        },
+        {
+          "id": "monaco-opus",
+          "count": 1,
+          "rate": 1.0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 1,
+          "rate": 1.0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0,
+          "rate": 0.0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0,
+          "rate": 0.0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0,
+          "rate": 0.0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0,
+          "rate": 0.0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 1,
+          "rate": 1.0
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0,
+          "rate": 0.0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 1,
+          "rate": 1.0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 1,
+          "rate": 1.0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0,
+          "rate": 0.0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "That is domain-specific AI."
+        },
+        {
+          "doc": "linkedin-opus",
+          "quote": "Early-stage proof of concept, fully open. Come break it."
+        },
+        {
+          "doc": "monaco-opus",
+          "quote": "Issues, pull requests and awkward questions are all welcome — the awkward ones especially."
+        }
+      ],
+      "tier": 2,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "Judged; count 1 per document whose final lines show the habit. The 2023-era recap-summary closer is absent from this corpus.",
+      "rate": 0.599,
+      "spread": 0.565,
+      "range": [
+        0.0,
+        2.0
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "report",
+        "social"
+      ],
+      "tier_reason": "judged, not counted"
+    },
+    {
+      "id": "spelling-lexical/contraction",
+      "dimension": "spelling-lexical",
+      "marker": "contraction",
+      "description": "Contracts freely in conversational output; fully uncontracted in formal report output — a bimodal register/model split.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "contraction",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 24
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 68
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 127
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 21
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 9
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 0
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 15
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 46
+        },
+        {
+          "id": "monaco-opus",
+          "count": 17
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 2
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 5
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 13
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 0
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 8
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 6
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 3
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "monaco-opus",
+          "quote": "If you'd rather hear how a library that once sat in maintenance mode became shared infrastructure"
+        },
+        {
+          "doc": "lionweb-sonnet",
+          "quote": "That's not a wishlist."
+        },
+        {
+          "doc": "langium-llvm-fable",
+          "quote": "what happens to these files once they're written?"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "14 of 23 documents; zero in every GPT/Gemini report-register document, up to 25/1k in Claude articles. The split itself is the signal.",
+      "rate": 8.278,
+      "spread": 0.609,
+      "range": [
+        0.0,
+        25.178
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "spelling-lexical/hyphen-compound",
+      "dimension": "spelling-lexical",
+      "marker": "hyphen-compound",
+      "description": "Coins hyphenated modifiers freely: IDE-grade, theme-aware, editor-centric, outcome-priced.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "hyphen_compound",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 5
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 4
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 7
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 6
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 13
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 4
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 1
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 2
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 3
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 3
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 4
+        },
+        {
+          "id": "monaco-opus",
+          "count": 2
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 3
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 7
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 7
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 6
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 6
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 11
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 5
+        },
+        {
+          "id": "theia-haiku",
+          "count": 2
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 2
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "linkedin-gpt",
+          "quote": "Baukasten is designed for the dense, tool-heavy interfaces we regularly build"
+        },
+        {
+          "doc": "presentations-sonnet",
+          "quote": "extension authors lost their only theme-aware component set"
+        },
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "AI-ready architecture is usually just good architecture, made explicit."
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 2.342,
+      "spread": 0.913,
+      "range": [
+        0.0,
+        8.547
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "spelling-lexical/hedged-number",
+      "dimension": "spelling-lexical",
+      "marker": "hedged-number",
+      "description": "Precise figures behind vagueness hedges: roughly 87%, approximately 20%.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "hedged_number",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 3
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 1
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 0
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 1
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 3
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 2
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 0
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 6
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 1
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 2
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 3
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 5
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 16
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "software-business-sonnet",
+          "quote": "roughly 20–56% on well-scoped work"
+        },
+        {
+          "doc": "agent-experience-fable",
+          "quote": "Ona merged roughly 87% of changes without human involvement"
+        }
+      ],
+      "tier": 2,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 0.978,
+      "spread": 0.478,
+      "range": [
+        0.0,
+        5.782
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "fewer than 3 quotes"
+    },
+    {
+      "id": "content-conventions/source-as-agent",
+      "dimension": "content-conventions",
+      "marker": "source-as-agent",
+      "description": "Institutions as agents of reporting verbs, usually unlinked: an analyst firm cautions, a consultancy explicitly says.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "source_as_agent",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 0
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 3
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 1
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 1
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 0
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 1
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 1
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 1
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 15
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 2
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 1
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "software-business-gpt",
+          "quote": "[company] explicitly says skilled talent and agility now join cost reduction as major outsourcing drivers",
+          "redacted": true
+        },
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "[company] describes an agent in similarly architectural terms",
+          "redacted": true
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "Counter is noisy (people as subjects count too); concentrated in report register.",
+      "rate": 0.591,
+      "spread": 0.391,
+      "range": [
+        0.0,
+        4.26
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "content-conventions/term-introduction",
+      "dimension": "content-conventions",
+      "marker": "term-introduction",
+      "description": "Introduces terms by spelling them out and appending the acronym in parentheses; most parentheses serve this, not asides.",
+      "kind": "presence",
+      "measurement": "counted",
+      "regex": "\\((?:[A-Z][a-z]?){2,}s?\\)",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 1
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 5
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 0
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 4
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 2
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 1
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 0
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 0
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 0
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 3
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 6
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 0
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 1
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "software-business-gemini",
+          "quote": "growing at a compound annual growth rate (CAGR) of 11.5%"
+        },
+        {
+          "doc": "generating-code-gemini",
+          "quote": "driving up Mean Time to Recovery (MTTR)"
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "Strongest in Gemini/GPT enterprise prose.",
+      "rate": 0.523,
+      "spread": 0.348,
+      "range": [
+        0.0,
+        8.547
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "content-conventions/arrow-pipeline",
+      "dimension": "content-conventions",
+      "marker": "arrow-pipeline",
+      "description": "Inline arrow chains as compressed process diagrams: intent → generation → validation → repair.",
+      "kind": "presence",
+      "measurement": "counted",
+      "regex": "→|──+>",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 3
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 6
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 6
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 18
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 0
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 0
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 0
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 0
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "**intent → generation → validation → repair → verified result**"
+        },
+        {
+          "doc": "email-gemini-gpt",
+          "quote": "natural-language intent → DSL proposal → parse → validate → repair if necessary → present result"
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 0.75,
+      "spread": 0.174,
+      "range": [
+        0.0,
+        1.835
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "email"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "content-conventions/emoji-bullet",
+      "dimension": "content-conventions",
+      "marker": "emoji-bullet",
+      "description": "Emoji as bullet markers and decoration in social-media register.",
+      "kind": "presence",
+      "measurement": "judged",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 0
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 0
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 0
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 12
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 0
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 3
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 0
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 0
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "linkedin-gemini",
+          "quote": "✅ Prompt the agent together"
+        },
+        {
+          "doc": "linkedin-opus",
+          "quote": "🔹 **A CLI.**"
+        }
+      ],
+      "tier": 2,
+      "tier_override": 1,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Review round: raised from tier 2 to tier 1 by the maintainers, within its social register scope."
+      },
+      "note": "Register-bound: LinkedIn posts only; Gemini saturates, Claude Opus uses them sparingly, GPT not at all. Counts are reading estimates.",
+      "rate": 4.972,
+      "spread": 0.667,
+      "range": [
+        0.0,
+        20.979
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "social"
+      ],
+      "register_scope": [
+        "social"
+      ],
+      "tier_reason": "judged, not counted; present in fewer than 3 documents; fewer than 3 quotes"
+    },
+    {
+      "id": "contrast-frames/comma-not",
+      "dimension": "contrast-frames",
+      "marker": "comma-not",
+      "description": "Sentence-final negated foil: a tested feature, not an afterthought.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_comma_not",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 2
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 2
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 7
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 1
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 1
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 2
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 1
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 1
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 8
+        },
+        {
+          "id": "monaco-opus",
+          "count": 1
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 1
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 2
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 0
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 1
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 1
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "lionweb-sonnet",
+          "quote": "a live, adopted protocol effort, not a paper spec."
+        },
+        {
+          "doc": "presentations-sonnet",
+          "quote": "performance has to be a tested feature, not an afterthought."
+        },
+        {
+          "doc": "linkedin-gpt",
+          "quote": "an open collaboration layer that works across development environments instead of creating another isolated ecosystem"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 0.705,
+      "spread": 0.609,
+      "range": [
+        0.0,
+        4.379
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "contrast-frames/not-but",
+      "dimension": "contrast-frames",
+      "marker": "not-but",
+      "description": "Negative parallelism inside one sentence: not X, but Y.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_not_but",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 0
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 2
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 3
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 0
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 0
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 1
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 1
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 3
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 2
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 1
+        },
+        {
+          "id": "theia-haiku",
+          "count": 1
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "presentations-gpt",
+          "quote": "we treat constraints not as a limitation, but as an optimization"
+        },
+        {
+          "doc": "software-business-sonnet",
+          "quote": "The picture in software hiring is not a uniform decline — it's a split between a contracting entry-level market and resilient-to-strong demand for experienced engineers."
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 0.318,
+      "spread": 0.348,
+      "range": [
+        0.0,
+        0.993
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "contrast-frames/split-reframe",
+      "dimension": "contrast-frames",
+      "marker": "split-reframe",
+      "description": "Negation and reframe across two sentences: X is not A. It is B.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_split_reframe",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 0
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 4
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 2
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 0
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 1
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 1
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 0
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 1
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 1
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 1
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 2
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 1
+        },
+        {
+          "id": "theia-haiku",
+          "count": 1
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "langium-governance-opus",
+          "quote": "That is not generosity. It is the price of being infrastructure, and we are paying it deliberately."
+        },
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "The goal isn't more context. It's more relevant context."
+        }
+      ],
+      "tier": 2,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 0.341,
+      "spread": 0.435,
+      "range": [
+        0.0,
+        1.038
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "report",
+        "social"
+      ],
+      "tier_reason": "fewer than 3 quotes"
+    },
+    {
+      "id": "contrast-frames/rather-than",
+      "dimension": "contrast-frames",
+      "marker": "rather-than",
+      "description": "Default contrast connector: rather than / instead of / Instead,.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_rather_than",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 2
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 1
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 7
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 5
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 27
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 1
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 3
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 1
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 5
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 3
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 5
+        },
+        {
+          "id": "monaco-opus",
+          "count": 3
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 5
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 3
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 4
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 3
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 12
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 9
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 2
+        },
+        {
+          "id": "theia-haiku",
+          "count": 3
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "software-business-gpt",
+          "quote": "AI then becomes a force multiplier rather than a threat to the business model."
+        },
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "layered guardrails rather than relying on a single model-level mechanism"
+        },
+        {
+          "doc": "monaco-opus",
+          "quote": "the coming months are about extension rather than upheaval"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 2.365,
+      "spread": 0.87,
+      "range": [
+        0.0,
+        4.44
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "contrast-frames/without-benefit",
+      "dimension": "contrast-frames",
+      "marker": "without-benefit",
+      "description": "Benefits stated as avoided costs: without building everything from scratch.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_without_benefit",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 2
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 3
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 3
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 2
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 11
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 1
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 2
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 1
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 1
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 1
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 1
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 1
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 1
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 1
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 2
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 1
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 3
+        },
+        {
+          "id": "theia-haiku",
+          "count": 5
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 1
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "theia-haiku",
+          "quote": "How do we give our users access to modern notebook workflows without building everything from scratch?"
+        },
+        {
+          "doc": "linkedin-opus",
+          "quote": "You still get the bidirectional lookup a language server needs — text offset to AST node and back — without paying for a whole parallel structure."
+        },
+        {
+          "doc": "presentations-sonnet",
+          "quote": "applying live edits without reimplementing the entire collaboration stack from scratch"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "Counter is noisy; confirm hits by reading.",
+      "rate": 0.978,
+      "spread": 0.826,
+      "range": [
+        0.0,
+        4.965
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "reveal-frames/colon-punchline",
+      "dimension": "reveal-frames",
+      "marker": "colon-punchline",
+      "description": "Short setup, colon, payoff: The first proof: an OCT plugin.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_colon_punchline",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 15
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 5
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 15
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 10
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 1
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 3
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 3
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 9
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 8
+        },
+        {
+          "id": "monaco-opus",
+          "count": 7
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 3
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 1
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 2
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 2
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 4
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 5
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 1
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "linkedin-opus",
+          "quote": "The first proof: an OCT plugin for [product], available now on the [company] Marketplace.",
+          "redacted": true
+        },
+        {
+          "doc": "agent-experience-fable",
+          "quote": "The good news: this is an engineering problem, and it has engineering solutions."
+        },
+        {
+          "doc": "monaco-opus",
+          "quote": "The repository has a second job: it is where we validate new tooling before we recommend it to anyone else."
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 2.138,
+      "spread": 0.739,
+      "range": [
+        0.0,
+        7.339
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "reveal-frames/nominal-reveal",
+      "dimension": "reveal-frames",
+      "marker": "nominal-reveal",
+      "description": "Abstract-noun payoff announcements: Here's the unexpected part:, The broader lesson:.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_nominal_reveal",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 4
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 4
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 4
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 1
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 1
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 1
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 4
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 3
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 1
+        },
+        {
+          "id": "monaco-opus",
+          "count": 2
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 2
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 4
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 0
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 2
+        },
+        {
+          "id": "theia-haiku",
+          "count": 1
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "linkedin-opus",
+          "quote": "Here's the unexpected part: the same deliberate constraint that keeps humans consistent also keeps coding agents on the rails."
+        },
+        {
+          "doc": "presentations-gpt",
+          "quote": "The broader lesson: interoperability becomes much easier when collaboration is infrastructure, not an editor feature."
+        },
+        {
+          "doc": "agent-experience-fable",
+          "quote": "Here's a more useful lens: the agent did exactly what your repository allowed it to do."
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 0.773,
+      "spread": 0.609,
+      "range": [
+        0.0,
+        3.562
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "reveal-frames/verdict-opener",
+      "dimension": "reveal-frames",
+      "marker": "verdict-opener",
+      "description": "Sentence-initial That/This plus a verdict verb: That changes today.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_verdict_opener",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 2
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 1
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 21
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 20
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 20
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 3
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 7
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 5
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 3
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 5
+        },
+        {
+          "id": "monaco-opus",
+          "count": 2
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 4
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 2
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 12
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 6
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "allstar-gemini-flash",
+          "quote": "That changes today."
+        },
+        {
+          "doc": "langium-llvm-fable",
+          "quote": "That's the position we like to be in with clients"
+        },
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "That is the shift from **generic AI to domain-specific AI**."
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 2.57,
+      "spread": 0.652,
+      "range": [
+        0.0,
+        5.78
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "reveal-frames/question-answer",
+      "dimension": "reveal-frames",
+      "marker": "question-answer",
+      "description": "A rhetorical question answered by the very next sentence.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_question_answer",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 6
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 2
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 1
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 6
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 1
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 1
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 2
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 1
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 0
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 1
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 1
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 0
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 2
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 3
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "vscode-extension-gemini-pro",
+          "quote": "How does VS Code know when and where to show your React app? You register a **Webview View Provider** in your extension."
+        },
+        {
+          "doc": "presentations-sonnet",
+          "quote": "But what about [product], or any IDE that isn't built in TypeScript? This talk walks through the OCT Service Process",
+          "redacted": true
+        }
+      ],
+      "tier": 2,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "Counter is noisy; confirm hits by reading.",
+      "rate": 0.614,
+      "spread": 0.522,
+      "range": [
+        0.0,
+        3.812
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "social"
+      ],
+      "tier_reason": "fewer than 3 quotes"
+    },
+    {
+      "id": "reveal-frames/question-volley",
+      "dimension": "reveal-frames",
+      "marker": "question-volley",
+      "description": "Runs of three or more parallel unanswered questions as evidence of thoroughness.",
+      "kind": "presence",
+      "measurement": "counted",
+      "regex": "\\?\\s+(?:Which|What|Was|Did|Who|How|Does|Can|Under)\\b[^?.!\\n]{0,90}\\?",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 0
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 12
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 8
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 2
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 0
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 0
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 0
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 0
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "Did the database update? Was the configuration valid? Did it call the right tools? Did it respect the approval boundary?"
+        },
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "Which product version is the user working with? Which rules apply to this customer?"
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 0.5,
+      "spread": 0.13,
+      "range": [
+        0.0,
+        3.113
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "email"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "reveal-frames/what-if",
+      "dimension": "reveal-frames",
+      "marker": "what-if",
+      "description": "What if / What happens when as a hook.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_what_if",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 0
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 0
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 0
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 1
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 2
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 1
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 0
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 1
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 3
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 2
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 0
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 1
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "linkedin-gemini",
+          "quote": "What if an AI agent could join your collaborative coding session just like another developer?"
+        },
+        {
+          "doc": "presentations-gpt",
+          "quote": "But what if the same collaborative session needs to span VS Code, Eclipse Theia, [product], Eclipse IDE, and custom applications?",
+          "redacted": true
+        },
+        {
+          "doc": "presentations-sonnet",
+          "quote": "What happens when you invite a coding agent into a live, multi-person session"
+        }
+      ],
+      "tier": 1,
+      "tier_override": 2,
+      "review": {
+        "verdict": "nuanced",
+        "note": "Review round: a genre convention of abstracts and LinkedIn posts as much as a machine tell; held at tier 2."
+      },
+      "note": "Register-bound: hooks for LinkedIn posts and talk abstracts.",
+      "rate": 1.797,
+      "spread": 1.0,
+      "range": [
+        0.784,
+        2.671
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "social"
+      ],
+      "register_scope": [
+        "abstract",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "reveal-frames/enumeration-announcement",
+      "dimension": "reveal-frames",
+      "marker": "enumeration-announcement",
+      "description": "A counted promise before delivering: Three reasons decided it. Five forces are driving this shift.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_enumeration_announcement",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 5
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 1
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 1
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 2
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 1
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 2
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 0
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 3
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 1
+        },
+        {
+          "id": "monaco-opus",
+          "count": 2
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 2
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 0
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 1
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 1
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 1
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "agent-experience-fable",
+          "quote": "Four principles carry the sensor side."
+        },
+        {
+          "doc": "langium-governance-opus",
+          "quote": "Three reasons decided it."
+        },
+        {
+          "doc": "software-business-sonnet",
+          "quote": "Five forces are driving this shift simultaneously"
+        }
+      ],
+      "tier": 2,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 0.523,
+      "spread": 0.565,
+      "range": [
+        0.0,
+        2.446
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "moderate evidence"
+    },
+    {
+      "id": "significance-tails/significance-tail",
+      "dimension": "significance-tails",
+      "marker": "significance-tail",
+      "description": "Tails and headings that tell the reader why to care: That matters because, Why X Matters.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_significance_tail",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 0
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 5
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 5
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 0
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 2
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 1
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 0
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 0
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 3
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 1
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 2
+        },
+        {
+          "id": "theia-haiku",
+          "count": 2
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "parser-performance-gpt",
+          "quote": "That matters because these decisions are usually executed very frequently."
+        },
+        {
+          "doc": "theia-haiku",
+          "quote": "Why This Matters Beyond Theia"
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 0.478,
+      "spread": 0.348,
+      "range": [
+        0.0,
+        1.986
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "report",
+        "social"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "significance-tails/worth-noting",
+      "dimension": "significance-tails",
+      "marker": "worth-noting",
+      "description": "Worth-noting hedges: worth weighing, deserves special respect, the combination worth noting.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_worth_noting",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 2
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 2
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 0
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 1
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 1
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 0
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 1
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 4
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 1
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 0
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "lionweb-sonnet",
+          "quote": "That's the combination worth noting: we're the inventors, and we're also the people you can bring in to make it fit your specific architecture."
+        },
+        {
+          "doc": "agent-experience-fable",
+          "quote": "Specs deserve special respect here."
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 0.273,
+      "spread": 0.304,
+      "range": [
+        0.0,
+        2.189
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "social"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "significance-tails/participial-tail",
+      "dimension": "significance-tails",
+      "marker": "participial-tail",
+      "description": "Main clause plus a present-participle benefit tail: …, allowing companies to prototype in days.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_participial_tail",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 0
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 3
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 0
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 0
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 3
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 2
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 0
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 0
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 1
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 1
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 1
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 1
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 3
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "software-business-gemini",
+          "quote": "It drastically lowers the unit cost of software development, allowing companies to prototype and test new digital products in days rather than months."
+        },
+        {
+          "doc": "presentations-gemini",
+          "quote": "demonstrating how to break down silos between tools and empower developer teams to collaborate frictionlessly"
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 0.341,
+      "spread": 0.348,
+      "range": [
+        0.0,
+        4.777
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "report",
+        "social"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "rule-of-three/triad",
+      "dimension": "rule-of-three",
+      "marker": "triad",
+      "description": "Three coordinated items as the default series length.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_triad",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 3
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 10
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 8
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 13
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 3
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 1
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 2
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 6
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 7
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 2
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 3
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 1
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 3
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 2
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 4
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 21
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 9
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 7
+        },
+        {
+          "id": "theia-haiku",
+          "count": 3
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "agent-experience-fable",
+          "quote": "the knowledge and the checks an agent needs are in the repo, executable, and current"
+        },
+        {
+          "doc": "langium-llvm-fable",
+          "quote": "fast, on real hardware, and in a way our team can debug when it misbehaves"
+        },
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "important mistakes are detectable, containable, and correctable"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "Counter is noisy (any three-item series); the tell is density, not any single hit.",
+      "rate": 2.456,
+      "spread": 0.826,
+      "range": [
+        0.0,
+        5.964
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "rule-of-three/adjective-stack",
+      "dimension": "rule-of-three",
+      "marker": "adjective-stack",
+      "description": "Stacked evaluative adjectives: robust, real-time collaborative coding.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_adjective_stack",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 1
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 6
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 0
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 3
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 2
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 1
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 3
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 1
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 0
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 2
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 7
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 1
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 1
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "presentations-gemini",
+          "quote": "designed to bring robust, real-time collaborative coding to non-TypeScript ecosystems"
+        },
+        {
+          "doc": "allstar-gemini-flash",
+          "quote": "Having to refactor clean, human-readable grammar rules simply because an underlying parser engine lacks algorithmic power is frustrating"
+        }
+      ],
+      "tier": 2,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "Strongest in Gemini output (13.4/1k in its talk abstracts).",
+      "rate": 0.637,
+      "spread": 0.478,
+      "range": [
+        0.0,
+        13.359
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "fewer than 3 quotes"
+    },
+    {
+      "id": "signposting/meta-signpost",
+      "dimension": "signposting",
+      "marker": "meta-signpost",
+      "description": "The text announcing its own plan: This talk walks through, We'll also look at.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_meta_signpost",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 1
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 0
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 1
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 1
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 2
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 0
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 0
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 1
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 5
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 7
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 11
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 0
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "presentations-sonnet",
+          "quote": "This talk walks through the bets behind Fastbelt's architecture"
+        },
+        {
+          "doc": "presentations-gpt",
+          "quote": "We’ll also look at the design decisions that make the same approach applicable to Eclipse IDE and other desktop tools."
+        },
+        {
+          "doc": "presentations-gemini",
+          "quote": "this session provides actionable insights into achieving unprecedented performance in your language tooling"
+        }
+      ],
+      "tier": 1,
+      "tier_override": 2,
+      "review": {
+        "verdict": "nuanced",
+        "note": "Review round: a genre convention of talk abstracts as much as a machine tell; held at tier 2."
+      },
+      "note": "Register-bound: near-obligatory in talk abstracts (up to 12/1k), rare elsewhere.",
+      "rate": 9.027,
+      "spread": 1.0,
+      "range": [
+        6.233,
+        12.209
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract"
+      ],
+      "register_scope": [
+        "abstract"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, single-register corpus (register condition waived), >=3 quotes"
+    },
+    {
+      "id": "signposting/summary-opener",
+      "dimension": "signposting",
+      "marker": "summary-opener",
+      "description": "Summary openers (In conclusion, Overall) — the 2023-era tell, now near-extinct.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_summary_opener",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 0
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 0
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 0
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 0
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 0
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 0
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 1
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "software-business-gpt",
+          "quote": "Overall conclusion"
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "Calibration row: one hit in 23 documents, and that one is a closing heading. Treat presence in a draft as older-generation output; absence proves nothing.",
+      "rate": 0.023,
+      "spread": 0.043,
+      "range": [
+        0.0,
+        0.284
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "report"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "authenticity-stance/authenticity-word",
+      "dimension": "authenticity-stance",
+      "marker": "authenticity-word",
+      "description": "Certifies sincerity with actually/genuinely/real/honest against an implied fake.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_authenticity",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 13
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 1
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 11
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 30
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 27
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 5
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 6
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 4
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 3
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 5
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 11
+        },
+        {
+          "id": "monaco-opus",
+          "count": 7
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 11
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 6
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 9
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 7
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 4
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 6
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 12
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 1
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "theia-haiku",
+          "quote": "It demanded deep architectural thinking and genuine commitment to the open source ecosystem."
+        },
+        {
+          "doc": "presentations-gpt",
+          "quote": "more reasoning spent on what the software actually does"
+        },
+        {
+          "doc": "lionweb-sonnet",
+          "quote": "An honest maturity check: what's solid, and what's still open"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 4.071,
+      "spread": 0.87,
+      "range": [
+        0.0,
+        11.917
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "authenticity-stance/absolutizer",
+      "dimension": "authenticity-stance",
+      "marker": "absolutizer",
+      "description": "Flat universals where hand-written prose hedges: every, entire, never, always.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_absolutizer",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 29
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 7
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 16
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 35
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 45
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 2
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 12
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 12
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 3
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 5
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 13
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 11
+        },
+        {
+          "id": "monaco-opus",
+          "count": 8
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 8
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 1
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 8
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 4
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 2
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 8
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 3
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 5
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 3
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "agent-experience-fable",
+          "quote": "An agent onboards at the start of every single task"
+        },
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "Agents are running in every function that will have them."
+        },
+        {
+          "doc": "langium-llvm-fable",
+          "quote": "the same question comes up in every project"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 5.458,
+      "spread": 0.957,
+      "range": [
+        0.0,
+        14.188
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "authenticity-stance/anti-hype",
+      "dimension": "authenticity-stance",
+      "marker": "anti-hype",
+      "description": "Disavows hype in its own cadence: No hype, no magic; not a wishlist.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_anti_hype",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 0
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 0
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 0
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 1
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 1
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 2
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 1
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 0
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 2
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 4
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 0
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 0
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 1
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 1
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "presentations-sonnet",
+          "quote": "No hype, no magic — just the questions worth asking before your team writes the first prompt."
+        },
+        {
+          "doc": "lionweb-sonnet",
+          "quote": "That's not a wishlist."
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "Concentrated in pitch registers (abstracts, LinkedIn).",
+      "rate": 0.296,
+      "spread": 0.348,
+      "range": [
+        0.0,
+        4.44
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "social"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "stock-phrasing/buzzword",
+      "dimension": "stock-phrasing",
+      "marker": "buzzword",
+      "description": "Marketing-register buzzwords: seamless, cutting-edge, empower, democratization.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_vocabulary",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 3
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 7
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 8
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 10
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 8
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 2
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 1
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 2
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 0
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 0
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 1
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 13
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 4
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 2
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 1
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 1
+        },
+        {
+          "id": "theia-haiku",
+          "count": 2
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "presentations-gemini",
+          "quote": "Enter Baukasten: a cutting-edge UI toolkit built to eliminate this compromise."
+        },
+        {
+          "doc": "presentations-gemini",
+          "quote": "empowers teams to rapidly engineer rich, domain-specific tooling that works seamlessly across web platforms"
+        },
+        {
+          "doc": "software-business-gemini",
+          "quote": "the democratization of coding via Low-Code/No-Code (LCNC) platforms"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "Model-split: Gemini output carries most of the rate (25/1k in its abstracts); Claude and GPT are near zero.",
+      "rate": 1.478,
+      "spread": 0.652,
+      "range": [
+        0.0,
+        24.809
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "stock-phrasing/trend-word",
+      "dimension": "stock-phrasing",
+      "marker": "trend-word",
+      "description": "Unfalsifiable change words: increasingly, rapidly, transformation, than ever.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_trend_word",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 1
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 16
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 6
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 5
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 1
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 3
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 4
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 2
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 0
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 1
+        },
+        {
+          "id": "monaco-opus",
+          "count": 1
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 5
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 4
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 9
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 22
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 10
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 1
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "software-business-gemini",
+          "quote": "The software development industry is undergoing a radical transformation."
+        },
+        {
+          "doc": "presentations-gemini",
+          "quote": "As development environments become increasingly fragmented"
+        },
+        {
+          "doc": "linkedin-gemini",
+          "quote": "makes cross-platform collaborative coding smoother and more accessible than ever"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 2.069,
+      "spread": 0.696,
+      "range": [
+        0.0,
+        12.821
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "stock-phrasing/spatial-metaphor",
+      "dimension": "stock-phrasing",
+      "marker": "spatial-metaphor",
+      "description": "The problem as a space to cross: bridge, gap, silo, friction, barrier.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_spatial_metaphor",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 0
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 1
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 6
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 5
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 6
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 3
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 1
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 6
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 3
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 7
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 5
+        },
+        {
+          "id": "monaco-opus",
+          "count": 7
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 4
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 3
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 5
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 0
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 1
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 2
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 1
+        },
+        {
+          "id": "theia-haiku",
+          "count": 4
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 2
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "lionweb-sonnet",
+          "quote": "This is the gap LionWeb set out to close."
+        },
+        {
+          "doc": "presentations-gemini",
+          "quote": "demonstrating how to break down silos between tools and empower developer teams"
+        },
+        {
+          "doc": "theia-haiku",
+          "quote": "Closing the Gap: Bringing Notebooks to Theia"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "Counter is noisy (literal gaps and bridges count too).",
+      "rate": 1.637,
+      "spread": 0.826,
+      "range": [
+        0.0,
+        10.49
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "stock-phrasing/stock-idiom",
+      "dimension": "stock-phrasing",
+      "marker": "stock-idiom",
+      "description": "One or two borrowed idioms per piece: table stakes, heavy lifting, under the hood, from scratch.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_stock_idiom",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 0
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 3
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 3
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 2
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 5
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 0
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 1
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 2
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 1
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 1
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 2
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 2
+        },
+        {
+          "id": "monaco-opus",
+          "count": 0
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 1
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 1
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 4
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 1
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 1
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 2
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 0
+        },
+        {
+          "id": "theia-haiku",
+          "count": 2
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 1
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "theia-haiku",
+          "quote": "notebooks weren't experimental anymore—they were table stakes"
+        },
+        {
+          "doc": "vscode-extension-gemini-pro",
+          "quote": "You get a parser, an AST, and language server features like autocomplete right out of the box."
+        },
+        {
+          "doc": "software-business-gemini",
+          "quote": "AI agents handle the repetitive \"heavy lifting\" of writing boilerplate code"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "",
+      "rate": 0.796,
+      "spread": 0.783,
+      "range": [
+        0.0,
+        4.44
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "stock-phrasing/from-to",
+      "dimension": "stock-phrasing",
+      "marker": "from-to",
+      "description": "Trajectory framing from X to Y, in titles above all: from bridge to toolbox.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_false_range",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "agent-experience-fable",
+          "count": 1
+        },
+        {
+          "id": "allstar-gemini-flash",
+          "count": 0
+        },
+        {
+          "id": "domain-ai-gpt",
+          "count": 3
+        },
+        {
+          "id": "domain-ai-sonnet",
+          "count": 5
+        },
+        {
+          "id": "email-gemini-gpt",
+          "count": 2
+        },
+        {
+          "id": "generating-code-gemini",
+          "count": 1
+        },
+        {
+          "id": "langium-governance-opus",
+          "count": 0
+        },
+        {
+          "id": "langium-llvm-fable",
+          "count": 1
+        },
+        {
+          "id": "linkedin-gemini",
+          "count": 0
+        },
+        {
+          "id": "linkedin-gpt",
+          "count": 0
+        },
+        {
+          "id": "linkedin-opus",
+          "count": 0
+        },
+        {
+          "id": "lionweb-sonnet",
+          "count": 0
+        },
+        {
+          "id": "monaco-opus",
+          "count": 1
+        },
+        {
+          "id": "parser-performance-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-gemini",
+          "count": 1
+        },
+        {
+          "id": "presentations-gpt",
+          "count": 0
+        },
+        {
+          "id": "presentations-sonnet",
+          "count": 0
+        },
+        {
+          "id": "software-business-gemini",
+          "count": 2
+        },
+        {
+          "id": "software-business-gpt",
+          "count": 1
+        },
+        {
+          "id": "software-business-sonnet",
+          "count": 6
+        },
+        {
+          "id": "textual-graphical-gpt",
+          "count": 1
+        },
+        {
+          "id": "theia-haiku",
+          "count": 0
+        },
+        {
+          "id": "vscode-extension-gemini-pro",
+          "count": 1
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "monaco-opus",
+          "quote": "monaco-languageclient 10: from bridge to toolbox"
+        },
+        {
+          "doc": "software-business-sonnet",
+          "quote": "IT outsourcing is shifting from cost arbitrage to capability-and-governance partnerships"
+        }
+      ],
+      "tier": 2,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      },
+      "note": "Counter is noisy (real ranges count too); the marked form is the heading/title use.",
+      "rate": 0.591,
+      "spread": 0.565,
+      "range": [
+        0.0,
+        2.849
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report"
+      ],
+      "tier_reason": "fewer than 3 quotes"
+    }
+  ]
+}
