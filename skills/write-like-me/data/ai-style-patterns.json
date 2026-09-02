@@ -808,7 +808,7 @@
         },
         {
           "id": "email-gemini-gpt",
-          "rate": 0.552
+          "rate": 0.545
         },
         {
           "id": "generating-code-gemini",
@@ -904,7 +904,7 @@
         "note": ""
       },
       "note": "Share of prose paragraphs with exactly one sentence; above 0.5 in a third of the corpus.",
-      "rate": 0.428,
+      "rate": 0.426,
       "spread": 0.913,
       "range": [
         0.0,
@@ -936,7 +936,7 @@
         },
         {
           "id": "allstar-gemini-flash",
-          "rate": 0.122
+          "rate": 0.143
         },
         {
           "id": "domain-ai-gpt",
@@ -948,7 +948,7 @@
         },
         {
           "id": "email-gemini-gpt",
-          "rate": 0.281
+          "rate": 0.279
         },
         {
           "id": "generating-code-gemini",
@@ -980,7 +980,7 @@
         },
         {
           "id": "monaco-opus",
-          "rate": 0.15
+          "rate": 0.163
         },
         {
           "id": "parser-performance-gpt",
@@ -1044,7 +1044,7 @@
         "note": ""
       },
       "note": "Share of sentences with <= 8 words; the paired-epigram couplet (\"Adoption is universal. Value is rare.\") is this habit at its most visible.",
-      "rate": 0.231,
+      "rate": 0.232,
       "spread": 0.957,
       "range": [
         0.0,
@@ -4846,7 +4846,7 @@
         },
         {
           "id": "monaco-opus",
-          "count": 8
+          "count": 7
         },
         {
           "id": "parser-performance-gpt",
@@ -4911,7 +4911,7 @@
         "note": ""
       },
       "note": "",
-      "rate": 2.16,
+      "rate": 2.138,
       "spread": 0.739,
       "range": [
         0.0,
@@ -6188,7 +6188,7 @@
         },
         {
           "id": "email-gemini-gpt",
-          "count": 14
+          "count": 13
         },
         {
           "id": "generating-code-gemini",
@@ -6284,7 +6284,7 @@
         "note": ""
       },
       "note": "Counter is noisy (any three-item series); the tell is density, not any single hit.",
-      "rate": 2.479,
+      "rate": 2.456,
       "spread": 0.826,
       "range": [
         0.0,
@@ -6573,7 +6573,7 @@
       "register_scope": [
         "abstract"
       ],
-      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, single-register corpus (register condition waived), >=3 quotes"
     },
     {
       "id": "signposting/summary-opener",
@@ -7705,7 +7705,7 @@
         },
         {
           "id": "email-gemini-gpt",
-          "count": 3
+          "count": 2
         },
         {
           "id": "generating-code-gemini",
@@ -7797,7 +7797,7 @@
         "note": ""
       },
       "note": "Counter is noisy (real ranges count too); the marked form is the heading/title use.",
-      "rate": 0.614,
+      "rate": 0.591,
       "spread": 0.565,
       "range": [
         0.0,

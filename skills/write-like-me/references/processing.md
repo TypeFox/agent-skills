@@ -33,10 +33,10 @@ Where the brief does its work: choosing which of the author's habits to bring in
 Run the counters over each input document (per document — different generators leave different marks, and the report is aggregated afterwards):
 
 ```sh
-python3 scripts/textstats.py measure INPUT.md --db USER_DB.json --db data/ai-style-patterns.json --sort-gap --setting medium
+python3 scripts/textstats.py measure INPUT.md --db USER_DB.json --db data/ai-style-patterns.json --sort-gap --setting medium --register article
 ```
 
-`--setting` takes the strictness the request implies (SKILL.md), and the two flags add the columns Step 2 is built from — they cost nothing here, and one run is better than two.
+`--setting` takes the strictness the request implies (SKILL.md), and the two flags add the columns Step 2 is built from — they cost nothing here, and one run is better than two. `--register` names the input's register: a row whose `register_scope` excludes it is marked `[out of scope]`, classed neutral, and listed for the report, and an out-of-scope AI row is not evidence; without the flag the scope is shown on the row and the call is yours.
 
 The output has two parts: the built-in stats and counters, and every measurable DB pattern — the author's and the AI DB's — with the input's value, the DB rate and range, and a verdict. The AI DB's rows print without class or gap: their rates are the machine's, so `match` there means machine-typical, and they feed the AI-evidence column of Step 2 instead of being rewrite rows. The author-DB verdicts:
 
@@ -68,7 +68,7 @@ Rows are patterns (and any built-in AI counter with a striking value), columns a
 
 Three things the counters cannot see, and the table is not built until they are in it:
 
-- **The AI-evidence column**, which splits every remove row by confidence. *High*: the construction is AI-typical — an AI DB row, a built-in `ai_*` counter, or the author's own absence pattern (rate 0, and any occurrence of one is high-confidence by rule). *Low*: no AI evidence, so the excess could be a generator quirk outside the AI corpus or an effect of the topic — rewrite it only when the author pattern is tier 1 (tier 2 in the hard setting), otherwise flag it for the manual pass. `[manual]` marks the setting's own ceiling; this stricter one is yours to apply.
+- **The AI-evidence column**, which splits every remove row by confidence. *High*: the construction is AI-typical — an AI DB row, a built-in `ai_*` counter, or the author's own absence pattern (rate 0, and any occurrence of one is high-confidence by rule; a near-absence counts the same, its few corpus hits making the input's occurrence no more the author's). *Low*: no AI evidence, so the excess could be a generator quirk outside the AI corpus or an effect of the topic — rewrite it only when the author pattern is tier 1 (tier 2 in the hard setting), otherwise flag it for the manual pass. `[manual]` marks the setting's own ceiling; this stricter one is yours to apply. Two built-in counters fire on hand-written prose as a matter of course — `ai_verdict_opener` on a plain *This is …* hand-off, `ai_question_answer` on a real question — so where the author's own row covers the construction (`demonstrative-subject`, `closer-type`, `question-mark`) the veto holds and the AI row is no evidence against it.
 - **Judged patterns**, which carry no regex or stat and so get no row in the script's table — only a name on its *read for these* list: place each of them by reading, with the estimate from Step 1 and the same five classes.
 - **An example per row**, from the input and from the pattern's evidence quotes. Step 3 writes rules against examples; numbers alone produce rules that match the wrong thing.
 
@@ -90,7 +90,7 @@ The replacement construction comes from author-DB evidence — the pattern's own
 
 Because rules come only from the DB, non-native grammar errors can never enter a rewrite: extraction keeps them out of the DB by design ([german-l1-guidance.md](german-l1-guidance.md)), so there is nothing to apply — and a request to write "with all my quirks" cannot widen that, since processing has no source for such forms. Where the input itself contains one, leave it (fixing grammar is outside this skill's scope) and note it in the report.
 
-Targets are rates: for an em-dash row with author rate 0.4/1k and range 0–1.1, the rule leaves roughly 0–1 per 1,000 words in place, choosing the ones that read most like the author's own uses. A tone brief shifts that target within the range (see Tone steering above); a pattern with a `register_scope` is a target only for an input in one of those registers: an emails-only sign-off is not a target for a blog post.
+Targets are rates: for an em-dash row with author rate 0.4/1k and range 0–1.1, the rule leaves roughly 0–1 per 1,000 words in place, choosing the ones that read most like the author's own uses. A tone brief shifts that target within the range (see Tone steering above); a pattern with a `register_scope` is a target only for an input in one of those registers: an emails-only sign-off is not a target for a blog post (`measure --register` sets such rows aside as `[out of scope]`).
 
 ## Step 4 — Invariants
 
@@ -118,7 +118,7 @@ Rewrite each document in one pass with the full rule set in view. Rhythm, paragr
 Re-run the identical measurement on the rewritten text, plus the structure check:
 
 ```sh
-python3 scripts/textstats.py measure INPUT.md REWRITTEN.md --db USER_DB.json --sort-gap --setting medium
+python3 scripts/textstats.py measure INPUT.md REWRITTEN.md --db USER_DB.json --sort-gap --setting medium --register article
 python3 scripts/structure_check.py INPUT.md REWRITTEN.md
 ```
 
@@ -160,7 +160,7 @@ Setting: <soft|medium|hard>; tone: <brief in one line, or "none — profile rate
 - moved for tone: <pattern> — <what the brief asked for>
 
 ## Left for the manual pass
-- <pattern>: <why — tier above setting / low confidence / would have needed manufacture / no replacement in the DB>
+- <pattern>: <why — tier above setting / low confidence / out of the input's register / would have needed manufacture / no replacement in the DB>
 
 ## Not converged (rewrite rows that came to rest outside the range)
 - <pattern>: <rewritten value vs. the range> — <no slot / would have needed manufacture / held back by an invariant>

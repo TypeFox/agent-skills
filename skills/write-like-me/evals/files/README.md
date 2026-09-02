@@ -25,7 +25,7 @@ invert that eval. If you grow the corpus, re-check `styledb.py tiers` and re-rea
 
 ## `user-style.json` — the reviewed profile extracted from `corpus/`
 
-29 patterns: 9 at tier 1, 17 at tier 2, 3 at tier 3. 24 counted, 5 judged
+Every row carries a `confirmed` verdict, as a reviewed DB must. 29 patterns: 9 at tier 1, 17 at tier 2, 3 at tier 3. 24 counted, 5 judged
 (`opener-incident`, `closer-punch`, `self-deprecation`, `fragment`, `gambling-metaphor`) —
 the judged ones carry no counter, so they get no row and no verdict in `textstats.py measure`,
 only a name on the list it prints under *read for these*. No assertion grades whether a run
@@ -34,7 +34,7 @@ bar a grader can check without becoming a taste judgement.
 
 Two patterns are register-restricted **in `note` only**, not via `register_scope`
 (technique.md Step 3 endorses either): `lists/bullet-density` (docs) and
-`opener-closer/sign-off` (email), both tier 3. `textstats.py` has no notion of register, so
+`opener-closer/sign-off` (email), both tier 3. `textstats.py --register` sets aside only `register_scope` rows, so
 on an article it prints both as **`add` rows** — it will suggest adding bullets and
 "Cheers, Jo" to a blog post. That is intentional: only judgment stops those edits, which is
 what `register-respected` tests.

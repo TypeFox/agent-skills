@@ -4,11 +4,11 @@ The taxonomy is the shared coordinate system of every style-pattern DB — the a
 
 Vocabulary: a **pattern** is one measurable habit (dimension + marker) with its evidence; a **marker** is the concrete, observable form a habit takes; a **counter** is a mechanical measurement of a marker (a regex, or a statistic or built-in counter of `scripts/textstats.py`); a marker with no reliable counter is **judged** by reading instead.
 
-**How to use the tables.** They are a map of where to look and a naming standard, not a checklist to fill in. A normal author DB holds 20–40 patterns: the habits this corpus shows clearly, and the machine-typical constructions it conspicuously lacks (absences, each with what the author does *instead*). For every recorded marker, note *which form* the author uses and which members of the family never appear (*for instance* but never *for example*; *quite* but never *perhaps*) — member preferences are near-categorical, so the zero members go in the pattern's `displaces` list, which is both processing's do-not-introduce list for that family and the set of forms a rewrite substitutes out. A marker enters this file only when both DBs need the shared name, or when a second author shows the same habit; everything else lives in the individual DB.
+**How to use the tables.** They are a map of where to look and a naming standard, not a checklist to fill in. An author DB holds every habit the corpus evidences — a few dozen from a small corpus, well over a hundred from a large one: the habits this corpus shows clearly, and the machine-typical constructions it conspicuously lacks (absences, each with what the author does *instead*). For every recorded marker, note *which form* the author uses and which members of the family never appear (*for instance* but never *for example*; *quite* but never *perhaps*) — member preferences are near-categorical, so the zero members go in the pattern's `displaces` list, which is both processing's do-not-introduce list for that family and the set of forms a rewrite substitutes out. A marker enters this file only when both DBs need the shared name, or when a second author shows the same habit; everything else lives in the individual DB.
 
 Every dimension measures *how* an author writes, never *what about*: subject vocabulary — technical terms, product and people's names, code identifiers, code examples — is content and never a marker (rule 6 in [technique.md](technique.md)). `favourite-word`, `abbreviation`, and `code-reference` record the author's handling of words, not the terms of their field.
 
-**Measure column.** A regex is applied to prose with code, URLs, and tables removed (what `textstats.py` counts on) unless the row says *raw source*. `stat: name` is a statistic and `built-in name` a regex counter of `textstats.py`; both are referenced from a DB pattern as `"stat": "name"` (built-in counters count per 1k words), and `textstats.py counters` lists them with their definitions. *Judged* means reading, with the count estimated. *Noisy* counters over-count by design — confirm their hits by reading. *Per member* means one pattern, or one count, per listed word rather than one for the family. Regexes given as seeds are starting points: extend them with the corpus's own members.
+**Measure column.** A regex is applied to prose with code, URLs, and tables removed (what `textstats.py` counts on) unless the row says *raw source*. `stat: name` is a statistic and `built-in name` a regex counter of `textstats.py`; both are referenced from a DB pattern as `"stat": "name"` (built-in counters count per 1k words), and `textstats.py counters` lists them with their definitions. *Judged* means reading, with the count estimated. *Noisy* counters over-count by design — confirm their hits by reading. *Per member* means one pattern, or one count, per listed word rather than one for the family, with the id `<marker>-<member>` (`causal-form-because`, `modal-profile-would`, `favourite-word-via`) so that the parts of a parallel extraction merge. *Raw source* rows are judged: the validator and `measure` see only the stripped prose, so a raw-source regex is a reading aid, never a counter. Inline code reaches the counters as the placeholder `` (two backticks), so that placeholder per 1k words is the rate of code references. Regexes given as seeds are starting points: extend them with the corpus's own members — and never end an alternative in `\b` after a period (`e\.g\.\b` matches nothing).
 
 The two halves below are not "human" and "machine" markers. Author-voice dimensions are where an author's habits show most; AI-typical dimensions are where machine prose shows most, and an author DB usually records them as absences. Both DBs record both halves. Renaming or removing a dimension, or changing what a unit means, requires a `db_version` bump (see [db-schema.md](db-schema.md)); adding markers or dimensions does not.
 
@@ -34,9 +34,9 @@ The two halves below are not "human" and "machine" markers. Author-voice dimensi
 | ellipsis | ellipsis | built-in `ellipsis` |
 | oxford-comma | comma before the final *and* of a series; may depend on series length | judged |
 | quote-style | straight vs. curly, single vs. double quotes | judged (raw source) |
-| fronted-adverbial-comma | comma or none after a fronted adverbial ("Therefore the aim…" vs. "Therefore, the aim…"); per adverbial | no-comma form: `(?:^\|(?<=[.!?]\s))(?:Therefore\|Hence\|Thus\|Otherwise\|Overall\|Originally\|Currently\|Recently)\s+(?!,)[a-z]` |
+| fronted-adverbial-comma | comma or none after a fronted adverbial ("Therefore the aim…" vs. "Therefore, the aim…"); per adverbial | no-comma form: `(?:^\|(?<=[.!?]\s))(?:Therefore\|Hence\|Thus\|Otherwise\|Overall\|Originally\|Currently\|Recently)(?!,)\s+\w` |
 | connective-comma | which sentence-initial connectives take the comma (*However,* yes, *Therefore* no); per member | `(?:^\|(?<=[.!?]\s))(?:However\|Furthermore\|Moreover\|Additionally\|In addition),` |
-| latin-abbreviation-comma | comma or none after mid-sentence *e.g.* / *i.e.* | `\b(?:e\.g\.\|i\.e\.)\s+\w` vs. `\b(?:e\.g\.\|i\.e\.),` |
+| latin-abbreviation-comma | comma or none after mid-sentence *e.g.* / *i.e.* | `\b(?:e\.g\.\|i\.e\.)(?!,)\s` vs. `\b(?:e\.g\.\|i\.e\.),` |
 | comma-splice | independent clauses joined by a bare comma; an informal-register habit | judged |
 | subordinator-comma | comma habit per subordinator or coordinator (before every *since* but never *because*; before *and* joining two predicates) | judged |
 | slash-alternative | spaced ("X / Y") or unspaced ("vitest/jest") slash for alternatives; record which | `\s/\s` vs. `(?<=[A-Za-z])/(?=[A-Za-z])` |
@@ -67,7 +67,7 @@ How paragraphs open (rows that say *sentence* count every sentence); the last th
 | topic-opener | paragraph opens with the topic noun and a fact about it | judged |
 | meta-opener | paragraph opens by announcing or evaluating its own topic ("One limit is worth stating plainly.") | judged |
 | connective-opener | paragraph opens with a discourse connective (*So, But, And, However, Now, Still*) | `^(?:So\|But\|And\|However\|Now\|Still\|Granted\|Of course)\b` with `share_of_paragraphs` |
-| fronted-adjunct | sentence opens with an adjunct before its subject — *In*-phrase, participial, *By*-gerund, purpose infinitive, subordinate clause ("Since we moved to ESM, …"); record the share and the preferred forms (comma habit: `fronted-adverbial-comma`) | judged (share of sentences); seed: `(?:^\|(?<=[.!?]\s))(?:In\|By\|To\|Since\|While\|If\|When\|Once\|Depending on\|Speaking of)\b[^.!?]{2,60},` |
+| fronted-adjunct | sentence opens with an adjunct before its subject — *In*-phrase, participial, *By*-gerund, purpose infinitive, subordinate clause ("Since we moved to ESM, …"); record the share and the preferred forms (comma habit: `fronted-adverbial-comma`) | seed with `share_of_sentences` (verify by reading): `(?:^\|(?<=[.!?]\s))(?:In\|By\|To\|Since\|While\|If\|When\|Once\|Depending on\|Speaking of)\b[^.!?]{2,60},` |
 | existential-opener | sentence opens with *There is/are* or *There's* | `(?:^\|(?<=[.!?]\s))There(?:[’']s\| (?:is\|are\|was\|were\|exists?))\b` |
 | demonstrative-subject | sentence opens with anaphoric *This* + verb as a hand-off ("This means that…"); the evaluative subset is `reveal-frames/verdict-opener` | `(?:^\|(?<=[.!?]\s))This\s+(?:is\|was\|means\|allows\|enables\|makes\|leads\|results)\b` |
 | era-opener | time-anchoring change claim ("In today's fast-paced world", "Until now, …", "That changes today.") | `\b(?:in today[’']s\|in an era\|in a world where\|(?:has\|have) quietly become\|until now\|that changes today)\b` |
@@ -99,7 +99,7 @@ Class rows (`formal-connective`, `scholarly-connective`) give a family's rate; `
 | because-initial | sentence starts with *Because* | `(?:^\|(?<=[.!?]\s))Because\b` |
 | and-but-initial | sentence starts with *And* or *But* | `(?:^\|(?<=[.!?]\s))(?:And\|But)\b` |
 | formal-connective | sentence-initial *Additionally, Furthermore, Moreover, However, Therefore, Thus, Consequently* | built-in `ai_connective_opener` |
-| medial-therefore | *therefore / thus / consequently* after the subject ("Custom development therefore shifts…") | built-in `ai_medial_therefore` |
+| medial-therefore | *therefore / thus / consequently* after the subject ("Custom development therefore shifts…") | built-in `ai_medial_therefore` (verb-adjacent *is therefore* and *, and therefore* are left out on purpose: those are the author-side placement, `comma-hence` or a marker of their own) |
 | informal-pivot | spoken-register transition at sentence start (*That being said, Speaking of X, Granted, Thankfully, By the way, Anyway*) | `(?:^\|(?<=[.!?]\s))(?:(?:With )?[Tt]hat being said\|With that said\|Speaking of\|Going back to\|By the way\|Granted\|Thankfully\|Anyway)\b` |
 | scholarly-connective | *e.g., i.e., in order to, in contrast, as well as, such as, for instance* | built-in `scholarly_connective` |
 | purpose-form | *in order to* vs. *so that* vs. *such that* vs. bare *to*; per member | `\bin order to\b`, `\bso that\b`, `\bsuch that\b` |
@@ -189,7 +189,7 @@ Marked but correct grammatical constructions the author reaches for, shaped by a
 |---|---|---|
 | bullet-density | list items per 1k words | `stat: list_items_per_1k` |
 | no-lists | no bullet lists in this register (absence) | `stat: list_items` equal 0 |
-| label-led-item | list item or paragraph opening with a bold or italic label ("**Verify by execution.** Never…"); record bold vs. italic, colon vs. period | built-in `label_lead` |
+| label-led-item | list item or paragraph opening with a bold or italic label ("**Verify by execution.** Never…"); record bold vs. italic, colon vs. period | built-in `label_lead` (a paragraph flag such as `_Note:_` counts too; `exclude` it when only list items are meant) |
 | inline-enumeration | a series carried in prose ("two things: X and Y") | judged |
 | open-list-terminator | how an open series ends — *, and more* vs. *etc.* vs. *and so on* vs. an ellipsis; per member | `,? and (?:many )?more\b`, `\betc\.`, `\band so on\b` |
 | numbered-vs-bulleted | preference when a list is used | judged |
@@ -222,7 +222,7 @@ Marked but correct grammatical constructions the author reaches for, shaped by a
 | marker | definition | measure |
 |---|---|---|
 | british-spelling | -ise, -our, -re spellings | `\b\w+(?:ise\|ising\|isation\|our\|ours\|tre)\b` (verify by reading) |
-| american-spelling | -ize, -or, -er spellings | `\b\w+(?:ize\|izing\|ization)\b` |
+| american-spelling | -ize, -or, -er spellings | `\b(?!(?:re)?siz(?:e\|es\|ing)\b\|priz\|seiz\|capsiz)\w+(?:ize\|izing\|ization)\b` |
 | contraction | contractions | built-in `contraction` |
 | contraction-selectivity | which contractions appear and which never do (*don't, it's* freely; *isn't, can't* never) | `\b(?:isn\|aren\|wasn\|can\|couldn\|doesn\|didn\|hasn\|shouldn\|wouldn)['’]t\b` against built-in `contraction` |
 | favourite-word | a topic-independent word or phrase the author overuses (*fiddly*, *neat*, *the trick is*) | regex for that word |
@@ -239,7 +239,7 @@ Marked but correct grammatical constructions the author reaches for, shaped by a
 
 | marker | definition | measure |
 |---|---|---|
-| code-reference | how identifiers appear (backticks, prose, both) | judged |
+| code-reference | how identifiers appear (backticks, prose, both) | judged; the backtick rate is the placeholder `` per 1k words (inline code reaches the counters as that) |
 | link-placement | inline on a phrase vs. bare URL on its own line vs. footnote; anchor text descriptive vs. "here" | judged (raw source) |
 | term-introduction | how coinages are introduced: *called / so-called / we call*, italics or quotes at first definition | `\b(?:so-called\|called\|we call)\b` (noisy) |
 | artifact-pointer | capitalized cross-references ("Figure 4.5", "Section 2.3") | `\b(?:Section\|Figure\|Table\|Chapter\|Listing)\s+\d` |

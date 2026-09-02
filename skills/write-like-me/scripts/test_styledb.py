@@ -61,6 +61,8 @@ def test_tier_1_requires_full_coverage_spread_registers_counted_and_quotes():
     ({"documents": [{"id": "d1", "count": 4}, {"id": "d2", "count": 1}, {"id": "d3", "count": 2}]}, 2),
     ({"documents": [{"id": "d1", "count": 4}, {"id": "d2", "count": 1}]}, 2),
     ({"documents": [{"id": "d1", "count": 4}, {"id": "d2", "count": 0}]}, 3),
+    ({"documents": [{"id": "d1", "count": 4}, {"id": "d2", "count": 1}, {"id": "d3", "count": 0},
+                    {"id": "d4", "count": 0}, {"id": "d5", "count": 0}]}, 2),
 ])
 def test_tier_demotions(change, expected):
     p = pattern("punctuation/colon", {"d1": 4, "d2": 1, "d3": 2, "d4": 2, "d5": 2})
@@ -68,6 +70,14 @@ def test_tier_demotions(change, expected):
     db = make_db([p])
     styledb.recompute(db)
     assert db["patterns"][0]["tier"] == expected, db["patterns"][0]["tier_reason"]
+
+
+def test_low_spread_is_named_in_the_tier_reason():
+    p = pattern("punctuation/colon", {"d1": 4, "d2": 1, "d3": 0, "d4": 0, "d5": 0})
+    db = make_db([p])
+    styledb.recompute(db)
+    assert db["patterns"][0]["tier"] == 2
+    assert "under 60%" in db["patterns"][0]["tier_reason"]
 
 
 def test_single_register_pattern_is_at_most_tier_2():
@@ -113,7 +123,7 @@ def test_validate_absence_must_be_counted_and_zero():
     p = pattern("punctuation/em-dash", {"d1": 0, "d2": 1}, kind="absence", measurement="judged", quotes=0)
     errors, _ = styledb.validate(make_db([p]))
     assert any("must be counted" in e for e in errors)
-    assert any("count > 0" in e for e in errors)
+    assert any("1 hit(s) in 1 document(s)" in e and "tolerates" in e for e in errors)
 
 
 def test_validate_verifies_quotes_against_corpus(tmp_path):
@@ -178,7 +188,7 @@ def test_displaces_lists_the_forms_the_author_never_uses():
     merged = styledb.merge([a, b])
     assert merged["patterns"][0]["displaces"] == ["for example", "e.g."]
     assert styledb.validate(merged)[0] == []
-    assert "Never uses: for example, e.g." in styledb.render(merged)
+    assert 'Never uses: "for example", "e.g."' in styledb.render(merged)
     broken = make_db([pattern("connectives/example-introducer", {"d1": 4}, displaces="for example")])
     assert any("'displaces' must be a list" in msg for msg in styledb.validate(broken)[0])
     misplaced = make_db([pattern("punctuation/em-dash", {"d1": 0}, kind="absence", quotes=0,
@@ -191,8 +201,10 @@ def test_validate_checks_stat_names_and_units():
     ok = pattern("punctuation/em-dash", {"d1": 0, "d2": 0}, kind="absence", quotes=0, stat="em_dash")
     typo = pattern("punctuation/semicolon", {"d1": 1}, stat="semi_colon")
     unit = pattern("punctuation/colon-elaboration", {"d1": 1}, stat="colon", unit="share_of_sentences")
-    median = pattern("sentence-rhythm/median-length", {"d1": 1}, stat="sentence_len_median", unit="words")
-    heads = pattern("headings/colon-heading", {"d1": 1}, stat="colon_heading_share", unit="share_of_headings")
+    median = pattern("sentence-rhythm/median-length", {"d1": 1}, stat="sentence_len_median", unit="words",
+                     documents=[{"id": "d1", "rate": 12.0}])
+    heads = pattern("headings/colon-heading", {"d1": 1}, stat="colon_heading_share", unit="share_of_headings",
+                    documents=[{"id": "d1", "rate": 0.5}])
     errors, warnings = styledb.validate(make_db([ok, typo, unit, median, heads]))
     joined = "\n".join(errors)
     assert "em-dash" not in joined and "median-length" not in joined and "colon-heading" not in joined
@@ -560,3 +572,255 @@ def test_validate_errors_once_per_unreachable_corpus_document(tmp_path):
     errors, _ = styledb.validate(db, corpus_dir=str(tmp_path / "nowhere"))
     assert len(errors) == 1
     assert "cannot open" in errors[0] and "documents[].path" in errors[0]
+
+
+# --- near-absence -------------------------------------------------------------
+
+BIG = [{"id": "b{}".format(i), "path": "b{}.md".format(i), "words": 2000,
+        "register": "article" if i % 2 else "email"} for i in range(12)]
+
+
+def near_absence(hits_in):
+    counts = {d["id"]: (1 if d["id"] in hits_in else 0) for d in BIG}
+    return pattern("punctuation/em-dash", counts, kind="absence", quotes=0, stat="em_dash")
+
+
+def test_a_few_residual_hits_keep_an_absence_an_absence_at_tier_2():
+    # Six em dashes in 100k words are the most important do-not-introduce row there is; recorded
+    # as a presence they computed to tier 3 and the default setting ignored them.
+    db = make_db([near_absence({"b1", "b2"})], docs=BIG)  # 2 hits in 24,000 words: 0.08 per 1k
+    styledb.recompute(db)
+    p = db["patterns"][0]
+    assert p["tier"] == 2 and p["tier_reason"].startswith("near-absent: 2 hit(s) in 2 of 12 documents")
+    assert "tier_override 1" in p["tier_reason"]
+    errors, warnings = styledb.validate(db)
+    assert not errors
+    assert [w for w in warnings if "near-absent" in w and "note" in w]
+    p["note"] = "both hits are quoted third-party text"
+    assert not [w for w in styledb.validate(db)[1] if "near-absent" in w]
+    assert "near-absent (2 hit(s) in 2 of 12 documents)" in styledb.render(db)
+    # the review round moves it: always remove, or only on hard
+    p["tier_override"] = 1
+    assert styledb.effective_tier(p) == 1
+    p["tier_override"] = 3
+    assert styledb.effective_tier(p) == 3
+
+
+def test_hits_above_the_tolerance_are_still_a_presence():
+    db = make_db([near_absence({"b1", "b2", "b3"})], docs=BIG)  # 0.125 per 1k, 3 of 12 documents
+    errors, _ = styledb.validate(db)
+    assert [e for e in errors if "3 hit(s) in 3 document(s) (0.12 per 1k)" in e and "tolerates fewer than 0.1" in e]
+    styledb.recompute(db)
+    assert db["patterns"][0]["tier"] == 3
+    # an exact zero is still tier 1 over a corpus this size
+    db = make_db([near_absence(set())], docs=BIG)
+    styledb.recompute(db)
+    assert db["patterns"][0]["tier"] == 1
+
+
+def test_a_near_absence_needs_the_per_1k_unit():
+    p = pattern("lists/no-lists", {"b0": 1}, kind="absence", quotes=0, stat="list_items", unit="count",
+                documents=[{"id": d["id"], "rate": 1.0 if d["id"] == "b0" else 0.0,
+                            "count": 1 if d["id"] == "b0" else 0} for d in BIG])
+    errors, _ = styledb.validate(make_db([p], docs=BIG))
+    assert [e for e in errors if "tolerates" in e]
+
+
+# --- validator checks from the field report -----------------------------------
+
+def test_exclude_needs_a_counter_and_a_valid_regex():
+    ok = pattern("reveal-frames/verdict-opener", {"d1": 1}, stat="ai_verdict_opener", exclude=r"This is caused")
+    own = pattern("connectives/so-initial", {"d1": 1}, regex=r"^So\b", exclude=r"So what")
+    bad = pattern("punctuation/colon", {"d1": 1}, regex=":", exclude="(")
+    judged = pattern("tone-markers/bluntness", {"d1": 1}, measurement="judged", exclude="x")
+    statistic = pattern("sentence-rhythm/median-length", {"d1": 1}, stat="sentence_len_median", unit="words",
+                        documents=[{"id": "d1", "rate": 12.0}], exclude="x")
+    errors, _ = styledb.validate(make_db([ok, own, bad, judged, statistic]))
+    joined = "\n".join(errors)
+    assert "verdict-opener" not in joined and "so-initial" not in joined
+    assert "punctuation/colon: invalid exclude regex" in joined
+    assert "tone-markers/bluntness: exclude subtracts" in joined
+    assert "median-length: exclude subtracts" in joined
+
+
+def test_a_statistic_must_be_filed_under_its_own_unit():
+    # A per-1k statistic under `count` holding the per-1k value validated and was wrong.
+    wrong = pattern("lists/bullet-density", {"d1": 1}, stat="list_items_per_1k", unit="count",
+                    documents=[{"id": "d1", "rate": 4.2}])
+    right = pattern("lists/bullet-density", {"d1": 4}, stat="list_items_per_1k", unit="per_1k_words")
+    errors, _ = styledb.validate(make_db([wrong]))
+    assert [e for e in errors if "'list_items_per_1k' is measured in unit 'per_1k_words', not 'count'" in e]
+    assert not styledb.validate(make_db([right]))[0]
+
+
+def test_documents_entries_carry_the_units_own_field():
+    no_count = pattern("punctuation/colon", {"d1": 1}, documents=[{"id": "d1", "rate": 2.0}])
+    no_rate = pattern("sentence-rhythm/short-punch", {"d1": 1}, stat="short_sentence_share",
+                      unit="share_of_sentences", documents=[{"id": "d1", "count": 3}])
+    errors, _ = styledb.validate(make_db([no_count, no_rate]))
+    assert [e for e in errors if "punctuation/colon: documents[d1] needs an integer count" in e]
+    assert [e for e in errors if "short-punch: documents[d1] needs a numeric rate" in e]
+
+
+def test_review_fields_are_checked():
+    p = pattern("punctuation/colon", {"d1": 4, "d2": 1, "d3": 2, "d4": 2, "d5": 2})
+    db = make_db([p])
+    db["review"] = {"status": "reviewed"}
+    errors, warnings = styledb.validate(db)
+    assert [e for e in errors if "review.date is required" in e] and [e for e in errors if "review.reviewer is required" in e]
+    assert [w for w in warnings if "carry no review.verdict" in w and "punctuation/colon" in w]
+    db["review"] = {"status": "reviewed", "date": "2026-09-02", "reviewer": "the author"}
+    db["patterns"][0]["review"] = {"verdict": "WRONG", "note": ""}
+    assert [e for e in styledb.validate(db)[0] if "review.verdict 'WRONG' is not one of" in e]
+    db["patterns"][0]["review"] = {"verdict": "nuanced", "note": "emails only"}
+    errors, warnings = styledb.validate(db)
+    assert not errors and not [w for w in warnings if "no review.verdict" in w]
+
+
+def test_partial_and_pending_vetting_are_said_out_loud():
+    p = pattern("punctuation/colon", {"d1": 4, "d2": 1, "d3": 2, "d4": 2, "d5": 2})
+    assert [w for w in styledb.validate(make_db([p], partial=True))[1] if "tiers are provisional" in w]
+    docs = copy.deepcopy(DOCS)
+    docs[0]["vetting"] = "pending"
+    assert [w for w in styledb.validate(make_db([p], docs=docs))[1] if "vetting: pending" in w and "d1" in w]
+
+
+def test_validate_fix_says_what_it_moved(tmp_path, capsys):
+    p = pattern("punctuation/colon", {"d1": 4, "d2": 1, "d3": 2, "d4": 2, "d5": 2})
+    p["tier"], p["rate"] = 3, 9.9
+    path = tmp_path / "db.json"
+    path.write_text(json.dumps(make_db([p])), encoding="utf-8")
+    assert styledb.main(["validate", str(path), "--fix"]) == 0
+    out = capsys.readouterr().out
+    assert "tier changed for 1 pattern(s):" in out and "punctuation/colon: 3 -> 1" in out
+    assert "rate moved for 1 of 1 pattern(s); largest: punctuation/colon 9.9 -> 2.2" in out
+
+
+# --- init / count / review ------------------------------------------------------
+
+def write_corpus(root):
+    (root / "posts").mkdir()
+    (root / "posts" / "one.md").write_text("So I waited: it worked (twice). So did the build.\n", encoding="utf-8")
+    (root / "posts" / "two.md").write_text("Plain prose here. Nothing else.\n", encoding="utf-8")
+    (root / "mail.txt").write_text("So, thanks. Cheers, Jo\n", encoding="utf-8")
+
+
+def test_init_builds_the_manifest_with_textstats_word_counts(tmp_path, capsys):
+    write_corpus(tmp_path)
+    out = tmp_path / "db.json"
+    assert styledb.main(["init", str(out), "--corpus-dir", str(tmp_path), "article=posts", "email=mail.txt"]) == 0
+    db = json.loads(out.read_text())
+    docs = {d["id"]: d for d in db["corpus"]["documents"]}
+    assert set(docs) == {"one", "two", "mail"}
+    assert docs["one"] == {"id": "one", "path": "posts/one.md", "words": 10, "register": "article",
+                           "sole_authored": True, "vetting": "pending"}
+    assert docs["mail"]["register"] == "email" and db["corpus"]["total_words"] == 10 + 5 + 4
+    assert db["patterns"] == [] and db["review"] == {"status": "pending"} and db["partial"] is False
+    printed = capsys.readouterr().out
+    assert "article" in printed and "email is a single file" in printed
+    assert "article carries 79% of the words" in printed
+    assert not styledb.validate(db)[0]
+    assert styledb.main(["init", str(out), "--corpus-dir", str(tmp_path), "article=nowhere"]) == 1
+
+
+def test_init_disambiguates_colliding_file_stems(tmp_path):
+    (tmp_path / "a").mkdir(); (tmp_path / "b").mkdir()
+    (tmp_path / "a" / "notes.md").write_text("One.\n", encoding="utf-8")
+    (tmp_path / "b" / "notes.md").write_text("Two.\n", encoding="utf-8")
+    docs = styledb.build_manifest(str(tmp_path), ["note=a", "note=b"])
+    assert [d["id"] for d in docs] == ["a-notes", "b-notes"]
+
+
+def test_count_writes_documents_from_the_corpus_and_hands_judged_rows_to_readers(tmp_path, capsys):
+    write_corpus(tmp_path)
+    docs = styledb.build_manifest(str(tmp_path), ["article=posts", "email=mail.txt"])
+    so = pattern("connectives/so-initial", {"one": 99}, regex=r"(?:^|(?<=[.!?]\s))So\b", quotes=1,
+                 evidence=[{"doc": "one", "quote": "So I waited"}])
+    share = pattern("sentence-rhythm/short-punch", {"one": 1}, stat="short_sentence_share",
+                    unit="share_of_sentences", documents=[{"id": "one", "rate": 0.9}], quotes=1,
+                    evidence=[{"doc": "one", "quote": "So I waited"}])
+    judged = pattern("tone-markers/bluntness", {"one": 2}, measurement="judged", quotes=1,
+                     evidence=[{"doc": "one", "quote": "So I waited"}])
+    db = make_db([so, share, judged], docs=docs)
+    db["corpus"]["documents"][0]["words"] = 999  # stale: the stripper counts 10
+    src, part = tmp_path / "cand.json", tmp_path / "judged.json"
+    src.write_text(json.dumps(db), encoding="utf-8")
+    assert styledb.main(["count", str(src), "--corpus-dir", str(tmp_path), "--judged", str(part)]) == 0
+    printed = capsys.readouterr().out
+    assert "counted 2 pattern(s) over 3 document(s)" in printed and "tone-markers/bluntness" in printed
+    assert "word counts refreshed for 1 document(s)" in printed and "one" in printed
+    counted = json.loads(src.read_text())
+    assert counted["corpus"]["documents"][0]["words"] == 10 and counted["corpus"]["total_words"] == 19
+    assert "_words_refreshed" not in counted
+    by_id = {p["id"]: p for p in counted["patterns"]}
+    assert set(by_id) == {"connectives/so-initial", "sentence-rhythm/short-punch"}
+    assert by_id["connectives/so-initial"]["documents"] == [
+        {"id": "one", "count": 2}, {"id": "two", "count": 0}, {"id": "mail", "count": 1}]
+    assert [e["id"] for e in by_id["sentence-rhythm/short-punch"]["documents"]] == ["one", "two", "mail"]
+    assert all("rate" in e for e in by_id["sentence-rhythm/short-punch"]["documents"])
+    assert by_id["connectives/so-initial"]["rate"] == round(3 / 19 * 1000, 3)  # derived from the real counts
+    assert by_id["connectives/so-initial"]["spread"] == 0.667
+    # the counted DB verifies by construction, and the skeleton is what the readers fill in
+    assert not styledb.validate(counted, corpus_dir=str(tmp_path))[0]
+    skeleton = json.loads(part.read_text())
+    assert skeleton["partial"] is True and [p["id"] for p in skeleton["patterns"]] == ["tone-markers/bluntness"]
+    assert skeleton["patterns"][0]["documents"] == [] and skeleton["patterns"][0]["evidence"]
+    skeleton["patterns"][0]["documents"] = [{"id": d["id"], "count": 1} for d in docs]
+    merged = styledb.merge([counted, skeleton])
+    assert len(merged["patterns"]) == 3 and not styledb.validate(merged, corpus_dir=str(tmp_path))[0]
+
+
+def test_count_refuses_a_sealed_or_unreachable_corpus(tmp_path, capsys):
+    write_corpus(tmp_path)
+    docs = styledb.build_manifest(str(tmp_path), ["article=posts"])
+    db = make_db([pattern("punctuation/colon", {"one": 1}, regex=":")], docs=docs)
+    src = tmp_path / "db.json"
+    src.write_text(json.dumps(db), encoding="utf-8")
+    assert styledb.main(["count", str(src), "--corpus-dir", str(tmp_path / "nowhere")]) == 1
+    assert "cannot open" in capsys.readouterr().out
+
+
+def test_review_applies_verdicts_weights_and_the_reviewed_stamp(tmp_path, capsys):
+    keep = pattern("punctuation/colon", {"d1": 4, "d2": 1, "d3": 2, "d4": 2, "d5": 2})
+    soften = pattern("connectives/so-initial", {"d1": 4, "d2": 1, "d3": 2, "d4": 2, "d5": 2})
+    drop = pattern("imagery/kitchen-metaphors", {"d1": 1}, quotes=1)
+    db = make_db([keep, soften, drop])
+    styledb.recompute(db)
+    src = tmp_path / "db.json"
+    src.write_text(json.dumps(db), encoding="utf-8")
+    verdicts = tmp_path / "verdicts.json"
+    verdicts.write_text(json.dumps({
+        "connectives/so-initial": {"verdict": "overstated", "note": "less than that", "tier_override": 2},
+        "imagery/kitchen-metaphors": {"verdict": "wrong"}}), encoding="utf-8")
+    assert styledb.main(["review", str(src), "--verdicts", str(verdicts), "--weight", "article=1",
+                         "--weight", "email=1", "--weight", "docs=1", "--reviewer", "Jo",
+                         "--date", "2026-09-02"]) == 0
+    printed = capsys.readouterr().out
+    assert "imagery/kitchen-metaphors: wrong, removed" in printed
+    assert "connectives/so-initial: overstated; tier_override 2" in printed
+    assert "1 pattern(s) without a verdict confirmed by default" in printed
+    assert "connectives/so-initial: 1 -> 2" in printed  # the override, seen as a tier change
+    assert "rate moved for" in printed  # the weighting moved the rates
+    out = json.loads(src.read_text())
+    assert out["review"] == {"status": "reviewed", "date": "2026-09-02", "reviewer": "Jo"}
+    assert [p["id"] for p in out["patterns"]] == ["punctuation/colon", "connectives/so-initial"]
+    assert out["patterns"][0]["review"] == {"verdict": "confirmed", "note": ""}
+    assert out["patterns"][1]["review"] == {"verdict": "overstated", "note": "less than that"}
+    assert out["patterns"][1]["tier_override"] == 2
+    assert out["corpus"]["register_weights"] == {"article": 1.0, "email": 1.0, "docs": 1.0}
+    assert not styledb.validate(out)[0]
+    assert styledb.seal(out) == 5  # a reviewed DB seals
+
+
+def test_review_refuses_unknown_ids_bad_verdicts_and_partials(tmp_path, capsys):
+    db = make_db([pattern("punctuation/colon", {"d1": 4})])
+    src = tmp_path / "db.json"
+    src.write_text(json.dumps(db), encoding="utf-8")
+    verdicts = tmp_path / "v.json"
+    verdicts.write_text(json.dumps({"punctuation/nope": {"verdict": "confirmed"}}), encoding="utf-8")
+    assert styledb.main(["review", str(src), "--verdicts", str(verdicts)]) == 1
+    verdicts.write_text(json.dumps({"punctuation/colon": {"verdict": "meh"}}), encoding="utf-8")
+    assert styledb.main(["review", str(src), "--verdicts", str(verdicts)]) == 1
+    src.write_text(json.dumps(make_db([], partial=True)), encoding="utf-8")
+    assert styledb.main(["review", str(src)]) == 1
+    assert "merge the parts first" in capsys.readouterr().out

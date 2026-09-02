@@ -110,7 +110,11 @@
         "note"
       ],
       "tier": 2,
-      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)"
+      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "punctuation/semicolon",
@@ -161,7 +165,11 @@
         "note"
       ],
       "tier": 2,
-      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)"
+      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "punctuation/colon-elaboration",
@@ -226,7 +234,11 @@
         "note"
       ],
       "tier": 1,
-      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "punctuation/parenthetical-aside",
@@ -291,7 +303,11 @@
         "note"
       ],
       "tier": 1,
-      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "sentence-rhythm/short-punch",
@@ -361,7 +377,11 @@
         "note"
       ],
       "tier": 1,
-      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "sentence-rhythm/one-sentence-paragraph",
@@ -428,7 +448,11 @@
         "note"
       ],
       "tier": 1,
-      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "sentence-rhythm/fragment",
@@ -496,7 +520,11 @@
         "note"
       ],
       "tier": 2,
-      "tier_reason": "judged, not counted"
+      "tier_reason": "judged, not counted",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "connectives/so-initial",
@@ -560,7 +588,11 @@
         "note"
       ],
       "tier": 1,
-      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "connectives/which-means",
@@ -624,7 +656,11 @@
         "note"
       ],
       "tier": 1,
-      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "voice-and-person/first-singular",
@@ -689,7 +725,11 @@
         "note"
       ],
       "tier": 1,
-      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "voice-and-person/first-plural",
@@ -745,7 +785,11 @@
         "note"
       ],
       "tier": 2,
-      "tier_reason": "present in fewer than 3 documents; fewer than 3 quotes"
+      "tier_reason": "present in fewer than 3 documents; fewer than 3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "spelling-lexical/contraction",
@@ -811,7 +855,11 @@
         "note"
       ],
       "tier": 1,
-      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "spelling-lexical/british-spelling",
@@ -869,7 +917,11 @@
         "article"
       ],
       "tier": 2,
-      "tier_reason": "present in fewer than 3 documents; single register"
+      "tier_reason": "present in fewer than 3 documents; single register",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "spelling-lexical/favourite-fiddly",
@@ -924,7 +976,11 @@
         "docs"
       ],
       "tier": 2,
-      "tier_reason": "present in fewer than 3 documents; fewer than 3 quotes"
+      "tier_reason": "present in fewer than 3 documents; fewer than 3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "spelling-lexical/favourite-the-trick-is",
@@ -978,7 +1034,11 @@
         "article"
       ],
       "tier": 2,
-      "tier_reason": "present in fewer than 3 documents; single register; fewer than 3 quotes"
+      "tier_reason": "present in fewer than 3 documents; single register; fewer than 3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "tone-markers/stance-adverb",
@@ -1043,7 +1103,11 @@
         "note"
       ],
       "tier": 1,
-      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "lists/no-lists",
@@ -1094,7 +1158,11 @@
         "note"
       ],
       "tier": 2,
-      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)"
+      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "lists/bullet-density",
@@ -1103,12 +1171,11 @@
       "description": "In reference docs a short bullet list is fine for a list of things a tool does or doesn't do.",
       "kind": "presence",
       "measurement": "counted",
-      "unit": "count",
+      "unit": "per_1k_words",
       "documents": [
         {
           "id": "readme-tidy",
-          "count": 13,
-          "rate": 13.57
+          "count": 3
         }
       ],
       "evidence": [
@@ -1119,18 +1186,22 @@
       ],
       "stat": "list_items_per_1k",
       "note": "docs register only.",
-      "rate": 13.57,
+      "rate": 13.575,
       "spread": 1.0,
       "range": [
-        13.57,
-        13.57
+        13.575,
+        13.575
       ],
       "coverage": 0.2,
       "registers": [
         "docs"
       ],
       "tier": 3,
-      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "opener-closer/opener-incident",
@@ -1188,7 +1259,11 @@
         "email"
       ],
       "tier": 2,
-      "tier_reason": "judged, not counted"
+      "tier_reason": "judged, not counted",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "opener-closer/closer-punch",
@@ -1246,7 +1321,11 @@
         "note"
       ],
       "tier": 2,
-      "tier_reason": "judged, not counted"
+      "tier_reason": "judged, not counted",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "tone-markers/self-deprecation",
@@ -1304,7 +1383,11 @@
         "email"
       ],
       "tier": 2,
-      "tier_reason": "judged, not counted"
+      "tier_reason": "judged, not counted",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "imagery/gambling-metaphor",
@@ -1354,7 +1437,11 @@
         "article"
       ],
       "tier": 3,
-      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "opener-closer/sign-off",
@@ -1389,7 +1476,11 @@
         "email"
       ],
       "tier": 3,
-      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "signposting/summary-opener",
@@ -1441,7 +1532,11 @@
         "note"
       ],
       "tier": 2,
-      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)"
+      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "significance-tails/significance-tail",
@@ -1490,7 +1585,11 @@
         "note"
       ],
       "tier": 2,
-      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)"
+      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "significance-tails/worth-noting",
@@ -1542,7 +1641,11 @@
         "note"
       ],
       "tier": 2,
-      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)"
+      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "connectives/formal-connective",
@@ -1595,7 +1698,11 @@
         "note"
       ],
       "tier": 2,
-      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)"
+      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "rule-of-three/triad",
@@ -1643,7 +1750,11 @@
         "note"
       ],
       "tier": 2,
-      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)"
+      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "paragraph-openers/era-opener",
@@ -1695,7 +1806,11 @@
         "note"
       ],
       "tier": 2,
-      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)"
+      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     }
   ]
 }

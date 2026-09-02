@@ -12,7 +12,7 @@ evaluate the `regex` and `stat` fields of style-DB patterns so DB rates and
 input rates are computed the same way.
 
 Usage
-  textstats.py measure FILE... [--db DB...] [--sort-gap] [--setting S] [--json]
+  textstats.py measure FILE... [--db DB...] [--sort-gap] [--setting S] [--register R] [--json]
       One column per file. With --db, every DB pattern that carries a `regex`
       or `stat` field (a statistic or a built-in counter, by name) is measured
       on each file and shown next to the DB's rate and per-document range, with
@@ -35,14 +35,41 @@ Usage
       first; --setting soft|medium|hard marks `[manual]` every row whose
       evidence tier is above that setting's ceiling. Both are mechanical steps
       the rewrite would otherwise redo by hand for every pattern in the DB.
+      --register R names the input's register (article, email, ...): a DB row
+      whose `register_scope` excludes it is marked [out of scope] and classed
+      neutral, since a scoped row is a target only for an input in one of its
+      registers (references/processing.md, Step 3), and an out-of-scope AI row
+      is not evidence. The tier column is the effective tier: the review
+      round's override where one is set.
+  textstats.py measure FILE... --vet
+      Vetting view (references/technique.md, Step 2): every document whose rate
+      on a high-signal AI marker stands out against the median of the others.
+  textstats.py hits FILE... -e REGEX... [--stat NAME]... [-i] [-x EXCLUDE] [--unit U] [--matrix]
+      Print a candidate counter's matches on corpus documents with context, on
+      the same stripped prose `measure` and `styledb.py validate` count on: the
+      raw count (what documents[].count records), the rate in the unit, hits an
+      --exclude regex subtracts marked, and the DB fields to copy (ignore_case
+      when -i was used). Several counters, or --matrix, print one line per
+      counter with the count per file.
   textstats.py counters
       List the built-in counters and their definitions.
 
-What is excluded before counting: fenced code, inline code (replaced by a
-placeholder word), link URLs (link text stays), images, HTML tags, table rows,
-and front matter. Headings and list items count toward words and punctuation
-rates but not toward sentence-length or paragraph statistics, because they are
-fragments by design.
+What is excluded before counting: front matter, fenced code, HTML comments and
+block-level HTML elements (div, table, details, figure, script, style, iframe),
+images, link URLs (link text stays), bare URLs, HTML tags, table rows, and
+inline code, which becomes the placeholder `` (two backticks: not a word, so a
+code span adds nothing to any rate, and a regex on `` counts the author's code
+references); HTML entities are decoded. The prose a regex sees is the
+paragraphs, then the list items, then the headings, each as its own block, so
+a `^` anchor matches at the start of every one of them: a paragraph-opener
+regex belongs in the share_of_paragraphs unit, which is evaluated over prose
+paragraphs alone (share_of_sentences over their sentences). Headings and list
+items count toward words and per-1k rates but not toward sentence-length or
+paragraph statistics, because they are fragments by design.
+
+A pattern's optional `exclude` regex subtracts false positives: a counter hit
+that overlaps an `exclude` match is not counted, on the pattern's own regex or
+on the built-in counter its `stat` names.
 
 The built-in AI-marker counters (ai_*) are the executable definitions behind
 the AI DB's `stat` fields — the DB carries their corpus rates and evidence — and
@@ -56,6 +83,7 @@ Stdlib only, Python 3.8+.
 from __future__ import annotations
 
 import argparse
+import html
 import json
 import re
 import statistics
@@ -69,6 +97,18 @@ HR_RE = re.compile(r"^\s*(?:-{3,}|\*{3,}|_{3,})\s*$")
 BLOCKQUOTE_RE = re.compile(r"^\s*>\s?")
 WORD_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9'’\-]*")
 SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])[\"'”’)\]]*\s+(?=[\"'“‘(\[]?[A-Z0-9])")
+
+# Inline code is replaced by this before counting: two backticks are not a word (WORD_RE never
+# matches them), so a code span adds nothing to any rate, and a regex on `` counts the author's
+# code references. The earlier placeholder, the word "code", counted as a word and fed every
+# `\bcode\b` regex and the triad counter ("code, code and code").
+CODE_PLACEHOLDER = "``"
+BLOCK_HTML_RE = re.compile(r"<(div|table|details|figure|script|style|iframe)\b[^>]*>.*?</\1\s*>", re.S | re.I)
+BARE_URL_RE = re.compile(r"https?://[^\s)>\]]+")
+
+# The high-signal AI markers technique.md Step 2 vets a corpus document against the others on.
+VET_MARKERS = ("em_dash", "ai_colon_punchline", "ai_comma_not", "ai_rather_than",
+               "ai_verdict_opener", "ai_authenticity", "label_lead", "ai_vocabulary")
 
 # Share of the author's documents that must show a habit before an input with none of it
 # is called `absent` rather than merely low; matches the tier-1 spread rule in db-schema.md.
@@ -97,7 +137,7 @@ COUNTERS: Dict[str, Any] = {
     "ellipsis": (r"\.\.\.|…", 0, "ellipses"),
     # voice, connectives, tone adverbs
     "contraction": (r"\b\w+n[’']t\b|\b(?:I|it|that|there|here|what|who|we|you|they|let)[’'](?:m|s|re|ve|ll|d)\b", re.I, "contractions"),
-    "first_person_singular": (r"\b(?:I|I[’']m|I[’']ve|I[’']d|I[’']ll|me|my|mine|myself)\b", 0, "I / me / my"),
+    "first_person_singular": (r"\b(?:I|I[’']m|I[’']ve|I[’']d|I[’']ll|me|my|mine|myself)\b(?!/)", 0, "I / me / my (not the I of I/O)"),
     "first_person_plural": (r"\b(?:we|we[’']re|we[’']ve|we[’']d|we[’']ll|our|ours|us|ourselves)\b", re.I, "we / our / us"),
     "second_person": (r"\b(?:you|you[’']re|you[’']ve|you[’']d|you[’']ll|your|yours|yourself)\b", re.I, "you / your"),
     "scholarly_connective": (r"(?:e\.g\.|i\.e\.|cf\.)|\b(?:in order to|in contrast|as well as|such as|for instance|for example)\b", re.I, "e.g., i.e., in order to, such as, as well as"),
@@ -174,6 +214,23 @@ STATS_HELP = {
     "headings_per_1k": "headings per 1k words",
 }
 
+# The unit each statistic's value is in, which is the unit a DB pattern naming it in `stat` must
+# carry: `styledb.py validate` rejects a mismatch, because a per-1k statistic filed under `count`
+# validates and is wrong (references/db-schema.md, Pattern entries). Built-in counters count per
+# 1k words. Length statistics are in `words` — sentence length literally, sentences per paragraph
+# as the same kind of number.
+STAT_UNITS = {
+    "words": "count", "sentences": "count", "paragraphs": "count", "headings": "count",
+    "list_items": "count",
+    "sentence_len_mean": "words", "sentence_len_median": "words", "sentence_len_p90": "words",
+    "sentence_len_max": "words", "paragraph_sentences_mean": "words",
+    "short_sentence_share": "share_of_sentences", "long_sentence_share": "share_of_sentences",
+    "one_sentence_paragraph_share": "share_of_paragraphs",
+    "paragraph_opener_i_share": "share_of_paragraphs", "paragraph_opener_the_share": "share_of_paragraphs",
+    "colon_heading_share": "share_of_headings", "heading_title_case_share": "share_of_headings",
+    "list_items_per_1k": "per_1k_words", "headings_per_1k": "per_1k_words",
+}
+
 
 class Document:
     def __init__(self, text: str) -> None:
@@ -195,10 +252,18 @@ class Document:
             if end != -1:
                 text = text[end + 4:]
         text = re.sub(r"^(```|~~~).*?^\1\s*$", "\n", text, flags=re.S | re.M)
+        # Comments first: the tag stripper alone stops at the first `>` inside one ("publisher =>
+        # namespace") and leaks the rest into the prose. Block-level HTML is layout, not prose.
+        text = re.sub(r"<!--.*?-->", "", text, flags=re.S)
+        text = BLOCK_HTML_RE.sub("", text)
         text = re.sub(r"!\[[^\]]*\]\([^)]*\)", "", text)
         text = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", text)
         text = re.sub(r"<[^>\n]+>", "", text)
-        text = re.sub(r"`[^`\n]*`", "code", text)
+        text = BARE_URL_RE.sub("", text)
+        text = re.sub(r"`[^`\n]*`", CODE_PLACEHOLDER, text)
+        # Entities last, once the tags are gone, so a literal `&lt;div&gt;` in prose stays text.
+        # Undecoded, their `;` counted as semicolons and `&mdash;` was invisible to em_dash.
+        text = html.unescape(text)
         buf: List[str] = []
 
         def flush() -> None:
@@ -283,21 +348,63 @@ def measure(text: str) -> Dict[str, Any]:
     return {"stats": stats, "per_1k": per_1k, "_doc": doc}
 
 
+def compiled_counter(pattern: Dict[str, Any]) -> Optional[Tuple[str, int]]:
+    """(regex, flags) of a pattern's counter when it is a regex over the prose: the pattern's own
+    `regex`, or the built-in counter its `stat` names. None for a statistic or a judged pattern."""
+    if pattern.get("regex"):
+        return pattern["regex"], (re.I if pattern.get("ignore_case") else 0) | re.M
+    name = pattern.get("stat")
+    if name in COUNTERS:
+        regex, flags, _ = COUNTERS[name]
+        return regex, flags
+    return None
+
+
+def matches(regex: str, flags: int, text: str, exclude: Optional[str] = None) -> List[Tuple[int, int, bool]]:
+    """Every match span of a counter on `text`, flagged True when an `exclude` match overlaps it.
+
+    The overlap rule is what lets an `exclude` name a false positive by its context rather than
+    by the counter's own match: `This is (?:caused|done) by` overlaps the `This is` a verdict-opener
+    counter matched, and the hit is dropped.
+    """
+    spans = [(m.start(), m.end()) for m in re.finditer(regex, text, flags)]
+    if not exclude or not spans:
+        return [(s, e, False) for s, e in spans]
+    banned = [(m.start(), max(m.end(), m.start() + 1)) for m in re.finditer(exclude, text, flags)]
+    return [(s, e, any(bs < max(e, s + 1) and be > s for bs, be in banned)) for s, e in spans]
+
+
+def count_pattern(pattern: Dict[str, Any], result: Dict[str, Any]) -> Optional[int]:
+    """Raw occurrences of a pattern in a measured document: the number a per-1k pattern's
+    documents[].count records and `styledb.py validate --corpus-dir` re-runs.
+
+    The counter's matches minus the ones `exclude` overlaps, or the numerator of a per-1k
+    statistic (`list_items` for `list_items_per_1k`). None when nothing counts occurrences: a
+    judged pattern, or a statistic that is not a per-1k one.
+    """
+    counter = compiled_counter(pattern)
+    if counter:
+        regex, flags = counter
+        return sum(1 for _, _, excluded in matches(regex, flags, result["_doc"].prose, pattern.get("exclude"))
+                   if not excluded)
+    name = pattern.get("stat") or ""
+    if name.endswith("_per_1k") and name[:-len("_per_1k")] in result["stats"]:
+        return int(result["stats"][name[:-len("_per_1k")]])
+    return None
+
+
 def measure_pattern(pattern: Dict[str, Any], result: Dict[str, Any]) -> Optional[float]:
     """Rate of a DB pattern on a measured document, in the pattern's unit."""
     doc: Document = result["_doc"]
     unit = pattern.get("unit", "per_1k_words")
-    if pattern.get("stat"):
-        name = pattern["stat"]
-        if name in result["stats"]:
-            return result["stats"][name]
-        return result["per_1k"].get(name)  # a built-in counter referenced by name
-    regex = pattern.get("regex")
-    if not regex:
+    counter = compiled_counter(pattern)
+    if counter is None:
+        if pattern.get("stat"):
+            return result["stats"].get(pattern["stat"])  # a statistic, in its own unit; None if unknown
         return None
-    flags = re.I if pattern.get("ignore_case") else 0
+    regex, flags = counter
     if unit == "per_1k_words":
-        return round(count(regex, flags | re.M, doc.prose) / (doc.words or 1) * 1000, 2)
+        return round((count_pattern(pattern, result) or 0) / (doc.words or 1) * 1000, 2)
     if unit == "share_of_sentences":
         units = doc.sentences
     elif unit == "share_of_paragraphs":
@@ -305,10 +412,12 @@ def measure_pattern(pattern: Dict[str, Any], result: Dict[str, Any]) -> Optional
     elif unit == "share_of_headings":
         units = doc.headings
     else:
-        return round(float(count(regex, flags | re.M, doc.prose)), 2)
+        return round(float(count_pattern(pattern, result) or 0), 2)
     if not units:
         return 0.0
-    return round(sum(1 for u in units if re.search(regex, u, flags)) / len(units), 3)
+    exclude = pattern.get("exclude")
+    hit = sum(1 for u in units if any(not x for _, _, x in matches(regex, flags, u, exclude)))
+    return round(hit / len(units), 3)
 
 
 def unit_denominator(pattern: Dict[str, Any], stats: Optional[Dict[str, Any]]) -> Optional[float]:
@@ -451,6 +560,24 @@ def is_structural(pattern: Dict[str, Any]) -> bool:
     return pattern["id"].split("/", 1)[0] in STRUCTURAL_DIMENSIONS
 
 
+def in_scope(pattern: Dict[str, Any], register: Optional[str]) -> bool:
+    """False when the input's register is known and the pattern's `register_scope` excludes it —
+    a scoped row is a target only for an input in one of its registers (processing.md Step 3)."""
+    scope = pattern.get("register_scope")
+    return not (register and scope) or register in scope
+
+
+def scope_mark(pattern: Dict[str, Any], register: Optional[str]) -> str:
+    """The name suffix that keeps a scoped row visible: its scope when the input's register is
+    unknown, [out of scope] when it is known and excluded, nothing when it is known and inside."""
+    scope = pattern.get("register_scope")
+    if not scope:
+        return ""
+    if register:
+        return "" if register in scope else " [out of scope]"
+    return " [scope: {}]".format(", ".join(scope))
+
+
 def cmd_report_table(args: argparse.Namespace, results: List[Tuple[str, Dict[str, Any]]],
                      dbs: List[Tuple[str, Dict[str, Any]]], max_tier: int) -> int:
     """The report's measured sections as markdown, so no figure in them is retyped.
@@ -466,7 +593,7 @@ def cmd_report_table(args: argparse.Namespace, results: List[Tuple[str, Dict[str
             continue
         for p in db.get("patterns", []):
             v = measure_pattern(p, first)
-            if v is not None:
+            if v is not None and in_scope(p, args.register):
                 ai_verdicts[p["id"]] = verdict(v, p, first["stats"])
     two = len(results) > 1
     rows, keep, manual, judged = [], [], [], []
@@ -476,20 +603,26 @@ def cmd_report_table(args: argparse.Namespace, results: List[Tuple[str, Dict[str
             continue
         for p in db.get("patterns", []):
             values = [measure_pattern(p, r) for _, r in results]
+            name = p["id"] + (" [enum]" if is_enumeration(p) else "") + scope_mark(p, args.register)
             if values[0] is None:
                 if all(v is None for v in values):
-                    judged.append(p)
+                    judged.append((p, name))
                 continue
             verd = verdict(values[0], p, first["stats"])
             cls = classify(values[0], p, verd)
-            name = p["id"] + (" [enum]" if is_enumeration(p) else "")
-            enum = enum or name.endswith("[enum]")
+            enum = enum or is_enumeration(p)
             if is_structural(p):
                 name += " [structural]"
                 structural = True
             rng = p.get("range")
             rate = "{} ({})".format(fmt(p.get("rate")),
                                     "{}–{}".format(fmt(rng[0]), fmt(rng[1])) if rng else "-")
+            if not in_scope(p, args.register):
+                if cls in EDITING_CLASSES:
+                    manual.append("- {} — scoped to {}; the input is {} and a scoped row is a "
+                                  "target only inside its registers".format(
+                                      name, ", ".join(p["register_scope"]), args.register))
+                continue
             if cls == "do-not-touch":
                 keep.append("- {} — input {}, author {}".format(name, fmt(values[0]), rate))
                 continue
@@ -499,7 +632,7 @@ def cmd_report_table(args: argparse.Namespace, results: List[Tuple[str, Dict[str
                 manual.append("- {} — tier {} is above the {} setting's ceiling of {}"
                               .format(name, effective_tier(p), args.setting, max_tier))
                 continue
-            cells = [name, DIRECTIONS[cls], str(p.get("tier", "-")),
+            cells = [name, DIRECTIONS[cls], str(effective_tier(p)),
                      ai_evidence(p, DIRECTIONS[cls], ai_verdicts), fmt(values[0])]
             if two:
                 cells.append(fmt(values[-1]))
@@ -514,7 +647,8 @@ def cmd_report_table(args: argparse.Namespace, results: List[Tuple[str, Dict[str
     sys.stderr.write(
         "report table: measured from {}. Paste it; do not retype a figure, and do not "
         "carry one over from an earlier convergence round. The not-converged, side-effect "
-        "and open-question sections are yours to write.\n".format(
+        "and open-question sections are yours to write. The tier column is the effective "
+        "tier (the review round's override where set).\n".format(
             " and ".join(n for n, _ in results)))
     if enum:
         sys.stderr.write(
@@ -526,6 +660,10 @@ def cmd_report_table(args: argparse.Namespace, results: List[Tuple[str, Dict[str
             "writes when the shape is theirs to choose, and never licenses adding or "
             "removing a list or a heading the input has: the structure invariant wins and "
             "the row goes to the report as inapplicable to this input.\n")
+    if not args.register and any("[scope:" in c[0] for _, c in rows):
+        sys.stderr.write(
+            "[scope: ...] marks a register-scoped row; pass --register with the input's "
+            "register to have the out-of-scope ones set aside mechanically.\n")
     print("## Before / after")
     print("| " + " | ".join(head) + " |")
     print("|" + "---|" * len(head))
@@ -534,15 +672,13 @@ def cmd_report_table(args: argparse.Namespace, results: List[Tuple[str, Dict[str
     print()
     print("## Do-not-touch (input already matched the author)")
     print("\n".join(keep) if keep else "- none")
-    if args.setting:
-        print()
-        print("## Left for the manual pass")
-        print("\n".join(manual) if manual else "- none")
+    print()
+    print("## Left for the manual pass")
+    print("\n".join(manual) if manual else "- none")
     print()
     print("## Read for these (judged patterns — no counter, so no row above)")
-    print("\n".join("- {} (tier {}) — {}".format(p["id"], p.get("tier", "-"),
-                                                  p.get("description", ""))
-                    for p in judged) if judged else "- none")
+    print("\n".join("- {} (tier {}) — {}".format(name, effective_tier(p), p.get("description", ""))
+                    for p, name in judged) if judged else "- none")
     return 0
 
 
@@ -578,11 +714,47 @@ def fmt(v: Any) -> str:
     return str(v)
 
 
+def vet_outliers(results: List[Tuple[str, Dict[str, Any]]]) -> List[Tuple[str, str, float, float, float]]:
+    """(file, marker, value, median of the others, max of the others) for every document whose
+    rate on a high-signal AI marker is half again the highest of the other documents and at least
+    one per 1k words above their median — technique.md Step 2's "your others have 0, this one
+    has 12 — was it AI-assisted?". A question for the author, not a verdict; against the
+    highest of the rest rather than the median, or a marker most documents show a little of
+    lists a third of the corpus."""
+    out = []
+    for i, (name, r) in enumerate(results):
+        for marker in VET_MARKERS:
+            others = [q["per_1k"][marker] for j, (_, q) in enumerate(results) if j != i]
+            if not others:
+                continue
+            med, top = float(statistics.median(others)), max(others)
+            value = r["per_1k"][marker]
+            if value >= 1.5 * top and value - med >= 1.0:
+                out.append((name, marker, value, med, top))
+    return sorted(out, key=lambda t: -(t[2] - t[3]))
+
+
+def cmd_vet(results: List[Tuple[str, Dict[str, Any]]]) -> int:
+    print("vetting: {} document(s); a document is listed where its rate on a high-signal AI "
+          "marker is half again the highest of the others and a point above their median".format(len(results)))
+    outliers = vet_outliers(results)
+    if len(results) < 2:
+        print("  nothing to compare against: vetting needs at least two documents")
+    elif not outliers:
+        print("  no outliers on {}".format(", ".join(VET_MARKERS)))
+    for name, marker, value, med, top in outliers:
+        print("  {}  {}  {} per 1k  (others: median {}, max {})".format(
+            name, marker, fmt(value), fmt(med), fmt(top)))
+    return 0
+
+
 def cmd_measure(args: argparse.Namespace) -> int:
     results = []
     for path in args.files:
         with open(path, encoding="utf-8") as fh:
             results.append((path, measure(fh.read())))
+    if args.vet:
+        return cmd_vet(results)
     dbs = []
     for path in args.db or []:
         with open(path, encoding="utf-8") as fh:
@@ -600,12 +772,17 @@ def cmd_measure(args: argparse.Namespace) -> int:
                         continue
                     verd = verdict(v, p, r["stats"])
                     row = {"value": v, "db_rate": p.get("rate"), "db_range": p.get("range"),
-                           "tier": p.get("tier"), "verdict": verd}
+                           "tier": effective_tier(p), "verdict": verd}
+                    if args.register:
+                        row["out_of_scope"] = not in_scope(p, args.register)
                     if db.get("kind") == "ai":
                         ai_rows.append((p["id"], row))
                         continue
                     cls = classify(v, p, verd)
-                    row.update({"gap": gap_size(v, p, r["stats"], verd), "class": cls})
+                    gap = gap_size(v, p, r["stats"], verd)
+                    if row.get("out_of_scope"):
+                        cls, gap = "neutral", 0.0
+                    row.update({"gap": gap, "class": cls})
                     if args.setting:
                         row["dropped_by_setting"] = (cls in EDITING_CLASSES
                                                      and effective_tier(p) > max_tier)
@@ -622,8 +799,10 @@ def cmd_measure(args: argparse.Namespace) -> int:
                     continue
                 for p in db.get("patterns", []):
                     if measure_pattern(p, r) is None:
-                        judged[p["id"]] = {"tier": p.get("tier"),
+                        judged[p["id"]] = {"tier": effective_tier(p),
                                            "description": p.get("description", "")}
+                        if args.register:
+                            judged[p["id"]]["out_of_scope"] = not in_scope(p, args.register)
             if judged:
                 entry["judged_patterns"] = judged
             out[path] = entry
@@ -656,40 +835,51 @@ def cmd_measure(args: argparse.Namespace) -> int:
                 continue
             verdicts = [verdict(v, p, r["stats"]) for v, (_, r) in zip(values, results)]
             gap = cls = None
+            name = p["id"] + scope_mark(p, args.register)
             if not ai:
+                name += (" [enum]" if is_enumeration(p) else "") + (" [structural]" if is_structural(p) else "")
                 gap = gap_size(values[0], p, results[0][1]["stats"], verdicts[0])
                 cls = classify(values[0], p, verdicts[0])
-                if args.setting and cls in EDITING_CLASSES and effective_tier(p) > max_tier:
+                if not in_scope(p, args.register):
+                    cls, gap = "neutral", 0.0
+                elif args.setting and cls in EDITING_CLASSES and effective_tier(p) > max_tier:
                     cls += " [manual]"
-            rows.append((p, values, verdicts, gap, cls))
+            rows.append((p, name, values, verdicts, gap, cls))
         if classified:
             note = ["class and gap for {}".format(names[0])]
             if args.setting:
                 note.append("setting {} ([manual] = tier above {})".format(args.setting, max_tier))
             if args.sort_gap:
-                rows.sort(key=lambda t: -(t[3] or 0.0))
+                rows.sort(key=lambda t: -(t[4] or 0.0))
                 note.append("largest gap first")
             print("  " + "; ".join(note))
+        pid_w = max([40] + [len(name) for _, name, _, _, _, _ in rows])
         head = "{:<16}{:>6}  ".format("class", "gap") if classified else ""
-        head += "{:<40}{:>5}{:>12}{:>16}".format("pattern", "tier", "db rate", "db range")
+        head += "{:<{pw}}{:>5}{:>12}{:>16}".format("pattern", "tier", "db rate", "db range", pw=pid_w)
         print(head + "".join("{:>{w}}".format(n[-width:], w=width + 2) for n in names))
-        for p, values, verdicts, gap, cls in rows:
+        for p, name, values, verdicts, gap, cls in rows:
             rng = p.get("range")
             rng_s = "{}–{}".format(fmt(rng[0]), fmt(rng[1])) if rng else "-"
             row = "{:<16}{:>6}  ".format(cls, fmt(gap)) if classified else ""
-            pid = p["id"] + ("" if ai else
-                             (" [enum]" if is_enumeration(p) else "") +
-                             (" [structural]" if is_structural(p) else ""))
-            row += "{:<40}{:>5}{:>12}{:>16}".format(pid[:40], p.get("tier", "-"), fmt(p.get("rate")), rng_s)
+            row += "{:<{pw}}{:>5}{:>12}{:>16}".format(name, effective_tier(p), fmt(p.get("rate")), rng_s, pw=pid_w)
             row += "".join("{:>{w}}".format("{} {}".format(fmt(v), vd), w=width + 2)
                            for v, vd in zip(values, verdicts))
             print(row)
-        if not ai and any(is_enumeration(p) for p, _, _, _, _ in rows):
-            print("  [enum] = the counter enumerates forms; `match` covers only the ones it "
-                  "names, so read for the rest of the family")
-        if not ai and any(is_structural(p) for p, _, _, _, _ in rows):
-            print("  [structural] = a row about document shape; it never licenses adding or "
-                  "removing a list or a heading the input has")
+        marks = []
+        if not ai and any(is_enumeration(p) for p, _, _, _, _, _ in rows):
+            marks.append("[enum] = the counter enumerates forms; `match` covers only the ones it "
+                         "names, so read for the rest of the family")
+        if not ai and any(is_structural(p) for p, _, _, _, _, _ in rows):
+            marks.append("[structural] = a row about document shape; it never licenses adding or "
+                         "removing a list or a heading the input has")
+        if any("[scope:" in name for _, name, _, _, _, _ in rows):
+            marks.append("[scope: ...] = a register-scoped row, a target only for an input in one "
+                         "of those registers; pass --register to set the others aside")
+        if any("[out of scope]" in name for _, name, _, _, _, _ in rows):
+            marks.append("[out of scope] = the input's register is outside this row's scope: "
+                         "not a rewrite row, and not evidence")
+        for mark in marks:
+            print("  " + mark)
         if not ai:
             judged = [p for p in db.get("patterns", [])
                       if all(measure_pattern(p, r) is None for _, r in results)]
@@ -698,8 +888,76 @@ def cmd_measure(args: argparse.Namespace) -> int:
                 print("  read for these — no counter, so no row above and no verdict; "
                       "each one still gets a class and a line in the report")
                 for p in judged:
-                    print("  {:<40}{:>5}  {}".format(
-                        p["id"][:40], p.get("tier", "-"), p.get("description", "")))
+                    print("  {:<{pw}}{:>5}  {}".format(
+                        p["id"] + scope_mark(p, args.register), effective_tier(p),
+                        p.get("description", ""), pw=pid_w))
+    print("  tier = effective tier: the review round's override where one is set")
+    return 0
+
+
+def cmd_hits(args: argparse.Namespace) -> int:
+    counters: List[Tuple[str, Dict[str, Any]]] = []
+    for rx in args.regex or []:
+        counters.append((rx, {"regex": rx, "ignore_case": args.ignore_case,
+                              "exclude": args.exclude, "unit": args.unit}))
+    for name in args.stat or []:
+        if name not in STATS_HELP and name not in COUNTERS:
+            sys.stderr.write("unknown stat {!r}; `textstats.py counters` lists them\n".format(name))
+            return 1
+        unit = args.unit if name in COUNTERS or name.endswith("_per_1k") else STAT_UNITS.get(name, args.unit)
+        counters.append((name, {"stat": name, "exclude": args.exclude, "unit": unit}))
+    if not counters:
+        sys.stderr.write("nothing to count: give -e REGEX or --stat NAME\n")
+        return 1
+    for _, p in counters:
+        for key in ("regex", "exclude"):
+            if p.get(key):
+                try:
+                    re.compile(p[key])
+                except re.error as exc:
+                    sys.stderr.write("invalid {} {!r}: {}\n".format(key, p[key], exc))
+                    return 1
+    results = []
+    for path in args.files:
+        with open(path, encoding="utf-8") as fh:
+            results.append((path, measure(fh.read())))
+    if args.matrix or len(counters) > 1:
+        width = max(12, *(min(len(n), 24) for n, _ in results))
+        label_w = max(24, *(min(len(label), 60) for label, _ in counters))
+        print("{:<{lw}}".format("counter (raw count per file)", lw=label_w)
+              + "".join("{:>{w}}".format(n[-width:], w=width + 2) for n, _ in results))
+        for label, p in counters:
+            cells = []
+            for _, r in results:
+                c = count_pattern(p, r)
+                cells.append(fmt(measure_pattern(p, r)) if c is None else str(c))
+            print("{:<{lw}}".format(label[:label_w], lw=label_w)
+                  + "".join("{:>{w}}".format(c, w=width + 2) for c in cells))
+    else:
+        label, p = counters[0]
+        for path, r in results:
+            doc: Document = r["_doc"]
+            value = measure_pattern(p, r)
+            counter = compiled_counter(p)
+            if counter is None:
+                print("{}: words={}  {}={}".format(path, doc.words, label, fmt(value)))
+                continue
+            regex, flags = counter
+            spans = matches(regex, flags, doc.prose, p.get("exclude"))
+            kept = sum(1 for _, _, excluded in spans if not excluded)
+            dropped = len(spans) - kept
+            print("{}: words={}  count={}{}  {}={}".format(
+                path, doc.words, kept, " ({} excluded)".format(dropped) if dropped else "",
+                p["unit"], fmt(value)))
+            for s, e, excluded in spans[:args.max]:
+                ctx = (doc.prose[max(0, s - args.context):s] + "«" + doc.prose[s:e] + "»"
+                       + doc.prose[e:e + args.context]).replace("\n", " ")
+                print("  {}…{}…".format("(excluded) " if excluded else "", ctx))
+            if len(spans) > args.max:
+                print("  … {} more".format(len(spans) - args.max))
+    for label, p in counters:
+        fields = {k: p[k] for k in ("regex", "stat", "ignore_case", "exclude", "unit") if p.get(k)}
+        print("DB fields for {}: {}".format(label[:60], json.dumps(fields, ensure_ascii=False)[1:-1]))
     return 0
 
 
@@ -722,11 +980,29 @@ def main(argv: Optional[List[str]] = None) -> int:
     g.add_argument("--report-table", action="store_true",
                    help="the report's measured sections as markdown, AI-evidence column "
                         "filled, so no figure in the report is retyped")
+    g.add_argument("--vet", action="store_true",
+                   help="vetting view: per-document outliers on the high-signal AI markers")
     s.add_argument("--sort-gap", action="store_true",
                    help="order DB rows by the size of the edit they ask for, largest first")
     s.add_argument("--setting", choices=sorted(SETTING_MAX_TIER),
                    help="strictness ceiling: mark [manual] the rows whose tier is above it")
+    s.add_argument("--register",
+                   help="the input's register (article, email, ...): rows whose register_scope "
+                        "excludes it are marked [out of scope] and are not rewrite rows")
     s.set_defaults(fn=cmd_measure)
+    s = sub.add_parser("hits"); s.add_argument("files", nargs="+")
+    s.add_argument("-e", "--regex", action="append", help="a candidate regex (repeatable)")
+    s.add_argument("--stat", action="append", help="a statistic or built-in counter by name (repeatable)")
+    s.add_argument("-i", "--ignore-case", action="store_true",
+                   help="match case-insensitively; the DB field is ignore_case: true")
+    s.add_argument("-x", "--exclude", help="regex whose matches subtract overlapping hits; the DB field is exclude")
+    s.add_argument("--unit", default="per_1k_words",
+                   choices=("per_1k_words", "share_of_sentences", "share_of_paragraphs", "share_of_headings", "count"))
+    s.add_argument("--matrix", action="store_true",
+                   help="one line per counter with the raw count per file (the default with several counters)")
+    s.add_argument("--max", type=int, default=12, help="hits to print per file (default 12)")
+    s.add_argument("--context", type=int, default=40, help="characters of context around a hit")
+    s.set_defaults(fn=cmd_hits)
     s = sub.add_parser("counters"); s.set_defaults(fn=cmd_counters)
     args = ap.parse_args(argv)
     return args.fn(args)
