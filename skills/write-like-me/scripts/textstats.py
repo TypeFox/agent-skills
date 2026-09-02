@@ -17,7 +17,10 @@ Usage
       or `stat` field (a statistic or a built-in counter, by name) is measured
       on each file and shown next to the DB's rate and per-document range, with
       a verdict: `too-short` when the input is too small for the pattern's rate
-      to predict even one occurrence, so no count in it is evidence either way;
+      to predict even one occurrence, so no count in it is evidence either way
+      (unless the input overshoots the author's range maximum by more than one
+      occurrence of its own: a removal is expressible at any length, and reads
+      `gap`);
       `absent` when the input has none of a habit the author shows in most
       documents (the additive case, which the range test alone would miss
       whenever one corpus document put a 0 in the range); `gap` when the input
@@ -39,8 +42,15 @@ Usage
       whose `register_scope` excludes it is marked [out of scope] and classed
       neutral, since a scoped row is a target only for an input in one of its
       registers (references/processing.md, Step 3), and an out-of-scope AI row
-      is not evidence. The tier column is the effective tier: the review
-      round's override where one is set.
+      is not evidence. A register no profile document carries is accepted with
+      a warning: the profile then has no evidence about it. With --sort-gap or
+      --setting and several files, the first file is the input and every
+      column's verdict is judged at its length, so a rewrite that came out
+      shorter does not turn the rows it worked `too-short`. A row of the
+      `lists` or `headings` dimensions is marked [structural], and classed
+      neutral where the input has no list or heading at all: inapplicable. The
+      tier column is the effective tier: the review round's override where one
+      is set.
   textstats.py measure FILE... --vet
       Vetting view (references/technique.md, Step 2): every document whose rate
       on a high-signal AI marker stands out against the median of the others.
@@ -88,7 +98,7 @@ import json
 import re
 import statistics
 import sys
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 HEADING_RE = re.compile(r"^\s{0,3}#{1,6}\s+(.*?)\s*#*\s*$")
 LIST_ITEM_RE = re.compile(r"^\s*(?:[-*+]|\d+[.)])\s+(.*)$")
@@ -459,13 +469,22 @@ def verdict(value: Optional[float], pattern: Dict[str, Any],
         return "n/a"
     if pattern.get("kind") == "absence":
         return "match" if value == 0 else "gap"
+    rate = float(pattern["rate"])
+    rng = pattern.get("range") or [rate, rate]
+    lo, hi = float(rng[0]), float(rng[1])
+    tol = max(0.1 * max(abs(lo), abs(hi)), 0.5 if pattern.get("unit", "per_1k_words") == "per_1k_words" else 0.05)
     # Rates quantize: in a document of N words one occurrence is worth 1000/N, so a habit
     # the author's rate predicts less than once here cannot be a target in either
-    # direction — chasing it would put the text far past the author's own rate.
+    # direction — chasing it would put the text far past the author's own rate. Removal is
+    # the exception: the author's range maximum is expressible at any length, as zero is
+    # for an absence pattern, so an input that overshoots it by more than one occurrence
+    # of its own is judged like any other. One occurrence is the slack, because that is
+    # what an author at their maximum could have put into a document this size.
     expected = expected_occurrences(pattern, stats)
     if expected is not None and expected < 1.0:
-        return "too-short"
-    rate = float(pattern["rate"])
+        denom = unit_denominator(pattern, stats) or 0.0
+        if denom <= 0 or value <= hi + max(tol, 1.0 / denom):
+            return "too-short"
     # A habit the author shows in most documents and the input shows not at all is the
     # additive case, and it needs its own verdict: one corpus document without the habit
     # puts 0 inside the range, so the range test below would report "inside the range,
@@ -473,9 +492,6 @@ def verdict(value: Optional[float], pattern: Dict[str, Any],
     # The 0.6 spread is the one the tier-1 rule already asks for (db-schema.md).
     if value == 0 and rate > 0 and float(pattern.get("spread") or 0.0) >= SPREAD_ABSENT:
         return "absent"
-    rng = pattern.get("range") or [rate, rate]
-    lo, hi = float(rng[0]), float(rng[1])
-    tol = max(0.1 * max(abs(lo), abs(hi)), 0.5 if pattern.get("unit", "per_1k_words") == "per_1k_words" else 0.05)
     if not (lo - tol <= value <= hi + tol):
         return "gap"
     if rate > 0 and value < 0.5 * rate:
@@ -516,19 +532,58 @@ def classify(value: Optional[float], pattern: Dict[str, Any], verd: str) -> str:
     return "neutral"
 
 
+WORD_ALTERNATION_RE = re.compile(r"[\w' -]+(?:\|[\w' -]+)+")
+
+
+def group_bodies(rx: str) -> List[str]:
+    """The body of every parenthesised group in `rx`, innermost first.
+
+    A hand-rolled scan rather than a regex, because groups nest: it skips escaped
+    characters and the insides of character classes, so a `[.!?]` or a `\\(` never opens
+    or closes a group. `(?:` is stripped from the body it introduces; every other group
+    prefix (a lookaround's `?<=`, `?=`, `?!`) is left in place, which is what keeps such
+    a group from reading as a word list.
+    """
+    bodies, stack, i, in_class = [], [], 0, False
+    while i < len(rx):
+        ch = rx[i]
+        if ch == "\\":
+            i += 2
+            continue
+        if in_class:
+            in_class = ch != "]"
+        elif ch == "[":
+            in_class = True
+        elif ch == "(":
+            stack.append(i)
+        elif ch == ")" and stack:
+            body = rx[stack.pop() + 1:i]
+            bodies.append(body[2:] if body.startswith("?:") else body)
+        i += 1
+    return bodies
+
+
 def is_enumeration(pattern: Dict[str, Any]) -> bool:
-    """True when the counter is a list of literal forms rather than a general rule.
+    """True when the counter names a closed list of literal forms somewhere in its rule.
 
     Such a counter sees only the members it names, so `match` on its row says the named
     forms are at the author's rate and says nothing about the rest of the family — the
     `-ize` a British-spelling alternation never listed. Detected structurally: an
-    alternation whose branches are plain words.
+    alternation whose branches are plain words, either as the whole regex or as one group
+    inside it. The group case is the common one and the easiest to miss by eye: the closed
+    list is a verb or modal slot embedded in a general rule, as in `, which (?:is|means|
+    allows)` or `(?:can|cannot|must) … be \\w+ed`, where the surrounding structure is
+    genuinely general and only the listed slot is closed. Reading such a row as a general
+    rule is how a real instance of the habit — a `, which enables`, a `can't be mapped` —
+    comes back `absent` and pushes a rewrite to swap a word that was already the author's.
     """
     rx = pattern.get("regex")
     if not rx or "|" not in rx:
         return False
     bare = re.sub(r"\\b|\(\?:|\(\?i\)|[()]", "", rx)
-    return bool(re.fullmatch(r"[\w' -]+(?:\|[\w' -]+)+", bare))
+    if WORD_ALTERNATION_RE.fullmatch(bare):
+        return True
+    return any(WORD_ALTERNATION_RE.fullmatch(body) for body in group_bodies(rx))
 
 
 def ai_evidence(pattern: Dict[str, Any], direction: str, ai_verdicts: Dict[str, str]) -> str:
@@ -547,7 +602,15 @@ def ai_evidence(pattern: Dict[str, Any], direction: str, ai_verdicts: Dict[str, 
     return "high" if ai_verdicts.get(pattern["id"]) in ("match", "high") else "low"
 
 
-DIRECTIONS = {"add": "add", "remove": "remove", "lean": "keep"}
+def row_direction(cls: str, verd: str) -> Tuple[str, str]:
+    """(direction, table label) of a rewrite row. A lean row moves the way its verdict says —
+    `high` is worked down like a removal and carries AI evidence, `low` up like an addition —
+    and the label says so. `keep` is a do-not-touch row a tone brief moved, which no counter
+    can see, so the table never prints it."""
+    if cls == "lean":
+        d = "remove" if verd == "high" else "add"
+        return d, d + " (lean)"
+    return cls, cls
 
 # The two taxonomy dimensions whose rows describe document shape rather than prose. What
 # the author does when they choose the shape says nothing about the shape an input already
@@ -558,6 +621,20 @@ STRUCTURAL_DIMENSIONS = ("lists", "headings")
 
 def is_structural(pattern: Dict[str, Any]) -> bool:
     return pattern["id"].split("/", 1)[0] in STRUCTURAL_DIMENSIONS
+
+
+def is_inapplicable(pattern: Dict[str, Any], stats: Dict[str, Any]) -> bool:
+    """True for a structural row when the input has none of the shape it is about — no list
+    for a `lists` row, no heading for a `headings` row. Such a row could only be met by adding
+    a block, which the structure invariant forbids, so where it asks for an edit it is neutral:
+    inapplicable to this input, and reported as such rather than worked. Where it already
+    matches it stays a do-not-touch row."""
+    dim = pattern["id"].split("/", 1)[0]
+    if dim == "lists":
+        return not stats.get("list_items")
+    if dim == "headings":
+        return not stats.get("headings")
+    return False
 
 
 def in_scope(pattern: Dict[str, Any], register: Optional[str]) -> bool:
@@ -626,18 +703,24 @@ def cmd_report_table(args: argparse.Namespace, results: List[Tuple[str, Dict[str
             if cls == "do-not-touch":
                 keep.append("- {} — input {}, author {}".format(name, fmt(values[0]), rate))
                 continue
-            if cls not in DIRECTIONS:
+            if cls not in EDITING_CLASSES:
+                continue
+            if is_inapplicable(p, first["stats"]):
+                manual.append("- {} — a shape row, and the input has no {}: inapplicable, the "
+                              "structure invariant wins".format(
+                                  name, "list" if p["id"].startswith("lists/") else "heading"))
                 continue
             if args.setting and effective_tier(p) > max_tier:
                 manual.append("- {} — tier {} is above the {} setting's ceiling of {}"
                               .format(name, effective_tier(p), args.setting, max_tier))
                 continue
-            cells = [name, DIRECTIONS[cls], str(effective_tier(p)),
-                     ai_evidence(p, DIRECTIONS[cls], ai_verdicts), fmt(values[0])]
+            d, label = row_direction(cls, verd)
+            cells = [name, label, str(effective_tier(p)), ai_evidence(p, d, ai_verdicts), fmt(values[0])]
             if two:
                 cells.append(fmt(values[-1]))
-            cells += [rate, verdict(values[-1], p, results[-1][1]["stats"])
-                      if values[-1] is not None else "-"]
+            # judged at the input's length: the rewrite's own shorter count must not turn a
+            # row it worked `too-short` (processing.md, Step 6)
+            cells += [rate, verdict(values[-1], p, first["stats"]) if values[-1] is not None else "-"]
             rows.append((gap_size(values[0], p, first["stats"], verd) or 0.0, cells))
     rows.sort(key=lambda t: -t[0])
     head = ["pattern", "direction", "tier", "AI evidence", "input"]
@@ -659,7 +742,8 @@ def cmd_report_table(args: argparse.Namespace, results: List[Tuple[str, Dict[str
             "[structural] marks a row about document shape. It describes what the author "
             "writes when the shape is theirs to choose, and never licenses adding or "
             "removing a list or a heading the input has: the structure invariant wins and "
-            "the row goes to the report as inapplicable to this input.\n")
+            "the row goes to the report as inapplicable to this input — where the input has "
+            "no list or heading at all it is already listed there, under the manual pass.\n")
     if not args.register and any("[scope:" in c[0] for _, c in rows):
         sys.stderr.write(
             "[scope: ...] marks a register-scoped row; pass --register with the input's "
@@ -759,6 +843,20 @@ def cmd_measure(args: argparse.Namespace) -> int:
     for path in args.db or []:
         with open(path, encoding="utf-8") as fh:
             dbs.append((path, json.load(fh)))
+    if args.register:
+        known = set()
+        for _, db in dbs:
+            if db.get("kind") == "ai":
+                continue
+            corpus = db.get("corpus") or {}
+            known.update(d["register"] for d in corpus.get("documents", []) if d.get("register"))
+            known.update(corpus.get("register_weights") or {})
+        if known and args.register not in known:
+            sys.stderr.write(
+                "register {!r} appears in no profile document (the profile has {}): every "
+                "register-scoped row is set aside, and what the profile says about this register "
+                "is a judgment call — references/processing.md, Step 1.\n".format(
+                    args.register, ", ".join(sorted(known))))
     max_tier = SETTING_MAX_TIER.get(args.setting or "", 3)
     if args.json:
         out = {}
@@ -780,7 +878,9 @@ def cmd_measure(args: argparse.Namespace) -> int:
                         continue
                     cls = classify(v, p, verd)
                     gap = gap_size(v, p, r["stats"], verd)
-                    if row.get("out_of_scope"):
+                    if is_structural(p):
+                        row["inapplicable"] = is_inapplicable(p, r["stats"])
+                    if row.get("out_of_scope") or (row.get("inapplicable") and cls in EDITING_CLASSES):
                         cls, gap = "neutral", 0.0
                     row.update({"gap": gap, "class": cls})
                     if args.setting:
@@ -812,6 +912,11 @@ def cmd_measure(args: argparse.Namespace) -> int:
         return cmd_report_table(args, results, dbs, max_tier)
     names = [p for p, _ in results]
     width = max(28, *(len(n) for n in names))
+    # With the comparison flags the first file is the input and the rest are its rewrites:
+    # class and gap are pinned to it (processing.md, Step 6), and so is the length the
+    # verdicts are judged at, or a rewrite that came out shorter would turn the rows it
+    # worked `too-short`.
+    pinned = results[0][1]["stats"] if (args.sort_gap or args.setting) else None
     print("{:<32}".format("stat") + "".join("{:>{w}}".format(n[-width:], w=width + 2) for n in names))
     for key in STATS_HELP:
         print("{:<32}".format(key) + "".join("{:>{w}}".format(fmt(r["stats"][key]), w=width + 2) for _, r in results))
@@ -833,7 +938,7 @@ def cmd_measure(args: argparse.Namespace) -> int:
             values = [measure_pattern(p, r) for _, r in results]
             if all(v is None for v in values):
                 continue
-            verdicts = [verdict(v, p, r["stats"]) for v, (_, r) in zip(values, results)]
+            verdicts = [verdict(v, p, pinned or r["stats"]) for v, (_, r) in zip(values, results)]
             gap = cls = None
             name = p["id"] + scope_mark(p, args.register)
             if not ai:
@@ -842,11 +947,15 @@ def cmd_measure(args: argparse.Namespace) -> int:
                 cls = classify(values[0], p, verdicts[0])
                 if not in_scope(p, args.register):
                     cls, gap = "neutral", 0.0
+                elif cls in EDITING_CLASSES and is_inapplicable(p, results[0][1]["stats"]):
+                    cls, gap = "neutral", 0.0
                 elif args.setting and cls in EDITING_CLASSES and effective_tier(p) > max_tier:
                     cls += " [manual]"
             rows.append((p, name, values, verdicts, gap, cls))
         if classified:
             note = ["class and gap for {}".format(names[0])]
+            if len(results) > 1:
+                note.append("later columns judged at its length")
             if args.setting:
                 note.append("setting {} ([manual] = tier above {})".format(args.setting, max_tier))
             if args.sort_gap:
@@ -871,7 +980,8 @@ def cmd_measure(args: argparse.Namespace) -> int:
                          "names, so read for the rest of the family")
         if not ai and any(is_structural(p) for p, _, _, _, _, _ in rows):
             marks.append("[structural] = a row about document shape; it never licenses adding or "
-                         "removing a list or a heading the input has")
+                         "removing a list or a heading the input has, and where the input has "
+                         "none it is neutral: inapplicable")
         if any("[scope:" in name for _, name, _, _, _, _ in rows):
             marks.append("[scope: ...] = a register-scoped row, a target only for an input in one "
                          "of those registers; pass --register to set the others aside")

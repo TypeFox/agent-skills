@@ -408,10 +408,37 @@ REPORT_DB = _db([
 
 def test_is_enumeration_separates_a_word_list_from_a_general_rule():
     named = {"id": "x/y", "regex": r"\b(?:behaviour|colour|organised)\b"}
-    general = {"id": "x/z", "regex": r"(?:^|(?<=[.!?]\s))(?:And|But)\b"}
+    general = {"id": "x/z", "regex": r",\s+but\b"}
     assert textstats.is_enumeration(named)
     assert not textstats.is_enumeration(general)
     assert not textstats.is_enumeration({"id": "x/w", "stat": "em_dash"})
+
+
+def test_is_enumeration_finds_a_closed_list_embedded_in_a_general_rule():
+    # The common shape and the easiest to miss by eye: the surrounding rule is general and
+    # only one slot is a closed list, so a `, which enables` or a `can't be mapped` — real
+    # instances of the habit — come back absent unless the row warns that the counter names
+    # its members. Both of these are live rows of the write-like-me taxonomy.
+    which = {"id": "connectives/sentential-which",
+             "regex": r",\s+which (?:is|was|means|makes|allows|in turn)\b"}
+    passive = {"id": "voice-and-person/modal-passive",
+               "regex": r"\b(?:can|cannot|could|may|might|should|must)\s+be\s+\w+(?:ed|en)\b"}
+    assert textstats.is_enumeration(which)
+    assert textstats.is_enumeration(passive)
+
+
+def test_is_enumeration_ignores_alternations_that_are_not_word_lists():
+    # A lookaround or a character class carries a `|` without naming any family member,
+    # so an anchor-plus-general-rule counter stays unmarked.
+    anchored = {"id": "x/y", "regex": r"(?:^|(?<=[.!?]\s))\w+ing\b"}
+    assert not textstats.is_enumeration(anchored)
+
+
+def test_group_bodies_skips_escaped_parens_and_character_classes():
+    assert textstats.group_bodies(r"\(literal\)") == []
+    assert textstats.group_bodies(r"[()]+(?:a|b)") == ["a|b"]
+    # innermost first, and a lookaround keeps its prefix so it cannot read as a word list
+    assert textstats.group_bodies(r"(?:^|(?<=x))(?:a|b)") == ["?<=x", "^|(?<=x)", "a|b"]
 
 
 def test_structural_rows_are_the_shape_dimensions_only():
@@ -608,3 +635,128 @@ def test_report_table_lists_out_of_scope_rows_and_ignores_out_of_scope_ai_eviden
     assert "| punctuation/em-dash | remove | 1 | low |" in out  # the email-scoped AI row is no evidence
     assert "- opener-closer/sign-off [out of scope] — scoped to email; the input is article" in out
     assert "- tone-markers/warmth [out of scope] (tier 2)" in out
+
+
+# --- the process-mode test run (Sep 2026) ---------------------------------------
+
+def test_an_overshoot_past_the_authors_maximum_is_judged_at_any_length():
+    # The quantization argument is about adding: a habit predicted 0.2 times cannot be put in
+    # without landing five times past the rate. Removal has no such floor — the author's range
+    # maximum is expressible at any length, as zero is for an absence — so fifteen emoji in
+    # 572 words against a maximum under one per 1k are a remove row, not a row the input is
+    # too short to judge. One occurrence of the input's own is the slack: what an author at
+    # their maximum could have put into a document this size.
+    emoji = {"id": "tone-markers/emoticon", "unit": "per_1k_words", "rate": 0.389,
+             "range": [0.0, 0.922], "spread": 0.5}
+    posts = {"words": 572, "sentences": 40, "paragraphs": 20}
+    assert textstats.verdict(26.22, emoji, posts) == "gap"        # fifteen of them
+    assert textstats.classify(26.22, emoji, "gap") == "remove"
+    assert textstats.gap_size(26.22, emoji, posts) > 0
+    assert textstats.verdict(1.75, emoji, posts) == "too-short"   # one: within an occurrence of the maximum
+    assert textstats.verdict(0.0, emoji, posts) == "too-short"    # and the converged reading after removal
+    habitual = {"id": "connectives/so-initial", "unit": "per_1k_words", "rate": 3.2,
+                "range": [0.0, 5.5], "spread": 0.8}
+    short = {"words": 64, "sentences": 5, "paragraphs": 1}
+    assert textstats.verdict(15.6, habitual, short) == "too-short"  # one in a 64-word note
+    assert textstats.verdict(31.2, habitual, short) == "gap"        # two: past the maximum by more than one
+
+
+def test_rewritten_columns_are_judged_at_the_inputs_length(tmp_path, capsys):
+    # A rewrite usually comes out shorter. A habit the input could express (1.96 per 1k
+    # predicts 1.2 occurrences in 600 words) must not read `too-short` on the rewritten column
+    # because 478 words predict 0.94: the row was worked, and it is done.
+    db = tmp_path / "user.json"
+    db.write_text(json.dumps(_db([
+        {"id": "punctuation/fronted-adverbial-comma", "regex": "Yesterday,",
+         "unit": "per_1k_words", "tier": 1, "rate": 1.96, "range": [0.0, 8.23], "spread": 0.8}])),
+        encoding="utf-8")
+    before = tmp_path / "a.md"
+    before.write_text("We shipped it. " * 200, encoding="utf-8")
+    after = tmp_path / "b.md"
+    after.write_text("Yesterday, we shipped it. " + "We shipped it. " * 158, encoding="utf-8")
+    assert textstats.main(["measure", str(before), str(after), "--db", str(db), "--sort-gap"]) == 0
+    out = capsys.readouterr().out
+    assert "later columns judged at its length" in out
+    row = [l for l in out.splitlines() if "fronted-adverbial-comma" in l][0]
+    assert row.startswith("add") and row.rstrip().endswith("match")
+    assert textstats.main(["measure", str(before), str(after), "--db", str(db), "--report-table"]) == 0
+    row = [l for l in capsys.readouterr().out.splitlines()
+           if l.startswith("| punctuation/fronted-adverbial-comma")][0]
+    assert row.rstrip("| ").endswith("match")
+    # without the comparison flags the columns are independent documents, each at its own length
+    assert textstats.main(["measure", str(before), str(after), "--db", str(db)]) == 0
+    row = [l for l in capsys.readouterr().out.splitlines() if "fronted-adverbial-comma" in l][0]
+    assert row.rstrip().endswith("too-short")
+
+
+def test_an_unknown_register_is_taken_with_a_warning(tmp_path, capsys):
+    doc = tmp_path / "post.md"
+    doc.write_text(SCOPED_DOC, encoding="utf-8")
+    db = tmp_path / "user.json"
+    db.write_text(json.dumps(dict(SCOPED_DB, corpus={"documents": [
+        {"id": "a", "path": "a.md", "words": 900, "register": "email"},
+        {"id": "b", "path": "b.md", "words": 1200, "register": "article"}]})), encoding="utf-8")
+    assert textstats.main(["measure", str(doc), "--db", str(db), "--register", "linkedin"]) == 0
+    err = capsys.readouterr().err
+    assert "register 'linkedin' appears in no profile document" in err and "article, email" in err
+    assert textstats.main(["measure", str(doc), "--db", str(db), "--register", "article"]) == 0
+    assert "appears in no profile document" not in capsys.readouterr().err
+    # a DB without a corpus section says nothing about registers, so there is nothing to warn about
+    bare = tmp_path / "bare.json"
+    bare.write_text(json.dumps(SCOPED_DB), encoding="utf-8")
+    assert textstats.main(["measure", str(doc), "--db", str(bare), "--register", "linkedin"]) == 0
+    assert "appears in no profile document" not in capsys.readouterr().err
+
+
+def test_a_shape_row_is_inapplicable_where_the_input_has_no_such_shape(tmp_path, capsys):
+    # lists/bullet-density is the profile's largest add row by rate; on an input with no list
+    # it could only be met by adding one, which the structure invariant forbids, so it is
+    # neutral and named as inapplicable instead of topping the table.
+    db = tmp_path / "user.json"
+    db.write_text(json.dumps(_db([
+        {"id": "lists/bullet-density", "stat": "list_items_per_1k", "unit": "per_1k_words",
+         "tier": 1, "rate": 6.467, "range": [0.0, 37.037], "spread": 0.8}])), encoding="utf-8")
+    prose = tmp_path / "prose.md"
+    prose.write_text("We shipped it again. " * 150, encoding="utf-8")
+    assert textstats.main(["measure", str(prose), "--db", str(db), "--sort-gap"]) == 0
+    out = capsys.readouterr().out
+    row = [l for l in out.splitlines() if "lists/bullet-density [structural]" in l][0]
+    assert row.startswith("neutral") and row.split()[1] == "0"
+    assert "inapplicable" in out
+    assert textstats.main(["measure", str(prose), "--db", str(db), "--report-table"]) == 0
+    out = capsys.readouterr().out
+    assert ("- lists/bullet-density [structural] — a shape row, and the input has no list: "
+            "inapplicable") in out
+    assert "| lists/bullet-density" not in out
+    assert textstats.main(["measure", str(prose), "--db", str(db), "--json"]) == 0
+    row = json.loads(capsys.readouterr().out)[str(prose)]["patterns"]["lists/bullet-density"]
+    assert row["class"] == "neutral" and row["gap"] == 0.0 and row["inapplicable"] is True
+    # with a list in the input the row is a row again, marked, and Step 6 says what it may do
+    listed = tmp_path / "listed.md"
+    listed.write_text("We shipped it again. " * 150 + "\n\n- one\n- two\n", encoding="utf-8")
+    assert textstats.main(["measure", str(listed), "--db", str(db), "--sort-gap"]) == 0
+    row = [l for l in capsys.readouterr().out.splitlines() if "lists/bullet-density [structural]" in l][0]
+    assert not row.startswith("neutral")
+
+
+def test_report_table_gives_a_lean_row_the_direction_its_verdict_says(tmp_path, capsys):
+    # A `high` row worked down is a removal with the AI evidence behind it, not a `keep`:
+    # `keep` is a do-not-touch row a tone brief moved, which no counter can see.
+    db = tmp_path / "user.json"
+    db.write_text(json.dumps(_db([
+        {"id": "spelling-lexical/contraction", "stat": "contraction", "unit": "per_1k_words",
+         "tier": 1, "rate": 7.0, "range": [0.0, 16.5], "spread": 0.9},
+        {"id": "voice-and-person/second-person", "stat": "second_person", "unit": "per_1k_words",
+         "tier": 1, "rate": 12.0, "range": [0.0, 28.0], "spread": 0.9}])), encoding="utf-8")
+    ai = tmp_path / "ai.json"
+    ai.write_text(json.dumps({"kind": "ai", "patterns": [
+        {"id": "spelling-lexical/contraction", "stat": "contraction", "unit": "per_1k_words",
+         "tier": 1, "rate": 15.0, "range": [8.0, 30.0], "spread": 0.9}]}), encoding="utf-8")
+    doc = tmp_path / "draft.md"
+    doc.write_text("It's done and you'll see. " * 2 + "It's done now. " * 8
+                   + "We measured it again here. " * 153, encoding="utf-8")
+    assert textstats.main(["measure", str(doc), "--db", str(db), "--db", str(ai), "--report-table"]) == 0
+    out = capsys.readouterr().out
+    assert "| spelling-lexical/contraction | remove (lean) | 1 | high |" in out
+    assert "| voice-and-person/second-person | add (lean) | 1 | — |" in out
+    assert "| keep |" not in out
