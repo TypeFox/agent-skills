@@ -63,7 +63,8 @@ Usage
   textstats.py hits FILE... -e REGEX... [--stat NAME]... [-i] [-x EXCLUDE] [--unit U] [--matrix]
       Print a candidate counter's matches on corpus documents with context, on
       the same stripped prose `measure` and `styledb.py validate` count on: the
-      raw count (what documents[].count records), the rate in the unit, hits an
+      raw count (what a per-1k pattern's documents map records), the rate in the
+      unit, hits an
       --exclude regex subtracts marked, and the DB fields to copy (ignore_case
       when -i was used). Several counters, or --matrix, print one line per
       counter with the count per file.
@@ -392,7 +393,7 @@ def matches(regex: str, flags: int, text: str, exclude: Optional[str] = None) ->
 
 def count_pattern(pattern: Dict[str, Any], result: Dict[str, Any]) -> Optional[int]:
     """Raw occurrences of a pattern in a measured document: the number a per-1k pattern's
-    documents[].count records and `styledb.py validate --corpus-dir` re-runs.
+    documents map records per document and `styledb.py validate --corpus-dir` re-runs.
 
     The counter's matches minus the ones `exclude` overlaps, or the numerator of a per-1k
     statistic (`list_items` for `list_items_per_1k`). None when nothing counts occurrences: a
@@ -695,16 +696,18 @@ def for_register(pattern: Dict[str, Any], docs: Dict[str, Dict[str, Any]],
     scope = pattern.get("register_scope")
     if scope and register not in scope:
         return pattern
-    entries = [e for e in pattern.get("documents", [])
-               if e.get("id") in docs and docs[e["id"]].get("register") == register
-               and docs[e["id"]].get("words")]
+    values = pattern.get("documents")  # document id -> raw count (db-schema.md)
+    if not isinstance(values, dict):
+        return pattern
+    entries = [(did, count) for did, count in values.items()
+               if did in docs and docs[did].get("register") == register and docs[did].get("words")]
     if len(entries) < REGISTER_MIN_DOCS:
         return pattern
-    words = sum(docs[e["id"]]["words"] for e in entries)
-    per_doc = [e.get("count", 0) / docs[e["id"]]["words"] * 1000 for e in entries]
-    present = sum(1 for e in entries if e.get("count", 0) > 0)
+    words = sum(docs[did]["words"] for did, _ in entries)
+    per_doc = [count / docs[did]["words"] * 1000 for did, count in entries]
+    present = sum(1 for _, count in entries if count > 0)
     copy = dict(pattern)
-    copy.update({"rate": round(sum(e.get("count", 0) for e in entries) / words * 1000, 3),
+    copy.update({"rate": round(sum(count for _, count in entries) / words * 1000, 3),
                  "range": [round(min(per_doc), 3), round(max(per_doc), 3)],
                  "spread": round(present / len(entries), 3),
                  "register_rate": {"register": register, "documents": len(entries),

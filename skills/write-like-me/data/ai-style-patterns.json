@@ -232,100 +232,31 @@
       "measurement": "counted",
       "stat": "em_dash",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 39
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 7
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 11
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 49
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 24
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 5
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 11
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 13
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 1
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 7
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 16
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 38
-        },
-        {
-          "id": "monaco-opus",
-          "count": 18
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 7
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 3
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 4
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 10
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 4
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 14
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 35
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 10
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 2
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 39,
+        "allstar-gemini-flash": 7,
+        "domain-ai-gpt": 11,
+        "domain-ai-sonnet": 49,
+        "email-gemini-gpt": 24,
+        "generating-code-gemini": 5,
+        "langium-governance-opus": 11,
+        "langium-llvm-fable": 13,
+        "linkedin-gemini": 1,
+        "linkedin-gpt": 7,
+        "linkedin-opus": 16,
+        "lionweb-sonnet": 38,
+        "monaco-opus": 18,
+        "parser-performance-gpt": 7,
+        "presentations-gemini": 3,
+        "presentations-gpt": 4,
+        "presentations-sonnet": 10,
+        "software-business-gemini": 4,
+        "software-business-gpt": 14,
+        "software-business-sonnet": 35,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 10,
+        "vscode-extension-gemini-pro": 2
+      },
       "evidence": [
         {
           "doc": "agent-experience-fable",
@@ -372,100 +303,31 @@
       "measurement": "counted",
       "stat": "em_dash_appositive",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 13
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 3
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 6
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 16
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 3
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 3
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 5
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 1
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 3
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 5
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 14
-        },
-        {
-          "id": "monaco-opus",
-          "count": 9
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 4
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 1
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 2
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 2
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 6
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 10
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 4
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 13,
+        "allstar-gemini-flash": 3,
+        "domain-ai-gpt": 6,
+        "domain-ai-sonnet": 16,
+        "email-gemini-gpt": 3,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 3,
+        "langium-llvm-fable": 5,
+        "linkedin-gemini": 1,
+        "linkedin-gpt": 3,
+        "linkedin-opus": 5,
+        "lionweb-sonnet": 14,
+        "monaco-opus": 9,
+        "parser-performance-gpt": 4,
+        "presentations-gemini": 1,
+        "presentations-gpt": 2,
+        "presentations-sonnet": 2,
+        "software-business-gemini": 0,
+        "software-business-gpt": 6,
+        "software-business-sonnet": 10,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 4,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "theia-haiku",
@@ -516,100 +378,31 @@
       "measurement": "counted",
       "stat": "semicolon",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 14
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 1
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 1
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 9
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 1
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 1
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 0
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 1
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 5
-        },
-        {
-          "id": "monaco-opus",
-          "count": 3
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 4
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 1
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 14,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 1,
+        "domain-ai-sonnet": 1,
+        "email-gemini-gpt": 9,
+        "generating-code-gemini": 1,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 5,
+        "monaco-opus": 3,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 4,
+        "software-business-sonnet": 1,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "agent-experience-fable",
@@ -640,7 +433,7 @@
         "report",
         "social"
       ],
-      "tier_reason": "fewer than 3 quotes"
+      "tier_reason": "present in under 60% of the measured documents; fewer than 3 quotes"
     },
     {
       "id": "punctuation/scare-quote",
@@ -651,100 +444,31 @@
       "measurement": "counted",
       "stat": "scare_quote",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 4
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 7
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 6
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 1
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 1
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 1
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 1
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 1
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 1
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 1
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 1
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 3
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 2
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 7
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 13
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 1
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 2
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 4,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 7,
+        "email-gemini-gpt": 6,
+        "generating-code-gemini": 1,
+        "langium-governance-opus": 1,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 1,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 1,
+        "presentations-gemini": 1,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 3,
+        "software-business-gemini": 2,
+        "software-business-gpt": 7,
+        "software-business-sonnet": 13,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 1,
+        "vscode-extension-gemini-pro": 2
+      },
       "evidence": [
         {
           "doc": "software-business-sonnet",
@@ -792,100 +516,31 @@
       "measurement": "counted",
       "stat": "one_sentence_paragraph_share",
       "unit": "share_of_paragraphs",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "rate": 0.156
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "rate": 0.433
-        },
-        {
-          "id": "domain-ai-gpt",
-          "rate": 0.665
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "rate": 0.252
-        },
-        {
-          "id": "email-gemini-gpt",
-          "rate": 0.545
-        },
-        {
-          "id": "generating-code-gemini",
-          "rate": 0.182
-        },
-        {
-          "id": "langium-governance-opus",
-          "rate": 0.129
-        },
-        {
-          "id": "langium-llvm-fable",
-          "rate": 0.143
-        },
-        {
-          "id": "linkedin-gemini",
-          "rate": 0.733
-        },
-        {
-          "id": "linkedin-gpt",
-          "rate": 0.5
-        },
-        {
-          "id": "linkedin-opus",
-          "rate": 0.297
-        },
-        {
-          "id": "lionweb-sonnet",
-          "rate": 0.304
-        },
-        {
-          "id": "monaco-opus",
-          "rate": 0.152
-        },
-        {
-          "id": "parser-performance-gpt",
-          "rate": 0.475
-        },
-        {
-          "id": "presentations-gemini",
-          "rate": 0.0
-        },
-        {
-          "id": "presentations-gpt",
-          "rate": 0.31
-        },
-        {
-          "id": "presentations-sonnet",
-          "rate": 0.0
-        },
-        {
-          "id": "software-business-gemini",
-          "rate": 0.455
-        },
-        {
-          "id": "software-business-gpt",
-          "rate": 0.527
-        },
-        {
-          "id": "software-business-sonnet",
-          "rate": 0.765
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "rate": 0.6
-        },
-        {
-          "id": "theia-haiku",
-          "rate": 0.25
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "rate": 0.143
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 0.156,
+        "allstar-gemini-flash": 0.433,
+        "domain-ai-gpt": 0.665,
+        "domain-ai-sonnet": 0.252,
+        "email-gemini-gpt": 0.545,
+        "generating-code-gemini": 0.182,
+        "langium-governance-opus": 0.129,
+        "langium-llvm-fable": 0.143,
+        "linkedin-gemini": 0.733,
+        "linkedin-gpt": 0.5,
+        "linkedin-opus": 0.297,
+        "lionweb-sonnet": 0.304,
+        "monaco-opus": 0.152,
+        "parser-performance-gpt": 0.475,
+        "presentations-gemini": 0.0,
+        "presentations-gpt": 0.31,
+        "presentations-sonnet": 0.0,
+        "software-business-gemini": 0.455,
+        "software-business-gpt": 0.527,
+        "software-business-sonnet": 0.765,
+        "textual-graphical-gpt": 0.6,
+        "theia-haiku": 0.25,
+        "vscode-extension-gemini-pro": 0.143
+      },
       "evidence": [
         {
           "doc": "domain-ai-gpt",
@@ -932,100 +587,31 @@
       "measurement": "counted",
       "stat": "short_sentence_share",
       "unit": "share_of_sentences",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "rate": 0.157
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "rate": 0.143
-        },
-        {
-          "id": "domain-ai-gpt",
-          "rate": 0.394
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "rate": 0.451
-        },
-        {
-          "id": "email-gemini-gpt",
-          "rate": 0.279
-        },
-        {
-          "id": "generating-code-gemini",
-          "rate": 0.048
-        },
-        {
-          "id": "langium-governance-opus",
-          "rate": 0.267
-        },
-        {
-          "id": "langium-llvm-fable",
-          "rate": 0.185
-        },
-        {
-          "id": "linkedin-gemini",
-          "rate": 0.25
-        },
-        {
-          "id": "linkedin-gpt",
-          "rate": 0.133
-        },
-        {
-          "id": "linkedin-opus",
-          "rate": 0.253
-        },
-        {
-          "id": "lionweb-sonnet",
-          "rate": 0.035
-        },
-        {
-          "id": "monaco-opus",
-          "rate": 0.163
-        },
-        {
-          "id": "parser-performance-gpt",
-          "rate": 0.248
-        },
-        {
-          "id": "presentations-gemini",
-          "rate": 0.12
-        },
-        {
-          "id": "presentations-gpt",
-          "rate": 0.111
-        },
-        {
-          "id": "presentations-sonnet",
-          "rate": 0.0
-        },
-        {
-          "id": "software-business-gemini",
-          "rate": 0.056
-        },
-        {
-          "id": "software-business-gpt",
-          "rate": 0.231
-        },
-        {
-          "id": "software-business-sonnet",
-          "rate": 0.143
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "rate": 0.179
-        },
-        {
-          "id": "theia-haiku",
-          "rate": 0.182
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "rate": 0.143
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 0.157,
+        "allstar-gemini-flash": 0.143,
+        "domain-ai-gpt": 0.394,
+        "domain-ai-sonnet": 0.451,
+        "email-gemini-gpt": 0.279,
+        "generating-code-gemini": 0.048,
+        "langium-governance-opus": 0.267,
+        "langium-llvm-fable": 0.185,
+        "linkedin-gemini": 0.25,
+        "linkedin-gpt": 0.133,
+        "linkedin-opus": 0.253,
+        "lionweb-sonnet": 0.035,
+        "monaco-opus": 0.163,
+        "parser-performance-gpt": 0.248,
+        "presentations-gemini": 0.12,
+        "presentations-gpt": 0.111,
+        "presentations-sonnet": 0.0,
+        "software-business-gemini": 0.056,
+        "software-business-gpt": 0.231,
+        "software-business-sonnet": 0.143,
+        "textual-graphical-gpt": 0.179,
+        "theia-haiku": 0.182,
+        "vscode-extension-gemini-pro": 0.143
+      },
       "evidence": [
         {
           "doc": "domain-ai-sonnet",
@@ -1072,100 +658,31 @@
       "measurement": "counted",
       "stat": "ai_negated_opener",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 0
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 5
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 2
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 2
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 1
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 1
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 3
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 1
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 0
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 2
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 1
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 0
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 1
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 3
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 5,
+        "domain-ai-sonnet": 2,
+        "email-gemini-gpt": 2,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 1,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 1,
+        "linkedin-gpt": 3,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 2,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 1,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 1,
+        "textual-graphical-gpt": 3,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "linkedin-gpt",
@@ -1200,7 +717,7 @@
         "report",
         "social"
       ],
-      "tier_reason": "moderate evidence"
+      "tier_reason": "present in under 60% of the measured documents"
     },
     {
       "id": "paragraph-openers/imagine-opener",
@@ -1211,100 +728,31 @@
       "measurement": "counted",
       "stat": "ai_scene_imperative",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 1
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 1
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 0
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 0
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 0
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 0
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 1
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 3
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 1
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 1
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 1
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 1,
+        "allstar-gemini-flash": 1,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-gemini-gpt": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 3,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 1,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 1,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 1
+      },
       "evidence": [
         {
           "doc": "lionweb-sonnet",
@@ -1344,100 +792,31 @@
       "measurement": "counted",
       "regex": "(?:^|(?<=[.!?]\\s))(?:And|But)\\b",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 5
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 7
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 9
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 6
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 4
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 2
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 1
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 1
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 2
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 2
-        },
-        {
-          "id": "monaco-opus",
-          "count": 1
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 1
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 2
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 1
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 9
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 4
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 1
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 5,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 7,
+        "domain-ai-sonnet": 9,
+        "email-gemini-gpt": 6,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 4,
+        "langium-llvm-fable": 2,
+        "linkedin-gemini": 1,
+        "linkedin-gpt": 1,
+        "linkedin-opus": 2,
+        "lionweb-sonnet": 2,
+        "monaco-opus": 1,
+        "parser-performance-gpt": 1,
+        "presentations-gemini": 0,
+        "presentations-gpt": 2,
+        "presentations-sonnet": 1,
+        "software-business-gemini": 0,
+        "software-business-gpt": 9,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 4,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 1
+      },
       "evidence": [
         {
           "doc": "domain-ai-sonnet",
@@ -1484,100 +863,31 @@
       "measurement": "counted",
       "regex": "(?:^|(?<=[.!?]\\s))So\\b",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 2
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 0
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 5
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 1
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 1
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 0
-        },
-        {
-          "id": "monaco-opus",
-          "count": 2
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 1
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 1
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 2,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-gemini-gpt": 5,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 1,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 2,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 1,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 1,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "monaco-opus",
@@ -1620,100 +930,31 @@
       "measurement": "counted",
       "stat": "ai_connective_opener",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 0
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 1
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 0
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 2
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 1
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 0
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 0
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 0
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 1
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 1
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 1,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-gemini-gpt": 2,
+        "generating-code-gemini": 1,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 1,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 1
+      },
       "evidence": [
         {
           "doc": "generating-code-gemini",
@@ -1753,100 +994,31 @@
       "kind": "presence",
       "measurement": "judged",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 0
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 6
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 8
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 0
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 5
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 0
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 0
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 0
-        },
-        {
-          "id": "monaco-opus",
-          "count": 2
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 2
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 6,
+        "domain-ai-sonnet": 8,
+        "email-gemini-gpt": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 5,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 2,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 2,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "domain-ai-gpt",
@@ -1890,100 +1062,31 @@
       "measurement": "counted",
       "stat": "deliberate_adverb",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 3
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 7
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 1
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 6
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 2
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 3
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 2
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 2
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 2
-        },
-        {
-          "id": "monaco-opus",
-          "count": 3
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 1
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 1
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 4
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 1
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 4
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 1
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 3,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 7,
+        "domain-ai-sonnet": 1,
+        "email-gemini-gpt": 6,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 2,
+        "langium-llvm-fable": 3,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 2,
+        "linkedin-opus": 2,
+        "lionweb-sonnet": 2,
+        "monaco-opus": 3,
+        "parser-performance-gpt": 1,
+        "presentations-gemini": 1,
+        "presentations-gpt": 4,
+        "presentations-sonnet": 1,
+        "software-business-gemini": 0,
+        "software-business-gpt": 4,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 1,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "monaco-opus",
@@ -2030,100 +1133,31 @@
       "measurement": "counted",
       "stat": "quiet_adverb",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 5
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 1
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 1
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 2
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 1
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 0
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 0
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 0
-        },
-        {
-          "id": "monaco-opus",
-          "count": 1
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 3
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 1
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 0
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 2
-        },
-        {
-          "id": "theia-haiku",
-          "count": 1
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 1
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 5,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 1,
+        "email-gemini-gpt": 1,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 2,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 1,
+        "parser-performance-gpt": 3,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 1,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 2,
+        "theia-haiku": 1,
+        "vscode-extension-gemini-pro": 1
+      },
       "evidence": [
         {
           "doc": "theia-haiku",
@@ -2153,7 +1187,7 @@
         "article",
         "email"
       ],
-      "tier_reason": "fewer than 3 quotes"
+      "tier_reason": "present in under 60% of the measured documents; fewer than 3 quotes"
     },
     {
       "id": "tone-markers/enthusiasm",
@@ -2163,100 +1197,31 @@
       "kind": "presence",
       "measurement": "judged",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 0
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 0
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 14
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 4
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 0
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 0
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 0
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 0
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-gemini-gpt": 14,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 4,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "email-gemini-gpt",
@@ -2293,7 +1258,7 @@
         "email",
         "social"
       ],
-      "tier_reason": "judged, not counted; present in fewer than 3 documents"
+      "tier_reason": "judged, not counted; present in under 60% of the measured documents; present in fewer than 3 documents"
     },
     {
       "id": "emphasis/clause-bold",
@@ -2304,100 +1269,31 @@
       "measurement": "counted",
       "stat": "clause_bold",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 12
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 4
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 17
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 16
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 52
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 8
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 5
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 4
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 6
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 0
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 1
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 7
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 9
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 4
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 36
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 13
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 1
-        },
-        {
-          "id": "theia-haiku",
-          "count": 5
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 1
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 12,
+        "allstar-gemini-flash": 4,
+        "domain-ai-gpt": 17,
+        "domain-ai-sonnet": 16,
+        "email-gemini-gpt": 52,
+        "generating-code-gemini": 8,
+        "langium-governance-opus": 5,
+        "langium-llvm-fable": 4,
+        "linkedin-gemini": 6,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 7,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 9,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 4,
+        "software-business-gpt": 36,
+        "software-business-sonnet": 13,
+        "textual-graphical-gpt": 1,
+        "theia-haiku": 5,
+        "vscode-extension-gemini-pro": 1
+      },
       "evidence": [
         {
           "doc": "domain-ai-gpt",
@@ -2445,100 +1341,31 @@
       "kind": "presence",
       "measurement": "judged",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 0
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 3
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 2
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 0
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 1
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 0
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 0
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 0
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 1
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 0
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 2
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 3,
+        "domain-ai-sonnet": 2,
+        "email-gemini-gpt": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 1,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 2,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "domain-ai-gpt",
@@ -2581,100 +1408,31 @@
       "measurement": "counted",
       "stat": "label_lead",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 8
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 7
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 6
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 6
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 78
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 14
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 6
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 7
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 3
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 0
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 0
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 6
-        },
-        {
-          "id": "monaco-opus",
-          "count": 3
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 1
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 10
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 3
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 13
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 15
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 8
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 8,
+        "allstar-gemini-flash": 7,
+        "domain-ai-gpt": 6,
+        "domain-ai-sonnet": 6,
+        "email-gemini-gpt": 78,
+        "generating-code-gemini": 14,
+        "langium-governance-opus": 6,
+        "langium-llvm-fable": 7,
+        "linkedin-gemini": 3,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 6,
+        "monaco-opus": 3,
+        "parser-performance-gpt": 1,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 10,
+        "software-business-gpt": 3,
+        "software-business-sonnet": 13,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 15,
+        "vscode-extension-gemini-pro": 8
+      },
       "evidence": [
         {
           "doc": "generating-code-gemini",
@@ -2720,100 +1478,31 @@
       "measurement": "counted",
       "stat": "colon_heading_share",
       "unit": "share_of_headings",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "rate": 0.0
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "rate": 0.167
-        },
-        {
-          "id": "domain-ai-gpt",
-          "rate": 0.071
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "rate": 0.071
-        },
-        {
-          "id": "email-gemini-gpt",
-          "rate": 0.0
-        },
-        {
-          "id": "generating-code-gemini",
-          "rate": 0.571
-        },
-        {
-          "id": "langium-governance-opus",
-          "rate": 0.143
-        },
-        {
-          "id": "langium-llvm-fable",
-          "rate": 0.286
-        },
-        {
-          "id": "linkedin-gemini",
-          "rate": 0.0
-        },
-        {
-          "id": "linkedin-gpt",
-          "rate": 0.333
-        },
-        {
-          "id": "linkedin-opus",
-          "rate": 0.333
-        },
-        {
-          "id": "lionweb-sonnet",
-          "rate": 0.7
-        },
-        {
-          "id": "monaco-opus",
-          "rate": 0.545
-        },
-        {
-          "id": "parser-performance-gpt",
-          "rate": 0.125
-        },
-        {
-          "id": "presentations-gemini",
-          "rate": 0.667
-        },
-        {
-          "id": "presentations-gpt",
-          "rate": 1.0
-        },
-        {
-          "id": "presentations-sonnet",
-          "rate": 1.0
-        },
-        {
-          "id": "software-business-gemini",
-          "rate": 0.5
-        },
-        {
-          "id": "software-business-gpt",
-          "rate": 0.091
-        },
-        {
-          "id": "software-business-sonnet",
-          "rate": 0.357
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "rate": 0.0
-        },
-        {
-          "id": "theia-haiku",
-          "rate": 0.4
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "rate": 0.571
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 0.0,
+        "allstar-gemini-flash": 0.167,
+        "domain-ai-gpt": 0.071,
+        "domain-ai-sonnet": 0.071,
+        "email-gemini-gpt": 0.0,
+        "generating-code-gemini": 0.571,
+        "langium-governance-opus": 0.143,
+        "langium-llvm-fable": 0.286,
+        "linkedin-gemini": 0.0,
+        "linkedin-gpt": 0.333,
+        "linkedin-opus": 0.333,
+        "lionweb-sonnet": 0.7,
+        "monaco-opus": 0.545,
+        "parser-performance-gpt": 0.125,
+        "presentations-gemini": 0.667,
+        "presentations-gpt": 1.0,
+        "presentations-sonnet": 1.0,
+        "software-business-gemini": 0.5,
+        "software-business-gpt": 0.091,
+        "software-business-sonnet": 0.357,
+        "textual-graphical-gpt": 0.0,
+        "theia-haiku": 0.4,
+        "vscode-extension-gemini-pro": 0.571
+      },
       "evidence": [
         {
           "doc": "presentations-sonnet",
@@ -2860,100 +1549,31 @@
       "measurement": "counted",
       "stat": "heading_title_case_share",
       "unit": "share_of_headings",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "rate": 0.0
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "rate": 0.833
-        },
-        {
-          "id": "domain-ai-gpt",
-          "rate": 0.071
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "rate": 0.071
-        },
-        {
-          "id": "email-gemini-gpt",
-          "rate": 0.0
-        },
-        {
-          "id": "generating-code-gemini",
-          "rate": 1.0
-        },
-        {
-          "id": "langium-governance-opus",
-          "rate": 0.0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "rate": 0.0
-        },
-        {
-          "id": "linkedin-gemini",
-          "rate": 0.0
-        },
-        {
-          "id": "linkedin-gpt",
-          "rate": 0.0
-        },
-        {
-          "id": "linkedin-opus",
-          "rate": 0.0
-        },
-        {
-          "id": "lionweb-sonnet",
-          "rate": 0.1
-        },
-        {
-          "id": "monaco-opus",
-          "rate": 0.0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "rate": 0.125
-        },
-        {
-          "id": "presentations-gemini",
-          "rate": 0.5
-        },
-        {
-          "id": "presentations-gpt",
-          "rate": 0.833
-        },
-        {
-          "id": "presentations-sonnet",
-          "rate": 1.0
-        },
-        {
-          "id": "software-business-gemini",
-          "rate": 1.0
-        },
-        {
-          "id": "software-business-gpt",
-          "rate": 0.045
-        },
-        {
-          "id": "software-business-sonnet",
-          "rate": 0.714
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "rate": 0.0
-        },
-        {
-          "id": "theia-haiku",
-          "rate": 0.9
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "rate": 0.857
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 0.0,
+        "allstar-gemini-flash": 0.833,
+        "domain-ai-gpt": 0.071,
+        "domain-ai-sonnet": 0.071,
+        "email-gemini-gpt": 0.0,
+        "generating-code-gemini": 1.0,
+        "langium-governance-opus": 0.0,
+        "langium-llvm-fable": 0.0,
+        "linkedin-gemini": 0.0,
+        "linkedin-gpt": 0.0,
+        "linkedin-opus": 0.0,
+        "lionweb-sonnet": 0.1,
+        "monaco-opus": 0.0,
+        "parser-performance-gpt": 0.125,
+        "presentations-gemini": 0.5,
+        "presentations-gpt": 0.833,
+        "presentations-sonnet": 1.0,
+        "software-business-gemini": 1.0,
+        "software-business-gpt": 0.045,
+        "software-business-sonnet": 0.714,
+        "textual-graphical-gpt": 0.0,
+        "theia-haiku": 0.9,
+        "vscode-extension-gemini-pro": 0.857
+      },
       "evidence": [
         {
           "doc": "theia-haiku",
@@ -2993,123 +1613,31 @@
       "kind": "presence",
       "measurement": "judged",
       "unit": "count",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 1,
-          "rate": 1.0
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0,
-          "rate": 0.0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 1,
-          "rate": 1.0
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 1,
-          "rate": 1.0
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 0,
-          "rate": 0.0
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0,
-          "rate": 0.0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 1,
-          "rate": 1.0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 1,
-          "rate": 1.0
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0,
-          "rate": 0.0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 1,
-          "rate": 1.0
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 2,
-          "rate": 2.0
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 1,
-          "rate": 1.0
-        },
-        {
-          "id": "monaco-opus",
-          "count": 1,
-          "rate": 1.0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 1,
-          "rate": 1.0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0,
-          "rate": 0.0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0,
-          "rate": 0.0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0,
-          "rate": 0.0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0,
-          "rate": 0.0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 1,
-          "rate": 1.0
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0,
-          "rate": 0.0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 1,
-          "rate": 1.0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 1,
-          "rate": 1.0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0,
-          "rate": 0.0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 1.0,
+        "allstar-gemini-flash": 0.0,
+        "domain-ai-gpt": 1.0,
+        "domain-ai-sonnet": 1.0,
+        "email-gemini-gpt": 0.0,
+        "generating-code-gemini": 0.0,
+        "langium-governance-opus": 1.0,
+        "langium-llvm-fable": 1.0,
+        "linkedin-gemini": 0.0,
+        "linkedin-gpt": 1.0,
+        "linkedin-opus": 2.0,
+        "lionweb-sonnet": 1.0,
+        "monaco-opus": 1.0,
+        "parser-performance-gpt": 1.0,
+        "presentations-gemini": 0.0,
+        "presentations-gpt": 0.0,
+        "presentations-sonnet": 0.0,
+        "software-business-gemini": 0.0,
+        "software-business-gpt": 1.0,
+        "software-business-sonnet": 0.0,
+        "textual-graphical-gpt": 1.0,
+        "theia-haiku": 1.0,
+        "vscode-extension-gemini-pro": 0.0
+      },
       "evidence": [
         {
           "doc": "domain-ai-gpt",
@@ -3143,7 +1671,7 @@
         "report",
         "social"
       ],
-      "tier_reason": "judged, not counted",
+      "tier_reason": "judged, not counted; present in under 60% of the measured documents",
       "covered_by": [
         "tone-markers/invitation-form"
       ]
@@ -3157,100 +1685,31 @@
       "measurement": "counted",
       "stat": "contraction",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 24
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 68
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 127
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 21
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 9
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 0
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 15
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 46
-        },
-        {
-          "id": "monaco-opus",
-          "count": 17
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 2
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 5
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 13
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 0
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 8
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 6
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 3
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 24,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 68,
+        "email-gemini-gpt": 127,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 21,
+        "linkedin-gemini": 9,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 15,
+        "lionweb-sonnet": 46,
+        "monaco-opus": 17,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 2,
+        "presentations-gpt": 5,
+        "presentations-sonnet": 13,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 8,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 6,
+        "vscode-extension-gemini-pro": 3
+      },
       "evidence": [
         {
           "doc": "monaco-opus",
@@ -3297,100 +1756,31 @@
       "measurement": "counted",
       "stat": "hyphen_compound",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 5
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 4
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 7
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 6
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 13
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 4
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 1
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 2
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 3
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 3
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 4
-        },
-        {
-          "id": "monaco-opus",
-          "count": 2
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 3
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 7
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 7
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 6
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 6
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 11
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 5
-        },
-        {
-          "id": "theia-haiku",
-          "count": 2
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 2
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 5,
+        "allstar-gemini-flash": 4,
+        "domain-ai-gpt": 7,
+        "domain-ai-sonnet": 6,
+        "email-gemini-gpt": 13,
+        "generating-code-gemini": 4,
+        "langium-governance-opus": 1,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 2,
+        "linkedin-gpt": 3,
+        "linkedin-opus": 3,
+        "lionweb-sonnet": 4,
+        "monaco-opus": 2,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 3,
+        "presentations-gpt": 7,
+        "presentations-sonnet": 7,
+        "software-business-gemini": 6,
+        "software-business-gpt": 6,
+        "software-business-sonnet": 11,
+        "textual-graphical-gpt": 5,
+        "theia-haiku": 2,
+        "vscode-extension-gemini-pro": 2
+      },
       "evidence": [
         {
           "doc": "linkedin-gpt",
@@ -3441,100 +1831,31 @@
       "measurement": "counted",
       "stat": "hedged_number",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 3
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 1
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 0
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 1
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 3
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 2
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 0
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 6
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 1
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 2
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 3
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 5
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 16
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 3,
+        "allstar-gemini-flash": 1,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-gemini-gpt": 1,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 3,
+        "linkedin-opus": 2,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 6,
+        "presentations-gemini": 0,
+        "presentations-gpt": 1,
+        "presentations-sonnet": 2,
+        "software-business-gemini": 3,
+        "software-business-gpt": 5,
+        "software-business-sonnet": 16,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "software-business-sonnet",
@@ -3566,7 +1887,7 @@
         "report",
         "social"
       ],
-      "tier_reason": "fewer than 3 quotes"
+      "tier_reason": "present in under 60% of the measured documents; fewer than 3 quotes"
     },
     {
       "id": "content-conventions/source-as-agent",
@@ -3577,100 +1898,31 @@
       "measurement": "counted",
       "stat": "source_as_agent",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 0
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 3
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 1
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 1
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 0
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 1
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 1
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 1
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 15
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 2
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 1
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 3,
+        "domain-ai-sonnet": 1,
+        "email-gemini-gpt": 1,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 1,
+        "software-business-gemini": 0,
+        "software-business-gpt": 15,
+        "software-business-sonnet": 2,
+        "textual-graphical-gpt": 1,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "software-business-gpt",
@@ -3715,100 +1967,31 @@
       "measurement": "counted",
       "regex": "\\((?:[A-Z][a-z]?){2,}s?\\)",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 1
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 5
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 0
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 4
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 2
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 1
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 0
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 0
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 0
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 3
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 6
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 0
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 1
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 1,
+        "allstar-gemini-flash": 5,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-gemini-gpt": 4,
+        "generating-code-gemini": 2,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 1,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 3,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 6,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 1,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "software-business-gemini",
@@ -3851,100 +2034,31 @@
       "measurement": "counted",
       "regex": "→|──+>",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 3
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 6
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 6
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 18
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 0
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 0
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 0
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 0
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 3,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 6,
+        "domain-ai-sonnet": 6,
+        "email-gemini-gpt": 18,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "domain-ai-gpt",
@@ -3983,100 +2097,31 @@
       "kind": "presence",
       "measurement": "judged",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 0
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 0
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 0
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 12
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 0
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 3
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 0
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 0
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-gemini-gpt": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 12,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 3,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "linkedin-gemini",
@@ -4118,100 +2163,31 @@
       "measurement": "counted",
       "stat": "ai_comma_not",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 2
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 2
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 7
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 1
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 1
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 2
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 1
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 1
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 8
-        },
-        {
-          "id": "monaco-opus",
-          "count": 1
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 1
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 2
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 0
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 1
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 1
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 2,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 2,
+        "domain-ai-sonnet": 7,
+        "email-gemini-gpt": 1,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 1,
+        "langium-llvm-fable": 2,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 1,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 8,
+        "monaco-opus": 1,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 1,
+        "presentations-sonnet": 2,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 1,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 1,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "lionweb-sonnet",
@@ -4258,100 +2234,31 @@
       "measurement": "counted",
       "stat": "ai_not_but",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 0
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 2
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 3
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 0
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 0
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 1
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 1
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 3
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 2
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 1
-        },
-        {
-          "id": "theia-haiku",
-          "count": 1
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 2,
+        "email-gemini-gpt": 3,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 1,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 3,
+        "software-business-sonnet": 2,
+        "textual-graphical-gpt": 1,
+        "theia-haiku": 1,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "presentations-gpt",
@@ -4393,100 +2300,31 @@
       "measurement": "counted",
       "stat": "ai_split_reframe",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 0
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 4
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 2
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 0
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 1
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 1
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 0
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 1
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 1
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 1
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 2
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 1
-        },
-        {
-          "id": "theia-haiku",
-          "count": 1
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 4,
+        "domain-ai-sonnet": 2,
+        "email-gemini-gpt": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 1,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 1,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 1,
+        "presentations-gemini": 0,
+        "presentations-gpt": 1,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 2,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 1,
+        "theia-haiku": 1,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "langium-governance-opus",
@@ -4517,7 +2355,7 @@
         "report",
         "social"
       ],
-      "tier_reason": "fewer than 3 quotes"
+      "tier_reason": "present in under 60% of the measured documents; fewer than 3 quotes"
     },
     {
       "id": "contrast-frames/rather-than",
@@ -4528,100 +2366,31 @@
       "measurement": "counted",
       "stat": "ai_rather_than",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 2
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 1
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 7
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 5
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 27
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 1
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 3
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 1
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 5
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 3
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 5
-        },
-        {
-          "id": "monaco-opus",
-          "count": 3
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 5
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 3
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 4
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 3
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 12
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 9
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 2
-        },
-        {
-          "id": "theia-haiku",
-          "count": 3
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 2,
+        "allstar-gemini-flash": 1,
+        "domain-ai-gpt": 7,
+        "domain-ai-sonnet": 5,
+        "email-gemini-gpt": 27,
+        "generating-code-gemini": 1,
+        "langium-governance-opus": 3,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 5,
+        "linkedin-opus": 3,
+        "lionweb-sonnet": 5,
+        "monaco-opus": 3,
+        "parser-performance-gpt": 5,
+        "presentations-gemini": 0,
+        "presentations-gpt": 3,
+        "presentations-sonnet": 4,
+        "software-business-gemini": 3,
+        "software-business-gpt": 12,
+        "software-business-sonnet": 9,
+        "textual-graphical-gpt": 2,
+        "theia-haiku": 3,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "software-business-gpt",
@@ -4668,100 +2437,31 @@
       "measurement": "counted",
       "stat": "ai_without_benefit",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 2
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 3
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 3
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 2
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 11
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 1
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 2
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 1
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 1
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 1
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 1
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 1
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 1
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 1
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 2
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 1
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 3
-        },
-        {
-          "id": "theia-haiku",
-          "count": 5
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 1
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 2,
+        "allstar-gemini-flash": 3,
+        "domain-ai-gpt": 3,
+        "domain-ai-sonnet": 2,
+        "email-gemini-gpt": 11,
+        "generating-code-gemini": 1,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 2,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 1,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 1,
+        "presentations-gemini": 0,
+        "presentations-gpt": 1,
+        "presentations-sonnet": 1,
+        "software-business-gemini": 1,
+        "software-business-gpt": 2,
+        "software-business-sonnet": 1,
+        "textual-graphical-gpt": 3,
+        "theia-haiku": 5,
+        "vscode-extension-gemini-pro": 1
+      },
       "evidence": [
         {
           "doc": "theia-haiku",
@@ -4808,100 +2508,31 @@
       "measurement": "counted",
       "stat": "ai_colon_punchline",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 15
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 5
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 15
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 10
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 1
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 3
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 3
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 9
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 8
-        },
-        {
-          "id": "monaco-opus",
-          "count": 7
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 3
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 1
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 2
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 2
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 4
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 5
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 1
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 15,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 5,
+        "domain-ai-sonnet": 15,
+        "email-gemini-gpt": 10,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 1,
+        "langium-llvm-fable": 3,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 3,
+        "linkedin-opus": 9,
+        "lionweb-sonnet": 8,
+        "monaco-opus": 7,
+        "parser-performance-gpt": 3,
+        "presentations-gemini": 1,
+        "presentations-gpt": 2,
+        "presentations-sonnet": 2,
+        "software-business-gemini": 0,
+        "software-business-gpt": 4,
+        "software-business-sonnet": 5,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 1
+      },
       "evidence": [
         {
           "doc": "linkedin-opus",
@@ -4952,100 +2583,31 @@
       "measurement": "counted",
       "stat": "ai_nominal_reveal",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 4
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 4
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 4
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 1
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 1
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 1
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 4
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 3
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 1
-        },
-        {
-          "id": "monaco-opus",
-          "count": 2
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 2
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 4
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 0
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 2
-        },
-        {
-          "id": "theia-haiku",
-          "count": 1
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 4,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 4,
+        "domain-ai-sonnet": 4,
+        "email-gemini-gpt": 1,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 1,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 4,
+        "linkedin-opus": 3,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 2,
+        "parser-performance-gpt": 2,
+        "presentations-gemini": 0,
+        "presentations-gpt": 4,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 2,
+        "theia-haiku": 1,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "linkedin-opus",
@@ -5091,100 +2653,31 @@
       "measurement": "counted",
       "stat": "ai_verdict_opener",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 2
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 1
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 21
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 20
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 20
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 3
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 7
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 5
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 3
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 5
-        },
-        {
-          "id": "monaco-opus",
-          "count": 2
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 4
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 2
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 12
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 6
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 2,
+        "allstar-gemini-flash": 1,
+        "domain-ai-gpt": 21,
+        "domain-ai-sonnet": 20,
+        "email-gemini-gpt": 20,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 3,
+        "langium-llvm-fable": 7,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 5,
+        "linkedin-opus": 3,
+        "lionweb-sonnet": 5,
+        "monaco-opus": 2,
+        "parser-performance-gpt": 4,
+        "presentations-gemini": 0,
+        "presentations-gpt": 2,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 12,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 6,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "allstar-gemini-flash",
@@ -5234,100 +2727,31 @@
       "measurement": "counted",
       "stat": "ai_question_answer",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 6
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 2
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 1
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 6
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 1
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 1
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 2
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 1
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 0
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 1
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 1
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 0
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 2
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 3
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 6,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 2,
+        "domain-ai-sonnet": 1,
+        "email-gemini-gpt": 6,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 1,
+        "linkedin-gpt": 2,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 1,
+        "presentations-gpt": 1,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 2,
+        "vscode-extension-gemini-pro": 3
+      },
       "evidence": [
         {
           "doc": "vscode-extension-gemini-pro",
@@ -5359,7 +2783,7 @@
         "email",
         "social"
       ],
-      "tier_reason": "fewer than 3 quotes",
+      "tier_reason": "present in under 60% of the measured documents; fewer than 3 quotes",
       "covered_by": [
         "punctuation/question-mark"
       ]
@@ -5373,100 +2797,31 @@
       "measurement": "counted",
       "regex": "\\?\\s+(?:Which|What|Was|Did|Who|How|Does|Can|Under)\\b[^?.!\\n]{0,90}\\?",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 0
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 12
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 8
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 2
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 0
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 0
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 0
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 0
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 12,
+        "domain-ai-sonnet": 8,
+        "email-gemini-gpt": 2,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "domain-ai-sonnet",
@@ -5509,100 +2864,31 @@
       "measurement": "counted",
       "stat": "ai_what_if",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 0
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 0
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 0
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 1
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 2
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 1
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 0
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 1
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 3
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 2
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 0
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 1
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-gemini-gpt": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 1,
+        "linkedin-gpt": 2,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 1,
+        "presentations-gpt": 3,
+        "presentations-sonnet": 2,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 1
+      },
       "evidence": [
         {
           "doc": "linkedin-gemini",
@@ -5654,100 +2940,31 @@
       "measurement": "counted",
       "stat": "ai_enumeration_announcement",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 5
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 1
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 1
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 2
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 1
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 2
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 0
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 3
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 1
-        },
-        {
-          "id": "monaco-opus",
-          "count": 2
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 2
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 0
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 1
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 1
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 1
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 5,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 1,
+        "domain-ai-sonnet": 1,
+        "email-gemini-gpt": 2,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 1,
+        "langium-llvm-fable": 2,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 3,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 2,
+        "parser-performance-gpt": 2,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 1,
+        "textual-graphical-gpt": 1,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 1
+      },
       "evidence": [
         {
           "doc": "agent-experience-fable",
@@ -5782,7 +2999,7 @@
         "report",
         "social"
       ],
-      "tier_reason": "moderate evidence"
+      "tier_reason": "present in under 60% of the measured documents"
     },
     {
       "id": "significance-tails/significance-tail",
@@ -5793,100 +3010,31 @@
       "measurement": "counted",
       "stat": "ai_significance_tail",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 0
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 5
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 5
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 0
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 2
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 1
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 0
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 0
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 3
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 1
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 2
-        },
-        {
-          "id": "theia-haiku",
-          "count": 2
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 5,
+        "domain-ai-sonnet": 5,
+        "email-gemini-gpt": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 2,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 1,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 3,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 1,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 2,
+        "theia-haiku": 2,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "parser-performance-gpt",
@@ -5927,100 +3075,31 @@
       "measurement": "counted",
       "stat": "ai_worth_noting",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 2
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 2
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 0
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 1
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 1
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 0
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 1
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 4
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 1
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 0
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 2,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 2,
+        "domain-ai-sonnet": 0,
+        "email-gemini-gpt": 1,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 4,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 1,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "lionweb-sonnet",
@@ -6062,100 +3141,31 @@
       "measurement": "counted",
       "stat": "ai_participial_tail",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 0
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 3
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 0
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 0
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 3
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 2
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 0
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 0
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 1
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 1
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 1
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 1
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 3
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 3,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-gemini-gpt": 0,
+        "generating-code-gemini": 3,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 2,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 1,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 1,
+        "software-business-gemini": 1,
+        "software-business-gpt": 1,
+        "software-business-sonnet": 3,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "software-business-gemini",
@@ -6197,100 +3207,31 @@
       "measurement": "counted",
       "stat": "ai_triad",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 3
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 10
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 8
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 13
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 3
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 1
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 2
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 6
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 7
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 2
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 3
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 1
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 3
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 2
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 4
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 21
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 9
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 7
-        },
-        {
-          "id": "theia-haiku",
-          "count": 3
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 3,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 10,
+        "domain-ai-sonnet": 8,
+        "email-gemini-gpt": 13,
+        "generating-code-gemini": 3,
+        "langium-governance-opus": 1,
+        "langium-llvm-fable": 2,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 6,
+        "linkedin-opus": 7,
+        "lionweb-sonnet": 2,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 3,
+        "presentations-gemini": 1,
+        "presentations-gpt": 3,
+        "presentations-sonnet": 2,
+        "software-business-gemini": 4,
+        "software-business-gpt": 21,
+        "software-business-sonnet": 9,
+        "textual-graphical-gpt": 7,
+        "theia-haiku": 3,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "agent-experience-fable",
@@ -6337,100 +3278,31 @@
       "measurement": "counted",
       "stat": "ai_adjective_stack",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 1
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 6
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 0
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 3
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 2
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 1
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 3
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 1
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 0
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 2
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 7
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 1
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 1
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 1,
+        "allstar-gemini-flash": 6,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-gemini-gpt": 3,
+        "generating-code-gemini": 2,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 3,
+        "linkedin-gpt": 1,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 2,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 7,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 1,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 1
+      },
       "evidence": [
         {
           "doc": "presentations-gemini",
@@ -6462,7 +3334,7 @@
         "report",
         "social"
       ],
-      "tier_reason": "fewer than 3 quotes"
+      "tier_reason": "present in under 60% of the measured documents; fewer than 3 quotes"
     },
     {
       "id": "signposting/meta-signpost",
@@ -6473,100 +3345,31 @@
       "measurement": "counted",
       "stat": "ai_meta_signpost",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 1
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 0
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 1
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 1
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 2
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 0
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 0
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 1
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 5
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 7
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 11
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 0
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 1,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-gemini-gpt": 1,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 2,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 1,
+        "presentations-gemini": 5,
+        "presentations-gpt": 7,
+        "presentations-sonnet": 11,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "presentations-sonnet",
@@ -6612,100 +3415,31 @@
       "measurement": "counted",
       "stat": "ai_summary_opener",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 0
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 0
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 0
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 0
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 0
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 0
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 1
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-gemini-gpt": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 1,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "software-business-gpt",
@@ -6740,100 +3474,31 @@
       "measurement": "counted",
       "stat": "ai_authenticity",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 13
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 1
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 11
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 30
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 27
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 5
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 6
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 4
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 3
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 5
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 11
-        },
-        {
-          "id": "monaco-opus",
-          "count": 7
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 11
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 6
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 9
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 7
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 4
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 6
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 12
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 1
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 13,
+        "allstar-gemini-flash": 1,
+        "domain-ai-gpt": 11,
+        "domain-ai-sonnet": 30,
+        "email-gemini-gpt": 27,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 5,
+        "langium-llvm-fable": 6,
+        "linkedin-gemini": 4,
+        "linkedin-gpt": 3,
+        "linkedin-opus": 5,
+        "lionweb-sonnet": 11,
+        "monaco-opus": 7,
+        "parser-performance-gpt": 11,
+        "presentations-gemini": 6,
+        "presentations-gpt": 9,
+        "presentations-sonnet": 7,
+        "software-business-gemini": 0,
+        "software-business-gpt": 4,
+        "software-business-sonnet": 6,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 12,
+        "vscode-extension-gemini-pro": 1
+      },
       "evidence": [
         {
           "doc": "theia-haiku",
@@ -6880,100 +3545,31 @@
       "measurement": "counted",
       "stat": "ai_absolutizer",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 29
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 7
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 16
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 35
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 45
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 2
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 12
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 12
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 3
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 5
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 13
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 11
-        },
-        {
-          "id": "monaco-opus",
-          "count": 8
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 8
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 1
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 8
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 4
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 2
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 8
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 3
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 5
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 3
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 29,
+        "allstar-gemini-flash": 7,
+        "domain-ai-gpt": 16,
+        "domain-ai-sonnet": 35,
+        "email-gemini-gpt": 45,
+        "generating-code-gemini": 2,
+        "langium-governance-opus": 12,
+        "langium-llvm-fable": 12,
+        "linkedin-gemini": 3,
+        "linkedin-gpt": 5,
+        "linkedin-opus": 13,
+        "lionweb-sonnet": 11,
+        "monaco-opus": 8,
+        "parser-performance-gpt": 8,
+        "presentations-gemini": 1,
+        "presentations-gpt": 8,
+        "presentations-sonnet": 4,
+        "software-business-gemini": 2,
+        "software-business-gpt": 8,
+        "software-business-sonnet": 3,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 5,
+        "vscode-extension-gemini-pro": 3
+      },
       "evidence": [
         {
           "doc": "agent-experience-fable",
@@ -7020,100 +3616,31 @@
       "measurement": "counted",
       "stat": "ai_anti_hype",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 0
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 0
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 0
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 1
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 1
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 2
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 1
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 0
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 2
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 4
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 0
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 0
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 1
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 1
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-gemini-gpt": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 1,
+        "linkedin-gpt": 1,
+        "linkedin-opus": 2,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 2,
+        "presentations-sonnet": 4,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 1,
+        "vscode-extension-gemini-pro": 1
+      },
       "evidence": [
         {
           "doc": "presentations-sonnet",
@@ -7154,100 +3681,31 @@
       "measurement": "counted",
       "stat": "ai_vocabulary",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 3
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 7
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 8
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 10
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 8
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 2
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 1
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 2
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 0
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 0
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 1
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 13
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 4
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 2
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 1
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 1
-        },
-        {
-          "id": "theia-haiku",
-          "count": 2
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 3,
+        "allstar-gemini-flash": 7,
+        "domain-ai-gpt": 8,
+        "domain-ai-sonnet": 10,
+        "email-gemini-gpt": 8,
+        "generating-code-gemini": 2,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 2,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 13,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 4,
+        "software-business-gpt": 2,
+        "software-business-sonnet": 1,
+        "textual-graphical-gpt": 1,
+        "theia-haiku": 2,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "presentations-gemini",
@@ -7294,100 +3752,31 @@
       "measurement": "counted",
       "stat": "ai_trend_word",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 1
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 16
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 6
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 5
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 1
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 3
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 4
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 2
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 0
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 1
-        },
-        {
-          "id": "monaco-opus",
-          "count": 1
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 5
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 4
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 9
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 22
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 10
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 1
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 0
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 1,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 16,
+        "domain-ai-sonnet": 6,
+        "email-gemini-gpt": 5,
+        "generating-code-gemini": 1,
+        "langium-governance-opus": 3,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 4,
+        "linkedin-gpt": 2,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 1,
+        "parser-performance-gpt": 5,
+        "presentations-gemini": 4,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 9,
+        "software-business-gpt": 22,
+        "software-business-sonnet": 10,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 1,
+        "vscode-extension-gemini-pro": 0
+      },
       "evidence": [
         {
           "doc": "software-business-gemini",
@@ -7434,100 +3823,31 @@
       "measurement": "counted",
       "stat": "ai_spatial_metaphor",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 0
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 1
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 6
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 5
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 6
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 3
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 1
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 6
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 3
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 7
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 5
-        },
-        {
-          "id": "monaco-opus",
-          "count": 7
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 4
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 3
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 5
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 0
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 1
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 2
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 1
-        },
-        {
-          "id": "theia-haiku",
-          "count": 4
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 2
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 1,
+        "domain-ai-gpt": 6,
+        "domain-ai-sonnet": 5,
+        "email-gemini-gpt": 6,
+        "generating-code-gemini": 3,
+        "langium-governance-opus": 1,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 6,
+        "linkedin-gpt": 3,
+        "linkedin-opus": 7,
+        "lionweb-sonnet": 5,
+        "monaco-opus": 7,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 4,
+        "presentations-gpt": 3,
+        "presentations-sonnet": 5,
+        "software-business-gemini": 0,
+        "software-business-gpt": 1,
+        "software-business-sonnet": 2,
+        "textual-graphical-gpt": 1,
+        "theia-haiku": 4,
+        "vscode-extension-gemini-pro": 2
+      },
       "evidence": [
         {
           "doc": "lionweb-sonnet",
@@ -7574,100 +3894,31 @@
       "measurement": "counted",
       "stat": "ai_stock_idiom",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 0
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 3
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 3
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 2
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 5
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 0
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 1
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 2
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 1
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 1
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 2
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 2
-        },
-        {
-          "id": "monaco-opus",
-          "count": 0
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 1
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 1
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 4
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 1
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 1
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 2
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 0
-        },
-        {
-          "id": "theia-haiku",
-          "count": 2
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 1
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 3,
+        "domain-ai-gpt": 3,
+        "domain-ai-sonnet": 2,
+        "email-gemini-gpt": 5,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 1,
+        "langium-llvm-fable": 2,
+        "linkedin-gemini": 1,
+        "linkedin-gpt": 1,
+        "linkedin-opus": 2,
+        "lionweb-sonnet": 2,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 1,
+        "presentations-gpt": 1,
+        "presentations-sonnet": 4,
+        "software-business-gemini": 1,
+        "software-business-gpt": 1,
+        "software-business-sonnet": 2,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 2,
+        "vscode-extension-gemini-pro": 1
+      },
       "evidence": [
         {
           "doc": "theia-haiku",
@@ -7714,100 +3965,31 @@
       "measurement": "counted",
       "stat": "ai_false_range",
       "unit": "per_1k_words",
-      "documents": [
-        {
-          "id": "agent-experience-fable",
-          "count": 1
-        },
-        {
-          "id": "allstar-gemini-flash",
-          "count": 0
-        },
-        {
-          "id": "domain-ai-gpt",
-          "count": 3
-        },
-        {
-          "id": "domain-ai-sonnet",
-          "count": 5
-        },
-        {
-          "id": "email-gemini-gpt",
-          "count": 2
-        },
-        {
-          "id": "generating-code-gemini",
-          "count": 1
-        },
-        {
-          "id": "langium-governance-opus",
-          "count": 0
-        },
-        {
-          "id": "langium-llvm-fable",
-          "count": 1
-        },
-        {
-          "id": "linkedin-gemini",
-          "count": 0
-        },
-        {
-          "id": "linkedin-gpt",
-          "count": 0
-        },
-        {
-          "id": "linkedin-opus",
-          "count": 0
-        },
-        {
-          "id": "lionweb-sonnet",
-          "count": 0
-        },
-        {
-          "id": "monaco-opus",
-          "count": 1
-        },
-        {
-          "id": "parser-performance-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-gemini",
-          "count": 1
-        },
-        {
-          "id": "presentations-gpt",
-          "count": 0
-        },
-        {
-          "id": "presentations-sonnet",
-          "count": 0
-        },
-        {
-          "id": "software-business-gemini",
-          "count": 2
-        },
-        {
-          "id": "software-business-gpt",
-          "count": 1
-        },
-        {
-          "id": "software-business-sonnet",
-          "count": 6
-        },
-        {
-          "id": "textual-graphical-gpt",
-          "count": 1
-        },
-        {
-          "id": "theia-haiku",
-          "count": 0
-        },
-        {
-          "id": "vscode-extension-gemini-pro",
-          "count": 1
-        }
-      ],
+      "documents": {
+        "agent-experience-fable": 1,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 3,
+        "domain-ai-sonnet": 5,
+        "email-gemini-gpt": 2,
+        "generating-code-gemini": 1,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 1,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 1,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 2,
+        "software-business-gpt": 1,
+        "software-business-sonnet": 6,
+        "textual-graphical-gpt": 1,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 1
+      },
       "evidence": [
         {
           "doc": "monaco-opus",
@@ -7838,7 +4020,7 @@
         "email",
         "report"
       ],
-      "tier_reason": "fewer than 3 quotes"
+      "tier_reason": "present in under 60% of the measured documents; fewer than 3 quotes"
     }
   ]
 }

@@ -19,7 +19,7 @@ def pattern(pid, counts, kind="presence", measurement="counted", quotes=3, **ext
     p = {
         "id": pid, "dimension": dim, "marker": marker, "description": "desc",
         "kind": kind, "measurement": measurement, "unit": "per_1k_words",
-        "documents": [{"id": d, "count": c} for d, c in counts.items()],
+        "documents": dict(counts),
         "evidence": [{"doc": list(counts)[0], "quote": "q{}".format(i)} for i in range(quotes)],
         "tier": 3,
     }
@@ -58,11 +58,10 @@ def test_tier_1_requires_full_coverage_spread_registers_counted_and_quotes():
 @pytest.mark.parametrize("change,expected", [
     ({"measurement": "judged"}, 2),
     ({"evidence": [{"doc": "d1", "quote": "only one"}, {"doc": "d2", "quote": "two"}]}, 2),
-    ({"documents": [{"id": "d1", "count": 4}, {"id": "d2", "count": 1}, {"id": "d3", "count": 2}]}, 2),
-    ({"documents": [{"id": "d1", "count": 4}, {"id": "d2", "count": 1}]}, 2),
-    ({"documents": [{"id": "d1", "count": 4}, {"id": "d2", "count": 0}]}, 3),
-    ({"documents": [{"id": "d1", "count": 4}, {"id": "d2", "count": 1}, {"id": "d3", "count": 0},
-                    {"id": "d4", "count": 0}, {"id": "d5", "count": 0}]}, 2),
+    ({"documents": {"d1": 4, "d2": 1, "d3": 2}}, 2),
+    ({"documents": {"d1": 4, "d2": 1}}, 2),
+    ({"documents": {"d1": 4, "d2": 0}}, 3),
+    ({"documents": {"d1": 4, "d2": 1, "d3": 0, "d4": 0, "d5": 0}}, 2),
 ])
 def test_tier_demotions(change, expected):
     p = pattern("punctuation/colon", {"d1": 4, "d2": 1, "d3": 2, "d4": 2, "d5": 2})
@@ -202,9 +201,9 @@ def test_validate_checks_stat_names_and_units():
     typo = pattern("punctuation/semicolon", {"d1": 1}, stat="semi_colon")
     unit = pattern("punctuation/colon-elaboration", {"d1": 1}, stat="colon", unit="share_of_sentences")
     median = pattern("sentence-rhythm/median-length", {"d1": 1}, stat="sentence_len_median", unit="words",
-                     documents=[{"id": "d1", "rate": 12.0}])
+                     documents={"d1": 12.0})
     heads = pattern("headings/colon-heading", {"d1": 1}, stat="colon_heading_share", unit="share_of_headings",
-                    documents=[{"id": "d1", "rate": 0.5}])
+                    documents={"d1": 0.5})
     errors, warnings = styledb.validate(make_db([ok, typo, unit, median, heads]))
     joined = "\n".join(errors)
     assert "em-dash" not in joined and "median-length" not in joined and "colon-heading" not in joined
@@ -538,7 +537,7 @@ def corpus_db(tmp_path, patterns, text="So I waited: it worked (twice). So did t
 
 
 def test_validate_recounts_counted_patterns_against_the_corpus(tmp_path):
-    # `validate` computes rate, range and tier from documents[].count. Nothing re-derived
+    # `validate` computes rate, range and tier from the recorded counts. Nothing re-derived
     # the counts themselves, so a DB of plausible invented numbers passed every check.
     p = pattern("connectives/so-initial", {"d1": 7}, quotes=1,
                 evidence=[{"doc": "d1", "quote": "So I waited"}],
@@ -546,7 +545,7 @@ def test_validate_recounts_counted_patterns_against_the_corpus(tmp_path):
     errors, _ = styledb.validate(corpus_db(tmp_path, [p]), corpus_dir=str(tmp_path))
     assert [e for e in errors if "records 7 occurrences but the counter finds 2" in e]
 
-    p["documents"][0]["count"] = 2
+    p["documents"]["d1"] = 2
     assert not styledb.validate(corpus_db(tmp_path, [p]), corpus_dir=str(tmp_path))[0]
 
 
@@ -641,8 +640,7 @@ def test_a_presence_inside_the_near_absence_tolerance_is_flagged_for_the_review_
 
 def test_a_near_absence_needs_the_per_1k_unit():
     p = pattern("lists/no-lists", {"b0": 1}, kind="absence", quotes=0, stat="list_items", unit="count",
-                documents=[{"id": d["id"], "rate": 1.0 if d["id"] == "b0" else 0.0,
-                            "count": 1 if d["id"] == "b0" else 0} for d in BIG])
+                documents={d["id"]: (1.0 if d["id"] == "b0" else 0.0) for d in BIG})
     errors, _ = styledb.validate(make_db([p], docs=BIG))
     assert [e for e in errors if "tolerates" in e]
 
@@ -655,7 +653,7 @@ def test_exclude_needs_a_counter_and_a_valid_regex():
     bad = pattern("punctuation/colon", {"d1": 1}, regex=":", exclude="(")
     judged = pattern("tone-markers/bluntness", {"d1": 1}, measurement="judged", exclude="x")
     statistic = pattern("sentence-rhythm/median-length", {"d1": 1}, stat="sentence_len_median", unit="words",
-                        documents=[{"id": "d1", "rate": 12.0}], exclude="x")
+                        documents={"d1": 12.0}, exclude="x")
     errors, _ = styledb.validate(make_db([ok, own, bad, judged, statistic]))
     joined = "\n".join(errors)
     assert "verdict-opener" not in joined and "so-initial" not in joined
@@ -667,20 +665,26 @@ def test_exclude_needs_a_counter_and_a_valid_regex():
 def test_a_statistic_must_be_filed_under_its_own_unit():
     # A per-1k statistic under `count` holding the per-1k value validated and was wrong.
     wrong = pattern("lists/bullet-density", {"d1": 1}, stat="list_items_per_1k", unit="count",
-                    documents=[{"id": "d1", "rate": 4.2}])
+                    documents={"d1": 4.2})
     right = pattern("lists/bullet-density", {"d1": 4}, stat="list_items_per_1k", unit="per_1k_words")
     errors, _ = styledb.validate(make_db([wrong]))
     assert [e for e in errors if "'list_items_per_1k' is measured in unit 'per_1k_words', not 'count'" in e]
     assert not styledb.validate(make_db([right]))[0]
 
 
-def test_documents_entries_carry_the_units_own_field():
-    no_count = pattern("punctuation/colon", {"d1": 1}, documents=[{"id": "d1", "rate": 2.0}])
-    no_rate = pattern("sentence-rhythm/short-punch", {"d1": 1}, stat="short_sentence_share",
-                      unit="share_of_sentences", documents=[{"id": "d1", "count": 3}])
-    errors, _ = styledb.validate(make_db([no_count, no_rate]))
+def test_documents_values_are_the_units_own_number():
+    # per_1k_words records raw occurrences, an integer; every other unit the per-document value
+    not_a_count = pattern("punctuation/colon", {"d1": 1}, documents={"d1": 2.0})
+    not_a_rate = pattern("sentence-rhythm/short-punch", {"d1": 1}, stat="short_sentence_share",
+                         unit="share_of_sentences", documents={"d1": "0.3"})
+    unknown = pattern("punctuation/semicolon", {"d1": 1}, documents={"d1": 1, "nowhere": 2})
+    as_list = pattern("punctuation/em-dash", {"d1": 1}, documents=[{"id": "d1", "count": 1}])
+    errors, _ = styledb.validate(make_db([not_a_count, not_a_rate, unknown, as_list]))
+    assert [e for e in errors if "em-dash: documents must be an object mapping document id" in e]
     assert [e for e in errors if "punctuation/colon: documents[d1] needs an integer count" in e]
     assert [e for e in errors if "short-punch: documents[d1] needs a numeric rate" in e]
+    assert [e for e in errors if "semicolon: documents names unknown document 'nowhere'" in e]
+    assert not styledb.validate(make_db([pattern("punctuation/colon", {"d1": 1}, documents={"d1": 2})]))[0]
 
 
 def test_review_fields_are_checked():
@@ -758,7 +762,7 @@ def test_count_writes_documents_from_the_corpus_and_hands_judged_rows_to_readers
     so = pattern("connectives/so-initial", {"one": 99}, regex=r"(?:^|(?<=[.!?]\s))So\b", quotes=1,
                  evidence=[{"doc": "one", "quote": "So I waited"}])
     share = pattern("sentence-rhythm/short-punch", {"one": 1}, stat="short_sentence_share",
-                    unit="share_of_sentences", documents=[{"id": "one", "rate": 0.9}], quotes=1,
+                    unit="share_of_sentences", documents={"one": 0.9}, quotes=1,
                     evidence=[{"doc": "one", "quote": "So I waited"}])
     judged = pattern("tone-markers/bluntness", {"one": 2}, measurement="judged", quotes=1,
                      evidence=[{"doc": "one", "quote": "So I waited"}])
@@ -775,18 +779,18 @@ def test_count_writes_documents_from_the_corpus_and_hands_judged_rows_to_readers
     assert "_words_refreshed" not in counted
     by_id = {p["id"]: p for p in counted["patterns"]}
     assert set(by_id) == {"connectives/so-initial", "sentence-rhythm/short-punch"}
-    assert by_id["connectives/so-initial"]["documents"] == [
-        {"id": "one", "count": 2}, {"id": "two", "count": 0}, {"id": "mail", "count": 1}]
-    assert [e["id"] for e in by_id["sentence-rhythm/short-punch"]["documents"]] == ["one", "two", "mail"]
-    assert all("rate" in e for e in by_id["sentence-rhythm/short-punch"]["documents"])
+    assert by_id["connectives/so-initial"]["documents"] == {"one": 2, "two": 0, "mail": 1}
+    share_values = by_id["sentence-rhythm/short-punch"]["documents"]
+    assert list(share_values) == ["one", "two", "mail"]
+    assert all(isinstance(v, float) for v in share_values.values())  # the per-document share
     assert by_id["connectives/so-initial"]["rate"] == round(3 / 19 * 1000, 3)  # derived from the real counts
     assert by_id["connectives/so-initial"]["spread"] == 0.667
     # the counted DB verifies by construction, and the skeleton is what the readers fill in
     assert not styledb.validate(counted, corpus_dir=str(tmp_path))[0]
     skeleton = json.loads(part.read_text())
     assert skeleton["partial"] is True and [p["id"] for p in skeleton["patterns"]] == ["tone-markers/bluntness"]
-    assert skeleton["patterns"][0]["documents"] == [] and skeleton["patterns"][0]["evidence"]
-    skeleton["patterns"][0]["documents"] = [{"id": d["id"], "count": 1} for d in docs]
+    assert skeleton["patterns"][0]["documents"] == {} and skeleton["patterns"][0]["evidence"]
+    skeleton["patterns"][0]["documents"] = {d["id"]: 1 for d in docs}
     merged = styledb.merge([counted, skeleton])
     assert len(merged["patterns"]) == 3 and not styledb.validate(merged, corpus_dir=str(tmp_path))[0]
 
@@ -878,3 +882,4 @@ def test_taxonomy_markers_parses_the_reference_tables():
     assert "question-mark" in markers["punctuation"]
     assert "demonstrative-subject" in markers["paragraph-openers"]
     assert "marker" not in markers["punctuation"]  # the table header is not a marker
+
