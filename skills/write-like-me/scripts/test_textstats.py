@@ -781,8 +781,7 @@ def test_register_rates_replace_the_pooled_figures_where_the_manifest_allows():
             "g1": {"id": "g1", "words": 1000, "register": "github"}}
     question = {"id": "punctuation/question-mark", "unit": "per_1k_words", "rate": 5.0,
                 "range": [0.0, 17.0], "spread": 0.75,
-                "documents": [{"id": "a1", "count": 0}, {"id": "a2", "count": 1},
-                              {"id": "a3", "count": 2}, {"id": "g1", "count": 17}]}
+                "documents": {"a1": 0, "a2": 1, "a3": 2, "g1": 17}}
     art = textstats.for_register(question, docs, "article")
     assert art["rate"] == 1.0 and art["range"] == [0.0, 2.0] and art["spread"] == 0.667
     assert art["register_rate"] == {"register": "article", "documents": 3,
@@ -810,15 +809,14 @@ def test_measure_register_re_rates_rows_from_the_manifest(tmp_path, capsys):
         {"id": "a3", "words": 1000, "register": "article"}, {"id": "g1", "words": 1000, "register": "github"}]},
         "patterns": [{"id": "punctuation/question-mark", "stat": "question", "unit": "per_1k_words",
                       "rate": 5.0, "range": [0.0, 17.0], "spread": 0.75, "tier": 1,
-                      "documents": [{"id": "a1", "count": 0}, {"id": "a2", "count": 1},
-                                    {"id": "a3", "count": 2}, {"id": "g1", "count": 17}]}]}), encoding="utf-8")
+                      "documents": {"a1": 0, "a2": 1, "a3": 2, "g1": 17}}]}), encoding="utf-8")
     ai = tmp_path / "ai.json"  # the AI DB keeps its pooled figures: evidence does not move
     ai.write_text(json.dumps({"kind": "ai", "corpus": {"documents": [
         {"id": "m1", "words": 1000, "register": "article"}, {"id": "m2", "words": 1000, "register": "article"},
         {"id": "m3", "words": 1000, "register": "article"}]},
         "patterns": [{"id": "punctuation/question-mark", "stat": "question", "unit": "per_1k_words",
                       "rate": 3.0, "range": [0.0, 9.0], "spread": 0.8, "tier": 1,
-                      "documents": [{"id": "m1", "count": 0}, {"id": "m2", "count": 0}, {"id": "m3", "count": 9}]}]}),
+                      "documents": {"m1": 0, "m2": 0, "m3": 9}}]}),
         encoding="utf-8")
     assert textstats.main(["measure", str(doc), "--db", str(user), "--db", str(ai),
                            "--sort-gap", "--register", "article"]) == 0
@@ -868,3 +866,4 @@ def test_measure_marks_ai_rows_the_profile_has_no_row_for(tmp_path, capsys):
         encoding="utf-8")
     assert textstats.main(["measure"] + args) == 0
     assert "[no author row]" not in capsys.readouterr().out
+

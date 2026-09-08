@@ -24,10 +24,10 @@ Subcommands
   count DB --corpus-dir ROOT [-o OUT] [--judged PART]
                                  measure every counted pattern that has a
                                  counter on every corpus document and write its
-                                 documents[] from the corpus — exactly what
+                                 documents map from the corpus — exactly what
                                  validate re-runs — refresh the manifest word
                                  counts, then recompute; with --judged, move the
-                                 judged patterns (documents[] cleared) into PART
+                                 judged patterns (documents cleared) into PART
                                  for the Phase B readers
   review DB [--verdicts FILE] [--weight REGISTER=SHARE]... [--reviewer NAME] [-o OUT]
                                  apply the review round: per-pattern verdicts
@@ -173,6 +173,14 @@ def doc_index(db: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
     return {d["id"]: d for d in db.get("corpus", {}).get("documents", [])}
 
 
+def doc_values(pattern: Dict[str, Any]) -> Dict[str, Any]:
+    """A pattern's per-document evidence: document id -> the unit's own number (raw occurrences
+    under per_1k_words, the per-document rate under every other unit). {} when the field is
+    missing or not a map, which `validate` reports."""
+    values = pattern.get("documents")
+    return values if isinstance(values, dict) else {}
+
+
 def scoped_docs(pattern: Dict[str, Any], docs: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
     """The corpus documents a pattern is derived over: all of them, or — with a
     `register_scope` — only those in the listed registers. Spread is otherwise
@@ -255,7 +263,7 @@ def pool_by_register(per_doc: List[float], words: List[int], registers: List[str
 
 def compute_stats(pattern: Dict[str, Any], docs: Dict[str, Dict[str, Any]],
                   weights: Optional[Dict[str, Any]] = None) -> None:
-    """Recompute rate, spread, range, coverage, registers from documents[].
+    """Recompute rate, spread, range, coverage, registers from the documents map.
 
     `weights` is the corpus's `register_weights`, and it moves `rate` alone: `spread`,
     `range` and `coverage` count documents, and so do the tier rules that read them. A
@@ -263,31 +271,31 @@ def compute_stats(pattern: Dict[str, Any], docs: Dict[str, Dict[str, Any]],
     well a habit is evidenced.
     """
     docs = scoped_docs(pattern, docs)
-    entries = [e for e in pattern.get("documents", []) if e.get("id") in docs]
+    entries = [(did, value) for did, value in doc_values(pattern).items() if did in docs]
     n_docs = len(docs)
-    measured_words = sum(docs[e["id"]]["words"] for e in entries)
+    measured_words = sum(docs[did]["words"] for did, _ in entries)
     unit = pattern.get("unit", "per_1k_words")
     if not entries:
         pattern.update({"rate": None, "spread": 0.0, "range": None, "coverage": 0.0,
                         "registers": []})
         return
     if unit == "per_1k_words":
-        total = sum(e.get("count", 0) for e in entries)
+        total = sum(value for _, value in entries)
         rate = total / measured_words * 1000 if measured_words else 0.0
-        per_doc = [(e.get("count", 0) / docs[e["id"]]["words"] * 1000) for e in entries]
+        per_doc = [value / docs[did]["words"] * 1000 for did, value in entries]
     else:
-        per_doc = [float(e.get("rate", 0.0)) for e in entries]
-        rate = (sum(r * docs[e["id"]]["words"] for r, e in zip(per_doc, entries))
+        per_doc = [float(value) for _, value in entries]
+        rate = (sum(r * docs[did]["words"] for r, (did, _) in zip(per_doc, entries))
                 / measured_words) if measured_words else 0.0
     if weights:
-        rate = pool_by_register(per_doc, [docs[e["id"]]["words"] for e in entries],
-                                [docs[e["id"]].get("register", "unknown") for e in entries],
+        rate = pool_by_register(per_doc, [docs[did]["words"] for did, _ in entries],
+                                [docs[did].get("register", "unknown") for did, _ in entries],
                                 weights)
     if pattern.get("kind") == "absence":
-        present = [e for e in entries if e.get("count", 0) == 0]
+        present = [did for did, value in entries if value == 0]
     else:
-        present = [e for e in entries if e.get("count", 0) > 0 or e.get("rate", 0) > 0]
-    registers = sorted({docs[e["id"]].get("register", "unknown") for e in present})
+        present = [did for did, value in entries if value > 0]
+    registers = sorted({docs[did].get("register", "unknown") for did in present})
     pattern["rate"] = round(rate, 3)
     pattern["spread"] = round(len(present) / len(entries), 3)
     pattern["range"] = [round(min(per_doc), 3), round(max(per_doc), 3)]
@@ -296,8 +304,8 @@ def compute_stats(pattern: Dict[str, Any], docs: Dict[str, Dict[str, Any]],
     pattern["_present"] = len(present)
     pattern["_measured_words"] = measured_words
     pattern["_entries"] = len(entries)
-    pattern["_hits"] = sum(e.get("count", 0) for e in entries)
-    pattern["_hit_docs"] = sum(1 for e in entries if e.get("count", 0) > 0)
+    pattern["_hits"] = sum(value for _, value in entries)
+    pattern["_hit_docs"] = sum(1 for _, value in entries if value > 0)
 
 
 def near_absent(pattern: Dict[str, Any]) -> bool:
@@ -433,9 +441,9 @@ class CorpusReader:
         return self._measured[did]
 
 
-def recount(pattern: Dict[str, Any], entry: Dict[str, Any],
+def recount(pattern: Dict[str, Any], recorded: Any,
             measured: Dict[str, Any]) -> Optional[Tuple[float, float, str]]:
-    """(recorded, from the corpus, unit) for one documents[] entry, or None when the
+    """(recorded, from the corpus, unit) for one document's recorded number, or None when the
     counter cannot be re-run — a judged pattern, a pattern with neither regex nor stat,
     or a stat this build of textstats does not know."""
     if textstats is None or pattern.get("measurement") != "counted":
@@ -448,10 +456,7 @@ def recount(pattern: Dict[str, Any], entry: Dict[str, Any],
     unit = pattern.get("unit", "per_1k_words")
     if unit == "per_1k_words":
         words = measured["stats"].get("words") or 0
-        return float(entry.get("count", 0)), value * words / 1000.0, "occurrences"
-    recorded = entry.get("rate", entry.get("count"))
-    if recorded is None:
-        return None
+        return float(recorded), value * words / 1000.0, "occurrences"
     return float(recorded), float(value), unit
 
 
@@ -524,7 +529,7 @@ def validate(db: Dict[str, Any], corpus_dir: Optional[str] = None) -> Tuple[List
     if reader:
         for did in sorted(docs):
             if docs[did].get("path") and reader.text(docs[did]) is None:
-                e("cannot open {}; --corpus-dir must be the root the documents[].path "
+                e("cannot open {}; --corpus-dir must be the root the corpus.documents[].path "
                   "entries are relative to, and nothing in {} was verified against it"
                   .format(reader.path(docs[did]), did))
     if corpus_dir:
@@ -592,7 +597,7 @@ def validate(db: Dict[str, Any], corpus_dir: Optional[str] = None) -> Tuple[List
             elif stat in BUILTIN_COUNTERS and unit != "per_1k_words":
                 e("pattern {}: built-in counter {!r} counts per 1k words; unit must be per_1k_words".format(pid, stat))
             elif stat in STAT_UNITS and unit != STAT_UNITS[stat]:
-                e("pattern {}: statistic {!r} is measured in unit {!r}, not {!r}; documents[] carries "
+                e("pattern {}: statistic {!r} is measured in unit {!r}, not {!r}; the documents map carries "
                   "that unit's value (db-schema.md, Pattern entries)".format(pid, stat, STAT_UNITS[stat], unit))
         exclude = p.get("exclude")
         if exclude is not None:
@@ -608,42 +613,51 @@ def validate(db: Dict[str, Any], corpus_dir: Optional[str] = None) -> Tuple[List
                       "or a built-in counter in stat".format(pid))
         if p.get("measurement") == "counted" and not p.get("regex") and not stat:
             w("pattern {}: counted without regex or stat; processing cannot re-measure it".format(pid))
-        entries = p.get("documents", [])
-        if not entries:
-            e("pattern {}: documents[] is empty; every pattern needs per-document counts".format(pid))
-        for entry in entries:
-            if entry.get("id") not in docs:
-                e("pattern {}: documents[] references unknown document {!r}".format(pid, entry.get("id")))
+        values = p.get("documents")
+        if not isinstance(values, dict):
+            e("pattern {}: documents must be an object mapping document id to the per-document "
+              "number (db-schema.md, Pattern entries)".format(pid))
+            values = {}
+        elif not values:
+            e("pattern {}: documents is empty; every pattern needs per-document counts".format(pid))
+        clean: Dict[str, Any] = {}  # the well-typed values of known documents
+        for did, value in values.items():
+            if did not in docs:
+                e("pattern {}: documents names unknown document {!r}".format(pid, did))
                 continue
             if unit == "per_1k_words":
-                if isinstance(entry.get("count"), bool) or not isinstance(entry.get("count"), int) or entry["count"] < 0:
+                if isinstance(value, bool) or not isinstance(value, int) or value < 0:
                     e("pattern {}: documents[{}] needs an integer count (raw occurrences) under the "
-                      "per_1k_words unit".format(pid, entry["id"]))
-            elif unit in UNITS and (isinstance(entry.get("rate"), bool) or not isinstance(entry.get("rate"), (int, float))):
-                e("pattern {}: documents[{}] needs a numeric rate (the per-document value) under the "
-                  "{} unit".format(pid, entry["id"], unit))
-            if reader and docs[entry["id"]].get("path"):
-                measured = reader.measured(docs[entry["id"]])
+                      "per_1k_words unit".format(pid, did))
+                    continue
+            elif isinstance(value, bool) or not isinstance(value, (int, float)):
+                if unit in UNITS:
+                    e("pattern {}: documents[{}] needs a numeric rate (the per-document value) under "
+                      "the {} unit".format(pid, did, unit))
+                continue
+            clean[did] = value
+            if reader and docs[did].get("path"):
+                measured = reader.measured(docs[did])
                 if measured is None:
                     continue  # already reported once, against the document
-                got = recount(p, entry, measured)
+                got = recount(p, value, measured)
                 if got is None:
                     continue
-                recorded, measured_value, unit = got
-                tol = 0.5 if unit == "occurrences" else max(0.02, 0.02 * abs(recorded))
+                recorded, measured_value, shown_unit = got
+                tol = 0.5 if shown_unit == "occurrences" else max(0.02, 0.02 * abs(recorded))
                 if abs(recorded - measured_value) > tol:
-                    shown = int(round(measured_value)) if unit == "occurrences" else round(measured_value, 2)
+                    shown = int(round(measured_value)) if shown_unit == "occurrences" else round(measured_value, 2)
                     e("pattern {}: documents[{}] records {:g} {} but the counter finds "
                       "{:g} in the source; re-run the counter (the recorded numbers are "
                       "what rate, range and tier are computed from)".format(
-                          pid, entry["id"], recorded, unit, shown))
+                          pid, did, recorded, shown_unit, shown))
+        known = bool(docs) and len(clean) == len(values)
         if p.get("kind") == "absence":
             if p.get("measurement") != "counted":
                 e("pattern {}: absence patterns must be counted, not judged".format(pid))
-            hit_entries = [entry for entry in entries if entry.get("count", 0) > 0]
-            if hit_entries:
-                probe = dict(p)
-                known = bool(docs) and all(entry.get("id") in docs for entry in entries)
+            hits = {did: value for did, value in clean.items() if value > 0}
+            if hits:
+                probe = dict(p, documents=clean)
                 if known:
                     compute_stats(probe, docs, weights)
                 if known and near_absent(probe):
@@ -652,10 +666,10 @@ def validate(db: Dict[str, Any], corpus_dir: Optional[str] = None) -> Tuple[List
                           "hits are — residue, quoted material, or the author's own rare use — for the "
                           "review round".format(pid, probe["_hits"], probe["_hit_docs"]))
                 else:
-                    e("pattern {}: absence pattern has {} hit(s) in {} document(s){}; an absence tolerates "
+                    e("pattern {}: absence pattern has {:g} hit(s) in {} document(s){}; an absence tolerates "
                       "fewer than {:g} per 1k words in at most {:.0%} of the documents — record it as a "
                       "presence, or subtract false positives with exclude".format(
-                          pid, sum(entry.get("count", 0) for entry in hit_entries), len(hit_entries),
+                          pid, sum(hits.values()), len(hits),
                           " ({:.2f} per 1k)".format(probe["_hits"] / probe["_measured_words"] * 1000)
                           if known and probe.get("_measured_words") else "",
                           NEAR_ABSENCE_MAX_RATE, NEAR_ABSENCE_MAX_SPREAD))
@@ -671,8 +685,8 @@ def validate(db: Dict[str, Any], corpus_dir: Optional[str] = None) -> Tuple[List
             # never a --fix: some rare habits really are presences (the author does do this, just
             # seldom), and the description usually says which — "bold is rare" reads as a presence,
             # "never bolds a whole clause" as an absence written up on the wrong side.
-            probe = dict(p)
-            if bool(docs) and all(entry.get("id") in docs for entry in entries):
+            probe = dict(p, documents=clean)
+            if known:
                 compute_stats(probe, docs, weights)
                 probe["kind"] = "absence"
                 if near_absent(probe):
@@ -703,7 +717,7 @@ def validate(db: Dict[str, Any], corpus_dir: Optional[str] = None) -> Tuple[List
                         "; nearest verbatim form: {!r}".format(near) if near else ""))
         if p.get("tier") not in (1, 2, 3):
             e("pattern {}: tier must be 1, 2, or 3 (run `validate --fix` to compute it)".format(pid))
-        elif docs and all(entry.get("id") in docs for entry in entries):
+        elif known:
             snapshot = dict(p)
             computed, _ = compute_tier(snapshot, docs, weights)
             if computed != p["tier"]:
@@ -820,19 +834,18 @@ def merge(dbs: List[Dict[str, Any]], partial: bool = False) -> Dict[str, Any]:
             pid = p["id"]
             if pid not in patterns:
                 q = {k: v for k, v in p.items() if not k.startswith("_")}
-                q["documents"] = list(p.get("documents", []))
+                q["documents"] = dict(doc_values(p))
                 q["evidence"] = list(p.get("evidence", []))
                 q["notes"] = [p["note"]] if p.get("note") else []
                 q.pop("note", None)
                 patterns[pid] = q
                 continue
             q = patterns[pid]
-            have = {entry["id"]: entry for entry in q["documents"]}
-            for entry in p.get("documents", []):
-                if entry["id"] in have and have[entry["id"]] != entry:
-                    raise ValueError("pattern {}: conflicting counts for document {}".format(pid, entry["id"]))
-                have.setdefault(entry["id"], entry)
-            q["documents"] = list(have.values())
+            have = q["documents"]
+            for did, value in doc_values(p).items():
+                if did in have and have[did] != value:
+                    raise ValueError("pattern {}: conflicting counts for document {}".format(pid, did))
+                have.setdefault(did, value)
             seen = {(ev.get("doc"), normalize_ws(ev.get("quote", ""))) for ev in q["evidence"]}
             for ev in p.get("evidence", []):
                 key = (ev.get("doc"), normalize_ws(ev.get("quote", "")))
@@ -945,10 +958,10 @@ def render(db: Dict[str, Any], setting: str = "hard", dimension: Optional[str] =
         for p in sorted(by_dim[dim], key=effective_tier):
             tier = effective_tier(p)
             if p.get("kind") == "absence":
-                hits = sum(entry.get("count", 0) for entry in p.get("documents", []))
-                tag = "near-absent ({} hit(s) in {} of {} documents)".format(
-                    hits, sum(1 for entry in p.get("documents", []) if entry.get("count", 0) > 0),
-                    len(p.get("documents", []))) if hits else "absent"
+                values = doc_values(p)
+                hits = sum(values.values())
+                tag = "near-absent ({:g} hit(s) in {} of {} documents)".format(
+                    hits, sum(1 for v in values.values() if v > 0), len(values)) if hits else "absent"
             else:
                 tag = fmt_rate(p)
             rng = p.get("range")
@@ -1165,7 +1178,7 @@ def cmd_init(args: argparse.Namespace) -> int:
 
 def count_patterns(db: Dict[str, Any], corpus_dir: str) -> Tuple[List[str], List[str], List[str]]:
     """Re-measure every counted pattern that has a counter over every corpus document and write
-    its documents[] from the corpus — the numbers `validate --corpus-dir` re-runs, so a DB
+    its documents map from the corpus — the numbers `validate --corpus-dir` re-runs, so a DB
     counted here verifies by construction — and refresh every manifest word count the stripper
     now measures differently, since rates normalize against it. Returns (counted ids, ids left
     to reading, errors); the refreshed document ids are left in db["_words_refreshed"]."""
@@ -1178,7 +1191,7 @@ def count_patterns(db: Dict[str, Any], corpus_dir: str) -> Tuple[List[str], List
         if not d.get("path"):
             errors.append("document {} carries no path (a sealed DB?); count needs the corpus".format(did))
         elif reader.measured(d) is None:
-            errors.append("cannot open {}; --corpus-dir must be the root the documents[].path "
+            errors.append("cannot open {}; --corpus-dir must be the root the corpus.documents[].path "
                           "entries are relative to".format(reader.path(d)))
     if errors:
         return [], [], errors
@@ -1195,23 +1208,14 @@ def count_patterns(db: Dict[str, Any], corpus_dir: str) -> Tuple[List[str], List
             left.append(p["id"])
             continue
         unit = p.get("unit", "per_1k_words")
-        entries = []
+        entries: Dict[str, Any] = {}
         for did, d in docs.items():
             measured = reader.measured(d)
-            if unit == "per_1k_words":
-                c = textstats.count_pattern(p, measured)
-                if c is None:
-                    break
-                entries.append({"id": did, "count": c})
-            else:
-                v = textstats.measure_pattern(p, measured)
-                if v is None:
-                    break
-                entry: Dict[str, Any] = {"id": did, "rate": v}
-                c = textstats.count_pattern(p, measured)
-                if c is not None:
-                    entry["count"] = c
-                entries.append(entry)
+            value = (textstats.count_pattern(p, measured) if unit == "per_1k_words"
+                     else textstats.measure_pattern(p, measured))
+            if value is None:
+                break
+            entries[did] = value
         if len(entries) != len(docs):
             left.append(p["id"] + " (counter not evaluable)")
             continue
@@ -1231,7 +1235,7 @@ def cmd_count(args: argparse.Namespace) -> int:
         judged_ids = {pid.split(" ")[0] for pid in left}
         part = {k: v for k, v in db.items() if k != "patterns"}
         part.update({"partial": True, "review": {"status": "pending"},
-                     "patterns": [dict(p, documents=[]) for p in db["patterns"] if p["id"] in judged_ids]})
+                     "patterns": [dict(p, documents={}) for p in db["patterns"] if p["id"] in judged_ids]})
         save(args.judged, part)
         db["patterns"] = [p for p in db["patterns"] if p["id"] not in judged_ids]
         recompute(db)
@@ -1249,7 +1253,7 @@ def cmd_count(args: argparse.Namespace) -> int:
         for pid in left:
             print("  " + pid)
         if args.judged:
-            print("judged patterns moved to {} with documents[] cleared, for the Phase B readers to fill".format(args.judged))
+            print("judged patterns moved to {} with documents cleared, for the Phase B readers to fill".format(args.judged))
     return 1 if errors else 0
 
 
@@ -1368,7 +1372,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     s = sub.add_parser("count"); s.add_argument("db"); s.add_argument("--corpus-dir", required=True)
     s.add_argument("-o", "--output", help="write here instead of in place")
     s.add_argument("--judged", metavar="PART",
-                   help="move the judged patterns, documents[] cleared, into this partial DB for the readers")
+                   help="move the judged patterns, documents cleared, into this partial DB for the readers")
     s.set_defaults(fn=cmd_count)
     s = sub.add_parser("review"); s.add_argument("db")
     s.add_argument("--verdicts", help="JSON file: {id: {verdict, note, tier_override}}; verdict is "
