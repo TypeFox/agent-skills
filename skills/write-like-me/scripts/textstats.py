@@ -42,8 +42,14 @@ Usage
       whose `register_scope` excludes it is marked [out of scope] and classed
       neutral, since a scoped row is a target only for an input in one of its
       registers (references/processing.md, Step 3), and an out-of-scope AI row
-      is not evidence. A register no profile document carries is accepted with
-      a warning: the profile then has no evidence about it. With --sort-gap or
+      is not evidence. A per-1k presence row of the profile is re-rated over
+      its documents of that register where three or more were measured, and
+      marked [R rate]: a pooled rate is the target for no register at all where
+      a habit varies by register. A register no profile document carries is
+      accepted with a warning: the profile then has no evidence about it. An AI
+      row the input shows at the machine's rate, with no profile row under its
+      own id or its `covered_by` ids, is marked [no author row]: nothing vetoes
+      it and nothing targets it, so it goes to the manual pass. With --sort-gap or
       --setting and several files, the first file is the input and every
       column's verdict is judged at its length, so a rewrite that came out
       shorter does not turn the rows it worked `too-short`. A row of the
@@ -526,6 +532,10 @@ def classify(value: Optional[float], pattern: Dict[str, Any], verd: str) -> str:
     if verd in ("low", "high"):
         return "lean"
     if verd == "gap":
+        # Any occurrence of an absence is a removal: a near-absence's `range` is the corpus's
+        # residual leak, not a band to land in, so a value inside it is not the additive half.
+        if pattern.get("kind") == "absence":
+            return "remove"
         rate = float(pattern.get("rate") or 0.0)
         rng = pattern.get("range") or [rate, rate]
         return "remove" if float(value) > float(rng[1]) else "add"
@@ -655,6 +665,98 @@ def scope_mark(pattern: Dict[str, Any], register: Optional[str]) -> str:
     return " [scope: {}]".format(", ".join(scope))
 
 
+# Measured documents of the input's register a row needs before its figures are recomputed over
+# that register alone; below it the pooled figures stay and the description's split is the reader's.
+REGISTER_MIN_DOCS = 3
+
+
+def doc_index(db: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    """id -> corpus document (words, register) of a DB; {} for a DB without a manifest."""
+    return {d["id"]: d for d in (db.get("corpus") or {}).get("documents", []) if d.get("id")}
+
+
+def for_register(pattern: Dict[str, Any], docs: Dict[str, Dict[str, Any]],
+                 register: Optional[str]) -> Dict[str, Any]:
+    """The pattern with rate, range and spread recomputed over the corpus documents of the input's
+    register, when at least REGISTER_MIN_DOCS of them were measured; otherwise the pattern itself.
+
+    A pooled rate is the target for no register at all where a habit varies by register (a
+    question mark frequent in issue prose and rare in articles); processing.md Step 3 asks the
+    reader to apply that split from the row's description, and this makes it mechanical wherever
+    the manifest survived sealing (id, words and register do). Per-1k presence rows only: an
+    absence holds in every register, a share or length statistic keeps its pooled figures, and a
+    row scoped to other registers is left to `in_scope`. The copy carries `register_rate` so the
+    table can say which figures it printed.
+    """
+    if not register or not docs or pattern.get("kind") == "absence":
+        return pattern
+    if pattern.get("unit", "per_1k_words") != "per_1k_words" or pattern.get("rate") is None:
+        return pattern
+    scope = pattern.get("register_scope")
+    if scope and register not in scope:
+        return pattern
+    entries = [e for e in pattern.get("documents", [])
+               if e.get("id") in docs and docs[e["id"]].get("register") == register
+               and docs[e["id"]].get("words")]
+    if len(entries) < REGISTER_MIN_DOCS:
+        return pattern
+    words = sum(docs[e["id"]]["words"] for e in entries)
+    per_doc = [e.get("count", 0) / docs[e["id"]]["words"] * 1000 for e in entries]
+    present = sum(1 for e in entries if e.get("count", 0) > 0)
+    copy = dict(pattern)
+    copy.update({"rate": round(sum(e.get("count", 0) for e in entries) / words * 1000, 3),
+                 "range": [round(min(per_doc), 3), round(max(per_doc), 3)],
+                 "spread": round(present / len(entries), 3),
+                 "register_rate": {"register": register, "documents": len(entries),
+                                   "pooled_rate": pattern.get("rate"),
+                                   "pooled_range": pattern.get("range")}})
+    return copy
+
+
+def register_mark(pattern: Dict[str, Any]) -> str:
+    """The name suffix of a row whose figures are the input register's, not the pooled ones."""
+    rr = pattern.get("register_rate")
+    return " [{} rate]".format(rr["register"]) if rr else ""
+
+
+def machine_typical(value: Optional[float], pattern: Dict[str, Any], verd: str) -> bool:
+    """True where an AI DB row measures the input at or above the machine's own rate: inside
+    the machine range at the rate (`match`), above twice it (`high`), or past the machine's
+    worst document (`gap` on the high side)."""
+    if value is None:
+        return False
+    if verd in ("match", "high"):
+        return True
+    rng = pattern.get("range") or [0.0, 0.0]
+    return verd == "gap" and float(value) > float(rng[1])
+
+
+def unvetoed_ai_rows(dbs: List[Tuple[str, Dict[str, Any]]], result: Dict[str, Any],
+                     register: Optional[str], stats: Dict[str, Any]) -> List[Tuple[Dict[str, Any], float, str]]:
+    """The AI DB rows the profile has nothing to say about: (pattern, value, verdict) for every
+    in-scope, non-structural AI row that is machine-typical on the input where the profile has
+    no in-scope row under the AI row's own id or any id in its `covered_by` list. An author row,
+    matching or not, decides and the AI row is its evidence; with none, the AI row is neither
+    vetoed nor a target, so it is marked [no author row] and left to the manual pass
+    (processing.md Step 2) rather than classed as a removal."""
+    author = {p["id"] for _, db in dbs if db.get("kind") != "ai"
+              for p in db.get("patterns", []) if in_scope(p, register)}
+    out = []
+    for _, db in dbs:
+        if db.get("kind") != "ai":
+            continue
+        for p in db.get("patterns", []):
+            if is_structural(p) or p["id"] in author or any(c in author for c in p.get("covered_by") or []):
+                continue
+            v = measure_pattern(p, result)
+            if v is None or not in_scope(p, register):
+                continue
+            verd = verdict(v, p, stats)
+            if machine_typical(v, p, verd):
+                out.append((p, v, verd))
+    return out
+
+
 def cmd_report_table(args: argparse.Namespace, results: List[Tuple[str, Dict[str, Any]]],
                      dbs: List[Tuple[str, Dict[str, Any]]], max_tier: int) -> int:
     """The report's measured sections as markdown, so no figure in them is retyped.
@@ -674,13 +776,15 @@ def cmd_report_table(args: argparse.Namespace, results: List[Tuple[str, Dict[str
                 ai_verdicts[p["id"]] = verdict(v, p, first["stats"])
     two = len(results) > 1
     rows, keep, manual, judged = [], [], [], []
-    enum = structural = False
+    enum = structural = registered = False
     for _, db in dbs:
         if db.get("kind") == "ai":
             continue
         for p in db.get("patterns", []):
             values = [measure_pattern(p, r) for _, r in results]
-            name = p["id"] + (" [enum]" if is_enumeration(p) else "") + scope_mark(p, args.register)
+            name = (p["id"] + (" [enum]" if is_enumeration(p) else "") + scope_mark(p, args.register)
+                    + register_mark(p))
+            registered = registered or bool(p.get("register_rate"))
             if values[0] is None:
                 if all(v is None for v in values):
                     judged.append((p, name))
@@ -722,6 +826,12 @@ def cmd_report_table(args: argparse.Namespace, results: List[Tuple[str, Dict[str
             # row it worked `too-short` (processing.md, Step 6)
             cells += [rate, verdict(values[-1], p, first["stats"]) if values[-1] is not None else "-"]
             rows.append((gap_size(values[0], p, first["stats"], verd) or 0.0, cells))
+    # Machine-typical AI rows the profile has no row for: neither vetoed nor targets, so they
+    # go to the manual pass with the machine's figures, never into the table as removals.
+    for p, v, verd in unvetoed_ai_rows(dbs, first, args.register, first["stats"]):
+        manual.append("- {} [no author row]: {} vs. the machine's {} (tier {}, {}); nothing in the "
+                      "profile vetoes or targets it — read its hits"
+                      .format(p["id"], fmt(v), fmt(p.get("rate")), effective_tier(p), verd))
     rows.sort(key=lambda t: -t[0])
     head = ["pattern", "direction", "tier", "AI evidence", "input"]
     if two:
@@ -748,6 +858,11 @@ def cmd_report_table(args: argparse.Namespace, results: List[Tuple[str, Dict[str
         sys.stderr.write(
             "[scope: ...] marks a register-scoped row; pass --register with the input's "
             "register to have the out-of-scope ones set aside mechanically.\n")
+    if registered:
+        sys.stderr.write(
+            "[<register> rate] marks a row whose rate, range and spread were recomputed over the "
+            "profile's documents of the input's register (three or more measured); the pooled "
+            "figures are the target for no register at all where a habit varies by register.\n")
     print("## Before / after")
     print("| " + " | ".join(head) + " |")
     print("|" + "---|" * len(head))
@@ -844,6 +959,14 @@ def cmd_measure(args: argparse.Namespace) -> int:
         with open(path, encoding="utf-8") as fh:
             dbs.append((path, json.load(fh)))
     if args.register:
+        # Every per-1k profile row is re-rated over the register's own documents where the
+        # manifest has three or more of them (for_register); the pooled figures stay in the JSON
+        # row. The AI DB keeps its pooled figures: the evidence does not move with the register.
+        for _, db in dbs:
+            if db.get("kind") == "ai":
+                continue
+            docs = doc_index(db)
+            db["patterns"] = [for_register(p, docs, args.register) for p in db.get("patterns", [])]
         known = set()
         for _, db in dbs:
             if db.get("kind") == "ai":
@@ -871,6 +994,8 @@ def cmd_measure(args: argparse.Namespace) -> int:
                     verd = verdict(v, p, r["stats"])
                     row = {"value": v, "db_rate": p.get("rate"), "db_range": p.get("range"),
                            "tier": effective_tier(p), "verdict": verd}
+                    if p.get("register_rate"):
+                        row["register_rate"] = p["register_rate"]
                     if args.register:
                         row["out_of_scope"] = not in_scope(p, args.register)
                     if db.get("kind") == "ai":
@@ -893,6 +1018,8 @@ def cmd_measure(args: argparse.Namespace) -> int:
                      "patterns": {pid: row for pid, row in rows}}
             if ai_rows:
                 entry["ai_patterns"] = {pid: row for pid, row in ai_rows}
+                for p, _, _ in unvetoed_ai_rows(dbs, r, args.register, r["stats"]):
+                    entry["ai_patterns"][p["id"]]["no_author_row"] = True
             judged = {}
             for _, db in dbs:
                 if db.get("kind") == "ai":
@@ -917,6 +1044,8 @@ def cmd_measure(args: argparse.Namespace) -> int:
     # verdicts are judged at, or a rewrite that came out shorter would turn the rows it
     # worked `too-short`.
     pinned = results[0][1]["stats"] if (args.sort_gap or args.setting) else None
+    unvetoed = {p["id"] for p, _, _ in
+                unvetoed_ai_rows(dbs, results[0][1], args.register, pinned or results[0][1]["stats"])}
     print("{:<32}".format("stat") + "".join("{:>{w}}".format(n[-width:], w=width + 2) for n in names))
     for key in STATS_HELP:
         print("{:<32}".format(key) + "".join("{:>{w}}".format(fmt(r["stats"][key]), w=width + 2) for _, r in results))
@@ -940,8 +1069,10 @@ def cmd_measure(args: argparse.Namespace) -> int:
                 continue
             verdicts = [verdict(v, p, pinned or r["stats"]) for v, (_, r) in zip(values, results)]
             gap = cls = None
-            name = p["id"] + scope_mark(p, args.register)
-            if not ai:
+            name = p["id"] + scope_mark(p, args.register) + register_mark(p)
+            if ai:
+                name += " [no author row]" if p["id"] in unvetoed else ""
+            else:
                 name += (" [enum]" if is_enumeration(p) else "") + (" [structural]" if is_structural(p) else "")
                 gap = gap_size(values[0], p, results[0][1]["stats"], verdicts[0])
                 cls = classify(values[0], p, verdicts[0])
@@ -988,6 +1119,14 @@ def cmd_measure(args: argparse.Namespace) -> int:
         if any("[out of scope]" in name for _, name, _, _, _, _ in rows):
             marks.append("[out of scope] = the input's register is outside this row's scope: "
                          "not a rewrite row, and not evidence")
+        if any(" rate]" in name for _, name, _, _, _, _ in rows):
+            marks.append("[<register> rate] = rate, range and spread recomputed over the profile's documents "
+                         "of the input's register (three or more measured); the pooled figures are "
+                         "the target for no register at all where a habit varies by register")
+        if any("[no author row]" in name for _, name, _, _, _, _ in rows):
+            marks.append("[no author row] = machine-typical on the input, and the profile has no row "
+                         "under this id or its `covered_by` ids: nothing vetoes it and nothing "
+                         "targets it, so read its hits for the manual pass")
         for mark in marks:
             print("  " + mark)
         if not ai:

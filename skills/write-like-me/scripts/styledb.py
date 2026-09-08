@@ -88,6 +88,32 @@ except ImportError:  # pragma: no cover
     textstats = None
     KNOWN_STATS = BUILTIN_COUNTERS = STAT_UNITS = None
 
+def taxonomy_markers() -> Optional[Dict[str, set]]:
+    """dimension -> the markers references/taxonomy.md defines under it, parsed from the tables
+    under each `### dimension` heading; None when the file is not beside this script (an
+    installed copy without references/), in which case marker checks are skipped with a warning.
+    The taxonomy is what an author DB and the shipped AI DB share, so a cross-reference from
+    the AI DB — `covered_by` — may name only ids found here, never one profile's own row."""
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "references", "taxonomy.md")
+    try:
+        with open(path, encoding="utf-8") as fh:
+            lines = fh.read().splitlines()
+    except OSError:
+        return None
+    out: Dict[str, set] = {}
+    current = None
+    for line in lines:
+        m = re.match(r"^### ([a-z-]+)\s*$", line)
+        if m:
+            current = m.group(1)
+            out.setdefault(current, set())
+            continue
+        m = re.match(r"^\| ([a-z0-9-]+) \|", line)
+        if m and current and m.group(1) != "marker":
+            out[current].add(m.group(1))
+    return out
+
+
 # Keep in sync with references/taxonomy.md (the taxonomy is the authority).
 DIMENSIONS = [
     "punctuation",
@@ -698,6 +724,28 @@ def validate(db: Dict[str, Any], corpus_dir: Optional[str] = None) -> Tuple[List
         for ref in p.get("instead", []):
             if ref not in {q.get("id") for q in db.get("patterns", [])}:
                 w("pattern {}: 'instead' references unknown pattern {}".format(pid, ref))
+        covered = p.get("covered_by")
+        if covered is not None:
+            # The AI DB ships with the skill, so this list may name only what every author DB
+            # shares: taxonomy ids. A profile's own row id here would work for one user's DB
+            # and silently turn every other user's veto off.
+            if db.get("kind") != "ai":
+                e("pattern {}: 'covered_by' is an AI DB field (db-schema.md); an author DB "
+                  "has nothing to cover".format(pid))
+            elif not isinstance(covered, list) or not all(isinstance(x, str) and "/" in x for x in covered):
+                e("pattern {}: 'covered_by' must be a list of taxonomy ids (dimension/marker)".format(pid))
+            else:
+                markers = taxonomy_markers()
+                for ref in covered:
+                    rdim, rmarker = ref.split("/", 1)
+                    if rdim not in DIMENSIONS:
+                        e("pattern {}: 'covered_by' names unknown dimension {!r} in {}".format(pid, rdim, ref))
+                    elif markers is None:
+                        w("pattern {}: 'covered_by' entry {} not checked against the taxonomy "
+                          "(references/taxonomy.md not found beside the script)".format(pid, ref))
+                    elif rmarker not in markers.get(rdim, set()):
+                        e("pattern {}: 'covered_by' names {}, which references/taxonomy.md does not "
+                          "define — only taxonomy markers, never one profile's own row".format(pid, ref))
         scope = p.get("register_scope")
         if scope is not None:
             if not isinstance(scope, list) or not all(isinstance(x, str) and x.strip() for x in scope):

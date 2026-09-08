@@ -845,3 +845,36 @@ def test_review_refuses_unknown_ids_bad_verdicts_and_partials(tmp_path, capsys):
     src.write_text(json.dumps(make_db([], partial=True)), encoding="utf-8")
     assert styledb.main(["review", str(src)]) == 1
     assert "merge the parts first" in capsys.readouterr().out
+
+
+def test_covered_by_names_taxonomy_markers_only_and_only_on_the_ai_db():
+    # The AI DB ships with the skill, so a cross-reference from it may name only what every
+    # author DB shares: taxonomy ids. One profile's own row id would work for that user and
+    # silently switch the veto off for everyone else.
+    ok = pattern("reveal-frames/question-answer", {"d1": 2, "d2": 1, "d3": 0, "d4": 1, "d5": 1},
+                 stat="ai_question_answer", covered_by=["punctuation/question-mark"])
+    errors, warnings = styledb.validate(make_db([ok], kind="ai"))
+    assert not [e for e in errors if "covered_by" in e]
+    unknown_marker = pattern("reveal-frames/question-answer", {"d1": 2, "d2": 1, "d3": 0, "d4": 1, "d5": 1},
+                             stat="ai_question_answer", covered_by=["punctuation/miro-question"])
+    errors, _ = styledb.validate(make_db([unknown_marker], kind="ai"))
+    assert any("does not define" in e and "punctuation/miro-question" in e for e in errors)
+    unknown_dim = dict(unknown_marker, covered_by=["nowhere/question-mark"])
+    errors, _ = styledb.validate(make_db([unknown_dim], kind="ai"))
+    assert any("unknown dimension" in e and "covered_by" in e for e in errors)
+    not_a_list = dict(unknown_marker, covered_by="punctuation/question-mark")
+    errors, _ = styledb.validate(make_db([not_a_list], kind="ai"))
+    assert any("must be a list of taxonomy ids" in e for e in errors)
+    on_user_db = pattern("punctuation/colon", {"d1": 4, "d2": 1, "d3": 2, "d4": 2, "d5": 2},
+                         covered_by=["punctuation/question-mark"])
+    errors, _ = styledb.validate(make_db([on_user_db]))
+    assert any("'covered_by' is an AI DB field" in e for e in errors)
+
+
+def test_taxonomy_markers_parses_the_reference_tables():
+    markers = styledb.taxonomy_markers()
+    assert markers is not None
+    assert set(markers) == set(styledb.DIMENSIONS)
+    assert "question-mark" in markers["punctuation"]
+    assert "demonstrative-subject" in markers["paragraph-openers"]
+    assert "marker" not in markers["punctuation"]  # the table header is not a marker
