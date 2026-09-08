@@ -502,7 +502,10 @@
         "report",
         "social"
       ],
-      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "covered_by": [
+        "punctuation/em-dash"
+      ]
     },
     {
       "id": "punctuation/semicolon",
@@ -2429,7 +2432,10 @@
         "report",
         "social"
       ],
-      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "covered_by": [
+        "emphasis/bold"
+      ]
     },
     {
       "id": "emphasis/repetition",
@@ -3137,7 +3143,10 @@
         "report",
         "social"
       ],
-      "tier_reason": "judged, not counted"
+      "tier_reason": "judged, not counted",
+      "covered_by": [
+        "tone-markers/invitation-form"
+      ]
     },
     {
       "id": "spelling-lexical/contraction",
@@ -3417,7 +3426,11 @@
         "report",
         "social"
       ],
-      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "covered_by": [
+        "spelling-lexical/compound-spelling",
+        "spelling-lexical/based-compound"
+      ]
     },
     {
       "id": "spelling-lexical/hedged-number",
@@ -4925,7 +4938,10 @@
         "report",
         "social"
       ],
-      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "covered_by": [
+        "punctuation/colon-elaboration"
+      ]
     },
     {
       "id": "reveal-frames/nominal-reveal",
@@ -5204,7 +5220,10 @@
         "report",
         "social"
       ],
-      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "covered_by": [
+        "paragraph-openers/demonstrative-subject"
+      ]
     },
     {
       "id": "reveal-frames/question-answer",
@@ -5340,7 +5359,10 @@
         "email",
         "social"
       ],
-      "tier_reason": "fewer than 3 quotes"
+      "tier_reason": "fewer than 3 quotes",
+      "covered_by": [
+        "punctuation/question-mark"
+      ]
     },
     {
       "id": "reveal-frames/question-volley",
@@ -5473,7 +5495,10 @@
         "article",
         "email"
       ],
-      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes",
+      "covered_by": [
+        "punctuation/question-mark"
+      ]
     },
     {
       "id": "reveal-frames/what-if",
@@ -5615,7 +5640,10 @@
         "abstract",
         "social"
       ],
-      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "covered_by": [
+        "punctuation/question-mark"
+      ]
     },
     {
       "id": "reveal-frames/enumeration-announcement",

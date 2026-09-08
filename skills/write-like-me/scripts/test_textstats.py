@@ -760,3 +760,111 @@ def test_report_table_gives_a_lean_row_the_direction_its_verdict_says(tmp_path, 
     assert "| spelling-lexical/contraction | remove (lean) | 1 | high |" in out
     assert "| voice-and-person/second-person | add (lean) | 1 | — |" in out
     assert "| keep |" not in out
+
+
+def test_an_absence_with_residual_hits_is_a_removal_at_any_count():
+    # A near-absence keeps a few corpus hits by rule, so its range is not [0, 0]; an input value
+    # under that residual maximum used to come back `add` — a rewrite told to put in more of
+    # the two-sentence reframe the author never writes.
+    near = {"id": "contrast-frames/split-reframe", "kind": "absence", "rate": 0.1,
+            "range": [0.0, 1.368], "spread": 0.83}
+    assert textstats.verdict(0.42, near) == "gap"
+    assert textstats.classify(0.42, near, "gap") == "remove"
+    assert textstats.classify(2.0, near, "gap") == "remove"
+    assert textstats.classify(0.0, near, "match") == "do-not-touch"
+
+
+def test_register_rates_replace_the_pooled_figures_where_the_manifest_allows():
+    docs = {"a1": {"id": "a1", "words": 1000, "register": "article"},
+            "a2": {"id": "a2", "words": 1000, "register": "article"},
+            "a3": {"id": "a3", "words": 1000, "register": "article"},
+            "g1": {"id": "g1", "words": 1000, "register": "github"}}
+    question = {"id": "punctuation/question-mark", "unit": "per_1k_words", "rate": 5.0,
+                "range": [0.0, 17.0], "spread": 0.75,
+                "documents": [{"id": "a1", "count": 0}, {"id": "a2", "count": 1},
+                              {"id": "a3", "count": 2}, {"id": "g1", "count": 17}]}
+    art = textstats.for_register(question, docs, "article")
+    assert art["rate"] == 1.0 and art["range"] == [0.0, 2.0] and art["spread"] == 0.667
+    assert art["register_rate"] == {"register": "article", "documents": 3,
+                                    "pooled_rate": 5.0, "pooled_range": [0.0, 17.0]}
+    assert question["rate"] == 5.0  # the original is untouched
+    # the pooled figures called an article at the machine's rate a match; the register's do not
+    assert textstats.verdict(2.5, question, {"words": 2000}) == "match"
+    assert textstats.verdict(2.5, art, {"words": 2000}) == "high"  # a lean row, worked down
+    assert textstats.verdict(4.0, art, {"words": 2000}) == "gap"
+    # too few documents in the register, another register, an absence: pooled figures stay
+    assert textstats.for_register(question, docs, "github") is question
+    assert textstats.for_register(question, docs, None) is question
+    absence = dict(question, kind="absence")
+    assert textstats.for_register(absence, docs, "article") is absence
+    share = dict(question, unit="share_of_sentences")
+    assert textstats.for_register(share, docs, "article") is share
+
+
+def test_measure_register_re_rates_rows_from_the_manifest(tmp_path, capsys):
+    doc = tmp_path / "draft.md"
+    doc.write_text("Is this good? Is that bad? " + "More plain words follow here. " * 40, encoding="utf-8")
+    user = tmp_path / "user.json"
+    user.write_text(json.dumps({"kind": "user", "corpus": {"documents": [
+        {"id": "a1", "words": 1000, "register": "article"}, {"id": "a2", "words": 1000, "register": "article"},
+        {"id": "a3", "words": 1000, "register": "article"}, {"id": "g1", "words": 1000, "register": "github"}]},
+        "patterns": [{"id": "punctuation/question-mark", "stat": "question", "unit": "per_1k_words",
+                      "rate": 5.0, "range": [0.0, 17.0], "spread": 0.75, "tier": 1,
+                      "documents": [{"id": "a1", "count": 0}, {"id": "a2", "count": 1},
+                                    {"id": "a3", "count": 2}, {"id": "g1", "count": 17}]}]}), encoding="utf-8")
+    ai = tmp_path / "ai.json"  # the AI DB keeps its pooled figures: evidence does not move
+    ai.write_text(json.dumps({"kind": "ai", "corpus": {"documents": [
+        {"id": "m1", "words": 1000, "register": "article"}, {"id": "m2", "words": 1000, "register": "article"},
+        {"id": "m3", "words": 1000, "register": "article"}]},
+        "patterns": [{"id": "punctuation/question-mark", "stat": "question", "unit": "per_1k_words",
+                      "rate": 3.0, "range": [0.0, 9.0], "spread": 0.8, "tier": 1,
+                      "documents": [{"id": "m1", "count": 0}, {"id": "m2", "count": 0}, {"id": "m3", "count": 9}]}]}),
+        encoding="utf-8")
+    assert textstats.main(["measure", str(doc), "--db", str(user), "--db", str(ai),
+                           "--sort-gap", "--register", "article"]) == 0
+    out = capsys.readouterr().out
+    row = next(l for l in out.splitlines() if "question-mark" in l)
+    assert "[article rate]" in row and row.startswith("remove") and " 1 " in row  # the register's rate
+    assert "[<register> rate]" in out
+    assert [l for l in out.splitlines() if "question-mark" in l and "rate]" not in l and "3 " in l]
+    assert textstats.main(["measure", str(doc), "--db", str(user), "--register", "article", "--json"]) == 0
+    row = json.loads(capsys.readouterr().out)[str(doc)]["patterns"]["punctuation/question-mark"]
+    assert row["db_rate"] == 1.0 and row["register_rate"]["pooled_rate"] == 5.0
+
+
+def test_measure_marks_ai_rows_the_profile_has_no_row_for(tmp_path, capsys):
+    # A rhetorical question answered by the next sentence, at the machine's rate, and a profile
+    # with no row about questions: nothing vetoes the AI row and nothing targets it, so it is
+    # marked for the manual pass — never classed as a removal, which needs an author row.
+    doc = tmp_path / "draft.md"
+    doc.write_text("# Title\n\n" + "Why does this matter? Because it does. " * 3
+                   + "More plain words follow here. " * 40, encoding="utf-8")
+    user = tmp_path / "user.json"
+    user.write_text(json.dumps({"kind": "user", "patterns": []}), encoding="utf-8")
+    ai = tmp_path / "ai.json"
+    ai.write_text(json.dumps({"kind": "ai", "patterns": [
+        {"id": "reveal-frames/question-answer", "stat": "ai_question_answer", "unit": "per_1k_words",
+         "rate": 5.0, "range": [0.0, 12.0], "spread": 0.7, "tier": 2, "covered_by": ["punctuation/question-mark"]},
+        {"id": "headings/heading-case", "stat": "heading_title_case_share", "unit": "share_of_headings",
+         "rate": 0.2, "range": [0.0, 1.0], "spread": 0.5, "tier": 2}]}), encoding="utf-8")
+    args = [str(doc), "--db", str(user), "--db", str(ai), "--sort-gap", "--setting", "medium"]
+    assert textstats.main(["measure"] + args) == 0
+    out = capsys.readouterr().out
+    assert "reveal-frames/question-answer [no author row]" in out
+    assert "[no author row] = machine-typical" in out
+    assert "heading-case [no author row]" not in out  # structural: the invariant, not a mark
+    assert not [l for l in out.splitlines() if l.startswith("remove") and "question-answer" in l]
+    assert textstats.main(["measure"] + args + ["--report-table"]) == 0
+    out = capsys.readouterr().out
+    assert "question-answer" not in out.split("## Left for the manual pass")[0]
+    assert "- reveal-frames/question-answer [no author row]: " in out
+    assert textstats.main(["measure"] + args + ["--json"]) == 0
+    entry = json.loads(capsys.readouterr().out)[str(doc)]
+    assert entry["ai_patterns"]["reveal-frames/question-answer"]["no_author_row"] is True
+    assert "no_author_row" not in entry["ai_patterns"]["headings/heading-case"]
+    # any author row under the covering id decides, a judged one included: no mark
+    user.write_text(json.dumps({"kind": "user", "patterns": [
+        {"id": "punctuation/question-mark", "description": "questions, by reading", "tier": 2}]}),
+        encoding="utf-8")
+    assert textstats.main(["measure"] + args) == 0
+    assert "[no author row]" not in capsys.readouterr().out
