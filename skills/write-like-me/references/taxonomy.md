@@ -255,7 +255,7 @@ Marked but correct grammatical constructions the author reaches for, shaped by a
 
 ## AI-typical dimensions
 
-Where machine prose shows most; an author DB records these mostly as absences, which is the evidence processing needs. The built-in `ai_*` counters of `textstats.py` implement the counters; the shipped AI DB (`data/ai-style-patterns.json`) is the authoritative record of their rates, spreads, tiers, and evidence on the maintainers' current corpus. Figures in the definitions — rate per 1k words and the number of documents showing the marker — are what the counter measured on the earlier 19-document 2026 corpus (~26k words; GPT, Claude, and Gemini output), for calibration, not as thresholds. In that corpus the 2023-era vocabulary (*delve, tapestry, "In conclusion"*) is nearly gone; the signal is syntactic and rhetorical — contrast frames, colon reveals, verdict sentences, authenticity words, label-led emphasis.
+Where machine prose shows most; an author DB records these mostly as absences, which is the evidence processing needs. The built-in `ai_*` counters of `textstats.py` implement the counters; the shipped AI DB (`data/ai-style-patterns.json`) is the authoritative record of their rates, spreads, tiers, and evidence on the maintainers' current corpus. In current output the 2023-era vocabulary (*delve, tapestry, "In conclusion"*) is nearly gone; the signal is syntactic and rhetorical — contrast frames, colon reveals, verdict sentences, authenticity words, label-led emphasis.
 
 ### contrast-frames
 
@@ -263,11 +263,11 @@ Defining a thing by what it is not, or by what it replaces.
 
 | marker | definition | measure |
 |---|---|---|
-| not-but | "not X, but Y" or "not just X, but Y" in one sentence (0.4/1k, 6 docs) | built-in `ai_not_but` |
-| comma-not | sentence-final negated foil: "a tested feature, not an afterthought" (0.8/1k, 10 docs) | built-in `ai_comma_not` |
-| split-reframe | "X is not A. It is B." across two sentences (0.3/1k, 7 docs) | built-in `ai_split_reframe` |
-| rather-than | *rather than / instead of / Instead,* as the default contrast connector (2.4/1k, 16 docs) | built-in `ai_rather_than` |
-| without-benefit | a benefit stated as an avoided cost: "without building everything from scratch" (1.1/1k, 16 docs) | built-in `ai_without_benefit` (noisy) |
+| not-but | "not X, but Y" or "not just X, but Y" in one sentence | built-in `ai_not_but` |
+| comma-not | sentence-final negated foil: "a tested feature, not an afterthought" | built-in `ai_comma_not` |
+| split-reframe | "X is not A. It is B." across two sentences | built-in `ai_split_reframe` |
+| rather-than | *rather than / instead of / Instead,* as the default contrast connector | built-in `ai_rather_than` |
+| without-benefit | a benefit stated as an avoided cost: "without building everything from scratch" | built-in `ai_without_benefit` (noisy) |
 
 ### reveal-frames
 
@@ -275,27 +275,27 @@ Setup-then-payoff sentence shapes that tell the reader what to find significant.
 
 | marker | definition | measure |
 |---|---|---|
-| colon-punchline | short setup, colon, payoff: "The first proof: an OCT plugin." (2.5/1k, 13 docs) | built-in `ai_colon_punchline` |
-| nominal-reveal | abstract-noun subject announcing the payoff: "The result is…", "Here's the unexpected part:" (0.9/1k, 10 docs); also an author habit ("The only problem is that…") — record on both sides | built-in `ai_nominal_reveal` (seed nouns; extend per corpus) |
-| verdict-opener | sentence-initial *That/This* + evaluative verb: "That changes today." (1.9/1k, 11 docs) | built-in `ai_verdict_opener` |
-| question-answer | a rhetorical question answered by the next sentence (0.7/1k, 10 docs) | built-in `ai_question_answer` (noisy) |
-| what-if | "What if…?", "What happens when…?" as a hook (0.4/1k, 7 docs) | built-in `ai_what_if` |
-| enumeration-announcement | a counted promise before a list: "Four principles carry the sensor side." (0.7/1k, 9 docs) | built-in `ai_enumeration_announcement` |
+| colon-punchline | short setup, colon, payoff: "The first proof: an OCT plugin." | built-in `ai_colon_punchline` |
+| nominal-reveal | abstract-noun subject announcing the payoff: "The result is…", "Here's the unexpected part:"; also an author habit ("The only problem is that…") — record on both sides | built-in `ai_nominal_reveal` (seed nouns; extend per corpus) |
+| verdict-opener | sentence-initial *That/This* + evaluative verb: "That changes today." | built-in `ai_verdict_opener` |
+| question-answer | a rhetorical question answered by the next sentence | built-in `ai_question_answer` (noisy) |
+| what-if | "What if…?", "What happens when…?" as a hook | built-in `ai_what_if` |
+| enumeration-announcement | a counted promise before a list: "Four principles carry the sensor side." | built-in `ai_enumeration_announcement` |
 
 ### significance-tails
 
 | marker | definition | measure |
 |---|---|---|
-| significance-tail | a tail saying why to care: "That matters because…", "Why X matters", "…, highlighting the importance of…" (0.4/1k, 6 docs) | built-in `ai_significance_tail` |
-| worth-noting | "it's worth noting", "deserves special respect", *notably, crucially* (0.4/1k, 5 docs) | built-in `ai_worth_noting` |
-| participial-tail | main clause plus a present-participle benefit: "…, enabling X and eliminating Y" (0.6/1k, 8 docs); also an author result tail ("…, thus decoupling…") — record on both sides | built-in `ai_participial_tail` (seed verbs; extend per corpus) |
+| significance-tail | a tail saying why to care: "That matters because…", "Why X matters", "…, highlighting the importance of…" | built-in `ai_significance_tail` |
+| worth-noting | "it's worth noting", "deserves special respect", *notably, crucially* | built-in `ai_worth_noting` |
+| participial-tail | main clause plus a present-participle benefit: "…, enabling X and eliminating Y"; also an author result tail ("…, thus decoupling…") — record on both sides | built-in `ai_participial_tail` (seed verbs; extend per corpus) |
 
 ### rule-of-three
 
 | marker | definition | measure |
 |---|---|---|
 | triad | three coordinated items where two or four would do | built-in `ai_triad` |
-| adjective-stack | stacked evaluative adjectives: "clean, human-readable grammar rules" (1/1k, 10 docs) | built-in `ai_adjective_stack` (seed list) |
+| adjective-stack | stacked evaluative adjectives: "clean, human-readable grammar rules" | built-in `ai_adjective_stack` (seed list) |
 | long-enumeration | an asyndetic series of five or more abstract nouns as evidence | judged |
 
 ### signposting
@@ -304,10 +304,10 @@ The text describing or recapping itself.
 
 | marker | definition | measure |
 |---|---|---|
-| summary-opener | *In conclusion, Overall, In summary, All in all, Ultimately* (0 in the 2026 corpus; kept for older drafts, and because hand-written prose uses *Overall,* and *All in all*) | built-in `ai_summary_opener` |
+| summary-opener | *In conclusion, Overall, In summary, All in all, Ultimately* (nearly absent from current output; kept for older drafts, and because hand-written prose uses *Overall,* and *All in all*) | built-in `ai_summary_opener` |
 | closing-recap | the final paragraph restating the piece | judged |
 | section-recap | the last sentence of a section restating the section | judged |
-| meta-signpost | the text announcing its own plan: "This article looks at…", "We'll close with…", and the hortative "Let's dig into the features!" (1.1/1k, 7 docs; also an author habit — record on both sides) | built-in `ai_meta_signpost`; *Let's* form: `\bLet[’']s (?:dig\|dive\|take a look\|look\|start)\b` |
+| meta-signpost | the text announcing its own plan: "This article looks at…", "We'll close with…", and the hortative "Let's dig into the features!" (also an author habit — record on both sides) | built-in `ai_meta_signpost`; *Let's* form: `\bLet[’']s (?:dig\|dive\|take a look\|look\|start)\b` |
 | ordinal-sequencer | sentence-initial *First(ly), … Second(ly), … Finally* as prose list steps | `(?:^\|(?<=[.!?]\s))(?:First(?:ly)?\|Second(?:ly)?\|Third(?:ly)?\|Finally\|Lastly),` |
 
 ### authenticity-stance
@@ -316,9 +316,9 @@ The writer certifying its own sincerity — the strongest lexical signal in curr
 
 | marker | definition | measure |
 |---|---|---|
-| authenticity-word | *actually, genuinely, real, honest(ly), truly* against an implied fake ("what the software actually does") (4.1/1k, 16 docs; *real* is noisy) | built-in `ai_authenticity` (overlaps `tone-markers/stance-adverb` on *actually*) |
-| absolutizer | *every, everyone, entire, never, always, exactly, completely* where hand-written prose hedges (5.2/1k, 18 docs) | built-in `ai_absolutizer` |
-| anti-hype | disavowing hype in its own cadence: "No hype, no magic", "not a wishlist" (0.5/1k, 8 docs) | built-in `ai_anti_hype` |
+| authenticity-word | *actually, genuinely, real, honest(ly), truly* against an implied fake ("what the software actually does") (*real* is noisy) | built-in `ai_authenticity` (overlaps `tone-markers/stance-adverb` on *actually*) |
+| absolutizer | *every, everyone, entire, never, always, exactly, completely* where hand-written prose hedges | built-in `ai_absolutizer` |
+| anti-hype | disavowing hype in its own cadence: "No hype, no magic", "not a wishlist" | built-in `ai_anti_hype` |
 | candor-claim | announced honesty: "An honest maturity check", "we'd rather tell you that up front" | judged |
 
 ### stock-phrasing
@@ -327,9 +327,9 @@ Words, idioms, and templates recurring across models regardless of topic; the si
 
 | marker | definition | measure |
 |---|---|---|
-| buzzword | marketing register: *seamless, robust, leverage, empower, unlock, cutting-edge, delve, …* (1.5/1k, 12 docs; mostly Gemini) | built-in `ai_vocabulary` |
-| trend-word | unfalsifiable change words: *increasingly, rapidly, evolving, transformation, than ever* (2.4/1k, 12 docs) | built-in `ai_trend_word` |
-| spatial-metaphor | the problem as a space to cross: *bridge, gap, silo, friction, barrier* (2.1/1k, 15 docs) | built-in `ai_spatial_metaphor` (noisy) |
-| stock-idiom | a borrowed idiom once or twice per piece: *table stakes, heavy lifting, under the hood, from scratch* (0.9/1k, 14 docs) | built-in `ai_stock_idiom` |
-| same-x | the unity trope "the same X that / as" (0.3/1k, 6 docs) | built-in `ai_same_x` |
-| from-to | "from X to Y" spanning unrelated items or narrating a trajectory (0.6/1k, 10 docs) | built-in `ai_false_range` (noisy) |
+| buzzword | marketing register: *seamless, robust, leverage, empower, unlock, cutting-edge, delve, …* (mostly Gemini output) | built-in `ai_vocabulary` |
+| trend-word | unfalsifiable change words: *increasingly, rapidly, evolving, transformation, than ever* | built-in `ai_trend_word` |
+| spatial-metaphor | the problem as a space to cross: *bridge, gap, silo, friction, barrier* | built-in `ai_spatial_metaphor` (noisy) |
+| stock-idiom | a borrowed idiom once or twice per piece: *table stakes, heavy lifting, under the hood, from scratch* | built-in `ai_stock_idiom` |
+| same-x | the unity trope "the same X that / as" | built-in `ai_same_x` |
+| from-to | "from X to Y" spanning unrelated items or narrating a trajectory | built-in `ai_false_range` (noisy) |
