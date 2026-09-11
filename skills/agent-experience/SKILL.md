@@ -79,9 +79,9 @@ One shared phase spine; the mode selects which phases run and at what depth.
 
 ### Phase 0 — Scope and mode
 
-State the mode you picked, why, and what you will deliver, before doing anything else. If the request is narrower than the mode's full output ("just write an AGENTS.md"), keep the audit phases — generation without audit produces exactly the bloated files this skill exists to prevent — but scale the deliverable to what was asked.
+State the mode you picked, why, what you will deliver, and the agent tools in play — every tool the request names or the repo shows traces of — before doing anything else: Phase 5 projects AGENTS.md to each of them, and a tool mentioned only in the opening request is easily lost by then. If the request is narrower than the mode's full output ("just write an AGENTS.md"), keep the audit phases — generation without audit produces exactly the bloated files this skill exists to prevent — but scale the deliverable to what was asked.
 
-**Done when** the user knows the mode and the planned deliverables.
+**Done when** the user knows the mode, the planned deliverables, and the agent tools in play.
 
 ### Phase 1 — Inventory and classify *(retrofit, improve)*
 
@@ -119,7 +119,7 @@ Load `references/interview.md` (protocol, session mechanics, unattended sessions
 
 Produce the final artifacts:
 
-- **AGENTS.md** per the content model, with its **projections**: the CLAUDE.md import, nested per-package files for monorepos, and a one-line import or pointer at the native location of every other agent tool the user names or the repo shows traces of — never a copied body (`references/agents-md.md`, projections section). Every command in it comes from Phase 2's verified block.
+- **AGENTS.md** per the content model, with its **projections**: the CLAUDE.md import, nested per-package files for monorepos, and a one-line import or pointer at the native location of every other agent tool in play (named in Phase 0) — never a copied body (`references/agents-md.md`, projections section). Every command in it comes from Phase 2's verified block.
 - **Docs nucleus**: the minimal subset from Phase 3's triage, each artifact from its template in `assets/` (named in its `references/docs-structure.md` section). Product-specs and design-docs only where their evidence triggers fired in the triage — never as a per-module dump.
 - **Sensors** per the escalation ladder for the promotion candidates from Phase 1, each with self-correction messages (*error channels are guidance channels*). Doc freshness stays covered by running the skill's own `scripts/check_docs.py` in-session — never copy the script into the repo or wire a copy into CI: a copy stops evolving with the skill and becomes debt, so recurring doc-freshness lands on the Phase 6 roadmap as a re-audit routine, not as an install. Every sensor and command added this session gets cited in AGENTS.md — in the commands section or the definition of done — because an unlisted sensor is one no future session will run.
 
@@ -136,7 +136,7 @@ Run every new or changed sensor and `scripts/check_docs.py` against the final st
 
 Load `references/audit-playbook.md` (Phase 6: proof protocol, claim check, remediation ordering).
 
-**Done when** everything green is proven with captured output, the claim check comes back clean, and the roadmap is delivered.
+**Done when** everything green is proven with captured output, a search of the whole delivered tree for caches and build artifacts your runs created comes back empty, the claim check comes back clean, and the roadmap is delivered.
 
 ## Greenfield specifics
 
@@ -144,7 +144,7 @@ With no code to audit, Phases 1–3 are skipped — after Phase 0 you go straigh
 
 Guide stack and topology decisions by affordances and push for a topology commitment (variety reduction — both defined under the control system above). Rigid layered architecture — usually postponed until hundreds of engineers — becomes an *early* prerequisite with agents, because constraints are what allow speed without decay.
 
-Day-one build order — the remediation ordering's first steps in greenfield form (`references/audit-playbook.md`): root map (AGENTS.md + CLAUDE.md projection) → one-command bootstrap and task-runner command surface → in-session sensors → docs nucleus, with `docs/adr/` seeded with the stack/topology decisions from the interview and `docs/product-specs/product-brief.md` holding the interview's intent answers — the one spec greenfield warrants (`references/docs-structure.md`, product specs).
+Day-one build order: root map (AGENTS.md + CLAUDE.md projection) → one-command bootstrap and task-runner command surface → in-session sensors (typecheck, lint with agent-failure-mode rules, fast tests, secrets pre-commit) → docs nucleus (`docs/ARCHITECTURE.md`, `docs/adr/` seeded with the stack/topology decisions from the interview, `docs/exec-plans/`, and `docs/product-specs/product-brief.md` holding the interview's intent answers — the one spec greenfield warrants; per-capability specs come later, spec-first per feature).
 
 Boundary: this skill sets up the AX layer around the user's chosen project scaffolding — it does not generate the application itself. The pull to cross this line is strongest at the end, when a working feature feels like the honest proof that the loop works. It is not: the sensors firing on deliberate failures prove the loop, and a feature silently answers product questions the interview left open. The ceiling is scaffold-level — a smoke-tested placeholder route and an empty, clearly labeled schema stub; no domain logic, no seeded domain data, no working screens.
 
@@ -152,7 +152,7 @@ Boundary: this skill sets up the AX layer around the user's chosen project scaff
 
 Consult is for the light requests: the user wants to understand something about AX, or wants one specific change, and the phase spine would be ceremony. Skip the phases and the Phase 0 announcement — a question deserves an answer, not a preamble.
 
-- **Ground answers in this skill's model.** Explain through the control system and the standards, citing taglines as everywhere else. Load only the reference file that covers the topic (e.g. `references/agents-md.md` for a question about AGENTS.md content) — not the whole set. When the answer is a *document*, route it before you write it: ARCHITECTURE.md is the **structure**, product-specs are the **promises**, design docs are the **strategy**, ADRs are the **reasons**, exec plans are the **work** — so a disputed *what* is a spec and a mechanism agents keep breaking is a design doc, neither an ADR; `references/docs-structure.md` owns the routing. For questions about *this* project, check the actual repo state with targeted searches before answering; never speculate about files you could read.
+- **Ground answers in this skill's model.** Explain through the control system and the standards, citing taglines as everywhere else. Load only the reference file that covers the topic (e.g. `references/agents-md.md` for a question about AGENTS.md content) — not the whole set. When the answer is a *document*, route it before you write it: ARCHITECTURE.md is the **structure**, product-specs are the **promises**, design docs are the **strategy**, ADRs are the **reasons**, exec plans are the **work** — so bug-vs-intended, a disputed behaviour, or a promise that keeps being broken is a product-spec, and a deliberate mechanism agents keep breaking is a design doc, neither an ADR; `references/docs-structure.md` owns the routing. For questions about *this* project, check the actual repo state with targeted searches before answering; never speculate about files you could read.
 - **Targeted changes obey the standards at the scale of the edit.** Every added line passes the litmus test; any command you write down is verified by execution first; each fact lands in its single source of truth, and the CLAUDE.md projection stays a pure `@AGENTS.md` import. What consult never does: inventory, interview, roadmap, readiness score.
 - **Escalate by offer, not by action.** If the question or edit exposes a deeper problem — the file violates *map, not manual*, documented commands don't run, rules have no sensors — name it in a sentence or two and offer improve mode. Don't launch the full workflow uninvited.
 - **Know when you've left consult.** "Write our AGENTS.md" or "restructure our agent docs" is artifact-scale work: that's improve or retrofit, audit included. Say you're switching modes, then switch.

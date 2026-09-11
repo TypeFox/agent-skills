@@ -1,6 +1,7 @@
 ---
-# One decision and why it was made, frozen when made; what the capability is
-# supposed to do *now* is a product-spec (assets/product-spec-template.md).
+# One decision and why it was made, frozen when made. What the capability is
+# supposed to do *now* — the bug-vs-intended adjudicator — is a product-spec
+# (assets/product-spec-template.md).
 # Frontmatter semantics and lifecycle: references/docs-structure.md, Decision
 # records. Only `status` is load-bearing; drop `date` freely.
 status: proposed   # proposed | accepted | superseded — the only field edited after acceptance
