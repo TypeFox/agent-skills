@@ -1,6 +1,6 @@
 # Audit playbook — inventory, verify, distill, assess
 
-The core discipline: **audit before generate**. The repository is the primary interview subject; the human is the secondary one. Everything below feeds Phase 3's drafts and Phase 6's roadmap.
+The core discipline: **audit before generate**. The repository is the primary interview subject; the human is the secondary one. Phases 1–3 below produce the inputs for Phase 3's drafts; the Phase 6 section proves the result and orders the roadmap.
 
 **Scaling with subagents.** On a large repo, parallel read-only research agents compress Phases 1–3: give each a slice shaped like a phase input (inventory checklist, architecture, external documentation, conventions + git archaeology) so the reports feed the phases directly. The one hard rule: a subagent report is prose, not evidence — it states findings with equal confidence whether or not they were checked. Re-verify any subagent claim in-session before it triggers a mutating action (always) or ships as a fact in a doc (spot-check a sample).
 
@@ -40,11 +40,9 @@ Then run the two cross-checks that find the real work:
 - **Claims vs. enforcement.** For every rule stated in docs or agent files: does a sensor enforce it? Prose-only rules are **promotion candidates** — mechanical ones go to lint/structural tests (escalation ladder), judgment-laden ones stay prose but must earn their line.
 - **Enforcement vs. claims.** For every sensor: is it gating or advisory? An ignored advisory sensor is a gap wearing a green badge.
 
-**Done when** the classified inventory (empty cells explicit), gap list, and both cross-check lists exist.
-
 ## Phase 2 — Verification protocol
 
-Ground truth over prose: run everything, in fresh-checkout order, and capture the output as evidence (an agent that merely *reads* the scripts and predicts results has verified nothing — that applies to you, now).
+Ground truth over prose: run everything, in fresh-checkout order, and capture the output — and each exit code, unpiped — as evidence. *Run it, don't read it* binds you from the very first command: an agent that merely reads the scripts and predicts results has verified nothing.
 
 1. **install** (dependency setup, exactly as a fresh clone would)
 2. **build**
@@ -57,17 +55,13 @@ For each: record the exact working invocation, required flags, prerequisite serv
 
 Timings measured in a warm working copy — dependencies installed, caches hot, builds incremental — understate what a fresh clone or agent sandbox pays. Label every timing **warm** or **fresh**; force freshness where it's cheap (a `clean` before the build, which also verifies the clean command); and never extrapolate a number you didn't measure — an invented timing is a fabrication like any other. Where install cost matters, a fresh-clone probe in a temp directory is the honest measurement.
 
-Exit codes are evidence too — capture them unpiped, per *run it, don't read it* (the trap fires on the very first command you run, so hold the standard from the start, not from this section on).
-
 Record along the way:
 
 - **Discrepancies** between documented and actual commands — first-class findings. They seed the fix list, the doc-gardening backlog, and the `check_docs.py` CI check. Repair immediately only when the fix is answer-independent — unambiguous breakage with exactly one correct repair. Anything whose *why* is still open gets a `(to be confirmed)` marker instead: the interview routinely invalidates early repairs, and a repair that needs a rationale you don't have invites inventing one.
 - **Sandbox friction**: network access needed mid-build, credentials, OS assumptions, services that must already be running. Sandboxability gaps are AX gaps — anything the agent needs should stand up inside a coding-agent sandbox without ceremony.
-- **Affordance probes** (they set what the roadmap can reach): Is the language typed — is type checking a free sensor, or is adding types a prerequisite investment? Are module boundaries clean enough to express as import rules? Does a constraining framework provide conventions the agent can lean on? Are build/test tools fast enough for in-session feedback?
+- **Affordance probes** (they set what the roadmap can reach): for each affordance defined in SKILL.md — typed language, constraining framework, fast tooling, expressible boundaries — is it present, or is acquiring it (adding types, cleaning boundaries) a prerequisite investment?
 
-Run `scripts/check_docs.py <repo-root>` over existing agent docs to mechanically catch cited-but-missing commands and paths. Discovery skips gitignored files; pass `--exclude <glob>` for tracked docs that are intentionally broken (test fixtures, example corpora). It exits non-zero if gitignore filtering discarded every doc it found — a gate that silently discovers nothing would otherwise report success forever. (During the audit itself, a repo with no agent docs yet is a normal state, not a failure; on a re-audit of a repo known to have agent docs, add `--require-docs` so docs deleted or renamed outright fail too.) The script runs from the skill against the target repo — never copy it into the repo: a copy stops evolving with the skill.
-
-**Done when** a verified command block exists (exact invocations + timings), backed by captured output, with discrepancies and friction listed.
+Run `scripts/check_docs.py <repo-root>` over existing agent docs to catch dead commands, paths, and pointers mechanically (its module docstring lists every check). Discovery skips gitignored files; pass `--exclude <glob>` for tracked docs that are intentionally broken (test fixtures, example corpora). It exits non-zero if gitignore filtering discarded every doc it found — a gate that silently discovers nothing would otherwise report success forever. (During the audit itself, a repo with no agent docs yet is a normal state, not a failure; on a re-audit of a repo known to have agent docs, add `--require-docs` so docs deleted or renamed outright fail too.)
 
 ## Phase 3 — Distillation heuristics
 
@@ -81,6 +75,16 @@ From the verified inventory, extract exactly the **non-inferable deltas** — wh
 6. **Docs triage.** Map existing documents onto the `docs-structure.md` layout: what moves, what gets indexed, what is stale (Phase 2 evidence), where single-source-of-truth is violated. Propose the *minimal subset* of artifacts this project actually warrants — never the full layout by default. Product-specs and design-docs are evidence-triggered on top of that (rubric in `docs-structure.md`): collect the triggers here — where behavioural truth lives today and what adjudicates bug vs. intended, capabilities with recurring intent questions or agent mistakes, external design history worth rescuing, systems whose deliberate mechanisms agents keep breaking or refactoring away — so Phase 4 can ask the triage questions in `interview.md` with recommendations attached. Spec candidates carry their evidence; a candidate without evidence is not proposed.
 
 Everything uncertain becomes a `(to be confirmed)` marker in the drafts; nothing uncertain ships as fact.
+
+## Phase 6 — Proof protocol and claim check
+
+Run every new or changed sensor and `scripts/check_docs.py` against the final state and fix what fails, with the output captured. Judge each sensor by its output, not its exit code:
+
+- **Prove it can fire** — a deliberate failing input is the cheapest proof — and prove it at every scope the docs claim for it: a gate advertised as covering README.md is proven by a deliberate failure in README.md, not by firing somewhere else. A check that reports success while checking nothing is a false green shipped as a sensor.
+- **Undo each deliberate failure with an explicit edit** and confirm the poison line is gone — never with `git checkout`: docs created this session are untracked, so the revert silently no-ops and the deliberate breakage ships.
+- **Verification litters.** Remove the caches and build artifacts your runs created (`__pycache__/`, `.ruff_cache/`, …) from the delivered copy — and if no `.gitignore` covers them, that gap is itself an AX finding to fix or surface.
+
+Then the **claim check**, over every doc this session wrote or changed and every comment or message written into code or config along the way — a rationale invented for a config line is a fabrication exactly like an invented command. Re-read each as a skeptical reviewer and trace every factual claim to this session's evidence: captured output, a file actually read, or the user's words. Generalizations ("every module has a test file") are verified exhaustively or weakened; commands appear exactly as proven in the delivered copy; anything untraceable is fixed, marked `(to be confirmed)`, or cut. Three claim families reliably slip past self-review because you just wrote what they describe, so they get mechanical treatment: pointers to other content in the same document (a "see X below" with no X below) and claims quantified over a directory ("one test file per `src/` module") are both flagged by `check_docs.py` — every flagged quantifier is enumerated against that directory in-session or rewritten without it — and claims about tooling this session installed are exactly what the sensor-scope proof above tests.
 
 ## Readiness checks (diagnostic, never a target)
 
@@ -104,7 +108,7 @@ Default order, foundational → sophisticated. Each step is small and individual
 1. **Verified command surface + hand-written root AGENTS.md + CLAUDE.md projection.** The map and the verbs. Highest leverage, lowest cost.
 2. **Fast in-session sensors**: typecheck, lint with agent-failure-mode rules, fast tests, secrets scan in pre-commit — each with self-correction messages.
 3. **Boundaries and definition-of-done** in AGENTS.md; CI mirrors the in-session sensors.
-4. **Minimal docs/ nucleus** per the Phase 3 triage (usually `docs/ARCHITECTURE.md` + `docs/adr/` + `docs/exec-plans/`) + a recurring doc-freshness routine (re-run the skill's `check_docs.py` in re-audit sessions; a CI-installable check waits on the checker shipping through a package registry — never copy the script into the repo).
+4. **Minimal docs/ nucleus** per the Phase 3 triage + a recurring doc-freshness routine (re-run the skill's `check_docs.py` in re-audit sessions; a CI-installable check waits on the checker shipping through a package registry — never a copy of the script).
 5. **Structural rules** encoding the layer diagram (dependency-cruiser / ArchUnit / import-linter), plus the new-file-must-live-in-known-structure rule.
 6. **Skills** for the recurring procedures discovered in the audit (how-to-test, review, release, bootstrap).
 7. **Scheduled inferential sensors** (modularity review, security/data review, doc-gardening) and a GC cadence.
