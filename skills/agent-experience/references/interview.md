@@ -13,7 +13,7 @@ The codebase can't answer everything. What only the human holds: intent and road
 
 ## Fact-finding, not preference-polling
 
-Questions investigate **intent, scope, technical architecture, workflow, risk appetite, and org constraints** — never the user's preferences about the AX layer's own design. "Do you want ADRs?", "how long should AGENTS.md be?", "which doc layout do you prefer?", "would you like an ARCHITECTURE.md?" are all forbidden questions: the skill's defaults settle them (the *convention over configuration* standard). If the user volunteers an unprompted preference or a hard constraint, honor it and record it with its rationale (as an ADR) — the skill honors flexibility; it just never solicits it.
+Questions investigate **intent, scope, technical architecture, workflow, risk appetite, and org constraints** — never the user's preferences about the AX layer's own design: "how long should AGENTS.md be?", "which doc layout do you prefer?", "would you like an ARCHITECTURE.md?" are forbidden questions like "would you like ADRs?" (*convention over configuration*, SKILL.md — which also says how a volunteered preference or hard constraint is honored and recorded).
 
 ## Core protocol
 
@@ -31,7 +31,7 @@ Interview **relentlessly** until shared understanding — depth is licensed, not
 - **Group each round by theme** for legibility: commands & environment → boundaries → conventions → quality bars → docs & memory → workflow. The order tracks the dependency structure, so themes usually *are* the rounds — but the round boundary is dependency, and a round mixes themes freely when everything in it is genuinely unblocked.
 - **Progress counter**: `[Round 2 — question 4/6]` keeps the user oriented and fatigue visible; with a batching question tool, embed it in the question text.
 - **Fatigue management**: order by impact; accept "skip / don't know / decide later" and record it as an explicit open question in the target doc — an honest unknown beats a fabricated certainty. Offer to pause; state lives in the draft, so resuming is free.
-- **Write-as-you-go (the critical rule).** Agent statelessness erases anything not captured: every answer lands in its destination file *immediately* — an AGENTS.md line, an ADR, a boundary entry — never in a summary to file later. An interrupted session then resumes exactly where it stopped.
+- **Write-as-you-go (the critical rule — SKILL.md).** Every answer lands in its destination file *immediately* — an AGENTS.md line, an ADR, a boundary entry. An interrupted session then resumes exactly where it stopped.
 
 ## Unattended sessions
 
@@ -57,7 +57,7 @@ Answers that *reject* a recommendation may produce no artifact of their own but 
 
 ## Spec and design-doc triage *(retrofit, improve)*
 
-Product-specs and design-docs are evidence-triggered (the rubric is in `docs-structure.md`), and half the evidence is human-held — these questions gather it. They are product facts, not AX preferences: the user names what is ambiguous, normative, or critical; whether specs exist then follows from the triggers by convention ("would you like specs?" stays forbidden).
+Product-specs and design-docs are evidence-triggered (the rubric is in `docs-structure.md`), and half the evidence is human-held — these questions gather it. They ask for product facts — what is ambiguous, normative, or critical — never whether the user wants specs; existence follows from the triggers by convention.
 
 - **Adjudication**: "When a test fails or behaviour surprises someone, what decides bug vs. intended today?" Recommend from the audit ("I found no in-repo source — it's issue threads and your judgment, correct?"). A durable answer that already exists is routed to, not duplicated; "nothing durable" is the trigger.
 - **Candidates**: "The audit found intent gaps at (X) and (Y) — evidence: (recurring question / agent mistake / criticality). Which of these behaviours matter enough to pin down as a contract now?" Present a ranked shortlist with the evidence attached; accept "none yet" — the change coupling backfills later, and deferred candidates go on the roadmap.
@@ -66,16 +66,16 @@ Product-specs and design-docs are evidence-triggered (the rubric is in `docs-str
 
 ## Greenfield question bank
 
-With no code to audit, the interview leads (phase order 0 → 4 → 5 → 6). Themes in dependency order; every theme is a product or technical fact — none asks how to design the AX layer, which follows from the answers by convention. Ask with a recommended answer wherever the earlier answers imply one.
+With no code to audit, the interview leads. Themes in dependency order, each a product or technical fact; ask with a recommended answer wherever the earlier answers imply one.
 
 **1. Product intent and users** → *product-specs/product-brief.md*
 What is being built, for whom, and what does success look like in 6 months? What's explicitly out of scope for v1? (Recommend nothing here — this is pure discovery; everything else depends on it.)
 
 **2. Stack choice, guided by affordances** → *ADR*
-Which language/framework — and if genuinely open, recommend by affordances: a strongly typed language (type checking as a free sensor), a constraining framework (conventions abstract away whole error classes), fast build/test tooling (feedback-loop speed), good training-data representation ("boring" beats novel). "You said the team knows TypeScript and this is a web dashboard — I'd recommend TypeScript strict mode + [mainstream framework]; agree?"
+Which language/framework — and if genuinely open, recommend by affordances (SKILL.md) plus good training-data representation ("boring" beats novel). "You said the team knows TypeScript and this is a web dashboard — I'd recommend TypeScript strict mode + [mainstream framework]; agree?"
 
 **3. Topology commitment** → *ADR*
-What shape is this system — CLI, service + API, web app, library, data pipeline? Monorepo or single package? Committing narrows what an agent can produce, which is what makes a comprehensive control set achievable — so push for a commitment, and record it.
+What shape is this system — CLI, service + API, web app, library, data pipeline? Monorepo or single package? Committing reduces variety (SKILL.md) — so push for a commitment, and record it.
 
 **4. Module boundaries** → *ARCHITECTURE.md, structural rules*
 What are the 3–6 top-level parts, and which must never depend on which? (Recommend a conventional layering for the chosen topology and let the user correct it.) These lines become import rules on day one, not after the first violation.

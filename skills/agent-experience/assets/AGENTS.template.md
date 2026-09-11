@@ -1,16 +1,10 @@
 <!--
-Drafting scaffold — not boilerplate. Generated AGENTS.md files backfire when
-shipped unedited: study data ties files that only restate what the model
-already infers to *lower* task success at higher cost. This template only
-helps if every line is filled from verified facts (executed commands,
-confirmed conventions) or explicitly marked `(to be confirmed)` for the
-interview. Markers stand for project facts only — commands, boundaries,
-conventions — never for AX design choices.
-Before commit: delete every section that would only restate ecosystem defaults,
+Drafting scaffold, not boilerplate: unedited generated files make agents worse
+(evidence and drafting procedure in references/agents-md.md). Fill every line
+from verified facts or mark it `(to be confirmed)` for the interview; before
+commit, delete every section that would only restate ecosystem defaults,
 delete all <!-- guidance --> comments, and run the litmus test on each
-remaining line: would removing it cause a mistake the agent wouldn't otherwise
-make?
-Target: under 150 lines; 30–50 for a small repo.
+remaining line. Target: under 150 lines; 30–50 for a small repo.
 -->
 
 # (project name)
@@ -76,9 +70,10 @@ Phrase couplings as checkable completion requirements, never hedged advice
 ## Pointers
 
 <!-- The map function: one line each into deeper docs. No summaries. Keep the
-product-specs line only where the repo keeps behaviour specs. -->
+product-specs and design-docs lines only where the repo keeps those docs. -->
 
 - `docs/ARCHITECTURE.md` — module boundaries and layering.
 - `docs/adr/` — do not contradict accepted ADRs: (list key active ones).
 - `docs/exec-plans/` — multi-session work gets a plan in `active/`; move it to `completed/` when done.
 - `docs/product-specs/index.md` — behaviour contracts; a change to intended behaviour updates its spec in the same change.
+- `docs/design-docs/index.md` — design docs with trust labels; a change to a design amends its doc in the same change.
