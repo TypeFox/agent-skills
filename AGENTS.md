@@ -20,15 +20,20 @@ Installing skills for end use is `npx skills add TypeFox/agent-skills` (see READ
 
 ## Why and where
 
-- `skills/<name>/` — one skill per folder: `SKILL.md` (frontmatter `name` matches the folder; `description` states when to trigger *and* when not to), `references/` for detail docs loaded on demand, `evals/evals.json` for eval definitions, optional `assets/` and `scripts/`.
+- `skills/<name>/` — one skill per folder: `SKILL.md` (frontmatter `name` matches the folder; `description` states when to trigger *and* when not to; the body carries the procedure and points to the reference that owns each piece of detail), `references/` for that detail, loaded on demand, `evals/evals.json` for eval definitions, optional `assets/` and `scripts/`.
 - `skills/<name>-workspace/` — gitignored eval output, recreated by skill-evals runs.
 - To create or modify a skill use the skill-creator skill; to measure whether it helps use skill-evals (both installable per README).
 
 ## Conventions
 
 - Every skill ships evals in `evals/evals.json` (missing for ts-code-reviewer; adding them is planned as a standalone task).
-- Skill content defines each jargon term or metaphor once, plainly, at first use — or points to the file that defines it — and every other mention references that definition instead of restating it or leaving the term bare.
 - Python scripts stay stdlib-only so `check_docs.py` runs against any target repo with bare Python 3.8+ — it is run from the skill, never copied into target repos (registry distribution, e.g. PyPI, is a possible later step).
+
+Skill changes mostly fold back findings — from an eval report, a run in another project, or a PR review — and fold-backs have produced the same three faults repeatedly. These rules fence them:
+
+- **One owner per rule, term, and number.** Each rule, threshold, step list, and jargon term is defined once, in one file of the skill, plainly at first use; every other mention points to that file instead of restating it or leaving the term bare. A finding that the agent skipped a rule sharpens the owner line once, with one sentence of rationale — never a second copy in the other files the agent also reads, never added caps or "always/never" on the existing line. A copy is a fork, not emphasis: copies in this repo drifted apart — a 100-line map limit in one file against 150 in another, a four-part message format against five — until a dedupe pass reconciled them (commit "Remove redundancy across SKILL.md, references, and templates").
+- **New content fits the skill it lands in.** Read the whole SKILL.md before editing. A change uses the skill's existing terms — no synonym for a concept the skill already names — and slots into its existing sections, step order, and reference layout; it opens a new section or file only when no existing owner fits. A change to a rule updates its owner and re-reads every pointer to it.
+- **A finding enters as the general rule it instances.** One eval run, one project, or one reviewer's wording is a sample of one. Write the rule the finding is an instance of, with the case as at most a one-line example; if no general rule can be stated yet, hold the finding and list it as held, with the reason, in the commit message so the next fold-back does not re-apply it. Four counters built from one reviewer's phrases, and a rule that classed AI-typical patterns as removals, were reverted as over-fitted to that one draft: on hand-written prose a counter fired more than on the AI corpus, and the rule flagged habits the author's own corpus shows (commit "Mark unvetoed AI rows and re-rate profile rows per register").
 
 ## Boundaries and definition of done
 
@@ -37,6 +42,7 @@ Installing skills for end use is `npx skills add TypeFox/agent-skills` (see READ
 - Done means: the check_docs command above passes locally with output shown, and any changed `SKILL.md` frontmatter still matches its folder name. Run the pytest suite only when a change touches `skills/*/scripts/` — skill scripts are self-contained, so other changes cannot affect them.
 - A new skill ships its `evals/evals.json` in the same PR. A substantive change to an existing skill includes reviewing its `evals/evals.json` in the same change — do the prompts, expected outputs, and assertions still describe the changed behavior? — and updating it where they don't. Only *re-running* evals is a judgment call (they are token-expensive), not a gate; the spec review is cheap and always happens.
 - A behavior change to a script in `skills/*/scripts/` includes matching unit-test updates in the same change.
+- A change to skill content is checked for redundancy and consistency before it is done: grep a distinctive phrase of each added or changed rule across the skill's files and confirm it is stated once (pointers aside), and re-read every number, count, and step order the change touched in each file that mentions it.
 - If reality contradicts this file, fix it in the same change — never silently work around a stale rule.
 
 ## PR conventions
