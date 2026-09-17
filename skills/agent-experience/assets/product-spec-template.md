@@ -1,16 +1,13 @@
 <!--
-One file per capability — a stable feature area (auth, routing, viewport) —
-never per change (change-shaped state belongs in an exec plan). It holds
-*current intended behaviour* and is updated whenever that behaviour changes;
-*why* a behaviour was chosen is one decision with its options — that is an ADR
-(assets/adr-template.md), frozen when made. Create a spec only on an evidence
-trigger (see references/docs-structure.md), never for coverage: N modules →
-N specs is the failure shape, not diligence.
-Content comes from the human (interview answers) and from verified behaviour
-(tests, captured output) — a spec inferred from the code restates the code
-and starts drifting at the next refactor.
-List the file in product-specs/index.md and point AGENTS.md at the index:
-an unrouted spec has no readers. Delete these comments before commit.
+One file per capability — a stable feature area (auth, routing, viewport),
+never per change — holding *current intended behaviour*, updated in the same
+change as the behaviour. When a spec earns its place (evidence triggers, never
+coverage), its routing (product-specs/index.md, pointed at from AGENTS.md) and
+its lifecycle: references/docs-structure.md, Product specs. Content comes from
+the human (interview answers) and from verified behaviour (tests, captured
+output) — never inferred from the code. *Why* a behaviour was chosen is an ADR
+(assets/adr-template.md), frozen when made. Delete these comments before
+commit.
 -->
 
 # (capability name)
@@ -50,9 +47,3 @@ generated reference exists. -->
 
 - (external docs page URL — the user-facing narrative for this capability)
 - (related ADRs, design docs, or specs)
-
-<!-- Lifecycle: this file is the *living* layer — current intended behaviour.
-A change to intended behaviour updates this spec in the same change (the
-definition-of-done coupling in AGENTS.md). When an exec plan completes, its
-durable behavioural deltas merge here; build detail dies with the plan. Why
-the behaviour changed goes to an ADR, not here. -->

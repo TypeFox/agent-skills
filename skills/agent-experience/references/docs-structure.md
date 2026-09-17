@@ -9,7 +9,7 @@ One distinction keeps the record clean: the agent's *intra-session scratchpad* (
 The full layout, for orientation — **propose the minimal subset the project actually warrants, never this tree by default** (the per-artifact table below says when each part earns its place):
 
 ```
-AGENTS.md                     # the ~100-line map (see agents-md.md)
+AGENTS.md                     # the root map (agents-md.md)
 docs/
 ├── ARCHITECTURE.md           # domain structure, package layering, invariants
 ├── design-docs/
@@ -28,7 +28,7 @@ docs/
 └── quality-score.md          # per-domain quality grades, tracked over time
 ```
 
-Everything is indexed and cross-linked; AGENTS.md points into it; CI validates the knowledge base is current and structurally correct (the skill's `check_docs.py` covers the command/path/graph slice when a session runs it); a doc-gardening agent handles semantic staleness.
+The nucleus a retrofit usually warrants is `ARCHITECTURE.md` + `adr/` + `exec-plans/`; everything else earns its place per the table below. Everything is indexed and cross-linked; AGENTS.md points into it; CI validates the knowledge base is current and structurally correct (the skill's `check_docs.py` covers the mechanical slice when a session runs it); a doc-gardening agent handles semantic staleness.
 
 ## Routing a fact to its artifact
 
@@ -53,7 +53,7 @@ The mnemonic: ARCHITECTURE.md is the **structure**, product-specs are the **prom
 |---|---|---|---|
 | **AGENTS.md** | Map + irreducible always-on rules | Always — any repo an agent touches | Every-line litmus test; cited commands verified |
 | **ARCHITECTURE.md** | Where things live, boundaries, layering, invariants | More than a handful of modules, or any monorepo | Update on structural change; back with structural tests so drift is caught mechanically |
-| **design-docs/ + core-beliefs** | Per-system implementation strategy as built — structure, mechanisms, trade-offs, rejected alternatives; operating principles | A design-time trigger fires — the design is contested, spans modules, or carries risk (see the design-docs section); design history worth rescuing | Updated with the design in the same change, amendments dated; index with trust labels; garden regularly |
+| **design-docs/ + core-beliefs** | Per-system implementation strategy as built — structure, mechanisms, trade-offs, rejected alternatives; operating principles | A trigger in the design-docs section fires (at design time, or a rescue at retrofit) — never for symmetry | Updated with the design in the same change, amendments dated; index with trust labels; garden regularly |
 | **adr/** | One decision per file: context, options, decision, consequences | The moment ≥2 people or ≥1 agent make architectural choices, or "why" questions recur | Append-only; supersede, never edit |
 | **exec-plans/** | Multi-session task state: plan, progress log, decision log | Work spanning multiple sessions or context windows | active → completed lifecycle is mandatory GC; small ephemeral plans stay out |
 | **tech-debt-tracker** | Known, tolerated debt with its business rationale | As soon as debt is consciously deferred | Fed by GC agents; pruned on payoff |
@@ -67,24 +67,15 @@ The mnemonic: ARCHITECTURE.md is the **structure**, product-specs are the **prom
 
 **Small-project variant — the Memory Bank pattern.** When even the minimal subset is oversized, a fixed small file set serves as session-start memory: `project-brief.md` (what/for whom), `product-context.md` (why), `system-patterns.md` (architecture), `tech-context.md` (stack, setup, constraints), `active-context.md` (current focus, last decisions, next step), `progress.md`. Operating rules: AGENTS.md instructs the agent to read the bank at session start and update the active files at session end; everything is committed. Known failure mode: **contradictions between the files** — which is why single-source-of-truth and eventual graduation to the structured layout matter. The leanest viable variant is a feature list + progress file + `init.sh`, updated every session.
 
-**Structured task graphs.** Markdown exec-plans suffice for most repos. When work becomes graph-shaped — many interdependent items, multiple agents discovering work — piles of prose give agents "dementia" (yesterday's decision indistinguishable from a three-week-old brainstorm). The fix stays inside the standard structure: give each exec plan (or other graph-shaped artifact) a YAML frontmatter carrying the dependency metadata, and nothing else:
-
-```yaml
----
-depends-on: [other-plan, …]       # filenames of plans that must be completed first
-discovered-from: originating-plan  # provenance when this work surfaced mid-task
----
-```
-
-The plan's filename is its id and its folder is its status — no `id:` or `status:` keys to drift (single source of truth). "Ready work" then becomes computable instead of judged: any plan in `active/` whose `depends-on` entries all sit in `completed/`; a `check_docs.py` rule verifies every referenced plan exists. Keep the vocabulary this small until it hurts — a soft `relates-to:` is the only extension that usually earns itself. Plain GitHub Issues lack these dependency semantics, so pointer-only task memory is weaker than frontmatter in the repo.
+**Structured task graphs.** Markdown exec-plans suffice for most repos. When work becomes graph-shaped — many interdependent items, multiple agents discovering work — piles of prose give agents "dementia" (yesterday's decision indistinguishable from a three-week-old brainstorm). The fix stays inside the standard structure: give each exec plan (or other graph-shaped artifact) a YAML frontmatter carrying the dependency metadata and nothing else — `depends-on` (filenames of plans that must be completed first) and `discovered-from` (provenance when the work surfaced mid-task), as in `assets/exec-plan-template.md`. The plan's filename is its id and its folder is its status — no `id:` or `status:` keys to drift (single source of truth). "Ready work" then becomes computable instead of judged: any plan in `active/` whose `depends-on` entries all sit in `completed/`; a `check_docs.py` rule verifies every referenced plan exists. Keep the vocabulary this small until it hurts — a soft `relates-to:` is the only extension that usually earns itself. Plain GitHub Issues lack these dependency semantics, so pointer-only task memory is weaker than frontmatter in the repo.
 
 ## Plans as first-class artifacts
 
-Complex work gets an execution plan in `docs/exec-plans/active/` (use `assets/exec-plan-template.md`): goal, decomposition, progress log, decision log — so any future session resumes without external context. Completion **moves** the file to `completed/`: history stays greppable, the active set stays small — this move *is* the memory GC, not optional tidying. Lightweight plans for small changes deliberately stay out of the record.
+Complex work gets an execution plan in `docs/exec-plans/active/` (shape: `assets/exec-plan-template.md`), so any future session resumes without external context. Completion **moves** the file to `completed/`: history stays greppable, the active set stays small — this move *is* the memory GC, not optional tidying. Lightweight plans for small changes deliberately stay out of the record.
 
 ## Decision records
 
-The rationale layer of memory. Canonical shape (Nygard; use `assets/adr-template.md`): context → options considered → decision → consequences, one decision per numbered file in `docs/adr/`. **Accepted records are immutable — changing your mind means a new record superseding the old one.** That immutability is precisely what lets an agent distinguish current from stale.
+The rationale layer of memory: Nygard-shape records (`assets/adr-template.md`), one decision per numbered file in `docs/adr/`. **Accepted records are immutable — changing your mind means a new record superseding the old one.** That immutability is precisely what lets an agent distinguish current from stale.
 
 Metadata lives in YAML frontmatter, as in exec plans (the MADR community template standardized the same choice): `status:` (proposed | accepted | superseded), `date:`, and the graph edge `superseded-by:`. Only `status` is load-bearing — `date` is optional and `superseded-by` appears only on superseded records; the record's substance is the decision and its why, not its metadata. ADRs sit flat in `docs/adr/`, so unlike exec plans the status must be a frontmatter field, not a folder — it is the one field edited after acceptance. The lifecycle then becomes checkable: `check_docs.py` verifies every `superseded-by` target exists, that `status: superseded` and `superseded-by:` appear together, and that AGENTS.md points only at accepted ADRs.
 
@@ -116,7 +107,7 @@ A spec must earn three things, and the triage below exists to enforce that:
 
 A retrofit therefore ships **zero to three specs** — each with its audit evidence attached, indexed once any exist — never a per-module dump. *N modules → N specs* is the shape of the failure, not of diligence: it is the BDD-rot trajectory (spec suites died when volume outran their readers) restarted with generation costs near zero and review capacity unchanged. Everything else backfills when its capability is next touched — the change coupling makes that automatic — and deferred candidates go on the roadmap, not into files. The interview questions that gather the human-held half of the evidence are in `interview.md` (spec and design-doc triage).
 
-Per spec (use `assets/product-spec-template.md`): intent (2–4 sentences) → behaviour contract (short testable promises, each citing its enforcing test or marked unverified; a concrete scenario only where behaviour is complex enough to be misread) → deliberately not promised → surface (public symbols by *name* — searchable and rename-tolerant, unlike deep links) → pointers (external doc page, related ADRs). Never: overviews, restated code behaviour, technical design, task lists.
+Shape: `assets/product-spec-template.md`. Never: overviews, restated code behaviour, technical design, task lists.
 
 **The two-specs problem sets the lifecycle.** Once code and tests exist, a detailed parallel description competes with them for authority — so keep in the spec only what code is bad at expressing (intent, promises, non-goals, constraints, the invariants you don't want rediscovered by trial and error) and delete prose that restates what the code already says. When an exec plan completes, its durable behavioural deltas merge into the capability's spec; the build detail dies with the plan. Why the behaviour changed is an ADR, not a spec paragraph.
 
@@ -136,7 +127,7 @@ Greenfield seeds the directory with a single `product-brief.md` — intent, user
 
 Abstain when none fires. A change whose design is obvious gets an exec plan: a doc that says "this is how we will implement it" without trade-offs is an implementation manual, and the code says it better. One decision is an ADR (an "ADR" past a page is a design doc wearing the wrong name); what a capability *promises* is its spec; the steps to build it are its exec plan. Greenfield opens no design doc on day one — the first arrives with the first change that trips a trigger.
 
-**Shape** (use `assets/design-doc-template.md`) — a few pages at most, the mechanism rather than a walkthrough of the code: context and scope (link the spec and the ARCHITECTURE.md entry instead of restating them) → goals and non-goals → the design (components, data flow, key interfaces by *name*, the invariants it relies on) → alternatives considered, with the trade-offs that decided against them → cross-cutting concerns → dated amendments. Every invariant the design states either cites its enforcing sensor or is marked as a promotion candidate — the audit's claims-vs-enforcement check (SKILL.md, Phase 1) applies here too. Prose that restates the code is deleted: the two-specs problem (see the product-specs section) applies to designs as much as to specs.
+**Shape**: `assets/design-doc-template.md` — a few pages at most, the mechanism rather than a walkthrough of the code. Every invariant the design states either cites its enforcing sensor or is marked as a promotion candidate — the audit's claims-vs-enforcement check (SKILL.md, Phase 1) applies here too. Prose that restates the code is deleted: the two-specs problem (see the product-specs section) applies to designs as much as to specs.
 
 **Lifecycle** — the doc is kept true to the design *as built*: the change that alters the design updates its doc in the same change, as a dated amendment rather than a silent rewrite, so a reader can tell the original design from what changed; when an exec plan completes, its durable design deltas merge into the design doc as its behavioural deltas merge into the spec; a design replaced wholesale gets a new doc, and the old one is marked historical. The agent-era addition is the **index with a trust label**: `design-docs/index.md` lists every doc with its verification status — `verified <date>` (checked against actual code behaviour on that date), `unverified` (rescued or aged; not yet checked), `historical` (superseded by reality; kept as design history). Humans infer staleness from style and hallway context; agents can't — the label is what tells a session whether to rely or re-check. Doc-gardening maintains the labels; `check_docs.py` keeps the index's links alive.
 
@@ -154,15 +145,12 @@ A library or framework repo serves **two agent audiences over disjoint channels*
 
 ## Hygiene invariants
 
-1. Single source of truth per fact; pointers everywhere else.
-2. No duplication of the README or of anything a linter already enforces.
-3. Freshness is mechanically checked: link/structure lint in CI, commands, paths, and frontmatter-graph verification (`check_docs.py`), doc-gardening for semantics.
-4. Explicit lifecycle on everything: active/completed for plans, accepted/superseded for ADRs, trust labels and dated amendments on design docs, same-change coupling for product specs and design docs.
-5. Docs merge through review like code; agents may draft, humans (or reviewer agents) adjudicate.
-6. Provenance on anything mirrored from outside.
-7. Stability gradient: the root map changes rarely; detail docs change with the code. Detail-doc bulk is licensed only by an enforced update loop — the steering loop's coupling (SKILL.md) or a doc-gardening cadence; a detailed doc with no loop is drift with a head start.
+1. The AX standards apply to docs/ in full: one source per fact with pointers everywhere else, no duplication of the README or of anything a linter already enforces, freshness checked mechanically (`check_docs.py`, link/structure lint in CI) and semantically by doc-gardening.
+2. Explicit lifecycle on everything: active/completed for plans, accepted/superseded for ADRs, trust labels and dated amendments on design docs, same-change coupling for product specs and design docs.
+3. Docs merge through review like code; agents may draft, humans (or reviewer agents) adjudicate.
+4. Stability gradient: the root map changes rarely; detail docs change with the code. Detail-doc bulk is licensed only by an enforced update loop — the steering loop's coupling (SKILL.md) or a doc-gardening cadence; a detailed doc with no loop is drift with a head start.
 
-**The external-pointer rule.** Link out only where the agent has a fetch path (`gh` CLI for issues/PRs, an MCP connector for the tracker); otherwise the target is invisible and the pointer is dead weight. Pattern: pointer + one-line mirrored summary + provenance link. Never vendor full copies — they drift, and drifted copies actively misinform (see the AX standards).
+**The external-pointer rule** is *repo-local or nonexistent* applied to docs/: link out only where the agent has a fetch path (`gh` CLI for issues/PRs, an MCP connector for the tracker); otherwise pointer + one-line mirrored summary + provenance link, and never a vendored copy (*single source of truth*).
 
 **The cross-repo reference rule.** A file in a sibling repository cited as a plain path (`docs/design-docs/edge-routing.md`) is indistinguishable from a local path: freshness checks fail it — or worse, a same-named local file makes it pass while meaning the wrong file. Write sibling-repo citations as `repo:path` (e.g. `` `sprotty:docs/design-docs/edge-routing.md` ``), naming the repo by its checkout directory name. `check_docs.py` understands the form: it verifies the path inside a sibling checkout (`../repo`) when one exists and skips it otherwise (`--verbose` lists such skips), and the prefix guarantees the reference is never mistaken for a local path. Where no sibling-checkout convention exists, fall back to the external-pointer rule above — a URL plus a one-line mirrored summary.
 

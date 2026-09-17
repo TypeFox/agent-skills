@@ -1,26 +1,12 @@
 <!--
-One file per *system or capability* — the mechanism that delivers a spec's
-promises — never per change (that is an exec plan) and never per module (that
-is the module index in ARCHITECTURE.md). It holds the implementation strategy
-*as built*: the structure, the invariants the design relies on, and the
-alternatives rejected on the way — what stops a future session from
-re-deriving the design from scattered code and getting it subtly wrong, or
-"helpfully" refactoring away a deliberate choice.
-Create one only when a trigger in references/docs-structure.md fires (a
-contested, cross-module, risk-carrying, or plan-outliving design; at retrofit,
-a rescued design or one agents keep breaking). A design that is obvious gets
-an exec plan; one decision is an ADR (assets/adr-template.md) — unless it is
-rescued from outside the repo, in which case it lands here `unverified` until
-checked; what the capability promises is its product spec
-(assets/product-spec-template.md).
-Content comes from the design conversation, the interview, and rescued sources
-with provenance — never from summarizing the code: prose that restates the
-code is redundant on day one and wrong after the next refactor.
-List the file in design-docs/index.md with its trust label — `verified <date>`,
-`unverified`, or `historical` — and point AGENTS.md at the index: an unrouted
-doc has no readers, and an unlabeled one cannot tell a session whether to rely
-on it or re-check. Target: 1–3 pages, a few at most. Delete these comments
-before commit.
+One file per *system or capability* — the implementation strategy *as built*:
+the structure, the invariants the design relies on, and the alternatives
+rejected on the way. When one earns its place (the triggers), how it is routed
+(design-docs/index.md with a trust label, AGENTS.md pointing at the index) and
+its lifecycle: references/docs-structure.md, Design docs. Content comes from
+the design conversation, the interview, and rescued sources with provenance —
+never from summarizing the code. Target: 1–3 pages, a few at most. Delete
+these comments before commit.
 -->
 
 # Design: (system or capability name)
@@ -62,9 +48,7 @@ misread. -->
 <!-- What must stay true after any change, stated as an absolute ("an external
 call never runs inside a transaction"). Each cites the sensor that enforces it
 — a test, lint rule, or structural rule, by a path check_docs.py can verify —
-or is marked as a promotion candidate: an invariant with no sensor is a claim,
-and the steering loop in SKILL.md exists to turn recurring claims into
-sensors. -->
+or is marked as a promotion candidate: an invariant with no sensor is a claim. -->
 
 - (invariant) — enforced by `(test / lint rule / structural rule)`
 - (invariant) — (promotion candidate: no sensor yet)
@@ -97,11 +81,8 @@ doc; mark this one historical in the index. -->
 
 - YYYY-MM-DD: (what changed and why; the ADR or exec plan that drove it)
 
-<!-- Lifecycle: this file describes the design *as built*. A change to the
-design amends it in the same change (the definition-of-done coupling in
-AGENTS.md); when an exec plan completes, its durable design deltas merge here
-as its behavioural deltas merge into the spec, and the build detail dies with
-the plan. The trust label lives in design-docs/index.md and is maintained by
-doc-gardening; check_docs.py verifies that the paths this doc cites exist, not
-that the design is still true — a stale design doc is worse than none,
-because an agent believes it. -->
+<!-- Lifecycle (references/docs-structure.md, Design docs): amended in the same
+change that alters the design; the trust label lives in design-docs/index.md.
+check_docs.py verifies that the paths this doc cites exist, not that the
+design is still true — a stale design doc is worse than none, because an agent
+believes it. -->
