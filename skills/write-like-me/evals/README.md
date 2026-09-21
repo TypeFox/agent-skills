@@ -9,7 +9,7 @@ Six cases, all in the skill's two modes:
 
 | id | name | mode | produces |
 |---|---|---|---|
-| 0 | `missing-profile-stops` | process, no profile | **response text only** |
+| 0 | `missing-profile-asks` | process, no profile | **response text only** |
 | 2 | `process-keeps-structure` | process, default | `.styled.md` + report |
 | 3 | `soft-setting-gates-by-tier` | process, soft | `.styled.md` + report |
 | 4 | `extract-with-tiers` | extract | `profile/jo-style.json` + render |

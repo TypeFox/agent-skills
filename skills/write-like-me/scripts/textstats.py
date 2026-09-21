@@ -49,7 +49,9 @@ Usage
       accepted with a warning: the profile then has no evidence about it. An AI
       row the input shows at the machine's rate, with no profile row under its
       own id or its `covered_by` ids, is marked [no author row]: nothing vetoes
-      it and nothing targets it, so it goes to the manual pass. With --sort-gap or
+      it and nothing targets it, so it goes to the manual pass — unless no profile
+      is loaded at all (an AI-only run), when the marked rows are the removals and
+      --report-table lists them with the machine's rate. With --sort-gap or
       --setting and several files, the first file is the input and every
       column's verdict is judged at its length, so a rewrite that came out
       shorter does not turn the rows it worked `too-short`. A row of the
@@ -769,6 +771,7 @@ def cmd_report_table(args: argparse.Namespace, results: List[Tuple[str, Dict[str
     questions — stay with the writer (processing.md Step 7).
     """
     _, first = results[0]
+    ai_only = not any(db.get("kind") != "ai" for _, db in dbs)
     ai_verdicts = {}
     for _, db in dbs:
         if db.get("kind") != "ai":
@@ -830,22 +833,42 @@ def cmd_report_table(args: argparse.Namespace, results: List[Tuple[str, Dict[str
             cells += [rate, verdict(values[-1], p, first["stats"]) if values[-1] is not None else "-"]
             rows.append((gap_size(values[0], p, first["stats"], verd) or 0.0, cells))
     # Machine-typical AI rows the profile has no row for: neither vetoed nor targets, so they
-    # go to the manual pass with the machine's figures, never into the table as removals.
+    # go to the manual pass with the machine's figures, never into the table as removals —
+    # except with no profile loaded at all, an AI-only run (processing.md, Single-DB runs),
+    # where they are the removals and the table's only rows.
     for p, v, verd in unvetoed_ai_rows(dbs, first, args.register, first["stats"]):
-        manual.append("- {} [no author row]: {} vs. the machine's {} (tier {}, {}); nothing in the "
-                      "profile vetoes or targets it — read its hits"
-                      .format(p["id"], fmt(v), fmt(p.get("rate")), effective_tier(p), verd))
+        if not ai_only:
+            manual.append("- {} [no author row]: {} vs. the machine's {} (tier {}, {}); nothing in the "
+                          "profile vetoes or targets it — read its hits"
+                          .format(p["id"], fmt(v), fmt(p.get("rate")), effective_tier(p), verd))
+            continue
+        values = [measure_pattern(p, r) for _, r in results]
+        rng = p.get("range")
+        cells = [p["id"], "remove", str(effective_tier(p)), "high", fmt(values[0])]
+        if two:
+            cells.append(fmt(values[-1]))
+        cells += ["{} ({})".format(fmt(p.get("rate")),
+                                   "{}–{}".format(fmt(rng[0]), fmt(rng[1])) if rng else "-"),
+                  verdict(values[-1], p, first["stats"]) if values[-1] is not None else "-"]
+        rows.append((gap_size(values[0], p, first["stats"], verd) or 0.0, cells))
+    if ai_only:
+        judged = [(p, p["id"]) for _, db in dbs for p in db.get("patterns", [])
+                  if all(measure_pattern(p, r) is None for _, r in results)]
     rows.sort(key=lambda t: -t[0])
     head = ["pattern", "direction", "tier", "AI evidence", "input"]
     if two:
         head.append("rewritten")
-    head += ["author rate (range)", "verdict"]
+    head += ["machine rate (range)" if ai_only else "author rate (range)", "verdict"]
     sys.stderr.write(
         "report table: measured from {}. Paste it; do not retype a figure, and do not "
         "carry one over from an earlier convergence round. The not-converged, side-effect "
         "and open-question sections are yours to write. The tier column is the effective "
         "tier (the review round's override where set).\n".format(
             " and ".join(n for n, _ in results)))
+    if ai_only:
+        sys.stderr.write(
+            "AI-only run: no profile loaded, so the rows are the machine-typical AI rows, all "
+            "removals, against the machine's rate (processing.md, Single-DB runs).\n")
     if enum:
         sys.stderr.write(
             "[enum] marks a counter that enumerates forms: `match` there covers only the "
@@ -1049,6 +1072,7 @@ def cmd_measure(args: argparse.Namespace) -> int:
     pinned = results[0][1]["stats"] if (args.sort_gap or args.setting) else None
     unvetoed = {p["id"] for p, _, _ in
                 unvetoed_ai_rows(dbs, results[0][1], args.register, pinned or results[0][1]["stats"])}
+    ai_only = not any(db.get("kind") != "ai" for _, db in dbs)
     print("{:<32}".format("stat") + "".join("{:>{w}}".format(n[-width:], w=width + 2) for n in names))
     for key in STATS_HELP:
         print("{:<32}".format(key) + "".join("{:>{w}}".format(fmt(r["stats"][key]), w=width + 2) for _, r in results))
@@ -1061,8 +1085,9 @@ def cmd_measure(args: argparse.Namespace) -> int:
         classified = bool(args.sort_gap or args.setting) and not ai
         print()
         if ai:
-            print("AI DB patterns from {} (machine rates: match = machine-typical; "
-                  "evidence, not rewrite rows)".format(db_path))
+            print("AI DB patterns from {} (machine rates: match = machine-typical; {})".format(
+                db_path, "no profile loaded, so [no author row] = remove row" if ai_only
+                else "evidence, not rewrite rows"))
         else:
             print("DB patterns from {} (measurable ones only)".format(db_path))
         rows = []
@@ -1127,12 +1152,15 @@ def cmd_measure(args: argparse.Namespace) -> int:
                          "of the input's register (three or more measured); the pooled figures are "
                          "the target for no register at all where a habit varies by register")
         if any("[no author row]" in name for _, name, _, _, _, _ in rows):
-            marks.append("[no author row] = machine-typical on the input, and the profile has no row "
+            marks.append("[no author row] = machine-typical on the input; no profile is loaded, so "
+                         "these are the AI-only run's remove rows (processing.md, Single-DB runs)"
+                         if ai_only else
+                         "[no author row] = machine-typical on the input, and the profile has no row "
                          "under this id or its `covered_by` ids: nothing vetoes it and nothing "
                          "targets it, so read its hits for the manual pass")
         for mark in marks:
             print("  " + mark)
-        if not ai:
+        if not ai or ai_only:
             judged = [p for p in db.get("patterns", [])
                       if all(measure_pattern(p, r) is None for _, r in results)]
             if judged:

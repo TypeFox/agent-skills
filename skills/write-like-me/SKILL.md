@@ -1,7 +1,7 @@
 ---
 name: write-like-me
 description: >-
-  Rewrite AI-generated text so it reads in the user's own writing voice, driven by a style profile extracted from the user's hand-written documents — or, on explicit request with named documents, build that profile. Use whenever the user asks to make a draft sound like them, match their style, voice, or tone, "de-AI" or humanize agent-written text, post-process a draft before publishing it under their name, or wants their writing style extracted or profiled from their own posts, emails, or docs — even when they don't say "style". Not for editing content, fixing grammar, writing new text from scratch, or imitating other people's or public authors' voices.
+  Rewrite AI-generated text so it reads in the user's own writing voice, driven by a style profile extracted from the user's hand-written documents — or, on explicit request with named documents, build that profile. Use whenever the user asks to make a draft sound like them, match their style, voice, or tone, "de-AI" or humanize agent-written text (with their profile, or on explicit request without one), post-process a draft before publishing it under their name, polish text they wrote themselves for consistency with their own style, or wants their writing style extracted or profiled from their own posts, emails, or docs — even when they don't say "style". Not for editing content, fixing grammar, writing new text from scratch, or imitating other people's or public authors' voices.
 ---
 
 # Write like me
@@ -16,21 +16,22 @@ Machine-written drafts carry a recognizable voice that is not the user's. This s
 |---|---|---|
 | **process** (default) | any text the user hands over — pasted, or as file paths. Assume it is AI-generated; the task is to make it read like the user | [references/processing.md](references/processing.md) |
 | **extract** | only when the user explicitly asks for their profile to be built or refreshed *and* names the documents to build it from | [references/technique.md](references/technique.md) |
+| **process, AI-only** | only when the user explicitly asks to strip machine habits from a draft without a profile, or without moving it toward any voice — or picks it when asked (step 2 below) | [references/processing.md](references/processing.md), Single-DB runs |
+| **process, profile-only** | only when the user explicitly says the text is their own hand-written work, to be polished for consistency with their profile | [references/processing.md](references/processing.md), Single-DB runs |
 
 Extraction is never implicit. A processing request with no profile does not turn into an extraction, and an extraction request without document pointers ("learn my style", "set this up for me") gets one question back — which documents, by path — and stops there. The skill does not scan disks or guess which files the user wrote: the corpus is the user's claim of authorship, and only the user can make it. Extraction writes the DB; processing only reads it.
 
 ## Before either mode: the profile
 
 1. **Locate.** Use the path the request names, otherwise the default `$HOME/.agents/write-like-me/user-style.json`.
-2. **Missing profile in process mode → stop.** Deliver no rewrite; a rewrite without a profile would be a generic "humanize" pass, which is precisely the caricature this skill exists to avoid. Reply with the path you checked and these instructions, then end the turn:
-   - Gather 8 or more documents you wrote by hand — roughly 6,000 words; blog posts, emails, docs, notes; sole-authored; mixed lengths.
-   - Ask for extraction with the paths, for example: _"write-like-me: extract my style from ~/writing/posts/*.md and ~/writing/emails/*.txt"_. The paths are required.
-   - Review the rendered profile when asked, then repeat the rewrite request.
-   In extract mode a missing file at the default path is the normal starting state; replacing a profile that *is* there has its own rules (technique.md, Step 6) — the short of it is that the old one is never gone.
+2. **Missing profile in process mode → ask, deliver no rewrite.** A rewrite without a profile is a generic "humanize" pass — the caricature this skill exists to avoid — unless the user chooses it knowingly, so reply with the path you checked and this choice, through the agent's built-in question tool where it has one and in the reply otherwise, then end the turn:
+   - **AI-only run** (Modes): the machine's habits come out and nothing of anyone's voice goes in.
+   - **Extract first**: gather 8 or more documents you wrote by hand — roughly 6,000 words; blog posts, emails, docs, notes; sole-authored; mixed lengths. Ask for extraction with the paths, for example: _"write-like-me: extract my style from ~/writing/posts/*.md and ~/writing/emails/*.txt"_ — the paths are required. Review the rendered profile when asked, then repeat the rewrite request.
+   An AI-only run the request already asked for skips steps 1–4. In extract mode a missing file at the default path is the normal starting state; replacing a profile that *is* there has its own rules (technique.md, Step 6) — the short of it is that the old one is never gone.
 3. **Version check.** Run `python3 scripts/styledb.py info PROFILE` (script paths in this file are relative to the skill directory; PROFILE is absolute — see Scripts). Exit 0: proceed. Exit 2: the DB is older than the skill — apply [references/migration.md](references/migration.md) first. Exit 3: the DB is newer than this skill — stop and tell the user to update the skill. A DB with `partial: true` is an unmerged extraction part; refuse it and point at the merge command in technique.md.
 4. **Review status.** `review.status: pending` means the user never confirmed the profile. Proceed, but say so in the report and offer the review round.
 
-**The AI DB.** Processing also reads the skill's own AI style-pattern DB, `data/ai-style-patterns.json` (path relative to the skill directory): its rows are the AI-evidence column of the comparison table, measured in the same run (`--db PROFILE --db data/ai-style-patterns.json`). Give it the same version check (`info`); it must have `kind: ai` and `partial: false`. It ships with the skill and is written by neither mode — if it is missing or fails its checks, the rewrite proceeds with the built-in `ai_*` counters of `scripts/textstats.py` as fallback evidence, and the report says so.
+**The AI DB.** Processing (bar a profile-only run) also reads the skill's own AI style-pattern DB, `data/ai-style-patterns.json` (path relative to the skill directory): its rows are the AI-evidence column of the comparison table, measured in the same run (`--db PROFILE --db data/ai-style-patterns.json`). Give it the same version check (`info`); it must have `kind: ai` and `partial: false`. It ships with the skill and is written by neither mode — if it is missing or fails its checks, the rewrite proceeds with the built-in `ai_*` counters of `scripts/textstats.py` as fallback evidence, and the report says so.
 
 ## Strictness settings (process mode)
 
@@ -60,6 +61,8 @@ The procedure is [references/processing.md](references/processing.md); read it b
 6. **Converge** — re-measure and run `python3 scripts/structure_check.py INPUT REWRITTEN`, with targeted edits until no rewrite row still reads `absent` or `gap` and the structure check has no errors. A non-zero exit is a gate, and every row left outside the range is named in the report with its reason.
 7. **Hand over** — text that lives in this session comes back printed in the reply; a file input gets `<name>.styled.<ext>` beside it, never overwritten unless asked. The report's measured sections are printed by `textstats.py measure INPUT REWRITTEN --db … --report-table` and transcribed from it rather than recalled; a short input gets one line, and the report on request.
 
+A single-DB run (Modes) walks the same spine with one `--db` on the `measure` line; what each step drops is owned by [references/processing.md](references/processing.md), Single-DB runs.
+
 Inputs beyond ~3,000 words, or several documents at once, are processed in section-aligned chunks by subagents that receive the same rule set and the same tone brief; measurement, rules, and convergence stay on the whole document.
 
 ## Extract mode
@@ -87,7 +90,7 @@ All stdlib Python 3.8+, run from the skill directory; `--help` on each. Only the
 
 ## What this skill never does
 
-- Rewrites without a profile, or builds a profile from documents the user did not name.
+- Rewrites without a profile — an AI-only run the user asked for excepted, and it removes without adding — or builds a profile from documents the user did not name.
 - Invents replacement phrasings the profile has no evidence for — the fallback is "remove or flag", not "make something up". A tone request steers among the forms the profile attests; it licenses no new ones. Evidence quotes supply the form, never the words: no clause or sentence is transplanted out of the corpus into a rewrite.
 - Adds, drops, or reorders claims, sections, list items, code, tables, links, or numbers.
 - Treats the subject as the style: no profile pattern is built on a technical term, a product or people's name, a code identifier, or a code example, and a rewrite never replaces one.

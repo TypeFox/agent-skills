@@ -371,14 +371,18 @@ def test_judged_patterns_are_listed_even_though_they_have_no_row(tmp_path, capsy
 
 
 def test_ai_db_judged_patterns_are_not_offered_as_a_reading_list(tmp_path, capsys):
+    # With a profile loaded the AI DB is evidence only; an AI-only run (no profile at all)
+    # reads its judged rows too — see test_ai_only_run_reports_machine_typical_ai_rows_as_removals.
     doc = tmp_path / "draft.md"
     doc.write_text("A draft. " + "More words follow here. " * 60, encoding="utf-8")
+    user = tmp_path / "user.json"
+    user.write_text(json.dumps({"kind": "user", "patterns": []}), encoding="utf-8")
     ai = tmp_path / "ai.json"
     ai.write_text(json.dumps({"kind": "ai", "patterns": [
         {"id": "tone-markers/vagueness", "measurement": "judged", "tier": 1,
          "description": "Judged on the machine side.", "unit": "per_1k_words",
          "rate": 3.0, "range": [0.0, 6.0], "spread": 0.8}]}), encoding="utf-8")
-    assert textstats.main(["measure", str(doc), "--db", str(ai)]) == 0
+    assert textstats.main(["measure", str(doc), "--db", str(user), "--db", str(ai)]) == 0
     assert "read for these" not in capsys.readouterr().out
 
 
@@ -867,3 +871,32 @@ def test_measure_marks_ai_rows_the_profile_has_no_row_for(tmp_path, capsys):
     assert textstats.main(["measure"] + args) == 0
     assert "[no author row]" not in capsys.readouterr().out
 
+
+
+def test_ai_only_run_reports_machine_typical_ai_rows_as_removals(tmp_path, capsys):
+    # No profile loaded at all: an AI-only run (processing.md, Single-DB runs). The machine-typical
+    # AI rows are its remove rows, so the legend says so and --report-table puts them in the
+    # before/after table against the machine's rate — never under the manual pass.
+    doc = tmp_path / "draft.md"
+    doc.write_text("# Title\n\n" + "Why does this matter? Because it does. " * 3
+                   + "More plain words follow here. " * 40, encoding="utf-8")
+    ai = tmp_path / "ai.json"
+    ai.write_text(json.dumps({"kind": "ai", "patterns": [
+        {"id": "reveal-frames/question-answer", "stat": "ai_question_answer", "unit": "per_1k_words",
+         "rate": 5.0, "range": [0.0, 12.0], "spread": 0.7, "tier": 2},
+        {"id": "sentence-rhythm/fragment", "description": "verbless beats, by reading", "tier": 2}]}),
+        encoding="utf-8")
+    args = [str(doc), "--db", str(ai), "--sort-gap"]
+    assert textstats.main(["measure"] + args) == 0
+    out = capsys.readouterr().out
+    assert "reveal-frames/question-answer [no author row]" in out
+    assert "AI-only run's remove rows" in out
+    assert "read for these" in out and "sentence-rhythm/fragment" in out
+    assert textstats.main(["measure"] + args + ["--report-table"]) == 0
+    out = capsys.readouterr().out
+    table, rest = out.split("## Do-not-touch")
+    assert "machine rate (range)" in table
+    assert [l for l in table.splitlines()
+            if l.startswith("| reveal-frames/question-answer | remove | 2 | high |")]
+    assert "[no author row]" not in out
+    assert "- sentence-rhythm/fragment (tier 2)" in rest
