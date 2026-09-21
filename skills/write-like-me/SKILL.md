@@ -80,7 +80,7 @@ Large corpora are split across subagents that each write a partial DB, merged wi
 
 ## Scripts
 
-All stdlib Python 3.8+, run from the skill directory; `--help` on each. Only the `scripts/…` paths are relative to it: resolve the input, the profile, and the output to absolute paths before running, or a relative input is looked for inside the skill folder and the rewrite lands beside the wrong file.
+All stdlib Python 3.8+; `--help` on each. The `scripts/…` and `data/…` paths are relative to the skill directory: prefix them with the base directory shown when the skill loads rather than changing into it, and pass the input, the profile, and the output as absolute paths, or a relative one is resolved against whatever the shell's working directory happens to be and the rewrite lands beside the wrong file.
 
 | script | purpose |
 |---|---|

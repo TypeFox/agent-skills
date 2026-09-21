@@ -126,7 +126,7 @@ Rewrite each document in one pass with the full rule set in view. Rhythm, paragr
 Re-run the identical measurement on the rewritten text, plus the structure check:
 
 ```sh
-python3 scripts/textstats.py measure INPUT.md REWRITTEN.md --db USER_DB.json --sort-gap --setting medium --register article
+python3 scripts/textstats.py measure INPUT.md REWRITTEN.md --db USER_DB.json --db data/ai-style-patterns.json --sort-gap --setting medium --register article
 python3 scripts/structure_check.py INPUT.md REWRITTEN.md
 ```
 
