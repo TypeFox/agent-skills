@@ -1,0 +1,1816 @@
+{
+  "db_version": 1,
+  "kind": "user",
+  "partial": false,
+  "created": "2026-08-28",
+  "tool": "write-like-me",
+  "corpus": {
+    "documents": [
+      {
+        "id": "fs-mocks",
+        "path": "corpus/fs-mocks.md",
+        "date": "2019-04-02",
+        "words": 307,
+        "register": "article",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "email-release",
+        "path": "corpus/email-release.md",
+        "date": "2021-11-15",
+        "words": 183,
+        "register": "email",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "readme-tidy",
+        "path": "corpus/readme-tidy.md",
+        "date": "2020-06-30",
+        "words": 221,
+        "register": "docs",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "conference-talk",
+        "path": "corpus/conference-talk.md",
+        "date": "2022-03-09",
+        "words": 327,
+        "register": "article",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "retro-note",
+        "path": "corpus/retro-note.md",
+        "date": "2023-01-20",
+        "words": 221,
+        "register": "note",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      }
+    ],
+    "total_words": 1259
+  },
+  "review": {
+    "status": "reviewed",
+    "date": "2026-08-28",
+    "reviewer": "Jo (fixture author)"
+  },
+  "patterns": [
+    {
+      "id": "punctuation/em-dash",
+      "dimension": "punctuation",
+      "marker": "em-dash",
+      "description": "Never uses em dashes or double hyphens; an aside goes in parentheses, a consequence or elaboration follows a colon.",
+      "kind": "absence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 0
+        },
+        {
+          "id": "email-release",
+          "count": 0
+        },
+        {
+          "id": "readme-tidy",
+          "count": 0
+        },
+        {
+          "id": "conference-talk",
+          "count": 0
+        },
+        {
+          "id": "retro-note",
+          "count": 0
+        }
+      ],
+      "evidence": [],
+      "regex": "—|(?<=\\S)--(?=\\S)",
+      "instead": [
+        "punctuation/parenthetical-aside",
+        "punctuation/colon-elaboration"
+      ],
+      "rate": 0.0,
+      "spread": 1.0,
+      "range": [
+        0.0,
+        0.0
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "docs",
+        "email",
+        "note"
+      ],
+      "tier": 2,
+      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "punctuation/semicolon",
+      "dimension": "punctuation",
+      "marker": "semicolon",
+      "description": "Never joins clauses with a semicolon; splits into two sentences instead.",
+      "kind": "absence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 0
+        },
+        {
+          "id": "email-release",
+          "count": 0
+        },
+        {
+          "id": "readme-tidy",
+          "count": 0
+        },
+        {
+          "id": "conference-talk",
+          "count": 0
+        },
+        {
+          "id": "retro-note",
+          "count": 0
+        }
+      ],
+      "evidence": [],
+      "regex": ";",
+      "instead": [
+        "sentence-rhythm/short-punch"
+      ],
+      "rate": 0.0,
+      "spread": 1.0,
+      "range": [
+        0.0,
+        0.0
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "docs",
+        "email",
+        "note"
+      ],
+      "tier": 2,
+      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "punctuation/colon-elaboration",
+      "dimension": "punctuation",
+      "marker": "colon-elaboration",
+      "description": "Uses a colon in running prose to introduce the explanation or the consequence of what was just said.",
+      "kind": "presence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 2
+        },
+        {
+          "id": "email-release",
+          "count": 2
+        },
+        {
+          "id": "readme-tidy",
+          "count": 1
+        },
+        {
+          "id": "conference-talk",
+          "count": 2
+        },
+        {
+          "id": "retro-note",
+          "count": 5
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "fs-mocks",
+          "quote": "Here's what those tests actually did: they set up a fake directory tree in memory"
+        },
+        {
+          "doc": "email-release",
+          "quote": "Quick one about the 2.4 release: I've pushed the tag but I haven't published the package yet"
+        },
+        {
+          "doc": "conference-talk",
+          "quote": "Not the fun kind of failure where you laugh it off: the projector showed a stack trace for a full minute"
+        },
+        {
+          "doc": "retro-note",
+          "quote": "The big one: the release took four days instead of one."
+        }
+      ],
+      "regex": ":(?=\\s)",
+      "rate": 9.531,
+      "spread": 1.0,
+      "range": [
+        4.525,
+        22.624
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "docs",
+        "email",
+        "note"
+      ],
+      "tier": 1,
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "punctuation/parenthetical-aside",
+      "dimension": "punctuation",
+      "marker": "parenthetical-aside",
+      "description": "Puts asides, admissions, and small specifics in round brackets inside the sentence.",
+      "kind": "presence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 2
+        },
+        {
+          "id": "email-release",
+          "count": 2
+        },
+        {
+          "id": "readme-tidy",
+          "count": 3
+        },
+        {
+          "id": "conference-talk",
+          "count": 2
+        },
+        {
+          "id": "retro-note",
+          "count": 3
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "fs-mocks",
+          "quote": "All forty-one of them (I counted, because I wanted to be angry at a specific number)."
+        },
+        {
+          "doc": "email-release",
+          "quote": "(I've read it so often I can't see it any more)"
+        },
+        {
+          "doc": "conference-talk",
+          "quote": "(writing it down is how I remember)"
+        },
+        {
+          "doc": "readme-tidy",
+          "quote": "(many mount with noatime, so \"last access\" is really \"last modified\")"
+        }
+      ],
+      "regex": "\\(",
+      "rate": 9.531,
+      "spread": 1.0,
+      "range": [
+        6.116,
+        13.575
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "docs",
+        "email",
+        "note"
+      ],
+      "tier": 1,
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "sentence-rhythm/short-punch",
+      "dimension": "sentence-rhythm",
+      "marker": "short-punch",
+      "description": "A third to a half of sentences have eight words or fewer; short verdict sentences follow longer explanatory ones.",
+      "kind": "presence",
+      "measurement": "counted",
+      "unit": "share_of_sentences",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 1,
+          "rate": 0.536
+        },
+        {
+          "id": "email-release",
+          "count": 1,
+          "rate": 0.333
+        },
+        {
+          "id": "readme-tidy",
+          "count": 1,
+          "rate": 0.333
+        },
+        {
+          "id": "conference-talk",
+          "count": 1,
+          "rate": 0.318
+        },
+        {
+          "id": "retro-note",
+          "count": 1,
+          "rate": 0.412
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "fs-mocks",
+          "quote": "Not the code under test. The mock."
+        },
+        {
+          "doc": "fs-mocks",
+          "quote": "Green is comfortable."
+        },
+        {
+          "doc": "conference-talk",
+          "quote": "It always works fine at my desk."
+        },
+        {
+          "doc": "retro-note",
+          "quote": "Nobody was slacking."
+        }
+      ],
+      "stat": "short_sentence_share",
+      "rate": 0.392,
+      "spread": 1.0,
+      "range": [
+        0.318,
+        0.536
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "docs",
+        "email",
+        "note"
+      ],
+      "tier": 1,
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "sentence-rhythm/one-sentence-paragraph",
+      "dimension": "sentence-rhythm",
+      "marker": "one-sentence-paragraph",
+      "description": "Roughly a quarter of paragraphs are a single sentence, usually the verdict or the turn of the argument.",
+      "kind": "presence",
+      "measurement": "counted",
+      "unit": "share_of_paragraphs",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 0,
+          "rate": 0.0
+        },
+        {
+          "id": "email-release",
+          "count": 1,
+          "rate": 0.333
+        },
+        {
+          "id": "readme-tidy",
+          "count": 1,
+          "rate": 0.143
+        },
+        {
+          "id": "conference-talk",
+          "count": 1,
+          "rate": 0.25
+        },
+        {
+          "id": "retro-note",
+          "count": 1,
+          "rate": 0.286
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "conference-talk",
+          "quote": "It always works fine at my desk."
+        },
+        {
+          "doc": "conference-talk",
+          "quote": "So here's what I've changed for next time, mostly for my own benefit (writing it down is how I remember)."
+        },
+        {
+          "doc": "retro-note",
+          "quote": "Notes from the sprint retro, written up for the people who weren't there (and for me in three months, when I've forgotten why we decided any of this)."
+        }
+      ],
+      "stat": "one_sentence_paragraph_share",
+      "note": "fs-mocks has none; the habit is strongest in shorter pieces.",
+      "rate": 0.189,
+      "spread": 0.8,
+      "range": [
+        0.0,
+        0.333
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "docs",
+        "email",
+        "note"
+      ],
+      "tier": 1,
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "sentence-rhythm/fragment",
+      "dimension": "sentence-rhythm",
+      "marker": "fragment",
+      "description": "Deliberate verbless fragments as verdicts after a full sentence.",
+      "kind": "presence",
+      "measurement": "judged",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 3
+        },
+        {
+          "id": "email-release",
+          "count": 1
+        },
+        {
+          "id": "readme-tidy",
+          "count": 0
+        },
+        {
+          "id": "conference-talk",
+          "count": 2
+        },
+        {
+          "id": "retro-note",
+          "count": 3
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "fs-mocks",
+          "quote": "Not the code under test. The mock."
+        },
+        {
+          "doc": "fs-mocks",
+          "quote": "Twice."
+        },
+        {
+          "doc": "conference-talk",
+          "quote": "Neat lesson. Expensive way to learn it."
+        },
+        {
+          "doc": "retro-note",
+          "quote": "Not a new process. Just saying it out loud, sooner."
+        },
+        {
+          "doc": "email-release",
+          "quote": "Not blocking, but I'd rather we don't ship a release note"
+        }
+      ],
+      "note": "Counted by reading; a regex for verbless sentences was too noisy on imperatives.",
+      "rate": 7.149,
+      "spread": 0.8,
+      "range": [
+        0.0,
+        13.575
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "email",
+        "note"
+      ],
+      "tier": 2,
+      "tier_reason": "judged, not counted",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "connectives/so-initial",
+      "dimension": "connectives",
+      "marker": "so-initial",
+      "description": "Starts the sentence that turns from problem to action with 'So'.",
+      "kind": "presence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 1
+        },
+        {
+          "id": "email-release",
+          "count": 1
+        },
+        {
+          "id": "readme-tidy",
+          "count": 0
+        },
+        {
+          "id": "conference-talk",
+          "count": 1
+        },
+        {
+          "id": "retro-note",
+          "count": 1
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "fs-mocks",
+          "quote": "So I ripped them out."
+        },
+        {
+          "doc": "email-release",
+          "quote": "So two things I'd like from you before I hit publish."
+        },
+        {
+          "doc": "conference-talk",
+          "quote": "So here's what I've changed for next time"
+        },
+        {
+          "doc": "retro-note",
+          "quote": "So we've agreed to do one thing differently"
+        }
+      ],
+      "regex": "(?:^|(?<=[.!?]\\s))So\\b",
+      "rate": 3.177,
+      "spread": 0.8,
+      "range": [
+        0.0,
+        5.464
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "email",
+        "note"
+      ],
+      "tier": 1,
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "connectives/which-means",
+      "dimension": "connectives",
+      "marker": "which-means",
+      "description": "Draws the consequence with 'which means' / 'Which means', often as its own sentence.",
+      "kind": "presence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 1
+        },
+        {
+          "id": "email-release",
+          "count": 0
+        },
+        {
+          "id": "readme-tidy",
+          "count": 1
+        },
+        {
+          "id": "conference-talk",
+          "count": 1
+        },
+        {
+          "id": "retro-note",
+          "count": 1
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "fs-mocks",
+          "quote": "Which means they tested the conversation with the mock, not the behaviour of the code."
+        },
+        {
+          "doc": "readme-tidy",
+          "quote": "Which means you can pipe it into anything."
+        },
+        {
+          "doc": "conference-talk",
+          "quote": "which means one typo at step four kills steps five to eleven"
+        },
+        {
+          "doc": "retro-note",
+          "quote": "Which means nobody looked at it."
+        }
+      ],
+      "regex": "\\b[Ww]hich means\\b",
+      "rate": 3.177,
+      "spread": 0.8,
+      "range": [
+        0.0,
+        4.525
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "docs",
+        "note"
+      ],
+      "tier": 1,
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "voice-and-person/first-singular",
+      "dimension": "voice-and-person",
+      "marker": "first-singular",
+      "description": "Writes as I throughout: own decisions, own mistakes, own counts. Lowest in reference docs, highest in email.",
+      "kind": "presence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 11
+        },
+        {
+          "id": "email-release",
+          "count": 14
+        },
+        {
+          "id": "readme-tidy",
+          "count": 5
+        },
+        {
+          "id": "conference-talk",
+          "count": 19
+        },
+        {
+          "id": "retro-note",
+          "count": 8
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "fs-mocks",
+          "quote": "I've watched it happen. Twice."
+        },
+        {
+          "doc": "email-release",
+          "quote": "my fault, I wrote them up in the PR and forgot to copy them across"
+        },
+        {
+          "doc": "conference-talk",
+          "quote": "I gave a talk last month and the demo failed."
+        },
+        {
+          "doc": "readme-tidy",
+          "quote": "I wrote it because my downloads folder had 3,000 files in it"
+        }
+      ],
+      "regex": "\\b(?:I|I[’']m|I[’']ve|I[’']d|I[’']ll|me|my|mine|myself)\\b",
+      "rate": 45.274,
+      "spread": 1.0,
+      "range": [
+        22.624,
+        76.503
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "docs",
+        "email",
+        "note"
+      ],
+      "tier": 1,
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "voice-and-person/first-plural",
+      "dimension": "voice-and-person",
+      "marker": "first-plural",
+      "description": "Says 'we' only when reporting a decision the team actually took together; otherwise I.",
+      "kind": "presence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 0
+        },
+        {
+          "id": "email-release",
+          "count": 1
+        },
+        {
+          "id": "readme-tidy",
+          "count": 0
+        },
+        {
+          "id": "conference-talk",
+          "count": 0
+        },
+        {
+          "id": "retro-note",
+          "count": 5
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "retro-note",
+          "quote": "So we've agreed to do one thing differently"
+        },
+        {
+          "doc": "email-release",
+          "quote": "I'd rather we don't ship a release note"
+        }
+      ],
+      "regex": "\\b(?:we|we[’']re|we[’']ve|we[’']d|we[’']ll|our|ours|us|ourselves)\\b",
+      "ignore_case": true,
+      "rate": 4.766,
+      "spread": 0.4,
+      "range": [
+        0.0,
+        22.624
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "email",
+        "note"
+      ],
+      "tier": 2,
+      "tier_reason": "present in fewer than 3 documents; fewer than 3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "spelling-lexical/contraction",
+      "dimension": "spelling-lexical",
+      "marker": "contraction",
+      "description": "Contracts freely (it's, I've, doesn't, that's), in every register including docs.",
+      "kind": "presence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 12
+        },
+        {
+          "id": "email-release",
+          "count": 14
+        },
+        {
+          "id": "readme-tidy",
+          "count": 7
+        },
+        {
+          "id": "conference-talk",
+          "count": 13
+        },
+        {
+          "id": "retro-note",
+          "count": 9
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "fs-mocks",
+          "quote": "It's slower, honestly."
+        },
+        {
+          "doc": "readme-tidy",
+          "quote": "It's one file and it needs nothing but Python 3."
+        },
+        {
+          "doc": "email-release",
+          "quote": "I haven't published the package yet"
+        },
+        {
+          "doc": "conference-talk",
+          "quote": "the audience doesn't care whether I typed it"
+        }
+      ],
+      "regex": "\\b\\w+n[’']t\\b|\\b(?:I|it|that|there|here|what|who|we|you|they|let)[’'](?:m|s|re|ve|ll|d)\\b",
+      "ignore_case": true,
+      "rate": 43.685,
+      "spread": 1.0,
+      "range": [
+        31.674,
+        76.503
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "docs",
+        "email",
+        "note"
+      ],
+      "tier": 1,
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "spelling-lexical/british-spelling",
+      "dimension": "spelling-lexical",
+      "marker": "british-spelling",
+      "description": "British spellings: realise, behaviour.",
+      "kind": "presence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 2
+        },
+        {
+          "id": "email-release",
+          "count": 0
+        },
+        {
+          "id": "readme-tidy",
+          "count": 0
+        },
+        {
+          "id": "conference-talk",
+          "count": 1
+        },
+        {
+          "id": "retro-note",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "fs-mocks",
+          "quote": "I realise this isn't a new idea."
+        },
+        {
+          "doc": "fs-mocks",
+          "quote": "not the behaviour of the code"
+        },
+        {
+          "doc": "conference-talk",
+          "quote": "I realise this makes the demo less \"live\""
+        }
+      ],
+      "regex": "\\b(?:realis\\w*|behaviour\\w*|colour\\w*|favourite\\w*|organis\\w*)\\b",
+      "rate": 2.383,
+      "spread": 0.4,
+      "range": [
+        0.0,
+        6.515
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article"
+      ],
+      "tier": 2,
+      "tier_reason": "present in fewer than 3 documents; single register",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "spelling-lexical/favourite-fiddly",
+      "dimension": "spelling-lexical",
+      "marker": "favourite-fiddly",
+      "description": "'Fiddly' is the word for the awkward detail worth a paragraph of its own.",
+      "kind": "presence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 1
+        },
+        {
+          "id": "email-release",
+          "count": 0
+        },
+        {
+          "id": "readme-tidy",
+          "count": 1
+        },
+        {
+          "id": "conference-talk",
+          "count": 0
+        },
+        {
+          "id": "retro-note",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "fs-mocks",
+          "quote": "There's a fiddly bit, and it's Windows."
+        },
+        {
+          "doc": "readme-tidy",
+          "quote": "## the fiddly bits"
+        }
+      ],
+      "regex": "\\bfiddly\\b",
+      "rate": 1.589,
+      "spread": 0.4,
+      "range": [
+        0.0,
+        4.525
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "docs"
+      ],
+      "tier": 2,
+      "tier_reason": "present in fewer than 3 documents; fewer than 3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "spelling-lexical/favourite-the-trick-is",
+      "dimension": "spelling-lexical",
+      "marker": "favourite-the-trick-is",
+      "description": "'The trick is' introduces the one practical move the piece recommends.",
+      "kind": "presence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 1
+        },
+        {
+          "id": "email-release",
+          "count": 0
+        },
+        {
+          "id": "readme-tidy",
+          "count": 0
+        },
+        {
+          "id": "conference-talk",
+          "count": 1
+        },
+        {
+          "id": "retro-note",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "fs-mocks",
+          "quote": "The trick is to notice when the comfort is the problem."
+        },
+        {
+          "doc": "conference-talk",
+          "quote": "The trick is to keep the script visible on screen"
+        }
+      ],
+      "regex": "\\b[Tt]he trick is\\b",
+      "rate": 1.589,
+      "spread": 0.4,
+      "range": [
+        0.0,
+        3.257
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article"
+      ],
+      "tier": 2,
+      "tier_reason": "present in fewer than 3 documents; single register; fewer than 3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "tone-markers/stance-adverb",
+      "dimension": "tone-markers",
+      "marker": "stance-adverb",
+      "description": "'Honestly' and 'actually' mark the admission or the real point, about twice per piece.",
+      "kind": "presence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 2
+        },
+        {
+          "id": "email-release",
+          "count": 1
+        },
+        {
+          "id": "readme-tidy",
+          "count": 0
+        },
+        {
+          "id": "conference-talk",
+          "count": 1
+        },
+        {
+          "id": "retro-note",
+          "count": 2
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "fs-mocks",
+          "quote": "It's slower, honestly."
+        },
+        {
+          "doc": "email-release",
+          "quote": "Tomorrow morning is fine, honestly."
+        },
+        {
+          "doc": "conference-talk",
+          "quote": "but honestly the audience doesn't care whether I typed it"
+        },
+        {
+          "doc": "retro-note",
+          "quote": "I don't, honestly."
+        }
+      ],
+      "regex": "\\b(?:honestly|actually)\\b",
+      "ignore_case": true,
+      "rate": 4.766,
+      "spread": 0.8,
+      "range": [
+        0.0,
+        9.05
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "email",
+        "note"
+      ],
+      "tier": 1,
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "lists/no-lists",
+      "dimension": "lists",
+      "marker": "no-lists",
+      "description": "No bullet lists in articles, emails, or notes; a series is carried in prose ('two things: X and Y').",
+      "kind": "absence",
+      "measurement": "counted",
+      "unit": "count",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 0,
+          "rate": 0.0
+        },
+        {
+          "id": "email-release",
+          "count": 0,
+          "rate": 0.0
+        },
+        {
+          "id": "conference-talk",
+          "count": 0,
+          "rate": 0.0
+        },
+        {
+          "id": "retro-note",
+          "count": 0,
+          "rate": 0.0
+        }
+      ],
+      "evidence": [],
+      "stat": "list_items",
+      "instead": [
+        "punctuation/colon-elaboration"
+      ],
+      "note": "Register-restricted: reference docs (readme-tidy) do use a short bullet list for what the tool won't do. Not measured on the docs register.",
+      "rate": 0.0,
+      "spread": 1.0,
+      "range": [
+        0.0,
+        0.0
+      ],
+      "coverage": 0.8,
+      "registers": [
+        "article",
+        "email",
+        "note"
+      ],
+      "tier": 2,
+      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "lists/bullet-density",
+      "dimension": "lists",
+      "marker": "bullet-density",
+      "description": "In reference docs a short bullet list is fine for a list of things a tool does or doesn't do.",
+      "kind": "presence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "readme-tidy",
+          "count": 3
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "readme-tidy",
+          "quote": "- delete anything (it moves, you delete)"
+        }
+      ],
+      "stat": "list_items_per_1k",
+      "note": "docs register only.",
+      "rate": 13.575,
+      "spread": 1.0,
+      "range": [
+        13.575,
+        13.575
+      ],
+      "coverage": 0.2,
+      "registers": [
+        "docs"
+      ],
+      "tier": 3,
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "opener-closer/opener-incident",
+      "dimension": "opener-closer",
+      "marker": "opener-incident",
+      "description": "Opens on a concrete incident with a time: the build broke, the demo failed, the release is stuck.",
+      "kind": "presence",
+      "measurement": "judged",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 1
+        },
+        {
+          "id": "email-release",
+          "count": 1
+        },
+        {
+          "id": "readme-tidy",
+          "count": 0
+        },
+        {
+          "id": "conference-talk",
+          "count": 1
+        },
+        {
+          "id": "retro-note",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "fs-mocks",
+          "quote": "Last Tuesday the build broke for the third time in a week"
+        },
+        {
+          "doc": "conference-talk",
+          "quote": "I gave a talk last month and the demo failed."
+        },
+        {
+          "doc": "email-release",
+          "quote": "Quick one about the 2.4 release"
+        }
+      ],
+      "rate": 2.383,
+      "spread": 0.6,
+      "range": [
+        0.0,
+        5.464
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "email"
+      ],
+      "tier": 2,
+      "tier_reason": "judged, not counted",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "opener-closer/closer-punch",
+      "dimension": "opener-closer",
+      "marker": "closer-punch",
+      "description": "Ends on a one-line punch or a flat recap in fragments; never a summary paragraph.",
+      "kind": "presence",
+      "measurement": "judged",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 1
+        },
+        {
+          "id": "email-release",
+          "count": 0
+        },
+        {
+          "id": "readme-tidy",
+          "count": 0
+        },
+        {
+          "id": "conference-talk",
+          "count": 1
+        },
+        {
+          "id": "retro-note",
+          "count": 1
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "fs-mocks",
+          "quote": "Anyway. Real files. Temp directory. Retry the cleanup on Windows. That's the whole post."
+        },
+        {
+          "doc": "conference-talk",
+          "quote": "It always works fine at my desk."
+        },
+        {
+          "doc": "retro-note",
+          "quote": "That's it. Short retro, short notes."
+        }
+      ],
+      "rate": 2.383,
+      "spread": 0.6,
+      "range": [
+        0.0,
+        4.525
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "note"
+      ],
+      "tier": 2,
+      "tier_reason": "judged, not counted",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "tone-markers/self-deprecation",
+      "dimension": "tone-markers",
+      "marker": "self-deprecation",
+      "description": "Admits own mistakes plainly, often in a parenthetical.",
+      "kind": "presence",
+      "measurement": "judged",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 2
+        },
+        {
+          "id": "email-release",
+          "count": 1
+        },
+        {
+          "id": "readme-tidy",
+          "count": 0
+        },
+        {
+          "id": "conference-talk",
+          "count": 2
+        },
+        {
+          "id": "retro-note",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "fs-mocks",
+          "quote": "(I counted, because I wanted to be angry at a specific number)"
+        },
+        {
+          "doc": "email-release",
+          "quote": "(my fault, I wrote them up in the PR and forgot to copy them across)"
+        },
+        {
+          "doc": "conference-talk",
+          "quote": "None of this is clever."
+        }
+      ],
+      "rate": 3.971,
+      "spread": 0.6,
+      "range": [
+        0.0,
+        6.515
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "email"
+      ],
+      "tier": 2,
+      "tier_reason": "judged, not counted",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "imagery/gambling-metaphor",
+      "dimension": "imagery",
+      "marker": "gambling-metaphor",
+      "description": "Occasional gambling image for unreliable infrastructure.",
+      "kind": "presence",
+      "measurement": "judged",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 0
+        },
+        {
+          "id": "email-release",
+          "count": 0
+        },
+        {
+          "id": "readme-tidy",
+          "count": 0
+        },
+        {
+          "id": "conference-talk",
+          "count": 1
+        },
+        {
+          "id": "retro-note",
+          "count": 0
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "conference-talk",
+          "quote": "Conference wifi is a coin toss and I'm done betting on it."
+        }
+      ],
+      "note": "Single occurrence; kept at tier 3 as a hint, not a rule.",
+      "rate": 0.794,
+      "spread": 0.2,
+      "range": [
+        0.0,
+        3.058
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article"
+      ],
+      "tier": 3,
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "opener-closer/sign-off",
+      "dimension": "opener-closer",
+      "marker": "sign-off",
+      "description": "Emails end with 'Cheers,' and the first name on its own line.",
+      "kind": "presence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "email-release",
+          "count": 1
+        }
+      ],
+      "evidence": [
+        {
+          "doc": "email-release",
+          "quote": "Cheers,\nJo"
+        }
+      ],
+      "regex": "Cheers,\\s*Jo",
+      "note": "email register only.",
+      "rate": 5.464,
+      "spread": 1.0,
+      "range": [
+        5.464,
+        5.464
+      ],
+      "coverage": 0.2,
+      "registers": [
+        "email"
+      ],
+      "tier": 3,
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "signposting/summary-opener",
+      "dimension": "signposting",
+      "marker": "summary-opener",
+      "description": "Never opens a closing paragraph with 'In conclusion', 'Overall', 'In summary'.",
+      "kind": "absence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 0
+        },
+        {
+          "id": "email-release",
+          "count": 0
+        },
+        {
+          "id": "readme-tidy",
+          "count": 0
+        },
+        {
+          "id": "conference-talk",
+          "count": 0
+        },
+        {
+          "id": "retro-note",
+          "count": 0
+        }
+      ],
+      "evidence": [],
+      "regex": "(?:^|(?<=[.!?]\\s))(?:in conclusion|in summary|to sum up|overall|ultimately|to summarize|in short|all in all)\\b",
+      "ignore_case": true,
+      "instead": [
+        "opener-closer/closer-punch"
+      ],
+      "rate": 0.0,
+      "spread": 1.0,
+      "range": [
+        0.0,
+        0.0
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "docs",
+        "email",
+        "note"
+      ],
+      "tier": 2,
+      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "significance-tails/significance-tail",
+      "dimension": "significance-tails",
+      "marker": "significance-tail",
+      "description": "Never ends a sentence on 'highlighting the importance of'.",
+      "kind": "absence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 0
+        },
+        {
+          "id": "email-release",
+          "count": 0
+        },
+        {
+          "id": "readme-tidy",
+          "count": 0
+        },
+        {
+          "id": "conference-talk",
+          "count": 0
+        },
+        {
+          "id": "retro-note",
+          "count": 0
+        }
+      ],
+      "evidence": [],
+      "regex": "\\b(?:highlight(?:s|ing)?|underscor(?:es|ing)|emphasiz(?:es|ing)|showcas(?:es|ing)|demonstrat(?:es|ing))\\s+(?:the\\s+)?(?:importance|significance|need|value|role|power|potential)\\b",
+      "ignore_case": true,
+      "rate": 0.0,
+      "spread": 1.0,
+      "range": [
+        0.0,
+        0.0
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "docs",
+        "email",
+        "note"
+      ],
+      "tier": 2,
+      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "significance-tails/worth-noting",
+      "dimension": "significance-tails",
+      "marker": "worth-noting",
+      "description": "Never hedges with 'it's worth noting' or 'importantly'.",
+      "kind": "absence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 0
+        },
+        {
+          "id": "email-release",
+          "count": 0
+        },
+        {
+          "id": "readme-tidy",
+          "count": 0
+        },
+        {
+          "id": "conference-talk",
+          "count": 0
+        },
+        {
+          "id": "retro-note",
+          "count": 0
+        }
+      ],
+      "evidence": [],
+      "regex": "\\b(?:it[’']s worth noting|it is worth noting|it[’']s important to note|it is important to note|notably|importantly|crucially)\\b",
+      "ignore_case": true,
+      "instead": [
+        "tone-markers/stance-adverb"
+      ],
+      "rate": 0.0,
+      "spread": 1.0,
+      "range": [
+        0.0,
+        0.0
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "docs",
+        "email",
+        "note"
+      ],
+      "tier": 2,
+      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "connectives/formal-connective",
+      "dimension": "connectives",
+      "marker": "formal-connective",
+      "description": "Never starts a sentence with Additionally, Furthermore, Moreover, However, Therefore.",
+      "kind": "absence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 0
+        },
+        {
+          "id": "email-release",
+          "count": 0
+        },
+        {
+          "id": "readme-tidy",
+          "count": 0
+        },
+        {
+          "id": "conference-talk",
+          "count": 0
+        },
+        {
+          "id": "retro-note",
+          "count": 0
+        }
+      ],
+      "evidence": [],
+      "regex": "(?:^|(?<=[.!?]\\s))(?:additionally|furthermore|moreover|however|therefore|thus|consequently|in addition)\\b",
+      "ignore_case": true,
+      "instead": [
+        "connectives/so-initial",
+        "connectives/which-means"
+      ],
+      "rate": 0.0,
+      "spread": 1.0,
+      "range": [
+        0.0,
+        0.0
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "docs",
+        "email",
+        "note"
+      ],
+      "tier": 2,
+      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "rule-of-three/triad",
+      "dimension": "rule-of-three",
+      "marker": "triad",
+      "description": "Does not stack three coordinated items for rhythm.",
+      "kind": "absence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 0
+        },
+        {
+          "id": "email-release",
+          "count": 0
+        },
+        {
+          "id": "readme-tidy",
+          "count": 0
+        },
+        {
+          "id": "conference-talk",
+          "count": 0
+        },
+        {
+          "id": "retro-note",
+          "count": 0
+        }
+      ],
+      "evidence": [],
+      "regex": "\\b[\\w'’-]+, [\\w'’-]+,? and [\\w'’-]+\\b",
+      "rate": 0.0,
+      "spread": 1.0,
+      "range": [
+        0.0,
+        0.0
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "docs",
+        "email",
+        "note"
+      ],
+      "tier": 2,
+      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    },
+    {
+      "id": "paragraph-openers/era-opener",
+      "dimension": "paragraph-openers",
+      "marker": "era-opener",
+      "description": "Never opens with 'In today's …' scene-setting.",
+      "kind": "absence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": [
+        {
+          "id": "fs-mocks",
+          "count": 0
+        },
+        {
+          "id": "email-release",
+          "count": 0
+        },
+        {
+          "id": "readme-tidy",
+          "count": 0
+        },
+        {
+          "id": "conference-talk",
+          "count": 0
+        },
+        {
+          "id": "retro-note",
+          "count": 0
+        }
+      ],
+      "evidence": [],
+      "regex": "\\b(?:in today[’']s|in the (?:modern|ever-evolving|rapidly)|in an era|in a world where)\\b",
+      "ignore_case": true,
+      "instead": [
+        "opener-closer/opener-incident"
+      ],
+      "rate": 0.0,
+      "spread": 1.0,
+      "range": [
+        0.0,
+        0.0
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "docs",
+        "email",
+        "note"
+      ],
+      "tier": 2,
+      "tier_reason": "counted as absent in the measured documents (partial coverage or small corpus)",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
+    }
+  ]
+}

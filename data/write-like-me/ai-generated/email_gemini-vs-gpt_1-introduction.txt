@@ -1,0 +1,63 @@
+Subject: Potential collaboration on DSL and AI tooling (PoC) - Vanguard Modulytics
+
+Hi TypeFox Team,
+
+My name is Alex, and I'm a Product Owner at Vanguard Modulytics, where we manufacture highly customizable hardware solutions.
+
+I recently attended OCX and really enjoyed the presentations from your team members on Language Engineering and Domain-Specific AI. We are currently looking for ways to offer our customers a more streamlined and intuitive experience when configuring our hardware, and your expertise caught my attention.
+
+We believe a custom Domain-Specific Language (DSL), potentially paired with some form of AI assistance, could be the perfect solution to simplify our users' workflows. We are interested in exploring this with you, ideally starting with a Proof of Concept (PoC) to evaluate the feasibility before committing to a larger rollout.
+
+Would you be available for a brief introductory call sometime next week to discuss if this is a project you'd be interested in taking on?
+
+Best regards,
+Alex
+
+---
+
+Hi Alex,
+
+Thanks for reaching out, and great to hear you enjoyed our talks at OCX!
+
+What you describe sounds very much like the kind of project we work on. We regularly build DSLs around complex domains and combine them with tailored tooling, and we're also doing a lot of work on integrating AI in ways that respect the rules and constraints of the underlying domain.
+
+Starting with a PoC makes a lot of sense. It would give us a chance to understand your hardware configuration model and the workflows you want to improve, then explore what a suitable DSL and AI-assisted experience could look like in practice.
+
+I'd be happy to discuss this with you next week. Feel free to send me a few times that work well for you, and we'll find a suitable slot.
+
+Best,
+Tim
+
+---
+
+Hi Tim,
+
+Thanks for getting back to me so quickly. I'm glad to hear this aligns well with your core expertise.
+
+To give you a little more context ahead of our call: Vanguard Modulytics specializes in modular sensory arrays and motor control units for automated logistics environments. Currently, our customers configure these systems using deeply nested, highly complex JSON files. It is incredibly error-prone because our hardware has strict physical and electrical dependency rules. For example, if a specific optical sensor is set to a high polling frequency, certain power-saving modes on the paired control board become strictly unavailable. We currently catch these logic errors way too late in the deployment cycle, causing frustration and delays.
+
+Our vision is to replace this clunky process with a clean, human-readable DSL embedded in a lightweight web editor. We are particularly interested in the AI angle to help bridge the knowledge gap—ideally, an assistant could suggest valid configuration blocks on the fly and explain in plain English why certain hardware combinations violate our constraints.
+
+I am available for an introductory call next week on Tuesday between 10:00 AM and 2:00 PM CEST, or Wednesday anytime after 1:00 PM CEST. Let me know what works best for you and I will send over a calendar invite.
+
+Looking forward to diving into this.
+
+Best,
+Alex
+
+---
+
+Hi Alex,
+
+Thanks for the additional context. This sounds like an excellent fit for a DSL-based approach. In particular, the dependency rules you describe can be modeled as part of the language and validated immediately while a configuration is being edited, rather than discovering invalid combinations later in the deployment process.
+
+The AI use case is interesting as well. Having a well-defined language and validation model gives the assistant much stronger guardrails: it can help users create configurations and explain constraints, while the underlying tooling remains responsible for determining what is actually valid.
+
+Tuesday at 11:00 AM CEST works well for me. Feel free to send over an invite.
+
+If it's easy to share ahead of the call, a sanitized example of one of your current JSON configurations would also be useful, but there's no need to prepare anything specifically for the meeting.
+
+Looking forward to learning more about the system.
+
+Best,
+Tim

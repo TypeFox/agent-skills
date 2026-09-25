@@ -1,0 +1,4778 @@
+{
+  "db_version": 1,
+  "kind": "ai",
+  "partial": false,
+  "created": "2026-09-09",
+  "tool": "write-like-me",
+  "corpus": {
+    "note": "Maintainers' AI corpus at repo data/write-like-me/ai-generated: 30 machine-generated documents — 22 pieces plus one email thread in eight stage files — (GPT, Claude Fable/Opus/Sonnet/Haiku, Gemini Pro/Flash/Thinking) across five registers. Second extraction, 2026-09-09 (first: 2026-08-31): every document re-read in full; all-star_gemini-flash.md and theia-notebooks_haiku.md were regenerated before this run, so their quotes and counts are new. Vetting is provenance (generator per document, on the maintainers' word); `measure --vet` flags presentations_gemini (ai_vocabulary 24.8/1k) and generating-code_gemini-thinking (label_lead 22.3/1k) as outliers on the machine markers, which is expected of Gemini output and no reason to drop them. The email thread is a two-model roleplay, marked co-authored; the 2026-09-09 review round split it into eight files, one per stage of the conversation (introduction, scoping, kickoff preparation, kickoff recap, UI design and the dev-environment incident, language design, editor polish and AI context, wrap-up), because a compilation kept as one file leaves rows scoped to it at tier 3 (technique.md, Step 1). Register balance: article carries 49% of the words, email 22% in the eight files of one thread; register_weights {article: 4, report: 2, social: 2, abstract: 2, email: 1} set on this finished DB so that no single document defines a fifth of every rate and the three-document registers processing targets most (social, abstract, report) count equally, with article, 13 documents from 7 generators, still the largest share (36%). Weights move `rate` only; range, spread, coverage and tiers stay word-count based (db-schema.md). Judged rows were re-counted under written rules: imperative = one per run of two or more consecutive reader-addressed imperative sentences; repetition = one per anaphora run of three or more consecutive sentences or paragraph openers sharing a frame (question volleys and imperative runs go to their own rows); enthusiasm = one per email reply or social post that opens by praising or validating the previous message, or an exclamatory launch; closer-type = 1 per piece (per post or abstract in a multi-piece file) that ends on a punchline, title echo or call to action; fragment = one per verbless or subjectless prose sentence; candor-claim = one per sentence announcing the text's own honesty. Prompt provenance (plainly- vs. style-prompted) was not recorded at generation time and remains an open item.",
+    "documents": [
+      {
+        "id": "agent-experience-fable",
+        "path": "ai-generated/agent-experience_fable.md",
+        "words": 2044,
+        "register": "article",
+        "generator": "Claude Fable 5",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "allstar-gemini-flash",
+        "path": "ai-generated/all-star_gemini-flash.md",
+        "words": 888,
+        "register": "article",
+        "generator": "Gemini Flash",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "domain-ai-gpt",
+        "path": "ai-generated/domain-ai_gpt.md",
+        "words": 3855,
+        "register": "article",
+        "generator": "GPT",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "domain-ai-sonnet",
+        "path": "ai-generated/domain-ai_sonnet.md",
+        "words": 3461,
+        "register": "article",
+        "generator": "Claude Sonnet",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "email-1-introduction",
+        "path": "ai-generated/email_gemini-vs-gpt_1-introduction.txt",
+        "words": 674,
+        "register": "email",
+        "generator": "Gemini + GPT (two-party roleplay)",
+        "sole_authored": false,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "email-2-scoping",
+        "path": "ai-generated/email_gemini-vs-gpt_2-scoping.txt",
+        "words": 1140,
+        "register": "email",
+        "generator": "Gemini + GPT (two-party roleplay)",
+        "sole_authored": false,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "email-3-kickoff-prep",
+        "path": "ai-generated/email_gemini-vs-gpt_3-kickoff-prep.txt",
+        "words": 763,
+        "register": "email",
+        "generator": "Gemini + GPT (two-party roleplay)",
+        "sole_authored": false,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "email-4-kickoff-recap",
+        "path": "ai-generated/email_gemini-vs-gpt_4-kickoff-recap.txt",
+        "words": 1072,
+        "register": "email",
+        "generator": "Gemini + GPT (two-party roleplay)",
+        "sole_authored": false,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "email-5-ui-and-incident",
+        "path": "ai-generated/email_gemini-vs-gpt_5-ui-and-incident.txt",
+        "words": 1507,
+        "register": "email",
+        "generator": "Gemini + GPT (two-party roleplay)",
+        "sole_authored": false,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "email-6-language-design",
+        "path": "ai-generated/email_gemini-vs-gpt_6-language-design.txt",
+        "words": 1909,
+        "register": "email",
+        "generator": "Gemini + GPT (two-party roleplay)",
+        "sole_authored": false,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "email-7-polish-and-ai-context",
+        "path": "ai-generated/email_gemini-vs-gpt_7-polish-and-ai-context.txt",
+        "words": 2011,
+        "register": "email",
+        "generator": "Gemini + GPT (two-party roleplay)",
+        "sole_authored": false,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "email-8-wrap-up",
+        "path": "ai-generated/email_gemini-vs-gpt_8-wrap-up.txt",
+        "words": 686,
+        "register": "email",
+        "generator": "Gemini + GPT (two-party roleplay)",
+        "sole_authored": false,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "generating-code-gemini",
+        "path": "ai-generated/generating-code_gemini-thinking.md",
+        "words": 628,
+        "register": "article",
+        "generator": "Gemini (thinking)",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "langium-governance-opus",
+        "path": "ai-generated/langium-governance_opus.md",
+        "words": 1292,
+        "register": "article",
+        "generator": "Claude Opus",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "langium-llvm-fable",
+        "path": "ai-generated/langium-llvm_fable.md",
+        "words": 1211,
+        "register": "article",
+        "generator": "Claude Fable 5",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "linkedin-gemini",
+        "path": "ai-generated/linkedin-posts_gemini.md",
+        "words": 572,
+        "register": "social",
+        "generator": "Gemini",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "linkedin-gpt",
+        "path": "ai-generated/linkedin-posts_gpt.md",
+        "words": 1169,
+        "register": "social",
+        "generator": "GPT",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "linkedin-opus",
+        "path": "ai-generated/linkedin-posts_opus.md",
+        "words": 1268,
+        "register": "social",
+        "generator": "Claude Opus",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "lionweb-sonnet",
+        "path": "ai-generated/lionweb-langium_sonnet.md",
+        "words": 1820,
+        "register": "article",
+        "generator": "Claude Sonnet",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "monaco-opus",
+        "path": "ai-generated/monaco-languageclient_opus.md",
+        "words": 1464,
+        "register": "article",
+        "generator": "Claude Opus",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "parser-performance-gpt",
+        "path": "ai-generated/parser-performance_gpt.md",
+        "words": 1630,
+        "register": "article",
+        "generator": "GPT",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "presentations-gemini",
+        "path": "ai-generated/presentations_gemini.md",
+        "words": 524,
+        "register": "abstract",
+        "generator": "Gemini",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "presentations-gpt",
+        "path": "ai-generated/presentations_gpt.md",
+        "words": 1123,
+        "register": "abstract",
+        "generator": "GPT",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "presentations-sonnet",
+        "path": "ai-generated/presentations_sonnet.md",
+        "words": 897,
+        "register": "abstract",
+        "generator": "Claude Sonnet",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "software-business-gemini",
+        "path": "ai-generated/software-business_gemini.md",
+        "words": 702,
+        "register": "report",
+        "generator": "Gemini",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "software-business-gpt",
+        "path": "ai-generated/software-business_gpt.md",
+        "words": 3521,
+        "register": "report",
+        "generator": "GPT",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "software-business-sonnet",
+        "path": "ai-generated/software-business_sonnet.md",
+        "words": 2767,
+        "register": "report",
+        "generator": "Claude Sonnet",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "textual-graphical-gpt",
+        "path": "ai-generated/textual-graphical_gpt.md",
+        "words": 1264,
+        "register": "article",
+        "generator": "GPT",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "theia-haiku",
+        "path": "ai-generated/theia-notebooks_haiku.md",
+        "words": 1229,
+        "register": "article",
+        "generator": "Claude Haiku",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      },
+      {
+        "id": "vscode-extension-gemini-pro",
+        "path": "ai-generated/vscode-extension_gemini-pro.md",
+        "words": 779,
+        "register": "article",
+        "generator": "Gemini Pro",
+        "sole_authored": true,
+        "vetting": "confirmed"
+      }
+    ],
+    "total_words": 43870,
+    "register_weights": {
+      "article": 4,
+      "report": 2,
+      "social": 2,
+      "abstract": 2,
+      "email": 1
+    }
+  },
+  "review": {
+    "status": "reviewed",
+    "date": "2026-09-09",
+    "reviewer": "Miro Spönemann (TypeFox maintainers)"
+  },
+  "patterns": [
+    {
+      "id": "punctuation/em-dash",
+      "dimension": "punctuation",
+      "marker": "em-dash",
+      "description": "Uses the em dash as the default heavy punctuation: asides, appositives, pivots, and afterthoughts all hang off a dash.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "em_dash",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 39,
+        "allstar-gemini-flash": 6,
+        "domain-ai-gpt": 11,
+        "domain-ai-sonnet": 49,
+        "email-1-introduction": 1,
+        "email-2-scoping": 3,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 5,
+        "email-5-ui-and-incident": 1,
+        "email-6-language-design": 3,
+        "email-7-polish-and-ai-context": 9,
+        "email-8-wrap-up": 2,
+        "generating-code-gemini": 5,
+        "langium-governance-opus": 11,
+        "langium-llvm-fable": 13,
+        "linkedin-gemini": 1,
+        "linkedin-gpt": 7,
+        "linkedin-opus": 16,
+        "lionweb-sonnet": 38,
+        "monaco-opus": 18,
+        "parser-performance-gpt": 7,
+        "presentations-gemini": 3,
+        "presentations-gpt": 4,
+        "presentations-sonnet": 10,
+        "software-business-gemini": 4,
+        "software-business-gpt": 14,
+        "software-business-sonnet": 35,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 18,
+        "vscode-extension-gemini-pro": 2
+      },
+      "evidence": [
+        {
+          "doc": "agent-experience-fable",
+          "quote": "An agent onboards at the start of every single task — no memory of yesterday, no hallway conversations, no colleague two desks away."
+        },
+        {
+          "doc": "monaco-opus",
+          "quote": "The result was monaco-languageclient — a bridge, and deliberately not much more."
+        },
+        {
+          "doc": "lionweb-sonnet",
+          "quote": "Langium — which we initiated and continue to build — is one of the first serious language workbenches to plug into it."
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "Spacing varies by model (spaced — for Claude/GPT prose, unspaced word—word for Gemini/Haiku).",
+      "rate": 7.926,
+      "spread": 0.933,
+      "range": [
+        0.0,
+        20.879
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "punctuation/em-dash-appositive",
+      "dimension": "punctuation",
+      "marker": "em-dash-appositive",
+      "description": "Relabels the just-said with an em dash plus appositive: a claim, then a dash, then the same thing renamed.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "em_dash_appositive",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 13,
+        "allstar-gemini-flash": 2,
+        "domain-ai-gpt": 6,
+        "domain-ai-sonnet": 16,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 1,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 1,
+        "email-7-polish-and-ai-context": 1,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 3,
+        "langium-llvm-fable": 5,
+        "linkedin-gemini": 1,
+        "linkedin-gpt": 3,
+        "linkedin-opus": 5,
+        "lionweb-sonnet": 14,
+        "monaco-opus": 9,
+        "parser-performance-gpt": 4,
+        "presentations-gemini": 1,
+        "presentations-gpt": 2,
+        "presentations-sonnet": 2,
+        "software-business-gemini": 0,
+        "software-business-gpt": 6,
+        "software-business-sonnet": 10,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 5,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "theia-haiku",
+          "quote": "The tools that matter most to development ecosystems—the platforms and frameworks that organize how millions of developers work—aren't usually built by companies trying to be everything to everyone."
+        },
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "What's missing is the architecture around them — the domain knowledge, interfaces, permissions, validation, evaluation, and user experience that turn probabilistic intelligence into something you can actually run a business on."
+        },
+        {
+          "doc": "monaco-opus",
+          "quote": "Version 10 closes that arc. monaco-languageclient is no longer just a library for LSP integration."
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "",
+      "rate": 2.644,
+      "spread": 0.7,
+      "range": [
+        0.0,
+        7.692
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "covered_by": [
+        "punctuation/em-dash"
+      ]
+    },
+    {
+      "id": "punctuation/semicolon",
+      "dimension": "punctuation",
+      "marker": "semicolon",
+      "description": "Joins clauses with a semicolon occasionally; heavily model-dependent rather than a universal machine habit.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "semicolon",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 14,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 1,
+        "domain-ai-sonnet": 1,
+        "email-1-introduction": 0,
+        "email-2-scoping": 1,
+        "email-3-kickoff-prep": 3,
+        "email-4-kickoff-recap": 2,
+        "email-5-ui-and-incident": 1,
+        "email-6-language-design": 1,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 1,
+        "generating-code-gemini": 1,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 5,
+        "monaco-opus": 3,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 4,
+        "software-business-sonnet": 1,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "agent-experience-fable",
+          "quote": "Prose is for judgment; machines are for rules."
+        },
+        {
+          "doc": "email-3-kickoff-prep",
+          "quote": "Thursday at 10:30 AM CEST works perfectly for our technical kickoff; I will send the calendar invite shortly"
+        }
+      ],
+      "tier": 2,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "11 of 23 documents; Fable output leads at 6.8/1k while most GPT and Gemini documents have none.",
+      "rate": 0.713,
+      "spread": 0.533,
+      "range": [
+        0.0,
+        6.849
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "present in under 60% of the measured documents; fewer than 3 quotes"
+    },
+    {
+      "id": "punctuation/scare-quote",
+      "dimension": "punctuation",
+      "marker": "scare-quote",
+      "description": "Puts coinages and borrowed labels in quotation marks as a distancing device.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "scare_quote",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 4,
+        "allstar-gemini-flash": 1,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 7,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 3,
+        "email-6-language-design": 1,
+        "email-7-polish-and-ai-context": 2,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 1,
+        "langium-governance-opus": 1,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 1,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 1,
+        "presentations-gemini": 1,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 3,
+        "software-business-gemini": 2,
+        "software-business-gpt": 7,
+        "software-business-sonnet": 13,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 1,
+        "vscode-extension-gemini-pro": 2
+      },
+      "evidence": [
+        {
+          "doc": "software-business-sonnet",
+          "quote": "DevOps is being subsumed into \"platform engineering,\""
+        },
+        {
+          "doc": "software-business-gpt",
+          "quote": "[company] already warns of \"AI-accelerated shadow IT\"",
+          "redacted": true
+        },
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "Researchers call the underlying failure mode the \"lethal trifecta\""
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "Counter is noisy (short real quotations count too); confirm hits by reading.",
+      "rate": 1.372,
+      "spread": 0.667,
+      "range": [
+        0.0,
+        4.698
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "sentence-rhythm/one-sentence-paragraph",
+      "dimension": "sentence-rhythm",
+      "marker": "one-sentence-paragraph",
+      "description": "Isolates verdict sentences as one-sentence paragraphs for drama, often several in a row.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "one_sentence_paragraph_share",
+      "unit": "share_of_paragraphs",
+      "documents": {
+        "agent-experience-fable": 0.156,
+        "allstar-gemini-flash": 0.286,
+        "domain-ai-gpt": 0.665,
+        "domain-ai-sonnet": 0.252,
+        "email-1-introduction": 0.556,
+        "email-2-scoping": 0.37,
+        "email-3-kickoff-prep": 0.583,
+        "email-4-kickoff-recap": 0.485,
+        "email-5-ui-and-incident": 0.604,
+        "email-6-language-design": 0.544,
+        "email-7-polish-and-ai-context": 0.584,
+        "email-8-wrap-up": 0.524,
+        "generating-code-gemini": 0.182,
+        "langium-governance-opus": 0.129,
+        "langium-llvm-fable": 0.143,
+        "linkedin-gemini": 0.733,
+        "linkedin-gpt": 0.5,
+        "linkedin-opus": 0.297,
+        "lionweb-sonnet": 0.304,
+        "monaco-opus": 0.152,
+        "parser-performance-gpt": 0.475,
+        "presentations-gemini": 0.0,
+        "presentations-gpt": 0.31,
+        "presentations-sonnet": 0.0,
+        "software-business-gemini": 0.455,
+        "software-business-gpt": 0.527,
+        "software-business-sonnet": 0.765,
+        "textual-graphical-gpt": 0.6,
+        "theia-haiku": 0.25,
+        "vscode-extension-gemini-pro": 0.143
+      },
+      "evidence": [
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "This is not primarily a model problem."
+        },
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "This is not a model problem."
+        },
+        {
+          "doc": "parser-performance-gpt",
+          "quote": "That changes when the language succeeds."
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "Share of prose paragraphs with exactly one sentence; above 0.5 in a third of the corpus.",
+      "rate": 0.39,
+      "spread": 0.933,
+      "range": [
+        0.0,
+        0.765
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "sentence-rhythm/short-punch",
+      "dimension": "sentence-rhythm",
+      "marker": "short-punch",
+      "description": "Follows long explanatory sentences with very short verdict sentences and verbless fragments (\"Useful. Not sufficient.\").",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "short_sentence_share",
+      "unit": "share_of_sentences",
+      "documents": {
+        "agent-experience-fable": 0.157,
+        "allstar-gemini-flash": 0.038,
+        "domain-ai-gpt": 0.394,
+        "domain-ai-sonnet": 0.451,
+        "email-1-introduction": 0.326,
+        "email-2-scoping": 0.308,
+        "email-3-kickoff-prep": 0.306,
+        "email-4-kickoff-recap": 0.241,
+        "email-5-ui-and-incident": 0.305,
+        "email-6-language-design": 0.245,
+        "email-7-polish-and-ai-context": 0.288,
+        "email-8-wrap-up": 0.216,
+        "generating-code-gemini": 0.048,
+        "langium-governance-opus": 0.267,
+        "langium-llvm-fable": 0.185,
+        "linkedin-gemini": 0.25,
+        "linkedin-gpt": 0.133,
+        "linkedin-opus": 0.253,
+        "lionweb-sonnet": 0.035,
+        "monaco-opus": 0.163,
+        "parser-performance-gpt": 0.248,
+        "presentations-gemini": 0.12,
+        "presentations-gpt": 0.111,
+        "presentations-sonnet": 0.0,
+        "software-business-gemini": 0.056,
+        "software-business-gpt": 0.231,
+        "software-business-sonnet": 0.143,
+        "textual-graphical-gpt": 0.179,
+        "theia-haiku": 0.435,
+        "vscode-extension-gemini-pro": 0.143
+      },
+      "evidence": [
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "Useful. Not sufficient."
+        },
+        {
+          "doc": "software-business-gpt",
+          "quote": "It is judgment."
+        },
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "Your domain will not."
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "Share of sentences with <= 8 words; the paired-epigram couplet (\"Adoption is universal. Value is rare.\") is this habit at its most visible.",
+      "rate": 0.203,
+      "spread": 0.967,
+      "range": [
+        0.0,
+        0.451
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "paragraph-openers/negated-opener",
+      "dimension": "paragraph-openers",
+      "marker": "negated-opener",
+      "description": "Opens a piece or paragraph by negating a status quo the reader supposedly assumes. Every LinkedIn post opens this way (1.7 per 1k, 2.8 times the article rate); 2 of 3 reports and 5 of 13 articles.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_negated_opener",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 5,
+        "domain-ai-sonnet": 2,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 1,
+        "email-7-polish-and-ai-context": 1,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 1,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 1,
+        "linkedin-gpt": 3,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 2,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 1,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 1,
+        "textual-graphical-gpt": 3,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "linkedin-gpt",
+          "quote": "Real-time collaboration should not depend on which IDE your team happens to use."
+        },
+        {
+          "doc": "linkedin-opus",
+          "quote": "Real-time collaboration shouldn't stop at the edge of the TypeScript ecosystem."
+        },
+        {
+          "doc": "textual-graphical-gpt",
+          "quote": "Complex domains rarely fit neatly into a single user interface."
+        }
+      ],
+      "tier": 2,
+      "tier_override": 1,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Review round 2026-09-09 (tiers): raised to tier 1 — every LinkedIn post, 2 of 3 reports, 5 of 13 articles."
+      },
+      "note": "",
+      "rate": 0.592,
+      "spread": 0.4,
+      "range": [
+        0.0,
+        2.566
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "present in under 60% of the measured documents"
+    },
+    {
+      "id": "paragraph-openers/imagine-opener",
+      "dimension": "paragraph-openers",
+      "marker": "imagine-opener",
+      "description": "Scene-setting imperatives (Picture, Consider, Imagine) as hooks.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_scene_imperative",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 1,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 3,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 1,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 1,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 1
+      },
+      "evidence": [
+        {
+          "doc": "lionweb-sonnet",
+          "quote": "Picture the tooling you'd actually want for a serious systems or software engineering project"
+        },
+        {
+          "doc": "parser-performance-gpt",
+          "quote": "Consider a language with arithmetic operators such as addition, multiplication, and exponentiation."
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "",
+      "rate": 0.144,
+      "spread": 0.2,
+      "range": [
+        0.0,
+        1.84
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "report"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "connectives/and-but-initial",
+      "dimension": "connectives",
+      "marker": "and-but-initial",
+      "description": "Starts sentences with And or But as the default light connective.",
+      "kind": "presence",
+      "measurement": "counted",
+      "regex": "(?:^|(?<=[.!?]\\s))(?:And|But)\\b",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 5,
+        "allstar-gemini-flash": 1,
+        "domain-ai-gpt": 7,
+        "domain-ai-sonnet": 9,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 1,
+        "email-6-language-design": 1,
+        "email-7-polish-and-ai-context": 3,
+        "email-8-wrap-up": 1,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 4,
+        "langium-llvm-fable": 2,
+        "linkedin-gemini": 1,
+        "linkedin-gpt": 1,
+        "linkedin-opus": 2,
+        "lionweb-sonnet": 2,
+        "monaco-opus": 1,
+        "parser-performance-gpt": 1,
+        "presentations-gemini": 0,
+        "presentations-gpt": 2,
+        "presentations-sonnet": 1,
+        "software-business-gemini": 0,
+        "software-business-gpt": 9,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 4,
+        "theia-haiku": 3,
+        "vscode-extension-gemini-pro": 1
+      },
+      "evidence": [
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "And still: only 23% are scaling agents anywhere in the business."
+        },
+        {
+          "doc": "langium-governance-opus",
+          "quote": "We have no intention of doing that. But *intention* is not a control."
+        },
+        {
+          "doc": "textual-graphical-gpt",
+          "quote": "But there was an important architectural mismatch."
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "",
+      "rate": 1.421,
+      "spread": 0.733,
+      "range": [
+        0.0,
+        3.165
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "connectives/so-initial",
+      "dimension": "connectives",
+      "marker": "so-initial",
+      "description": "Sentence-initial So as a consequence pivot.",
+      "kind": "presence",
+      "measurement": "counted",
+      "regex": "(?:^|(?<=[.!?]\\s))So\\b",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 2,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 1,
+        "email-6-language-design": 1,
+        "email-7-polish-and-ai-context": 3,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 1,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 2,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 1,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 1,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 1,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "monaco-opus",
+          "quote": "So we re-implemented large parts of the VS Code API ourselves"
+        },
+        {
+          "doc": "agent-experience-fable",
+          "quote": "So what does *agent-ready* actually mean?"
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Review round 2026-09-09 (tiers): left at tier 3 — no register above two of three documents."
+      },
+      "note": "2 of 3 posts and 3 of 8 email stages; 3 of 13 articles.",
+      "rate": 0.349,
+      "spread": 0.333,
+      "range": [
+        0.0,
+        1.492
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "connectives/formal-connective",
+      "dimension": "connectives",
+      "marker": "formal-connective",
+      "description": "Sentence-initial However/Furthermore/Moreover — the classic 2023 tell, now nearly gone from strong models.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_connective_opener",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 2,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-1-introduction": 0,
+        "email-2-scoping": 1,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 1,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 1,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 1,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 1
+      },
+      "evidence": [
+        {
+          "doc": "generating-code-gemini",
+          "quote": "However, the business value of a DSL hinges on execution."
+        },
+        {
+          "doc": "allstar-gemini-flash",
+          "quote": "However, ANTLR4 requires a Java runtime to compile grammars."
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "Calibration row: 5 of 23 documents, 0.14/1k overall, and only Gemini-class output. A draft full of these is old-style machine prose, but their absence proves nothing.",
+      "rate": 0.112,
+      "spread": 0.2,
+      "range": [
+        0.0,
+        2.252
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "email",
+        "report"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "voice-and-person/imperative",
+      "dimension": "voice-and-person",
+      "marker": "imperative",
+      "description": "Advice delivered as bare imperative runs (\"Calculate the power budget.\" \"Parse it.\" \"Validate them.\").",
+      "kind": "presence",
+      "measurement": "judged",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 2,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 5,
+        "domain-ai-sonnet": 6,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 2,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 1,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 2,
+        "parser-performance-gpt": 3,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 1,
+        "vscode-extension-gemini-pro": 0,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 0
+      },
+      "evidence": [
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "If an AI-generated program must conform to a grammar, parse it."
+        },
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "Don't tell the model to \"be careful about power consumption.\" Calculate the power budget."
+        },
+        {
+          "doc": "langium-governance-opus",
+          "quote": "**Put your organization's name on it.** Comment on the proposal."
+        },
+        {
+          "doc": "theia-haiku",
+          "quote": "Look for organizations that solve hard problems. Look for sustained investment in quality. Look for genuine ecosystem participation."
+        }
+      ],
+      "tier": 3,
+      "tier_override": 2,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Review round 2026-09-09 (tiers): raised to tier 2 — 7 of 13 articles and 2 of 3 posts; a judged row cannot go higher."
+      },
+      "note": "Judged: one count per run of two or more consecutive reader-addressed imperative sentences or clauses (a numbered advice list counts as one run); single imperatives and 'Let's' forms are not counted. Concentrated in advice-giving pieces. Articles (7 of 13) and LinkedIn posts (2 of 3) only; never in reports, abstracts or the email stages.",
+      "rate": 0.475,
+      "spread": 0.3,
+      "range": [
+        0.0,
+        1.84
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "social"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "tone-markers/deliberate-adverb",
+      "dimension": "tone-markers",
+      "marker": "deliberate-adverb",
+      "description": "Marks every design choice as intended: deliberately, explicitly, by design.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "deliberate_adverb",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 3,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 7,
+        "domain-ai-sonnet": 1,
+        "email-1-introduction": 0,
+        "email-2-scoping": 1,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 2,
+        "email-7-polish-and-ai-context": 3,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 2,
+        "langium-llvm-fable": 3,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 2,
+        "linkedin-opus": 2,
+        "lionweb-sonnet": 2,
+        "monaco-opus": 3,
+        "parser-performance-gpt": 1,
+        "presentations-gemini": 1,
+        "presentations-gpt": 4,
+        "presentations-sonnet": 1,
+        "software-business-gemini": 0,
+        "software-business-gpt": 4,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 1,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "monaco-opus",
+          "quote": "Some are deliberately plain."
+        },
+        {
+          "doc": "presentations-gpt",
+          "quote": "Its deliberately constrained semantic API encodes visual decisions into the design system."
+        },
+        {
+          "doc": "langium-llvm-fable",
+          "quote": "It's a small language, deliberately."
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "",
+      "rate": 1.218,
+      "spread": 0.6,
+      "range": [
+        0.0,
+        3.562
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "tone-markers/quiet-adverb",
+      "dimension": "tone-markers",
+      "marker": "quiet-adverb",
+      "description": "Understated drama via quietly/silently/rarely (\"has quietly become\").",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "quiet_adverb",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 5,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 1,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 1,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 2,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 1,
+        "parser-performance-gpt": 3,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 1,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 2,
+        "theia-haiku": 2,
+        "vscode-extension-gemini-pro": 1
+      },
+      "evidence": [
+        {
+          "doc": "theia-haiku",
+          "quote": "Cobbled-together solutions breed inefficiency, security headaches, and the technical debt that quietly eats engineering productivity."
+        },
+        {
+          "doc": "monaco-opus",
+          "quote": "By then the shape of the project had quietly inverted."
+        },
+        {
+          "doc": "langium-llvm-fable",
+          "quote": "A domain language that experts can write but nobody can debug will quietly lose trust."
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "nuanced",
+        "note": "Review round 2026-09-09 (tiers): scoped to article — 9 of 13 articles show it and no report or post; tier computed inside that scope, third quote added."
+      },
+      "note": "An article habit: 9 of 13 articles (0.83 per 1k), otherwise one abstract and one email stage, no report or post — hence the article scope.",
+      "rate": 0.835,
+      "spread": 0.692,
+      "range": [
+        0.0,
+        2.446
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, single-register corpus (register condition waived), >=3 quotes",
+      "register_scope": [
+        "article"
+      ]
+    },
+    {
+      "id": "tone-markers/enthusiasm",
+      "dimension": "tone-markers",
+      "marker": "enthusiasm",
+      "description": "Relentless enthusiasm and mutual validation in interactive registers: every reply opens by praising the previous message.",
+      "kind": "presence",
+      "measurement": "judged",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 6,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0,
+        "email-1-introduction": 3,
+        "email-2-scoping": 2,
+        "email-3-kickoff-prep": 3,
+        "email-4-kickoff-recap": 2,
+        "email-5-ui-and-incident": 2,
+        "email-6-language-design": 5,
+        "email-7-polish-and-ai-context": 4,
+        "email-8-wrap-up": 2
+      },
+      "evidence": [
+        {
+          "doc": "email-8-wrap-up",
+          "quote": "I am thrilled to report that the leadership presentation yesterday afternoon was an absolute home run."
+        },
+        {
+          "doc": "email-6-language-design",
+          "quote": "You hit the nail on the head regarding the port-based ID assignment."
+        },
+        {
+          "doc": "linkedin-gemini",
+          "quote": "We are thrilled to officially launch our **domain-specific AI services**"
+        },
+        {
+          "doc": "linkedin-gemini",
+          "quote": "Meet **Baukasten**! We've developed a brand-new UI toolkit"
+        }
+      ],
+      "tier": 2,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "Register-bound: email threads and LinkedIn announcements. Judged: one count per email reply that opens by praising or validating the previous message (23 of the thread's 26 messages do, spread over its eight stage files), and per social post launched with an exclamatory announcement (Gemini: every post; GPT: none).",
+      "rate": 2.336,
+      "spread": 0.909,
+      "range": [
+        0.0,
+        10.49
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "email",
+        "social"
+      ],
+      "register_scope": [
+        "email",
+        "social"
+      ],
+      "tier_reason": "judged, not counted"
+    },
+    {
+      "id": "emphasis/clause-bold",
+      "dimension": "emphasis",
+      "marker": "clause-bold",
+      "description": "Bolds whole clauses and thesis sentences mid-prose, not just terms.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "clause_bold",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 12,
+        "allstar-gemini-flash": 7,
+        "domain-ai-gpt": 17,
+        "domain-ai-sonnet": 16,
+        "email-1-introduction": 0,
+        "email-2-scoping": 2,
+        "email-3-kickoff-prep": 4,
+        "email-4-kickoff-recap": 11,
+        "email-5-ui-and-incident": 8,
+        "email-6-language-design": 10,
+        "email-7-polish-and-ai-context": 14,
+        "email-8-wrap-up": 3,
+        "generating-code-gemini": 8,
+        "langium-governance-opus": 5,
+        "langium-llvm-fable": 4,
+        "linkedin-gemini": 6,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 7,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 9,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 4,
+        "software-business-gpt": 36,
+        "software-business-sonnet": 13,
+        "textual-graphical-gpt": 1,
+        "theia-haiku": 8,
+        "vscode-extension-gemini-pro": 1
+      },
+      "evidence": [
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "**The model may decide which permitted operation is useful. The surrounding software decides what is actually allowed.**"
+        },
+        {
+          "doc": "agent-experience-fable",
+          "quote": "one standard governs it all: **every fact traces to a source**"
+        },
+        {
+          "doc": "parser-performance-gpt",
+          "quote": "**a grammar is not only a language specification. It is also an executable data-processing architecture.**"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "",
+      "rate": 3.888,
+      "spread": 0.8,
+      "range": [
+        0.0,
+        12.739
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "covered_by": [
+        "emphasis/bold"
+      ]
+    },
+    {
+      "id": "emphasis/repetition",
+      "dimension": "emphasis",
+      "marker": "repetition",
+      "description": "Deliberate anaphora runs: the same frame repeated three to seven times in consecutive sentences or paragraphs.",
+      "kind": "presence",
+      "measurement": "judged",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 7,
+        "domain-ai-sonnet": 7,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 3,
+        "langium-llvm-fable": 2,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 2,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 2,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 1,
+        "theia-haiku": 3,
+        "vscode-extension-gemini-pro": 0,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 0
+      },
+      "evidence": [
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "A parser is a grader. A compiler is a grader. A type checker is a grader."
+        },
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "Models will change. Prices will change. Providers will change."
+        },
+        {
+          "doc": "textual-graphical-gpt",
+          "quote": "Sometimes that interface is primarily textual. Sometimes it is graphical."
+        },
+        {
+          "doc": "theia-haiku",
+          "quote": "Not as a plugin. Not as an experimental feature. As a first-class citizen in the platform."
+        }
+      ],
+      "tier": 3,
+      "tier_override": 2,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Review round 2026-09-01: raised from tier 3 to tier 2 by the maintainers. Re-confirmed in both 2026-09-09 rounds; 7 of 13 articles carry it."
+      },
+      "note": "Judged: one count per anaphora run of three or more consecutive sentences (or consecutive paragraph openers) sharing an opening frame or predicate; question volleys and imperative runs are counted on their own rows. Re-counted in the 2026-09-09 extraction under this rule, which finds more runs than the first reading did. Articles (7 of 13) and one report; none in posts, abstracts or the email stages.",
+      "rate": 0.474,
+      "spread": 0.267,
+      "range": [
+        0.0,
+        2.441
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "report"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "lists/label-led-item",
+      "dimension": "lists",
+      "marker": "label-led-item",
+      "description": "Opens list items and paragraphs with a bold label plus colon or period.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "label_lead",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 8,
+        "allstar-gemini-flash": 9,
+        "domain-ai-gpt": 6,
+        "domain-ai-sonnet": 6,
+        "email-1-introduction": 0,
+        "email-2-scoping": 16,
+        "email-3-kickoff-prep": 13,
+        "email-4-kickoff-recap": 8,
+        "email-5-ui-and-incident": 13,
+        "email-6-language-design": 14,
+        "email-7-polish-and-ai-context": 11,
+        "email-8-wrap-up": 3,
+        "generating-code-gemini": 14,
+        "langium-governance-opus": 6,
+        "langium-llvm-fable": 7,
+        "linkedin-gemini": 3,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 6,
+        "monaco-opus": 3,
+        "parser-performance-gpt": 1,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 10,
+        "software-business-gpt": 3,
+        "software-business-sonnet": 13,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 11,
+        "vscode-extension-gemini-pro": 8
+      },
+      "evidence": [
+        {
+          "doc": "generating-code-gemini",
+          "quote": "**Readable Generator Logic:** Indenting templates to match generator control flow"
+        },
+        {
+          "doc": "theia-haiku",
+          "quote": "**The bundling nightmare:** Every notebook extension ships its own copy of a full text editor."
+        },
+        {
+          "doc": "agent-experience-fable",
+          "quote": "**Map, not manual.** Keep it a compact map"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "",
+      "rate": 3.017,
+      "spread": 0.767,
+      "range": [
+        0.0,
+        22.293
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "headings/colon-heading",
+      "dimension": "headings",
+      "marker": "colon-heading",
+      "description": "Titles and headings in Hook: Subtitle form.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "colon_heading_share",
+      "unit": "share_of_headings",
+      "documents": {
+        "agent-experience-fable": 0.0,
+        "allstar-gemini-flash": 0.333,
+        "domain-ai-gpt": 0.071,
+        "domain-ai-sonnet": 0.071,
+        "email-1-introduction": 0.0,
+        "email-2-scoping": 0.0,
+        "email-3-kickoff-prep": 0.0,
+        "email-4-kickoff-recap": 0.0,
+        "email-5-ui-and-incident": 0.0,
+        "email-6-language-design": 0.0,
+        "email-7-polish-and-ai-context": 0.0,
+        "email-8-wrap-up": 0.0,
+        "generating-code-gemini": 0.571,
+        "langium-governance-opus": 0.143,
+        "langium-llvm-fable": 0.286,
+        "linkedin-gemini": 0.0,
+        "linkedin-gpt": 0.333,
+        "linkedin-opus": 0.333,
+        "lionweb-sonnet": 0.7,
+        "monaco-opus": 0.545,
+        "parser-performance-gpt": 0.125,
+        "presentations-gemini": 0.667,
+        "presentations-gpt": 1.0,
+        "presentations-sonnet": 1.0,
+        "software-business-gemini": 0.5,
+        "software-business-gpt": 0.091,
+        "software-business-sonnet": 0.357,
+        "textual-graphical-gpt": 0.0,
+        "theia-haiku": 0.143,
+        "vscode-extension-gemini-pro": 0.571
+      },
+      "evidence": [
+        {
+          "doc": "presentations-sonnet",
+          "quote": "One Protocol, Any IDE: Bringing Real-Time Collaboration to [product] and Beyond",
+          "redacted": true
+        },
+        {
+          "doc": "theia-haiku",
+          "quote": "The Notebook Problem: Why Your Custom IDE Needs It, and How to Get It Right"
+        },
+        {
+          "doc": "generating-code-gemini",
+          "quote": "The Formatting Dilemma: Maintainability vs. Artifact Cleanliness"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "",
+      "rate": 0.339,
+      "spread": 0.633,
+      "range": [
+        0.0,
+        1.0
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "headings/heading-case",
+      "dimension": "headings",
+      "marker": "heading-case",
+      "description": "Title Case headings; strongly model-split rather than universal.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "heading_title_case_share",
+      "unit": "share_of_headings",
+      "documents": {
+        "agent-experience-fable": 0.0,
+        "allstar-gemini-flash": 0.778,
+        "domain-ai-gpt": 0.071,
+        "domain-ai-sonnet": 0.071,
+        "email-1-introduction": 0.0,
+        "email-2-scoping": 0.0,
+        "email-3-kickoff-prep": 0.0,
+        "email-4-kickoff-recap": 0.0,
+        "email-5-ui-and-incident": 0.0,
+        "email-6-language-design": 0.0,
+        "email-7-polish-and-ai-context": 0.0,
+        "email-8-wrap-up": 0.0,
+        "generating-code-gemini": 1.0,
+        "langium-governance-opus": 0.0,
+        "langium-llvm-fable": 0.0,
+        "linkedin-gemini": 0.0,
+        "linkedin-gpt": 0.0,
+        "linkedin-opus": 0.0,
+        "lionweb-sonnet": 0.1,
+        "monaco-opus": 0.0,
+        "parser-performance-gpt": 0.125,
+        "presentations-gemini": 0.5,
+        "presentations-gpt": 0.833,
+        "presentations-sonnet": 1.0,
+        "software-business-gemini": 1.0,
+        "software-business-gpt": 0.045,
+        "software-business-sonnet": 0.714,
+        "textual-graphical-gpt": 0.0,
+        "theia-haiku": 1.0,
+        "vscode-extension-gemini-pro": 0.857
+      },
+      "evidence": [
+        {
+          "doc": "theia-haiku",
+          "quote": "The Hidden Workflow Everyone's Missing"
+        },
+        {
+          "doc": "generating-code-gemini",
+          "quote": "Architecting Scalable Code Generation for Domain-Specific Languages: An Enterprise Perspective"
+        }
+      ],
+      "tier": 2,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "Bimodal: Gemini/Haiku/GPT-report output near 1.0, Claude/GPT article output at 0.",
+      "rate": 0.293,
+      "spread": 0.467,
+      "range": [
+        0.0,
+        1.0
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "report"
+      ],
+      "tier_reason": "present in under 60% of the measured documents; fewer than 3 quotes"
+    },
+    {
+      "id": "opener-closer/closer-type",
+      "dimension": "opener-closer",
+      "marker": "closer-type",
+      "description": "Closes pieces on a detachable punchline, a title echo, or a call to action rather than a summary.",
+      "kind": "presence",
+      "measurement": "judged",
+      "unit": "count",
+      "documents": {
+        "agent-experience-fable": 1.0,
+        "allstar-gemini-flash": 1.0,
+        "domain-ai-gpt": 1.0,
+        "domain-ai-sonnet": 1.0,
+        "generating-code-gemini": 0.0,
+        "langium-governance-opus": 1.0,
+        "langium-llvm-fable": 1.0,
+        "linkedin-gemini": 6.0,
+        "linkedin-gpt": 5.0,
+        "linkedin-opus": 6.0,
+        "lionweb-sonnet": 1.0,
+        "monaco-opus": 1.0,
+        "parser-performance-gpt": 1.0,
+        "presentations-gemini": 1.0,
+        "presentations-gpt": 5.0,
+        "presentations-sonnet": 3.0,
+        "software-business-gemini": 0.0,
+        "software-business-gpt": 1.0,
+        "software-business-sonnet": 0.0,
+        "textual-graphical-gpt": 1.0,
+        "theia-haiku": 1.0,
+        "vscode-extension-gemini-pro": 0.0,
+        "email-1-introduction": 0.0,
+        "email-2-scoping": 0.0,
+        "email-3-kickoff-prep": 0.0,
+        "email-4-kickoff-recap": 0.0,
+        "email-5-ui-and-incident": 0.0,
+        "email-6-language-design": 0.0,
+        "email-7-polish-and-ai-context": 0.0,
+        "email-8-wrap-up": 0.0
+      },
+      "evidence": [
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "That is domain-specific AI."
+        },
+        {
+          "doc": "linkedin-opus",
+          "quote": "Early-stage proof of concept, fully open. Come break it."
+        },
+        {
+          "doc": "monaco-opus",
+          "quote": "Issues, pull requests and awkward questions are all welcome — the awkward ones especially."
+        },
+        {
+          "doc": "presentations-gpt",
+          "quote": "Pair programming gets more interesting when the third chair is occupied by an AI."
+        }
+      ],
+      "tier": 2,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "Judged; 1 per piece whose final lines show the habit, and in a multi-piece file (the LinkedIn and abstract collections) 1 per post or abstract that does. The 2023-era recap-summary closer is absent from this corpus; Gemini's report and tutorial pieces and the email thread trail off without one.",
+      "rate": 2.083,
+      "spread": 0.6,
+      "range": [
+        0.0,
+        6.0
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "report",
+        "social"
+      ],
+      "tier_reason": "judged, not counted",
+      "covered_by": [
+        "tone-markers/invitation-form"
+      ]
+    },
+    {
+      "id": "spelling-lexical/contraction",
+      "dimension": "spelling-lexical",
+      "marker": "contraction",
+      "description": "Contracts freely in conversational output; fully uncontracted in formal report output — a bimodal register/model split.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "contraction",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 24,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 68,
+        "email-1-introduction": 8,
+        "email-2-scoping": 20,
+        "email-3-kickoff-prep": 3,
+        "email-4-kickoff-recap": 15,
+        "email-5-ui-and-incident": 21,
+        "email-6-language-design": 25,
+        "email-7-polish-and-ai-context": 32,
+        "email-8-wrap-up": 3,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 21,
+        "linkedin-gemini": 9,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 15,
+        "lionweb-sonnet": 46,
+        "monaco-opus": 17,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 2,
+        "presentations-gpt": 5,
+        "presentations-sonnet": 13,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 8,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 38,
+        "vscode-extension-gemini-pro": 3
+      },
+      "evidence": [
+        {
+          "doc": "monaco-opus",
+          "quote": "If you'd rather hear how a library that once sat in maintenance mode became shared infrastructure"
+        },
+        {
+          "doc": "lionweb-sonnet",
+          "quote": "That's not a wishlist."
+        },
+        {
+          "doc": "langium-llvm-fable",
+          "quote": "what happens to these files once they're written?"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "14 of 23 documents; zero in every GPT/Gemini report-register document, up to 25/1k in Claude articles. The split itself is the signal.",
+      "rate": 7.929,
+      "spread": 0.7,
+      "range": [
+        0.0,
+        30.919
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "spelling-lexical/hyphen-compound",
+      "dimension": "spelling-lexical",
+      "marker": "hyphen-compound",
+      "description": "Coins hyphenated modifiers freely: IDE-grade, theme-aware, editor-centric, outcome-priced.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "hyphen_compound",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 5,
+        "allstar-gemini-flash": 1,
+        "domain-ai-gpt": 7,
+        "domain-ai-sonnet": 6,
+        "email-1-introduction": 1,
+        "email-2-scoping": 1,
+        "email-3-kickoff-prep": 2,
+        "email-4-kickoff-recap": 1,
+        "email-5-ui-and-incident": 4,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 3,
+        "email-8-wrap-up": 1,
+        "generating-code-gemini": 4,
+        "langium-governance-opus": 1,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 2,
+        "linkedin-gpt": 3,
+        "linkedin-opus": 3,
+        "lionweb-sonnet": 4,
+        "monaco-opus": 2,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 3,
+        "presentations-gpt": 7,
+        "presentations-sonnet": 7,
+        "software-business-gemini": 6,
+        "software-business-gpt": 6,
+        "software-business-sonnet": 11,
+        "textual-graphical-gpt": 5,
+        "theia-haiku": 2,
+        "vscode-extension-gemini-pro": 2
+      },
+      "evidence": [
+        {
+          "doc": "linkedin-gpt",
+          "quote": "Baukasten is designed for the dense, tool-heavy interfaces we regularly build"
+        },
+        {
+          "doc": "presentations-sonnet",
+          "quote": "extension authors lost their only theme-aware component set"
+        },
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "AI-ready architecture is usually just good architecture, made explicit."
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "",
+      "rate": 3.075,
+      "spread": 0.9,
+      "range": [
+        0.0,
+        8.547
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "covered_by": [
+        "spelling-lexical/compound-spelling",
+        "spelling-lexical/based-compound"
+      ]
+    },
+    {
+      "id": "spelling-lexical/hedged-number",
+      "dimension": "spelling-lexical",
+      "marker": "hedged-number",
+      "description": "Precise figures behind vagueness hedges: roughly 87%, approximately 20%.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "hedged_number",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 3,
+        "allstar-gemini-flash": 3,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 1,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 3,
+        "linkedin-opus": 2,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 6,
+        "presentations-gemini": 0,
+        "presentations-gpt": 1,
+        "presentations-sonnet": 2,
+        "software-business-gemini": 3,
+        "software-business-gpt": 5,
+        "software-business-sonnet": 16,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "software-business-sonnet",
+          "quote": "roughly 20–56% on well-scoped work"
+        },
+        {
+          "doc": "agent-experience-fable",
+          "quote": "Ona merged roughly 87% of changes without human involvement"
+        },
+        {
+          "doc": "parser-performance-gpt",
+          "quote": "this approach improved parsing performance by roughly 25% for a language consisting primarily of expressions"
+        }
+      ],
+      "tier": 3,
+      "tier_override": 2,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Review round 2026-09-09 (tiers): raised to tier 2, the pre-split tier — every report, 2 of 3 posts and 2 of 3 abstracts; third quote added."
+      },
+      "note": "Every report (3 of 3, 3.4 per 1k), 2 of 3 posts and 2 of 3 abstracts; only 3 of 13 articles and 1 email stage.",
+      "rate": 1.352,
+      "spread": 0.367,
+      "range": [
+        0.0,
+        5.782
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "content-conventions/source-as-agent",
+      "dimension": "content-conventions",
+      "marker": "source-as-agent",
+      "description": "Institutions as agents of reporting verbs, usually unlinked: an analyst firm cautions, a consultancy explicitly says.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "source_as_agent",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 3,
+        "domain-ai-sonnet": 1,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 1,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 1,
+        "software-business-gemini": 0,
+        "software-business-gpt": 15,
+        "software-business-sonnet": 2,
+        "textual-graphical-gpt": 1,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "software-business-gpt",
+          "quote": "[company] explicitly says skilled talent and agility now join cost reduction as major outsourcing drivers",
+          "redacted": true
+        },
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "[company] describes an agent in similarly architectural terms",
+          "redacted": true
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Review round 2026-09-09 (tiers): left at tier 3 — 2 of 3 reports is thin evidence."
+      },
+      "note": "Counter is noisy (people as subjects count too); concentrated in report register. Report-concentrated: 2 of 3 reports at 2.4 per 1k, elsewhere sparse.",
+      "rate": 0.685,
+      "spread": 0.3,
+      "range": [
+        0.0,
+        4.26
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "content-conventions/term-introduction",
+      "dimension": "content-conventions",
+      "marker": "term-introduction",
+      "description": "Introduces terms by spelling them out and appending the acronym in parentheses; most parentheses serve this, not asides.",
+      "kind": "presence",
+      "measurement": "counted",
+      "regex": "\\((?:[A-Z][a-z]?){2,}s?\\)",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 1,
+        "allstar-gemini-flash": 4,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-1-introduction": 3,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 1,
+        "generating-code-gemini": 2,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 1,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 3,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 6,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 1,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "software-business-gemini",
+          "quote": "growing at a compound annual growth rate (CAGR) of 11.5%"
+        },
+        {
+          "doc": "generating-code-gemini",
+          "quote": "driving up Mean Time to Recovery (MTTR)"
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Review round 2026-09-09 (tiers): left at tier 3 — 2 of 3 reports is thin evidence."
+      },
+      "note": "Strongest in Gemini/GPT enterprise prose. Report-concentrated: 2 of 3 reports at 1.0 per 1k, elsewhere sparse.",
+      "rate": 0.612,
+      "spread": 0.3,
+      "range": [
+        0.0,
+        8.547
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "content-conventions/arrow-pipeline",
+      "dimension": "content-conventions",
+      "marker": "arrow-pipeline",
+      "description": "Inline arrow chains as compressed process diagrams: intent → generation → validation → repair.",
+      "kind": "presence",
+      "measurement": "counted",
+      "regex": "→|──+>",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 3,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 6,
+        "domain-ai-sonnet": 6,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 6,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 2,
+        "email-7-polish-and-ai-context": 10,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "**intent → generation → validation → repair → verified result**"
+        },
+        {
+          "doc": "email-4-kickoff-recap",
+          "quote": "natural-language intent → DSL proposal → parse → validate → repair if necessary → present result"
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "",
+      "rate": 0.421,
+      "spread": 0.2,
+      "range": [
+        0.0,
+        5.597
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "email"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "content-conventions/emoji-bullet",
+      "dimension": "content-conventions",
+      "marker": "emoji-bullet",
+      "description": "Emoji as bullet markers and decoration in social-media register.",
+      "kind": "presence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 20,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 3,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "linkedin-gemini",
+          "quote": "✅ Prompt the agent together"
+        },
+        {
+          "doc": "linkedin-opus",
+          "quote": "🔹 **A CLI.**"
+        },
+        {
+          "doc": "linkedin-gemini",
+          "quote": "🔹 A brand-new dedicated CLI"
+        }
+      ],
+      "tier": 2,
+      "tier_override": 1,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Review round 2026-09-01: raised from tier 2 to tier 1 by the maintainers, within its social register scope. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "Register-bound: LinkedIn posts only; Gemini saturates (bullets ✅ 🔹 💡 plus decorative pairs), Claude Opus uses them sparingly as bullets, GPT not at all. Counted per emoji code point from the 2026-09-09 extraction (a joined sequence such as 👨‍💻 counts its parts); the first extraction judged it.",
+      "rate": 7.644,
+      "spread": 0.667,
+      "range": [
+        0.0,
+        34.965
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "social"
+      ],
+      "register_scope": [
+        "social"
+      ],
+      "tier_reason": "present in fewer than 3 documents",
+      "regex": "[☀-➿🌀-🫿]"
+    },
+    {
+      "id": "contrast-frames/comma-not",
+      "dimension": "contrast-frames",
+      "marker": "comma-not",
+      "description": "Sentence-final negated foil: a tested feature, not an afterthought.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_comma_not",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 2,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 2,
+        "domain-ai-sonnet": 7,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 1,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 1,
+        "langium-llvm-fable": 2,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 1,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 8,
+        "monaco-opus": 1,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 1,
+        "presentations-sonnet": 2,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 1,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 4,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "lionweb-sonnet",
+          "quote": "a live, adopted protocol effort, not a paper spec."
+        },
+        {
+          "doc": "presentations-sonnet",
+          "quote": "performance has to be a tested feature, not an afterthought."
+        },
+        {
+          "doc": "linkedin-gpt",
+          "quote": "an open collaboration layer that works across development environments instead of creating another isolated ecosystem"
+        }
+      ],
+      "tier": 2,
+      "tier_override": 1,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Review round 2026-09-09 (tiers): raised to tier 1 — present in all five registers; the email split's eight short stages diluted corpus-wide spread from 61% to 47%."
+      },
+      "note": "Present in all five registers: 8 of 13 articles, 2 of 3 posts, 2 of 3 abstracts, 1 of 3 reports, 1 of 8 email stages.",
+      "rate": 0.826,
+      "spread": 0.467,
+      "range": [
+        0.0,
+        4.396
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "present in under 60% of the measured documents"
+    },
+    {
+      "id": "contrast-frames/not-but",
+      "dimension": "contrast-frames",
+      "marker": "not-but",
+      "description": "Negative parallelism inside one sentence: not X, but Y.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_not_but",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 2,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 3,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 1,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 3,
+        "software-business-sonnet": 2,
+        "textual-graphical-gpt": 1,
+        "theia-haiku": 1,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "presentations-gpt",
+          "quote": "we treat constraints not as a limitation, but as an optimization"
+        },
+        {
+          "doc": "software-business-sonnet",
+          "quote": "The picture in software hiring is not a uniform decline — it's a split between a contracting entry-level market and resilient-to-strong demand for experienced engineers."
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Review round 2026-09-09 (tiers): left at tier 3 — 2 of 3 reports is thin evidence."
+      },
+      "note": "Report-concentrated: 2 of 3 reports at 0.7 per 1k, elsewhere sparse.",
+      "rate": 0.314,
+      "spread": 0.267,
+      "range": [
+        0.0,
+        1.492
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "contrast-frames/split-reframe",
+      "dimension": "contrast-frames",
+      "marker": "split-reframe",
+      "description": "Negation and reframe across two sentences: X is not A. It is B.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_split_reframe",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 4,
+        "domain-ai-sonnet": 2,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 1,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 1,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 1,
+        "presentations-gemini": 0,
+        "presentations-gpt": 1,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 2,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 1,
+        "theia-haiku": 1,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "langium-governance-opus",
+          "quote": "That is not generosity. It is the price of being infrastructure, and we are paying it deliberately."
+        },
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "The goal isn't more context. It's more relevant context."
+        },
+        {
+          "doc": "presentations-gpt",
+          "quote": "Sometimes performance optimization is not about doing the same work faster. It is about realizing you never needed to do the work at all."
+        }
+      ],
+      "tier": 3,
+      "tier_override": 2,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Review round 2026-09-09 (tiers): raised to tier 2, the pre-split tier — four registers show it, articles at 54%; third quote added."
+      },
+      "note": "7 of 13 articles; one each of reports, posts and abstracts; none in the email stages.",
+      "rate": 0.369,
+      "spread": 0.333,
+      "range": [
+        0.0,
+        1.038
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "report",
+        "social"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "contrast-frames/rather-than",
+      "dimension": "contrast-frames",
+      "marker": "rather-than",
+      "description": "Default contrast connector: rather than / instead of / Instead,.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_rather_than",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 2,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 7,
+        "domain-ai-sonnet": 5,
+        "email-1-introduction": 1,
+        "email-2-scoping": 1,
+        "email-3-kickoff-prep": 1,
+        "email-4-kickoff-recap": 6,
+        "email-5-ui-and-incident": 3,
+        "email-6-language-design": 8,
+        "email-7-polish-and-ai-context": 4,
+        "email-8-wrap-up": 3,
+        "generating-code-gemini": 1,
+        "langium-governance-opus": 3,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 5,
+        "linkedin-opus": 3,
+        "lionweb-sonnet": 5,
+        "monaco-opus": 3,
+        "parser-performance-gpt": 5,
+        "presentations-gemini": 0,
+        "presentations-gpt": 3,
+        "presentations-sonnet": 4,
+        "software-business-gemini": 3,
+        "software-business-gpt": 12,
+        "software-business-sonnet": 9,
+        "textual-graphical-gpt": 2,
+        "theia-haiku": 1,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "software-business-gpt",
+          "quote": "AI then becomes a force multiplier rather than a threat to the business model."
+        },
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "layered guardrails rather than relying on a single model-level mechanism"
+        },
+        {
+          "doc": "monaco-opus",
+          "quote": "the coming months are about extension rather than upheaval"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "",
+      "rate": 2.45,
+      "spread": 0.867,
+      "range": [
+        0.0,
+        5.597
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "contrast-frames/without-benefit",
+      "dimension": "contrast-frames",
+      "marker": "without-benefit",
+      "description": "Benefits stated as avoided costs: without building everything from scratch.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_without_benefit",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 2,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 3,
+        "domain-ai-sonnet": 2,
+        "email-1-introduction": 0,
+        "email-2-scoping": 2,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 1,
+        "email-5-ui-and-incident": 2,
+        "email-6-language-design": 3,
+        "email-7-polish-and-ai-context": 3,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 1,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 2,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 1,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 1,
+        "presentations-gemini": 0,
+        "presentations-gpt": 1,
+        "presentations-sonnet": 1,
+        "software-business-gemini": 1,
+        "software-business-gpt": 2,
+        "software-business-sonnet": 1,
+        "textual-graphical-gpt": 3,
+        "theia-haiku": 2,
+        "vscode-extension-gemini-pro": 1
+      },
+      "evidence": [
+        {
+          "doc": "theia-haiku",
+          "quote": "Users can write in notebooks without sacrificing IDE capabilities"
+        },
+        {
+          "doc": "linkedin-opus",
+          "quote": "You still get the bidirectional lookup a language server needs — text offset to AST node and back — without paying for a whole parallel structure."
+        },
+        {
+          "doc": "presentations-sonnet",
+          "quote": "applying live edits without reimplementing the entire collaboration stack from scratch"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "Counter is noisy; confirm hits by reading.",
+      "rate": 0.774,
+      "spread": 0.733,
+      "range": [
+        0.0,
+        2.373
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "reveal-frames/colon-punchline",
+      "dimension": "reveal-frames",
+      "marker": "colon-punchline",
+      "description": "Short setup, colon, payoff: The first proof: an OCT plugin.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_colon_punchline",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 15,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 5,
+        "domain-ai-sonnet": 15,
+        "email-1-introduction": 0,
+        "email-2-scoping": 1,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 1,
+        "email-5-ui-and-incident": 1,
+        "email-6-language-design": 2,
+        "email-7-polish-and-ai-context": 5,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 1,
+        "langium-llvm-fable": 3,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 3,
+        "linkedin-opus": 9,
+        "lionweb-sonnet": 8,
+        "monaco-opus": 7,
+        "parser-performance-gpt": 3,
+        "presentations-gemini": 1,
+        "presentations-gpt": 2,
+        "presentations-sonnet": 2,
+        "software-business-gemini": 0,
+        "software-business-gpt": 4,
+        "software-business-sonnet": 5,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 1,
+        "vscode-extension-gemini-pro": 1
+      },
+      "evidence": [
+        {
+          "doc": "linkedin-opus",
+          "quote": "The first proof: an OCT plugin for [product], available now on the [company] Marketplace.",
+          "redacted": true
+        },
+        {
+          "doc": "agent-experience-fable",
+          "quote": "The good news: this is an engineering problem, and it has engineering solutions."
+        },
+        {
+          "doc": "monaco-opus",
+          "quote": "The repository has a second job: it is where we validate new tooling before we recommend it to anyone else."
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "",
+      "rate": 2.405,
+      "spread": 0.733,
+      "range": [
+        0.0,
+        7.339
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "covered_by": [
+        "punctuation/colon-elaboration"
+      ]
+    },
+    {
+      "id": "reveal-frames/nominal-reveal",
+      "dimension": "reveal-frames",
+      "marker": "nominal-reveal",
+      "description": "Abstract-noun payoff announcements: Here's the unexpected part:, The broader lesson:.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_nominal_reveal",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 4,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 4,
+        "domain-ai-sonnet": 4,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 1,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 1,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 4,
+        "linkedin-opus": 3,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 2,
+        "parser-performance-gpt": 2,
+        "presentations-gemini": 0,
+        "presentations-gpt": 4,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 2,
+        "theia-haiku": 4,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "linkedin-opus",
+          "quote": "Here's the unexpected part: the same deliberate constraint that keeps humans consistent also keeps coding agents on the rails."
+        },
+        {
+          "doc": "presentations-gpt",
+          "quote": "The broader lesson: interoperability becomes much easier when collaboration is infrastructure, not an editor feature."
+        },
+        {
+          "doc": "agent-experience-fable",
+          "quote": "Here's a more useful lens: the agent did exactly what your repository allowed it to do."
+        }
+      ],
+      "tier": 2,
+      "tier_override": 1,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Review round 2026-09-09 (tiers): raised to tier 1 — four registers show it, articles at 77%; the email split diluted the spread."
+      },
+      "note": "10 of 13 articles (1.2 per 1k) and 2 of 3 posts (2.3 per 1k); 1 abstract, 1 email stage, no report.",
+      "rate": 1.14,
+      "spread": 0.467,
+      "range": [
+        0.0,
+        3.562
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "social"
+      ],
+      "tier_reason": "present in under 60% of the measured documents"
+    },
+    {
+      "id": "reveal-frames/verdict-opener",
+      "dimension": "reveal-frames",
+      "marker": "verdict-opener",
+      "description": "Sentence-initial That/This plus a verdict verb: That changes today.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_verdict_opener",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 2,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 21,
+        "domain-ai-sonnet": 20,
+        "email-1-introduction": 0,
+        "email-2-scoping": 2,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 4,
+        "email-5-ui-and-incident": 2,
+        "email-6-language-design": 3,
+        "email-7-polish-and-ai-context": 7,
+        "email-8-wrap-up": 2,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 3,
+        "langium-llvm-fable": 7,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 5,
+        "linkedin-opus": 3,
+        "lionweb-sonnet": 5,
+        "monaco-opus": 2,
+        "parser-performance-gpt": 4,
+        "presentations-gemini": 0,
+        "presentations-gpt": 2,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 12,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 6,
+        "theia-haiku": 6,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "theia-haiku",
+          "quote": "That's what separates platforms that become critical infrastructure from platforms that become legacy burdens."
+        },
+        {
+          "doc": "langium-llvm-fable",
+          "quote": "That's the position we like to be in with clients"
+        },
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "That is the shift from **generic AI to domain-specific AI**."
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "",
+      "rate": 2.406,
+      "spread": 0.667,
+      "range": [
+        0.0,
+        5.78
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "covered_by": [
+        "paragraph-openers/demonstrative-subject"
+      ]
+    },
+    {
+      "id": "reveal-frames/question-answer",
+      "dimension": "reveal-frames",
+      "marker": "question-answer",
+      "description": "A rhetorical question answered by the very next sentence.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_question_answer",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 6,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 2,
+        "domain-ai-sonnet": 1,
+        "email-1-introduction": 0,
+        "email-2-scoping": 2,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 1,
+        "email-7-polish-and-ai-context": 3,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 1,
+        "linkedin-gpt": 2,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 1,
+        "presentations-gpt": 1,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 6,
+        "vscode-extension-gemini-pro": 3
+      },
+      "evidence": [
+        {
+          "doc": "vscode-extension-gemini-pro",
+          "quote": "How does VS Code know when and where to show your React app? You register a **Webview View Provider** in your extension."
+        },
+        {
+          "doc": "presentations-sonnet",
+          "quote": "But what about [product], or any IDE that isn't built in TypeScript? This talk walks through the OCT Service Process",
+          "redacted": true
+        }
+      ],
+      "tier": 2,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "Counter is noisy; confirm hits by reading.",
+      "rate": 0.761,
+      "spread": 0.467,
+      "range": [
+        0.0,
+        4.882
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "social"
+      ],
+      "tier_reason": "present in under 60% of the measured documents; fewer than 3 quotes",
+      "covered_by": [
+        "punctuation/question-mark"
+      ]
+    },
+    {
+      "id": "reveal-frames/question-volley",
+      "dimension": "reveal-frames",
+      "marker": "question-volley",
+      "description": "Runs of three or more parallel unanswered questions as evidence of thoroughness.",
+      "kind": "presence",
+      "measurement": "counted",
+      "regex": "\\?\\s+(?:Which|What|Was|Did|Who|How|Does|Can|Under)\\b[^?.!\\n]{0,90}\\?",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 12,
+        "domain-ai-sonnet": 8,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 2,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "Did the database update? Was the configuration valid? Did it call the right tools? Did it respect the approval boundary?"
+        },
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "Which product version is the user working with? Which rules apply to this customer?"
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "",
+      "rate": 0.356,
+      "spread": 0.1,
+      "range": [
+        0.0,
+        3.113
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "email"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes",
+      "covered_by": [
+        "punctuation/question-mark"
+      ]
+    },
+    {
+      "id": "reveal-frames/what-if",
+      "dimension": "reveal-frames",
+      "marker": "what-if",
+      "description": "What if / What happens when as a hook.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_what_if",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 1,
+        "linkedin-gpt": 2,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 1,
+        "presentations-gpt": 3,
+        "presentations-sonnet": 2,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 1
+      },
+      "evidence": [
+        {
+          "doc": "linkedin-gemini",
+          "quote": "What if an AI agent could join your collaborative coding session just like another developer?"
+        },
+        {
+          "doc": "presentations-gpt",
+          "quote": "But what if the same collaborative session needs to span VS Code, Eclipse Theia, [product], Eclipse IDE, and custom applications?",
+          "redacted": true
+        },
+        {
+          "doc": "presentations-sonnet",
+          "quote": "What happens when you invite a coding agent into a live, multi-person session"
+        }
+      ],
+      "tier": 1,
+      "tier_override": 2,
+      "review": {
+        "verdict": "nuanced",
+        "note": "Review round 2026-09-01: a genre convention of abstracts and LinkedIn posts as much as a machine tell; held at tier 2. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "Register-bound: hooks for LinkedIn posts and talk abstracts.",
+      "rate": 1.844,
+      "spread": 1.0,
+      "range": [
+        0.789,
+        2.671
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "social"
+      ],
+      "register_scope": [
+        "abstract",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
+      "covered_by": [
+        "punctuation/question-mark"
+      ]
+    },
+    {
+      "id": "reveal-frames/enumeration-announcement",
+      "dimension": "reveal-frames",
+      "marker": "enumeration-announcement",
+      "description": "A counted promise before delivering: Three reasons decided it. Five forces are driving this shift. Concentrated in articles: 10 of 13 show it, against 1 report, 1 post and 2 email stages.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_enumeration_announcement",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 5,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 1,
+        "domain-ai-sonnet": 1,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 1,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 1,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 1,
+        "langium-llvm-fable": 2,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 3,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 2,
+        "parser-performance-gpt": 2,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 1,
+        "textual-graphical-gpt": 1,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 1
+      },
+      "evidence": [
+        {
+          "doc": "agent-experience-fable",
+          "quote": "Four principles carry the sensor side."
+        },
+        {
+          "doc": "langium-governance-opus",
+          "quote": "Three reasons decided it."
+        },
+        {
+          "doc": "software-business-sonnet",
+          "quote": "Five forces are driving this shift simultaneously"
+        }
+      ],
+      "tier": 2,
+      "tier_override": 1,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Review round 2026-09-09 (tiers): raised to tier 1 — 10 of 13 articles and three further registers."
+      },
+      "note": "",
+      "rate": 0.513,
+      "spread": 0.467,
+      "range": [
+        0.0,
+        2.446
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "present in under 60% of the measured documents"
+    },
+    {
+      "id": "significance-tails/significance-tail",
+      "dimension": "significance-tails",
+      "marker": "significance-tail",
+      "description": "Tails and headings that tell the reader why to care: That matters because, Why X Matters.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_significance_tail",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 5,
+        "domain-ai-sonnet": 5,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 2,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 1,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 3,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 1,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 2,
+        "theia-haiku": 4,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "parser-performance-gpt",
+          "quote": "That matters because these decisions are usually executed very frequently."
+        },
+        {
+          "doc": "theia-haiku",
+          "quote": "For startups, this matters too."
+        },
+        {
+          "doc": "langium-llvm-fable",
+          "quote": "That last point matters more than it sounds."
+        }
+      ],
+      "tier": 3,
+      "tier_override": 2,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Review round 2026-09-09 (tiers): raised to tier 2 by the maintainers over the reading's recommendation (6 of 13 articles); third quote added."
+      },
+      "note": "6 of 13 articles (1.0 per 1k), 1 report, 1 post; none in abstracts or the email stages.",
+      "rate": 0.441,
+      "spread": 0.267,
+      "range": [
+        0.0,
+        3.255
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "report",
+        "social"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "significance-tails/worth-noting",
+      "dimension": "significance-tails",
+      "marker": "worth-noting",
+      "description": "Worth-noting hedges: worth weighing, deserves special respect, the combination worth noting.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_worth_noting",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 2,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 2,
+        "domain-ai-sonnet": 0,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 1,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 4,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 1,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "lionweb-sonnet",
+          "quote": "That's the combination worth noting: we're the inventors, and we're also the people you can bring in to make it fit your specific architecture."
+        },
+        {
+          "doc": "agent-experience-fable",
+          "quote": "Specs deserve special respect here."
+        }
+      ],
+      "tier": 3,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "",
+      "rate": 0.293,
+      "spread": 0.233,
+      "range": [
+        0.0,
+        2.198
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "social"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "significance-tails/participial-tail",
+      "dimension": "significance-tails",
+      "marker": "participial-tail",
+      "description": "Main clause plus a present-participle benefit tail: …, allowing companies to prototype in days.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_participial_tail",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 3,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 2,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 1,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 1,
+        "software-business-gemini": 1,
+        "software-business-gpt": 1,
+        "software-business-sonnet": 3,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "software-business-gemini",
+          "quote": "It drastically lowers the unit cost of software development, allowing companies to prototype and test new digital products in days rather than months."
+        },
+        {
+          "doc": "presentations-gemini",
+          "quote": "demonstrating how to break down silos between tools and empower developer teams to collaborate frictionlessly"
+        },
+        {
+          "doc": "software-business-sonnet",
+          "quote": "enabling solo founders and very small teams to reach revenue levels that once required full departments"
+        }
+      ],
+      "tier": 3,
+      "tier_override": 2,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Review round 2026-09-09 (tiers): raised to tier 2 — every report shows it; third quote added."
+      },
+      "note": "Every report shows it (3 of 3, 0.7 per 1k); elsewhere 2 of 13 articles, 1 post, 1 abstract.",
+      "rate": 0.39,
+      "spread": 0.233,
+      "range": [
+        0.0,
+        4.777
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "report",
+        "social"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "rule-of-three/triad",
+      "dimension": "rule-of-three",
+      "marker": "triad",
+      "description": "Three coordinated items as the default series length.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_triad",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 3,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 10,
+        "domain-ai-sonnet": 8,
+        "email-1-introduction": 0,
+        "email-2-scoping": 2,
+        "email-3-kickoff-prep": 1,
+        "email-4-kickoff-recap": 4,
+        "email-5-ui-and-incident": 1,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 4,
+        "email-8-wrap-up": 1,
+        "generating-code-gemini": 3,
+        "langium-governance-opus": 1,
+        "langium-llvm-fable": 2,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 6,
+        "linkedin-opus": 7,
+        "lionweb-sonnet": 2,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 3,
+        "presentations-gemini": 1,
+        "presentations-gpt": 3,
+        "presentations-sonnet": 2,
+        "software-business-gemini": 4,
+        "software-business-gpt": 21,
+        "software-business-sonnet": 9,
+        "textual-graphical-gpt": 7,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "agent-experience-fable",
+          "quote": "the knowledge and the checks an agent needs are in the repo, executable, and current"
+        },
+        {
+          "doc": "langium-llvm-fable",
+          "quote": "fast, on real hardware, and in a way our team can debug when it misbehaves"
+        },
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "important mistakes are detectable, containable, and correctable"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "Counter is noisy (any three-item series); the tell is density, not any single hit.",
+      "rate": 2.877,
+      "spread": 0.767,
+      "range": [
+        0.0,
+        5.964
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "rule-of-three/adjective-stack",
+      "dimension": "rule-of-three",
+      "marker": "adjective-stack",
+      "description": "Stacked evaluative adjectives: robust, real-time collaborative coding.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_adjective_stack",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 1,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-1-introduction": 1,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 1,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 1,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 2,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 3,
+        "linkedin-gpt": 1,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 2,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 7,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 1,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 1,
+        "vscode-extension-gemini-pro": 1
+      },
+      "evidence": [
+        {
+          "doc": "presentations-gemini",
+          "quote": "designed to bring robust, real-time collaborative coding to non-TypeScript ecosystems"
+        },
+        {
+          "doc": "email-1-introduction",
+          "quote": "Our vision is to replace this clunky process with a clean, human-readable DSL embedded in a lightweight web editor."
+        }
+      ],
+      "tier": 2,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "Strongest in Gemini output (13.4/1k in its talk abstracts).",
+      "rate": 0.931,
+      "spread": 0.433,
+      "range": [
+        0.0,
+        13.359
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "present in under 60% of the measured documents; fewer than 3 quotes"
+    },
+    {
+      "id": "signposting/meta-signpost",
+      "dimension": "signposting",
+      "marker": "meta-signpost",
+      "description": "The text announcing its own plan: This talk walks through, We'll also look at.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_meta_signpost",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 1,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 1,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 2,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 1,
+        "presentations-gemini": 5,
+        "presentations-gpt": 7,
+        "presentations-sonnet": 11,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "presentations-sonnet",
+          "quote": "This talk walks through the bets behind Fastbelt's architecture"
+        },
+        {
+          "doc": "presentations-gpt",
+          "quote": "We’ll also look at the design decisions that make the same approach applicable to Eclipse IDE and other desktop tools."
+        },
+        {
+          "doc": "presentations-gemini",
+          "quote": "this session provides actionable insights into achieving unprecedented performance in your language tooling"
+        }
+      ],
+      "tier": 1,
+      "tier_override": 2,
+      "review": {
+        "verdict": "nuanced",
+        "note": "Review round 2026-09-01: a genre convention of talk abstracts as much as a machine tell; held at tier 2. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "Register-bound: near-obligatory in talk abstracts (up to 12/1k), rare elsewhere.",
+      "rate": 9.041,
+      "spread": 1.0,
+      "range": [
+        6.233,
+        12.263
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract"
+      ],
+      "register_scope": [
+        "abstract"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, single-register corpus (register condition waived), >=3 quotes"
+    },
+    {
+      "id": "authenticity-stance/authenticity-word",
+      "dimension": "authenticity-stance",
+      "marker": "authenticity-word",
+      "description": "Certifies sincerity with actually/genuinely/real/honest against an implied fake.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_authenticity",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 13,
+        "allstar-gemini-flash": 2,
+        "domain-ai-gpt": 11,
+        "domain-ai-sonnet": 30,
+        "email-1-introduction": 1,
+        "email-2-scoping": 3,
+        "email-3-kickoff-prep": 2,
+        "email-4-kickoff-recap": 3,
+        "email-5-ui-and-incident": 1,
+        "email-6-language-design": 8,
+        "email-7-polish-and-ai-context": 7,
+        "email-8-wrap-up": 2,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 5,
+        "langium-llvm-fable": 6,
+        "linkedin-gemini": 4,
+        "linkedin-gpt": 3,
+        "linkedin-opus": 5,
+        "lionweb-sonnet": 11,
+        "monaco-opus": 7,
+        "parser-performance-gpt": 11,
+        "presentations-gemini": 6,
+        "presentations-gpt": 9,
+        "presentations-sonnet": 7,
+        "software-business-gemini": 0,
+        "software-business-gpt": 4,
+        "software-business-sonnet": 6,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 15,
+        "vscode-extension-gemini-pro": 1
+      },
+      "evidence": [
+        {
+          "doc": "theia-haiku",
+          "quote": "They invested significant engineering effort to implement genuine, production-grade notebook support directly in Theia's core."
+        },
+        {
+          "doc": "presentations-gpt",
+          "quote": "more reasoning spent on what the software actually does"
+        },
+        {
+          "doc": "lionweb-sonnet",
+          "quote": "An honest maturity check: what's solid, and what's still open"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "",
+      "rate": 4.698,
+      "spread": 0.9,
+      "range": [
+        0.0,
+        12.205
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "authenticity-stance/absolutizer",
+      "dimension": "authenticity-stance",
+      "marker": "absolutizer",
+      "description": "Flat universals where hand-written prose hedges: every, entire, never, always.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_absolutizer",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 29,
+        "allstar-gemini-flash": 1,
+        "domain-ai-gpt": 16,
+        "domain-ai-sonnet": 35,
+        "email-1-introduction": 0,
+        "email-2-scoping": 1,
+        "email-3-kickoff-prep": 8,
+        "email-4-kickoff-recap": 4,
+        "email-5-ui-and-incident": 8,
+        "email-6-language-design": 12,
+        "email-7-polish-and-ai-context": 8,
+        "email-8-wrap-up": 4,
+        "generating-code-gemini": 2,
+        "langium-governance-opus": 12,
+        "langium-llvm-fable": 12,
+        "linkedin-gemini": 3,
+        "linkedin-gpt": 5,
+        "linkedin-opus": 13,
+        "lionweb-sonnet": 11,
+        "monaco-opus": 8,
+        "parser-performance-gpt": 8,
+        "presentations-gemini": 1,
+        "presentations-gpt": 8,
+        "presentations-sonnet": 4,
+        "software-business-gemini": 2,
+        "software-business-gpt": 8,
+        "software-business-sonnet": 3,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 14,
+        "vscode-extension-gemini-pro": 3
+      },
+      "evidence": [
+        {
+          "doc": "agent-experience-fable",
+          "quote": "An agent onboards at the start of every single task"
+        },
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "Agents are running in every function that will have them."
+        },
+        {
+          "doc": "langium-llvm-fable",
+          "quote": "the same question comes up in every project"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "",
+      "rate": 5.501,
+      "spread": 0.933,
+      "range": [
+        0.0,
+        14.188
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "authenticity-stance/anti-hype",
+      "dimension": "authenticity-stance",
+      "marker": "anti-hype",
+      "description": "Disavows hype in its own cadence: No hype, no magic; not a wishlist.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_anti_hype",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 1,
+        "linkedin-gpt": 1,
+        "linkedin-opus": 2,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 2,
+        "presentations-sonnet": 4,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 1,
+        "vscode-extension-gemini-pro": 1
+      },
+      "evidence": [
+        {
+          "doc": "presentations-sonnet",
+          "quote": "No hype, no magic — just the questions worth asking before your team writes the first prompt."
+        },
+        {
+          "doc": "lionweb-sonnet",
+          "quote": "That's not a wishlist."
+        },
+        {
+          "doc": "linkedin-opus",
+          "quote": "Which is exactly why anxiety and hype both need to be swept aside."
+        }
+      ],
+      "tier": 3,
+      "tier_override": 2,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Review round 2026-09-09 (tiers): raised to tier 2 — every LinkedIn post and 2 of 3 abstracts; third quote added."
+      },
+      "note": "Concentrated in pitch registers (abstracts, LinkedIn). Every LinkedIn post (3 of 3, 1.3 per 1k) and 2 of 3 abstracts (2.4 per 1k); 3 of 13 articles, no report or email.",
+      "rate": 0.721,
+      "spread": 0.267,
+      "range": [
+        0.0,
+        4.459
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "social"
+      ],
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes"
+    },
+    {
+      "id": "stock-phrasing/buzzword",
+      "dimension": "stock-phrasing",
+      "marker": "buzzword",
+      "description": "Marketing-register buzzwords: seamless, cutting-edge, empower, democratization.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_vocabulary",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 3,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 8,
+        "domain-ai-sonnet": 10,
+        "email-1-introduction": 0,
+        "email-2-scoping": 1,
+        "email-3-kickoff-prep": 4,
+        "email-4-kickoff-recap": 1,
+        "email-5-ui-and-incident": 1,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 1,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 2,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 2,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 13,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 4,
+        "software-business-gpt": 2,
+        "software-business-sonnet": 1,
+        "textual-graphical-gpt": 1,
+        "theia-haiku": 2,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "presentations-gemini",
+          "quote": "Enter Baukasten: a cutting-edge UI toolkit built to eliminate this compromise."
+        },
+        {
+          "doc": "presentations-gemini",
+          "quote": "empowers teams to rapidly engineer rich, domain-specific tooling that works seamlessly across web platforms"
+        },
+        {
+          "doc": "software-business-gemini",
+          "quote": "the democratization of coding via Low-Code/No-Code (LCNC) platforms"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "Model-split: Gemini output carries most of the rate (25/1k in its abstracts); Claude and GPT are near zero.",
+      "rate": 1.779,
+      "spread": 0.6,
+      "range": [
+        0.0,
+        24.809
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "stock-phrasing/trend-word",
+      "dimension": "stock-phrasing",
+      "marker": "trend-word",
+      "description": "Unfalsifiable change words: increasingly, rapidly, transformation, than ever.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_trend_word",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 1,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 16,
+        "domain-ai-sonnet": 6,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 3,
+        "email-7-polish-and-ai-context": 1,
+        "email-8-wrap-up": 1,
+        "generating-code-gemini": 1,
+        "langium-governance-opus": 3,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 4,
+        "linkedin-gpt": 2,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 1,
+        "parser-performance-gpt": 5,
+        "presentations-gemini": 4,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 9,
+        "software-business-gpt": 22,
+        "software-business-sonnet": 10,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 2,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "software-business-gemini",
+          "quote": "The software development industry is undergoing a radical transformation."
+        },
+        {
+          "doc": "presentations-gemini",
+          "quote": "As development environments become increasingly fragmented"
+        },
+        {
+          "doc": "linkedin-gemini",
+          "quote": "makes cross-platform collaborative coding smoother and more accessible than ever"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "",
+      "rate": 2.368,
+      "spread": 0.6,
+      "range": [
+        0.0,
+        12.821
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "stock-phrasing/spatial-metaphor",
+      "dimension": "stock-phrasing",
+      "marker": "spatial-metaphor",
+      "description": "The problem as a space to cross: bridge, gap, silo, friction, barrier.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_spatial_metaphor",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 2,
+        "domain-ai-gpt": 6,
+        "domain-ai-sonnet": 5,
+        "email-1-introduction": 2,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 1,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 3,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 3,
+        "langium-governance-opus": 1,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 6,
+        "linkedin-gpt": 3,
+        "linkedin-opus": 7,
+        "lionweb-sonnet": 5,
+        "monaco-opus": 7,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 4,
+        "presentations-gpt": 3,
+        "presentations-sonnet": 5,
+        "software-business-gemini": 0,
+        "software-business-gpt": 1,
+        "software-business-sonnet": 2,
+        "textual-graphical-gpt": 1,
+        "theia-haiku": 2,
+        "vscode-extension-gemini-pro": 2
+      },
+      "evidence": [
+        {
+          "doc": "lionweb-sonnet",
+          "quote": "This is the gap LionWeb set out to close."
+        },
+        {
+          "doc": "presentations-gemini",
+          "quote": "demonstrating how to break down silos between tools and empower developer teams"
+        },
+        {
+          "doc": "theia-haiku",
+          "quote": "it's not a minor feature gap. It's an existential problem."
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "Counter is noisy (literal gaps and bridges count too).",
+      "rate": 2.532,
+      "spread": 0.7,
+      "range": [
+        0.0,
+        10.49
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "stock-phrasing/stock-idiom",
+      "dimension": "stock-phrasing",
+      "marker": "stock-idiom",
+      "description": "One or two borrowed idioms per piece: table stakes, heavy lifting, under the hood, from scratch.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_stock_idiom",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 1,
+        "domain-ai-gpt": 3,
+        "domain-ai-sonnet": 2,
+        "email-1-introduction": 1,
+        "email-2-scoping": 2,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 1,
+        "email-6-language-design": 1,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 1,
+        "langium-llvm-fable": 2,
+        "linkedin-gemini": 1,
+        "linkedin-gpt": 1,
+        "linkedin-opus": 2,
+        "lionweb-sonnet": 2,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 1,
+        "presentations-gpt": 1,
+        "presentations-sonnet": 4,
+        "software-business-gemini": 1,
+        "software-business-gpt": 1,
+        "software-business-sonnet": 2,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 2,
+        "vscode-extension-gemini-pro": 1
+      },
+      "evidence": [
+        {
+          "doc": "theia-haiku",
+          "quote": "Not as a plugin. Not as an experimental feature. As a first-class citizen in the platform."
+        },
+        {
+          "doc": "vscode-extension-gemini-pro",
+          "quote": "You get a parser, an AST, and language server features like autocomplete right out of the box."
+        },
+        {
+          "doc": "software-business-gemini",
+          "quote": "AI agents handle the repetitive \"heavy lifting\" of writing boilerplate code"
+        }
+      ],
+      "tier": 1,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "",
+      "rate": 1.057,
+      "spread": 0.7,
+      "range": [
+        0.0,
+        4.459
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report",
+        "social"
+      ],
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes"
+    },
+    {
+      "id": "stock-phrasing/from-to",
+      "dimension": "stock-phrasing",
+      "marker": "from-to",
+      "description": "Trajectory framing from X to Y, in titles above all: from bridge to toolbox.",
+      "kind": "presence",
+      "measurement": "counted",
+      "stat": "ai_false_range",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 1,
+        "allstar-gemini-flash": 1,
+        "domain-ai-gpt": 3,
+        "domain-ai-sonnet": 5,
+        "email-1-introduction": 0,
+        "email-2-scoping": 1,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 1,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 1,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 1,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 1,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 2,
+        "software-business-gpt": 1,
+        "software-business-sonnet": 6,
+        "textual-graphical-gpt": 1,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 1
+      },
+      "evidence": [
+        {
+          "doc": "monaco-opus",
+          "quote": "monaco-languageclient 10: from bridge to toolbox"
+        },
+        {
+          "doc": "software-business-sonnet",
+          "quote": "IT outsourcing is shifting from cost arbitrage to capability-and-governance partnerships"
+        }
+      ],
+      "tier": 2,
+      "tier_override": null,
+      "review": {
+        "verdict": "confirmed",
+        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+      },
+      "note": "Counter is noisy (real ranges count too); the marked form is the heading/title use.",
+      "rate": 0.577,
+      "spread": 0.5,
+      "range": [
+        0.0,
+        2.849
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "report"
+      ],
+      "tier_reason": "present in under 60% of the measured documents; fewer than 3 quotes"
+    },
+    {
+      "id": "stock-phrasing/same-x",
+      "dimension": "stock-phrasing",
+      "marker": "same-x",
+      "description": "The unity trope 'the same X that / as': two things bound into one by sameness — the same protocol messages as human peers, the same deliberate constraint that keeps humans consistent also keeps agents on the rails.",
+      "kind": "presence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 2,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 1,
+        "domain-ai-sonnet": 1,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 1,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 1,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 1,
+        "presentations-gemini": 0,
+        "presentations-gpt": 1,
+        "presentations-sonnet": 2,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "agent-experience-fable",
+          "quote": "ship the new rule in the same change as the fix it came from"
+        },
+        {
+          "doc": "linkedin-opus",
+          "quote": "the same deliberate constraint that keeps humans consistent also keeps coding agents on the rails"
+        },
+        {
+          "doc": "presentations-sonnet",
+          "quote": "using the same protocol messages as human peers"
+        },
+        {
+          "doc": "lionweb-sonnet",
+          "quote": "stakeholders review the same system as a diagram they can rearrange"
+        }
+      ],
+      "tier_override": null,
+      "note": "Cross-model (Fable, Opus, Sonnet, GPT); once or twice per piece in 10 of 23 documents. Added in the 2026-09-09 extraction from the taxonomy's same-x marker. 2 of 3 abstracts and 5 of 13 articles; one post, one email stage, no report.",
+      "stat": "ai_same_x",
+      "rate": 0.385,
+      "spread": 0.3,
+      "range": [
+        0.0,
+        2.23
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "social"
+      ],
+      "tier": 3,
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": "Added in the 2026-09-09 extraction; confirmed in its review round and left at tier 3 in the tier round (2 of 3 abstracts, 5 of 13 articles)."
+      }
+    },
+    {
+      "id": "connectives/medial-therefore",
+      "dimension": "connectives",
+      "marker": "medial-therefore",
+      "description": "'Therefore', 'consequently' or 'thus' parked after the subject instead of opening the sentence: 'Custom development therefore shifts toward…'.",
+      "kind": "presence",
+      "measurement": "counted",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 0,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 1,
+        "domain-ai-sonnet": 0,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 1,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 0,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 0,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 0,
+        "parser-performance-gpt": 2,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 6,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0
+      },
+      "evidence": [
+        {
+          "doc": "software-business-gpt",
+          "quote": "Custom development therefore shifts toward places where standard tools stop"
+        },
+        {
+          "doc": "parser-performance-gpt",
+          "quote": "Parsing even the simplest expression therefore requires the parser to descend through multiple layers before it reaches the actual value."
+        },
+        {
+          "doc": "domain-ai-gpt",
+          "quote": "The strongest AI applications therefore combine interaction modes."
+        }
+      ],
+      "tier_override": null,
+      "note": "A GPT-family habit in this corpus (the four documents with hits are three GPT pieces and the GPT side of the email thread; up to 6 per report), absent from Claude and Gemini output — its presence in a draft points at GPT-style prose, its absence proves nothing. Tier 3 by spread; added in the 2026-09-09 extraction from the taxonomy's medial-therefore marker.",
+      "stat": "ai_medial_therefore",
+      "rate": 0.216,
+      "spread": 0.133,
+      "range": [
+        0.0,
+        1.704
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "email",
+        "report"
+      ],
+      "tier": 3,
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": "Added in the 2026-09-09 extraction; confirmed in its review round."
+      }
+    },
+    {
+      "id": "sentence-rhythm/fragment",
+      "dimension": "sentence-rhythm",
+      "marker": "fragment",
+      "description": "Verbless or subjectless sentences as rhetorical beats: 'Useful. Not sufficient.', 'Not as a plugin. Not as an experimental feature.', 'Free, open source, on GitHub.'",
+      "kind": "presence",
+      "measurement": "judged",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 1,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 11,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 3,
+        "langium-llvm-fable": 0,
+        "linkedin-gemini": 1,
+        "linkedin-gpt": 1,
+        "linkedin-opus": 10,
+        "lionweb-sonnet": 0,
+        "monaco-opus": 1,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 3,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 2,
+        "software-business-gemini": 0,
+        "software-business-gpt": 0,
+        "software-business-sonnet": 0,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 9,
+        "vscode-extension-gemini-pro": 1,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 1,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 0
+      },
+      "evidence": [
+        {
+          "doc": "domain-ai-sonnet",
+          "quote": "Useful. Not sufficient."
+        },
+        {
+          "doc": "theia-haiku",
+          "quote": "Not as a plugin. Not as an experimental feature. As a first-class citizen in the platform."
+        },
+        {
+          "doc": "linkedin-opus",
+          "quote": "Free, open source, on GitHub."
+        },
+        {
+          "doc": "langium-governance-opus",
+          "quote": "Not the work. The power."
+        }
+      ],
+      "tier_override": null,
+      "note": "Judged: one count per verbless or subjectless prose sentence (headings, list items, greetings and quoted material excluded). Strongly model-split: Claude-family output (Sonnet, Opus, Haiku) carries nearly all of it; GPT and Gemini prose stays in full sentences. Added in the 2026-09-09 extraction.",
+      "rate": 1.53,
+      "spread": 0.4,
+      "range": [
+        0.0,
+        7.886
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "abstract",
+        "article",
+        "email",
+        "social"
+      ],
+      "tier": 2,
+      "tier_reason": "judged, not counted; present in under 60% of the measured documents",
+      "review": {
+        "verdict": "confirmed",
+        "note": "Added in the 2026-09-09 extraction; confirmed in its review round."
+      }
+    },
+    {
+      "id": "authenticity-stance/candor-claim",
+      "dimension": "authenticity-stance",
+      "marker": "candor-claim",
+      "description": "The text announcing its own honesty: 'An honest maturity check', 'Here is the uncomfortable truth', 'we'd rather tell you that up front than paper over it', 'One honest limitation:'.",
+      "kind": "presence",
+      "measurement": "judged",
+      "unit": "per_1k_words",
+      "documents": {
+        "agent-experience-fable": 2,
+        "allstar-gemini-flash": 0,
+        "domain-ai-gpt": 0,
+        "domain-ai-sonnet": 0,
+        "generating-code-gemini": 0,
+        "langium-governance-opus": 2,
+        "langium-llvm-fable": 1,
+        "linkedin-gemini": 0,
+        "linkedin-gpt": 0,
+        "linkedin-opus": 1,
+        "lionweb-sonnet": 4,
+        "monaco-opus": 2,
+        "parser-performance-gpt": 0,
+        "presentations-gemini": 0,
+        "presentations-gpt": 0,
+        "presentations-sonnet": 0,
+        "software-business-gemini": 0,
+        "software-business-gpt": 1,
+        "software-business-sonnet": 2,
+        "textual-graphical-gpt": 0,
+        "theia-haiku": 0,
+        "vscode-extension-gemini-pro": 0,
+        "email-1-introduction": 0,
+        "email-2-scoping": 0,
+        "email-3-kickoff-prep": 0,
+        "email-4-kickoff-recap": 0,
+        "email-5-ui-and-incident": 0,
+        "email-6-language-design": 0,
+        "email-7-polish-and-ai-context": 0,
+        "email-8-wrap-up": 0
+      },
+      "evidence": [
+        {
+          "doc": "lionweb-sonnet",
+          "quote": "we'd rather tell you that up front than paper over it"
+        },
+        {
+          "doc": "langium-governance-opus",
+          "quote": "Here is the uncomfortable truth about Langium as of yesterday:"
+        },
+        {
+          "doc": "monaco-opus",
+          "quote": "One honest limitation:"
+        },
+        {
+          "doc": "agent-experience-fable",
+          "quote": "There is an honest test for all of this:"
+        }
+      ],
+      "tier_override": null,
+      "note": "Judged: one count per sentence that announces the text's own candor or frames a caveat as honesty (source-quality caveats in the reports included). Cross-model but thin (8 of 23 documents), so tier 3; overlaps authenticity-word on 'honest'. Added in the 2026-09-09 extraction from the taxonomy's candor-claim marker. 2 of 3 reports and 5 of 13 articles; none in abstracts or the email stages.",
+      "rate": 0.324,
+      "spread": 0.267,
+      "range": [
+        0.0,
+        2.198
+      ],
+      "coverage": 1.0,
+      "registers": [
+        "article",
+        "report",
+        "social"
+      ],
+      "tier": 3,
+      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes",
+      "review": {
+        "verdict": "confirmed",
+        "note": "Added in the 2026-09-09 extraction; confirmed in its review round and left at tier 3 in the tier round (2 of 3 reports, 5 of 13 articles)."
+      }
+    }
+  ]
+}

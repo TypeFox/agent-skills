@@ -11,23 +11,26 @@ A session that already started with these files in context can still orchestrate
 ## Commands
 
 ```sh
-pytest skills/agent-experience/scripts/test_check_docs.py -q         # check_docs unit tests (the only script tests so far), <1s
-pytest skills/agent-experience/scripts/test_check_docs.py -k NAME    # single test by keyword
+pytest skills/agent-experience/scripts skills/write-like-me/scripts -q   # all script unit tests, <1s
+pytest skills/write-like-me/scripts -k NAME                              # single test by keyword
 python3 skills/agent-experience/scripts/check_docs.py --exclude 'skills/*/evals/*' .   # doc-freshness check, <1s
 ```
+
+Script tests live next to their scripts as `skills/<name>/scripts/test_*.py`; `pytest skills` would also collect eval fixtures' own tests, so name the script directories explicitly.
 
 Installing skills for end use is `npx skills add TypeFox/agent-skills` (see README) — not needed for development.
 
 ## Why and where
 
-- `skills/<name>/` — one skill per folder: `SKILL.md` (frontmatter `name` matches the folder; `description` states when to trigger *and* when not to; the body carries the procedure and points to the reference that owns each piece of detail), `references/` for that detail, loaded on demand, `evals/evals.json` for eval definitions, optional `assets/` and `scripts/`.
+- `skills/<name>/` — one skill per folder: `SKILL.md` (frontmatter `name` matches the folder; `description` states when to trigger *and* when not to; the body carries the procedure and points to the reference that owns each piece of detail), `references/` for that detail, loaded on demand, `evals/evals.json` for eval definitions, optional `assets/`, `scripts/`, and `data/` (bundled data files the skill reads).
 - `skills/<name>-workspace/` — gitignored eval output, recreated by skill-evals runs.
 - To create or modify a skill use the skill-creator skill; to measure whether it helps use skill-evals (both installable per README).
 
 ## Conventions
 
 - Every skill ships evals in `evals/evals.json` (missing for ts-code-reviewer; adding them is planned as a standalone task).
-- Python scripts stay stdlib-only so `check_docs.py` runs against any target repo with bare Python 3.8+ — it is run from the skill, never copied into target repos (registry distribution, e.g. PyPI, is a possible later step).
+- Python scripts stay stdlib-only so they run anywhere with bare Python 3.8+ — they are run from the skill, never copied into target repos (registry distribution, e.g. PyPI, is a possible later step).
+- Skills that persist per-user state (write-like-me's style profile) keep it under `$HOME/.skills/<skill-name>/`, never in the target repo or the skill folder; the skill's schema reference documents the format and carries a version number.
 
 Skill changes mostly fold back findings — from an eval report, a run in another project, or a PR review — and fold-backs have produced the same three faults repeatedly. These rules fence them:
 
