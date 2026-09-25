@@ -28,7 +28,7 @@ docs/
 └── quality-score.md          # per-domain quality grades, tracked over time
 ```
 
-The nucleus a retrofit usually warrants is `ARCHITECTURE.md` + `adr/` + `exec-plans/`; everything else earns its place per the table below. Everything is indexed and cross-linked; AGENTS.md points into it; CI validates the knowledge base is current and structurally correct (the skill's `check_docs.py` covers the mechanical slice when a session runs it); a doc-gardening agent handles semantic staleness.
+The nucleus a retrofit usually warrants is `ARCHITECTURE.md` + `adr/` + `exec-plans/`; everything else earns its place per the table below. Everything is indexed and cross-linked; AGENTS.md points into it; the skill's `check_docs.py` checks it is current and structurally correct when a session runs it; a doc-gardening agent handles semantic staleness.
 
 ## Routing a fact to its artifact
 
@@ -52,7 +52,7 @@ The mnemonic: ARCHITECTURE.md is the **structure**, product-specs are the **prom
 | Artifact | What it holds | When it earns its place | Maintenance rule |
 |---|---|---|---|
 | **AGENTS.md** | Map + irreducible always-on rules | Always — any repo an agent touches | Every-line litmus test; cited commands verified |
-| **ARCHITECTURE.md** | Where things live, boundaries, layering, invariants | More than a handful of modules, or any monorepo | Update on structural change; back with structural tests so drift is caught mechanically |
+| **ARCHITECTURE.md** | Where things live, boundaries, layering, invariants | More than a handful of modules, or any monorepo | Update on structural change |
 | **design-docs/ + core-beliefs** | Per-system implementation strategy as built — structure, mechanisms, trade-offs, rejected alternatives; operating principles | A trigger in the design-docs section fires (at design time, or a rescue at retrofit) — never for symmetry | Updated with the design in the same change, amendments dated; index with trust labels; garden regularly |
 | **adr/** | One decision per file: context, options, decision, consequences | The moment ≥2 people or ≥1 agent make architectural choices, or "why" questions recur | Append-only; supersede, never edit |
 | **exec-plans/** | Multi-session task state: plan, progress log, decision log | Work spanning multiple sessions or context windows | active → completed lifecycle is mandatory GC; small ephemeral plans stay out |
@@ -60,7 +60,7 @@ The mnemonic: ARCHITECTURE.md is the **structure**, product-specs are the **prom
 | **product-specs/** | Current intended behaviour per capability — the bug-vs-intended adjudicator | Evidence triggers only (see the product-specs section) — never coverage | Spec-first for new behaviour; backfill when touched; updated in the same change as the behaviour |
 | **generated/** | Derived ground truth (schemas, API surfaces) | Whenever a non-prose source of truth exists | Regenerated in CI; never hand-edited; failing regeneration fails the build |
 | **references/ (llms.txt)** | Dependency docs in LLM-ready form | Dependencies the agent misuses or hallucinates | Pinned to the dependency version; refreshed on upgrade |
-| **Per-concern docs** (`security-guidelines.md`, `reliability-guidelines.md`, …) | Cross-cutting requirements (security, reliability…) | The concern has real project-specific rules — not generic advice | Pair each with a sensor where possible (AppSec checklist → review skill) |
+| **Per-concern docs** (`security-guidelines.md`, `reliability-guidelines.md`, …) | Cross-cutting requirements (security, reliability…) | The concern has real project-specific rules — not generic advice | Pair each with a sensor where it pays (AppSec checklist → review skill) |
 | **quality-score.md** | Graded map of where quality is weak | Larger codebases running GC agents | Updated by the scheduled quality-grading pass |
 
 **Naming note.** Files this skill introduces under docs/ are kebab-case (`security-guidelines.md`, `quality-score.md`); only names with an ecosystem-standard casing keep it (`AGENTS.md`, `ARCHITECTURE.md`). In particular, never name a per-concern doc `SECURITY.md`: GitHub detects that name in `docs/` as well as the root and `.github/`, and would surface the file as the project's official vulnerability-reporting policy. Source material uses uppercase variants (`SECURITY.md`, `RELIABILITY.md`, `QUALITY_SCORE.md`); recognize those when auditing an existing repo, but generate kebab-case.
@@ -145,7 +145,7 @@ A library or framework repo serves **two agent audiences over disjoint channels*
 
 ## Hygiene invariants
 
-1. The AX standards apply to docs/ in full: one source per fact with pointers everywhere else, no duplication of the README or of anything a linter already enforces, freshness checked mechanically (`check_docs.py`, link/structure lint in CI) and semantically by doc-gardening.
+1. The AX standards apply to docs/ in full: one source per fact with pointers everywhere else, no duplication of the README or of anything a linter already enforces, freshness checked mechanically (`check_docs.py`) and semantically by doc-gardening.
 2. Explicit lifecycle on everything: active/completed for plans, accepted/superseded for ADRs, trust labels and dated amendments on design docs, same-change coupling for product specs and design docs.
 3. Docs merge through review like code; agents may draft, humans (or reviewer agents) adjudicate.
 4. Stability gradient: the root map changes rarely; detail docs change with the code. Detail-doc bulk is licensed only by an enforced update loop — the steering loop's coupling (SKILL.md) or a doc-gardening cadence; a detailed doc with no loop is drift with a head start.
