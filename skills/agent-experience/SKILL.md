@@ -109,7 +109,7 @@ Load `references/audit-playbook.md` (Phase 3: distillation heuristics), `referen
 
 ### Phase 4 — Interview the placeholders
 
-Interview the user to resolve exactly the markers, following the grill protocol: codebase-first (never ask what Phases 1–3 answered), the markers worked as a design tree in frontier rounds with a recommended answer for every question, each answer written into its durable artifact immediately (*write-as-you-go*), and questions about project facts only (*convention over configuration*). An unattended session compresses the interview into one final round, or ships the open questions as a questionnaire artifact.
+Interview the user to resolve exactly the markers, following the grill protocol: codebase-first (never ask what Phases 1–3 answered), the markers worked as a design tree in frontier rounds with a recommended answer for every question, each answer written into its durable artifact immediately (*write-as-you-go*), and questions about project facts only (*convention over configuration*). In retrofit, the first round also carries the **history-scan offer** — mining the git history, and the issue and change tracker where a fetch path exists, for the decisions the docs should make explicit; it runs only on the user's confirmation (`references/interview.md`, history-scan offer). An unattended session compresses the interview into one final round, or ships the open questions as a questionnaire artifact.
 
 Load `references/interview.md` (protocol, session mechanics, unattended sessions, theme→destination map, spec and design-doc triage).
 
