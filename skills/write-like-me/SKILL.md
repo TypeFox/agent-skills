@@ -18,6 +18,7 @@ Machine-written drafts carry a recognizable voice that is not the user's. This s
 | **extract** | only when the user explicitly asks for their profile to be built or refreshed *and* names the documents to build it from | [references/technique.md](references/technique.md) |
 | **process, AI-only** | only when the user explicitly asks to strip machine habits from a draft without a profile, or without moving it toward any voice — or picks it when asked (step 2 below) | [references/processing.md](references/processing.md), Single-DB runs |
 | **process, profile-only** | only when the user explicitly says the text is their own hand-written work, to be polished for consistency with their profile | [references/processing.md](references/processing.md), Single-DB runs |
+| **unfold** | only when the user explicitly asks for their profile to be turned into a stand-alone skill of their own — a `write-like-<name>` skill without scripts or DBs | [references/unfolding.md](references/unfolding.md) |
 
 Extraction is never implicit. A processing request with no profile does not turn into an extraction, and an extraction request without document pointers ("learn my style", "set this up for me") gets one question back — which documents, by path — and stops there. The skill does not scan disks or guess which files the user wrote: the corpus is the user's claim of authorship, and only the user can make it. Extraction writes the DB; processing only reads it.
 
