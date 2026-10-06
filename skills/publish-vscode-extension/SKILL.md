@@ -8,7 +8,7 @@ description: Publish a VS Code extension to the VS Code Marketplace and/or Open 
 There are two registries where VS Code extensions live:
 
 - **VS Code Marketplace** — Microsoft's registry. Consumed by VS Code, Visual Studio, and Azure DevOps. Authenticated with an Azure DevOps Personal Access Token (PAT). Tooling: `@vscode/vsce`.
-- **Open VSX Registry** — the Eclipse Foundation's open-source registry at https://open-vsx.org. Consumed by VS Codium, Gitpod, Theia-based IDEs, Cursor, Windsurf, code-server, and most non-Microsoft forks. Authenticated with a token issued by open-vsx.org after accepting the Eclipse Publisher Agreement. Tooling: `ovsx`.
+- **Open VSX Registry** — the Eclipse Foundation's open-source registry at https://open-vsx.org. Consumed by VS Codium, Theia-based IDEs, Cursor, Windsurf, code-server, and most non-Microsoft forks. Authenticated with a token issued by open-vsx.org after accepting the Eclipse Publisher Agreement. Tooling: `ovsx`.
 
 Most production extensions publish to **both**. The same `.vsix` works on either registry — *package once, publish twice*. Don't publish only to Marketplace; non-Microsoft VS Code distributions can't see those extensions.
 

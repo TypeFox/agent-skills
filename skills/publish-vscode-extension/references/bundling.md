@@ -4,7 +4,7 @@ Bundling collapses the extension's source files and its `node_modules` runtime d
 
 Three reasons it matters for publishing:
 
-1. **Web Extensions require it.** VS Code for Web (`vscode.dev`, `github.dev`) and Theia/Gitpod web hosts can only load extensions whose entry point is a single bundled file. An unbundled extension ships fine to Marketplace/Open VSX but silently fails to activate in any browser-hosted host. If "Web" is in the extension's `categories` or the manifest declares `"browser"`, bundling is a hard requirement.
+1. **Web Extensions require it.** VS Code for Web (`vscode.dev`, `github.dev`) and Theia web hosts can only load extensions whose entry point is a single bundled file. An unbundled extension ships fine to Marketplace/Open VSX but silently fails to activate in any browser-hosted host. If "Web" is in the extension's `categories` or the manifest declares `"browser"`, bundling is a hard requirement.
 2. **Activation latency.** VS Code loads the extension's main file synchronously during activation. Loading one ~200 KB bundle is consistently 5-10× faster than walking 100+ small files in `node_modules/`.
 3. **`.vsix` size.** Bundling typically cuts the `.vsix` by an order of magnitude because tree-shaking and minification drop unreachable code, and dev-only branches of dependencies disappear.
 
