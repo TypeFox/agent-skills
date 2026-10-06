@@ -2,6 +2,8 @@
 
 A collection of [agent skills](https://agentskills.io/) for the open source technologies maintained at [TypeFox](https://www.typefox.io/).
 
+Usage guides for every skill are on the [documentation website](https://typefox.dev/agent-skills/).
+
 ## Using Skills
 
 Install skills with the [`skills`](https://www.npmjs.com/package/skills) CLI:

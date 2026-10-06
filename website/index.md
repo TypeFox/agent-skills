@@ -2,7 +2,6 @@
 layout: home
 hero:
   name: TypeFox Agent Skills
-  text: Skills for the open source technologies maintained at TypeFox
   tagline: Reusable instructions that coding agents load when a task calls for them. Install once, and the matching skill activates from your conversation context.
   actions:
     - theme: brand
@@ -43,3 +42,7 @@ Or install the repository as a Claude Code plugin:
 ```
 
 Skills are activated automatically when their trigger conditions match your conversation context. See the [agent skills documentation](https://agentskills.io/) for how skills work and how to manage them.
+
+## Eclipse Foundation AI Registry
+
+These skills are also listed in the [Eclipse Foundation AI Registry](https://ai.open-vsx.org/), a catalog of skills, MCP servers, plugins and agents for AI-assisted development, curated by the organizations that publish them. The [TypeFox organization page](https://ai.open-vsx.org/orgs/typefox) shows every skill from this repository. The registry follows the `main` branch of this repository and refreshes daily, so a change merged here is listed there within a day.
