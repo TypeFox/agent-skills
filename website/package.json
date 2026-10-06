@@ -1,0 +1,17 @@
+{
+  "name": "agent-skills-website",
+  "private": true,
+  "description": "Documentation website for TypeFox Agent Skills, published to https://typefox.dev/agent-skills/",
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

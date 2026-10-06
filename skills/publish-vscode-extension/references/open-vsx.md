@@ -1,6 +1,6 @@
 # Open VSX Registry specifics
 
-The Open VSX Registry (https://open-vsx.org) is the Eclipse Foundation's vendor-neutral alternative to the VS Code Marketplace. VS Codium, Gitpod, Theia, Eclipse Che, Cursor, Windsurf, code-server, and most non-Microsoft VS Code distributions pull extensions from here — Microsoft's Marketplace ToS forbids non-Microsoft products from using it.
+The Open VSX Registry (https://open-vsx.org) is the Eclipse Foundation's vendor-neutral alternative to the VS Code Marketplace. VS Codium, Theia, Eclipse Che, Cursor, Windsurf, code-server, and most non-Microsoft VS Code distributions pull extensions from here — Microsoft's Marketplace ToS forbids non-Microsoft products from using it.
 
 The CLI is `ovsx`, published to npm. Installation: `npm install -g ovsx`. It can also be invoked as `npx ovsx`.
 

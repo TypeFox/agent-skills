@@ -1,6 +1,6 @@
 # TypeFox Agent Skills
 
-A collection of agent skills in the [agentskills.io](https://agentskills.io/) format for open source technologies maintained at TypeFox. The product is the Markdown skill definitions under `skills/` — there is no application to build. Scripts are Python 3.8+, stdlib-only; pytest is the only test dependency.
+A collection of agent skills in the [agentskills.io](https://agentskills.io/) format for open source technologies maintained at TypeFox. The product is the Markdown skill definitions under `skills/`; the only build is the documentation website under `website/`. Scripts are Python 3.8+, stdlib-only; pytest is the only test dependency.
 
 ## STOP — before running any skill evaluation
 
@@ -14,6 +14,8 @@ A session that already started with these files in context can still orchestrate
 pytest skills/agent-experience/scripts skills/write-like-me/scripts -q   # all script unit tests, <1s
 pytest skills/write-like-me/scripts -k NAME                              # single test by keyword
 python3 skills/agent-experience/scripts/check_docs.py --exclude 'skills/*/evals/*' .   # doc-freshness check, <1s
+npm --prefix website ci && npm --prefix website run build                # documentation website build (a dead link fails it)
+npm --prefix website run dev                                             # live preview at http://localhost:5173/agent-skills/
 ```
 
 Script tests live next to their scripts as `skills/<name>/scripts/test_*.py`; `pytest skills` would also collect eval fixtures' own tests, so name the script directories explicitly.
@@ -24,13 +26,15 @@ Installing skills for end use is `npx skills add TypeFox/agent-skills` (see READ
 
 - `skills/<name>/` — one skill per folder: `SKILL.md` (frontmatter `name` matches the folder; `description` states when to trigger *and* when not to; the body carries the procedure and points to the reference that owns each piece of detail), `references/` for that detail, loaded on demand, `evals/evals.json` for eval definitions, optional `assets/`, `scripts/`, and `data/` (bundled data files the skill reads).
 - `skills/<name>-workspace/` — gitignored eval output, recreated by skill-evals runs.
+- `website/` — VitePress sources for [typefox.dev/agent-skills](https://typefox.dev/agent-skills/): hand-written usage guides, one page per skill at the website root (`website/<skill-name>.md`, so the URL is `typefox.dev/agent-skills/<skill-name>`), `index.md` as the landing page, and `.vitepress/config.ts` for base path, sidebar, and search. Nothing on the site is generated from `skills/`. `.github/workflows/docs.yml` builds it on every PR that touches it and deploys from `main`.
 - To create or modify a skill use the skill-creator skill; to measure whether it helps use skill-evals (both installable per README).
 
 ## Conventions
 
 - Every skill ships evals in `evals/evals.json` (missing for ts-code-reviewer; adding them is planned as a standalone task).
 - Python scripts stay stdlib-only so they run anywhere with bare Python 3.8+ — they are run from the skill, never copied into target repos (registry distribution, e.g. PyPI, is a possible later step).
-- Skills that persist per-user state (write-like-me's style profile) keep it under `$HOME/.skills/<skill-name>/`, never in the target repo or the skill folder; the skill's schema reference documents the format and carries a version number.
+- Node is used only to build the website and stays confined to `website/` (its own `package.json`); no skill depends on it.
+- Skills that persist per-user state (write-like-me's style profile) keep it under `$HOME/.agents/<skill-name>/`, never in the target repo or the skill folder; the skill's schema reference documents the format and carries a version number.
 
 Skill changes mostly fold back findings — from an eval report, a run in another project, or a PR review — and fold-backs have produced the same three faults repeatedly. These rules fence them:
 
@@ -45,6 +49,8 @@ Skill changes mostly fold back findings — from an eval report, a run in anothe
 - Done means: the check_docs command above passes locally with output shown, and any changed `SKILL.md` frontmatter still matches its folder name. Run the pytest suite only when a change touches `skills/*/scripts/` — skill scripts are self-contained, so other changes cannot affect them.
 - A new skill ships its `evals/evals.json` in the same PR. A substantive change to an existing skill includes reviewing its `evals/evals.json` in the same change — do the prompts, expected outputs, and assertions still describe the changed behavior? — and updating it where they don't. Only *re-running* evals is a judgment call (they are token-expensive), not a gate; the spec review is cheap and always happens.
 - A behavior change to a script in `skills/*/scripts/` includes matching unit-test updates in the same change.
+- A change to a skill that alters how users interact with it — its triggers, modes, commands, what it asks of the user, where it keeps state — updates its usage guide `website/<skill-name>.md` in the same change, and a new skill ships its guide alongside its evals. The guides are hand-written (see `website/` under Why and where), so nothing else keeps them current.
+- A change under `website/` includes a passing website build (command above). A new page is also added to the sidebar in `website/.vitepress/config.ts`.
 - A change to skill content is checked for redundancy and consistency before it is done: grep a distinctive phrase of each added or changed rule across the skill's files and confirm it is stated once (pointers aside), and re-read every number, count, and step order the change touched in each file that mentions it.
 - If reality contradicts this file, fix it in the same change — never silently work around a stale rule.
 
