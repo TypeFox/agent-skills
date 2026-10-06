@@ -34,7 +34,7 @@ Installing skills for end use is `npx skills add TypeFox/agent-skills` (see READ
 - Every skill ships evals in `evals/evals.json` (missing for ts-code-reviewer; adding them is planned as a standalone task).
 - Python scripts stay stdlib-only so they run anywhere with bare Python 3.8+ — they are run from the skill, never copied into target repos (registry distribution, e.g. PyPI, is a possible later step).
 - Node is used only to build the website and stays confined to `website/` (its own `package.json`); no skill depends on it.
-- Skills that persist per-user state (write-like-me's style profile) keep it under `$HOME/.skills/<skill-name>/`, never in the target repo or the skill folder; the skill's schema reference documents the format and carries a version number.
+- Skills that persist per-user state (write-like-me's style profile) keep it under `$HOME/.agents/<skill-name>/`, never in the target repo or the skill folder; the skill's schema reference documents the format and carries a version number.
 
 Skill changes mostly fold back findings — from an eval report, a run in another project, or a PR review — and fold-backs have produced the same three faults repeatedly. These rules fence them:
 
