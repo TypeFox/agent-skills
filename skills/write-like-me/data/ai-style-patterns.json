@@ -8,7 +8,6 @@
     "documents": [
       {
         "id": "agent-experience-fable",
-        "path": "ai-generated/agent-experience_fable.md",
         "words": 2044,
         "register": "article",
         "generator": "Claude Fable 5",
@@ -17,7 +16,6 @@
       },
       {
         "id": "allstar-gemini-flash",
-        "path": "ai-generated/all-star_gemini-flash.md",
         "words": 888,
         "register": "article",
         "generator": "Gemini Flash",
@@ -26,7 +24,6 @@
       },
       {
         "id": "domain-ai-gpt",
-        "path": "ai-generated/domain-ai_gpt.md",
         "words": 3855,
         "register": "article",
         "generator": "GPT",
@@ -35,7 +32,6 @@
       },
       {
         "id": "domain-ai-sonnet",
-        "path": "ai-generated/domain-ai_sonnet.md",
         "words": 3461,
         "register": "article",
         "generator": "Claude Sonnet",
@@ -44,7 +40,6 @@
       },
       {
         "id": "email-1-introduction",
-        "path": "ai-generated/email_gemini-vs-gpt_1-introduction.txt",
         "words": 674,
         "register": "email",
         "generator": "Gemini + GPT (two-party roleplay)",
@@ -53,7 +48,6 @@
       },
       {
         "id": "email-2-scoping",
-        "path": "ai-generated/email_gemini-vs-gpt_2-scoping.txt",
         "words": 1140,
         "register": "email",
         "generator": "Gemini + GPT (two-party roleplay)",
@@ -62,7 +56,6 @@
       },
       {
         "id": "email-3-kickoff-prep",
-        "path": "ai-generated/email_gemini-vs-gpt_3-kickoff-prep.txt",
         "words": 763,
         "register": "email",
         "generator": "Gemini + GPT (two-party roleplay)",
@@ -71,7 +64,6 @@
       },
       {
         "id": "email-4-kickoff-recap",
-        "path": "ai-generated/email_gemini-vs-gpt_4-kickoff-recap.txt",
         "words": 1072,
         "register": "email",
         "generator": "Gemini + GPT (two-party roleplay)",
@@ -80,7 +72,6 @@
       },
       {
         "id": "email-5-ui-and-incident",
-        "path": "ai-generated/email_gemini-vs-gpt_5-ui-and-incident.txt",
         "words": 1507,
         "register": "email",
         "generator": "Gemini + GPT (two-party roleplay)",
@@ -89,7 +80,6 @@
       },
       {
         "id": "email-6-language-design",
-        "path": "ai-generated/email_gemini-vs-gpt_6-language-design.txt",
         "words": 1909,
         "register": "email",
         "generator": "Gemini + GPT (two-party roleplay)",
@@ -98,7 +88,6 @@
       },
       {
         "id": "email-7-polish-and-ai-context",
-        "path": "ai-generated/email_gemini-vs-gpt_7-polish-and-ai-context.txt",
         "words": 2011,
         "register": "email",
         "generator": "Gemini + GPT (two-party roleplay)",
@@ -107,7 +96,6 @@
       },
       {
         "id": "email-8-wrap-up",
-        "path": "ai-generated/email_gemini-vs-gpt_8-wrap-up.txt",
         "words": 686,
         "register": "email",
         "generator": "Gemini + GPT (two-party roleplay)",
@@ -116,7 +104,6 @@
       },
       {
         "id": "generating-code-gemini",
-        "path": "ai-generated/generating-code_gemini-thinking.md",
         "words": 628,
         "register": "article",
         "generator": "Gemini (thinking)",
@@ -125,7 +112,6 @@
       },
       {
         "id": "langium-governance-opus",
-        "path": "ai-generated/langium-governance_opus.md",
         "words": 1292,
         "register": "article",
         "generator": "Claude Opus",
@@ -134,7 +120,6 @@
       },
       {
         "id": "langium-llvm-fable",
-        "path": "ai-generated/langium-llvm_fable.md",
         "words": 1211,
         "register": "article",
         "generator": "Claude Fable 5",
@@ -143,7 +128,6 @@
       },
       {
         "id": "linkedin-gemini",
-        "path": "ai-generated/linkedin-posts_gemini.md",
         "words": 572,
         "register": "social",
         "generator": "Gemini",
@@ -152,7 +136,6 @@
       },
       {
         "id": "linkedin-gpt",
-        "path": "ai-generated/linkedin-posts_gpt.md",
         "words": 1169,
         "register": "social",
         "generator": "GPT",
@@ -161,7 +144,6 @@
       },
       {
         "id": "linkedin-opus",
-        "path": "ai-generated/linkedin-posts_opus.md",
         "words": 1268,
         "register": "social",
         "generator": "Claude Opus",
@@ -170,7 +152,6 @@
       },
       {
         "id": "lionweb-sonnet",
-        "path": "ai-generated/lionweb-langium_sonnet.md",
         "words": 1820,
         "register": "article",
         "generator": "Claude Sonnet",
@@ -179,7 +160,6 @@
       },
       {
         "id": "monaco-opus",
-        "path": "ai-generated/monaco-languageclient_opus.md",
         "words": 1464,
         "register": "article",
         "generator": "Claude Opus",
@@ -188,7 +168,6 @@
       },
       {
         "id": "parser-performance-gpt",
-        "path": "ai-generated/parser-performance_gpt.md",
         "words": 1630,
         "register": "article",
         "generator": "GPT",
@@ -197,7 +176,6 @@
       },
       {
         "id": "presentations-gemini",
-        "path": "ai-generated/presentations_gemini.md",
         "words": 524,
         "register": "abstract",
         "generator": "Gemini",
@@ -206,7 +184,6 @@
       },
       {
         "id": "presentations-gpt",
-        "path": "ai-generated/presentations_gpt.md",
         "words": 1123,
         "register": "abstract",
         "generator": "GPT",
@@ -215,7 +192,6 @@
       },
       {
         "id": "presentations-sonnet",
-        "path": "ai-generated/presentations_sonnet.md",
         "words": 897,
         "register": "abstract",
         "generator": "Claude Sonnet",
@@ -224,7 +200,6 @@
       },
       {
         "id": "software-business-gemini",
-        "path": "ai-generated/software-business_gemini.md",
         "words": 702,
         "register": "report",
         "generator": "Gemini",
@@ -233,7 +208,6 @@
       },
       {
         "id": "software-business-gpt",
-        "path": "ai-generated/software-business_gpt.md",
         "words": 3521,
         "register": "report",
         "generator": "GPT",
@@ -242,7 +216,6 @@
       },
       {
         "id": "software-business-sonnet",
-        "path": "ai-generated/software-business_sonnet.md",
         "words": 2767,
         "register": "report",
         "generator": "Claude Sonnet",
@@ -251,7 +224,6 @@
       },
       {
         "id": "textual-graphical-gpt",
-        "path": "ai-generated/textual-graphical_gpt.md",
         "words": 1264,
         "register": "article",
         "generator": "GPT",
@@ -260,7 +232,6 @@
       },
       {
         "id": "theia-haiku",
-        "path": "ai-generated/theia-notebooks_haiku.md",
         "words": 1229,
         "register": "article",
         "generator": "Claude Haiku",
@@ -269,7 +240,6 @@
       },
       {
         "id": "vscode-extension-gemini-pro",
-        "path": "ai-generated/vscode-extension_gemini-pro.md",
         "words": 779,
         "register": "article",
         "generator": "Gemini Pro",
@@ -278,7 +248,6 @@
       },
       {
         "id": "write-like-me-skill",
-        "path": "skills/write-like-me_SKILL.md",
         "words": 2189,
         "register": "docs",
         "sole_authored": false,
@@ -288,7 +257,6 @@
       },
       {
         "id": "write-like-me-processing",
-        "path": "skills/write-like-me_processing.md",
         "words": 5602,
         "register": "docs",
         "sole_authored": false,
@@ -298,7 +266,6 @@
       },
       {
         "id": "write-like-me-unfolding",
-        "path": "skills/write-like-me_unfolding.md",
         "words": 2697,
         "register": "docs",
         "sole_authored": false,
@@ -308,7 +275,6 @@
       },
       {
         "id": "write-like-me-taxonomy",
-        "path": "skills/write-like-me_taxonomy.md",
         "words": 857,
         "register": "docs",
         "sole_authored": false,
@@ -318,7 +284,6 @@
       },
       {
         "id": "write-like-me-technique",
-        "path": "skills/write-like-me_technique.md",
         "words": 4020,
         "register": "docs",
         "sole_authored": false,
@@ -328,7 +293,6 @@
       },
       {
         "id": "write-like-me-db-schema",
-        "path": "skills/write-like-me_db-schema.md",
         "words": 1269,
         "register": "docs",
         "sole_authored": false,
@@ -338,7 +302,6 @@
       },
       {
         "id": "write-like-me-german-l1-guidance",
-        "path": "skills/write-like-me_german-l1-guidance.md",
         "words": 439,
         "register": "docs",
         "sole_authored": false,
@@ -348,7 +311,6 @@
       },
       {
         "id": "write-like-me-migration",
-        "path": "skills/write-like-me_migration.md",
         "words": 144,
         "register": "docs",
         "sole_authored": false,
@@ -358,7 +320,6 @@
       },
       {
         "id": "agent-experience-skill",
-        "path": "skills/agent-experience_SKILL.md",
         "words": 3328,
         "register": "docs",
         "sole_authored": false,
@@ -368,7 +329,6 @@
       },
       {
         "id": "agent-experience-agents-md",
-        "path": "skills/agent-experience_agents-md.md",
         "words": 1375,
         "register": "docs",
         "sole_authored": false,
@@ -378,7 +338,6 @@
       },
       {
         "id": "agent-experience-audit-playbook",
-        "path": "skills/agent-experience_audit-playbook.md",
         "words": 1989,
         "register": "docs",
         "sole_authored": false,
@@ -388,7 +347,6 @@
       },
       {
         "id": "agent-experience-docs-structure",
-        "path": "skills/agent-experience_docs-structure.md",
         "words": 2883,
         "register": "docs",
         "sole_authored": false,
@@ -398,7 +356,6 @@
       },
       {
         "id": "agent-experience-techniques",
-        "path": "skills/agent-experience_techniques.md",
         "words": 2912,
         "register": "docs",
         "sole_authored": false,
@@ -408,7 +365,6 @@
       },
       {
         "id": "agent-experience-interview",
-        "path": "skills/agent-experience_interview.md",
         "words": 2219,
         "register": "docs",
         "sole_authored": false,
@@ -418,7 +374,6 @@
       },
       {
         "id": "skill-evals-skill",
-        "path": "skills/skill-evals_SKILL.md",
         "words": 5766,
         "register": "docs",
         "sole_authored": false,
@@ -428,7 +383,6 @@
       },
       {
         "id": "skill-evals-claude-code-workflow-tool",
-        "path": "skills/skill-evals_claude-code-workflow-tool.md",
         "words": 1370,
         "register": "docs",
         "sole_authored": false,
@@ -446,7 +400,8 @@
       "email": 1,
       "docs": 3
     },
-    "note": "Maintainers' AI corpus at repo data/write-like-me: 46 machine-generated documents in six registers. ai-generated/: 30 documents (22 pieces plus one email thread in eight stage files; GPT, Claude Fable/Opus/Sonnet/Haiku, Gemini Pro/Flash/Thinking) across article, report, social, abstract and email — the corpus of the 2026-09-09 extraction. skills/: 16 snapshots of three of this repository's agent-written skills (write-like-me, agent-experience, skill-evals: SKILL.md and every reference, copied at commit 6685400 so that quotes stay verifiable), register docs, added 2026-10-07; written by Claude coding agents (Fable 5.1, earlier drafts Fable 5 and Opus 5; skill-evals by an unrecorded mid-2026 Claude model) under a maintainer's direction and edited across review rounds, hence marked co-authored. Vetting is provenance on the maintainers' word; `measure --vet` flags presentations_gemini (ai_vocabulary) and generating-code_gemini-thinking (label_lead) as Gemini-typical outliers and three docs files on the constructions they discuss; none dropped. Four of the docs files describe writing markers, so counters there also fire on quoted examples: counts stay as the script wrote them, affected rows say so, and no evidence quote is a mention. register_weights {article 4, docs 3, report 2, social 2, abstract 2, email 1}: article keeps the largest share (29%), docs the second (21%), so that neither the one co-authored email thread nor one model family's docs register (47% of the words) defines every rate; weights move `rate` only (db-schema.md). The 2026-10-07 extraction was a four-reader Phase A over the docs files, merged with the reviewed DB, recounted over all 46 documents, then trimmed to the rows that carry a machine tell: neutral statistics (bold, italic, sentence length, person, modals) and rows under 0.3/1k with no register above 60% spread were dropped, quotes capped at four per row. Judged rows are counted under written rules: imperative = one per run of two or more consecutive reader-addressed imperative sentences; repetition = one per anaphora run of three or more consecutive sentences or paragraph openers sharing a frame (question volleys and imperative runs go to their own rows); enthusiasm = one per email reply or social post that opens by praising or validating the previous message, or an exclamatory launch; closer-type = 1 per piece (per post or abstract in a multi-piece file) that ends on a punchline, title echo or call to action; fragment = one per verbless or subjectless prose sentence; candor-claim = one per sentence announcing the text's own honesty. Open items: prompt provenance (plainly- vs. style-prompted) and a second, independent email thread."
+    "note": "Maintainers' AI corpus at repo data/write-like-me: 46 machine-generated documents in six registers. ai-generated/: 30 documents (22 pieces plus one email thread in eight stage files; GPT, Claude Fable/Opus/Sonnet/Haiku, Gemini Pro/Flash/Thinking) across article, report, social, abstract and email — the corpus of the 2026-09-09 extraction. skills/: 16 snapshots of three of this repository's agent-written skills (write-like-me, agent-experience, skill-evals: SKILL.md and every reference, copied at commit 6685400 so that quotes stay verifiable), register docs, added 2026-10-07; written by Claude coding agents (Fable 5.1, earlier drafts Fable 5 and Opus 5; skill-evals by an unrecorded mid-2026 Claude model) under a maintainer's direction and edited across review rounds, hence marked co-authored. Vetting is provenance on the maintainers' word; `measure --vet` flags presentations_gemini (ai_vocabulary) and generating-code_gemini-thinking (label_lead) as Gemini-typical outliers and three docs files on the constructions they discuss; none dropped. Four of the docs files describe writing markers, so counters there also fire on quoted examples: counts stay as the script wrote them, affected rows say so, and no evidence quote is a mention. register_weights {article 4, docs 3, report 2, social 2, abstract 2, email 1}: article keeps the largest share (29%), docs the second (21%), so that neither the one co-authored email thread nor one model family's docs register (47% of the words) defines every rate; weights move `rate` only (db-schema.md). The 2026-10-07 extraction was a four-reader Phase A over the docs files, merged with the reviewed DB, recounted over all 46 documents, then trimmed to the rows that carry a machine tell: neutral statistics (bold, italic, sentence length, person, modals) and rows under 0.3/1k with no register above 60% spread were dropped, quotes capped at four per row. Judged rows are counted under written rules: imperative = one per run of two or more consecutive reader-addressed imperative sentences; repetition = one per anaphora run of three or more consecutive sentences or paragraph openers sharing a frame (question volleys and imperative runs go to their own rows); enthusiasm = one per email reply or social post that opens by praising or validating the previous message, or an exclamatory launch; closer-type = 1 per piece (per post or abstract in a multi-piece file) that ends on a punchline, title echo or call to action; fragment = one per verbless or subjectless prose sentence; candor-claim = one per sentence announcing the text's own honesty. Open items: prompt provenance (plainly- vs. style-prompted) and a second, independent email thread. Sealed 2026-10-07 after the review round; the unsealed DB, whose paths `validate --corpus-dir` verifies against data/write-like-me, is git commit 61e5e0b of TypeFox/agent-skills.",
+    "sealed": "2026-10-07"
   },
   "review": {
     "status": "reviewed",
