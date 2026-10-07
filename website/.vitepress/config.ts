@@ -6,7 +6,7 @@ const base = '/agent-skills/';
 
 export default defineConfig({
     title: 'TypeFox Agent Skills',
-    description: 'Agent skills for the open source technologies maintained at TypeFox',
+    description: 'General-purpose agent skills maintained by TypeFox',
     base,
     cleanUrls: true,
     themeConfig: {

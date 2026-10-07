@@ -1,6 +1,6 @@
 # TypeFox Agent Skills
 
-A collection of [agent skills](https://agentskills.io/) for the open source technologies maintained at [TypeFox](https://www.typefox.io/).
+A collection of general-purpose [agent skills](https://agentskills.io/) maintained by [TypeFox](https://www.typefox.io/).
 
 Usage guides for every skill are on the [documentation website](https://typefox.dev/agent-skills/).
 

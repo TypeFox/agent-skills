@@ -4,12 +4,12 @@
     "name": "TypeFox",
     "url": "https://www.typefox.io"
   },
-  "description": "TypeFox's agent skills for open source technologies, as an installable Claude Code plugin.",
+  "description": "General-purpose agent skills from TypeFox, as an installable Claude Code plugin.",
   "plugins": [
     {
       "name": "typefox-agent-skills",
       "source": "./",
-      "description": "TypeFox's agent skills for open source technologies: agent experience (AX), idiomatic Go and Go documentation, Eclipse Dash license checks, VS Code extension publishing, TypeScript code review, and skill evaluation.",
+      "description": "General-purpose agent skills from TypeFox. They capture engineering practices, development workflows, and writing guidance that apply across codebases.",
       "category": "engineering",
       "keywords": [
         "typefox",
