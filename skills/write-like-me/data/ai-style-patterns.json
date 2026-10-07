@@ -449,7 +449,9 @@
     "note": "Maintainers' AI corpus at repo data/write-like-me: 46 machine-generated documents in six registers. ai-generated/: 30 documents (22 pieces plus one email thread in eight stage files; GPT, Claude Fable/Opus/Sonnet/Haiku, Gemini Pro/Flash/Thinking) across article, report, social, abstract and email — the corpus of the 2026-09-09 extraction. skills/: 16 snapshots of three of this repository's agent-written skills (write-like-me, agent-experience, skill-evals: SKILL.md and every reference, copied at commit 6685400 so that quotes stay verifiable), register docs, added 2026-10-07; written by Claude coding agents (Fable 5.1, earlier drafts Fable 5 and Opus 5; skill-evals by an unrecorded mid-2026 Claude model) under a maintainer's direction and edited across review rounds, hence marked co-authored. Vetting is provenance on the maintainers' word; `measure --vet` flags presentations_gemini (ai_vocabulary) and generating-code_gemini-thinking (label_lead) as Gemini-typical outliers and three docs files on the constructions they discuss; none dropped. Four of the docs files describe writing markers, so counters there also fire on quoted examples: counts stay as the script wrote them, affected rows say so, and no evidence quote is a mention. register_weights {article 4, docs 3, report 2, social 2, abstract 2, email 1}: article keeps the largest share (29%), docs the second (21%), so that neither the one co-authored email thread nor one model family's docs register (47% of the words) defines every rate; weights move `rate` only (db-schema.md). The 2026-10-07 extraction was a four-reader Phase A over the docs files, merged with the reviewed DB, recounted over all 46 documents, then trimmed to the rows that carry a machine tell: neutral statistics (bold, italic, sentence length, person, modals) and rows under 0.3/1k with no register above 60% spread were dropped, quotes capped at four per row. Judged rows are counted under written rules: imperative = one per run of two or more consecutive reader-addressed imperative sentences; repetition = one per anaphora run of three or more consecutive sentences or paragraph openers sharing a frame (question volleys and imperative runs go to their own rows); enthusiasm = one per email reply or social post that opens by praising or validating the previous message, or an exclamatory launch; closer-type = 1 per piece (per post or abstract in a multi-piece file) that ends on a punchline, title echo or call to action; fragment = one per verbless or subjectless prose sentence; candor-claim = one per sentence announcing the text's own honesty. Open items: prompt provenance (plainly- vs. style-prompted) and a second, independent email thread."
   },
   "review": {
-    "status": "pending"
+    "status": "reviewed",
+    "date": "2026-10-07",
+    "reviewer": "Miro Spönemann (TypeFox maintainers)"
   },
   "patterns": [
     {
@@ -915,10 +917,10 @@
         }
       ],
       "tier": 2,
-      "tier_override": null,
+      "tier_override": 1,
       "review": {
         "verdict": "confirmed",
-        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+        "note": "Review round 2026-10-07: demoted 1 -> 2 only because spread now counts 16 docs files; present in 73% of the earlier files, so the earlier tier is kept by override."
       },
       "rate": 1.16,
       "spread": 0.587,
@@ -1028,7 +1030,11 @@
       "tier": 2,
       "tier_reason": "present in under 60% of the measured documents",
       "note": "Docs register 0.79/1k in 12 of 16 files; elsewhere 0.36/1k in 10 of 30.",
-      "regex": "\\b[Ww](?:hatever|hichever|herever|henever|hoever)\\b|\\bhowever (?!,)(?:many|much|large|small|long|often|few|hard|loudly|well|wide)\\b"
+      "regex": "\\b[Ww](?:hatever|hichever|herever|henever|hoever)\\b|\\bhowever (?!,)(?:many|much|large|small|long|often|few|hard|loudly|well|wide)\\b",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "connectives/conditional-form-where",
@@ -1104,22 +1110,28 @@
           "quote": "Where two rows speak to one construction, the edit needs both inside the ceiling"
         }
       ],
-      "rate": 0.189,
-      "spread": 0.304,
+      "rate": 0.819,
+      "spread": 0.812,
       "range": [
         0.0,
         2.678
       ],
       "coverage": 1.0,
       "registers": [
-        "article",
         "docs"
       ],
-      "tier": 3,
-      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes",
-      "note": "Excludes questions (Where is …). A docs-register habit left corpus-wide. Docs register 0.82/1k in 13 of 16 files; elsewhere 0.02/1k in 1 of 30.",
+      "tier": 1,
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, single-register corpus (register condition waived), >=3 quotes",
+      "note": "Excludes questions (Where is …). A docs-register habit left corpus-wide. Docs register 0.82/1k in 13 of 16 files; elsewhere 0.02/1k in 1 of 30. register_scope docs (review round 2026-10-07): present in at most 20% of the earlier files, so the pooled rate would overstate it for every other register.",
       "regex": "(?:^|(?<=[.!?] ))Where\\b|(?<=[;:] )where\\b",
-      "exclude": "Where (?:do|does|did|is|are|was|were)\\b"
+      "exclude": "Where (?:do|does|did|is|are|was|were)\\b",
+      "register_scope": [
+        "docs"
+      ],
+      "review": {
+        "verdict": "nuanced",
+        "note": "Review round 2026-10-07: a docs-register habit; scoped to docs rather than left corpus-wide because it is near-absent in the five earlier registers."
+      }
     },
     {
       "id": "connectives/formal-connective",
@@ -1307,7 +1319,11 @@
         "thus"
       ],
       "note": "Excludes so that, so on, so far; so that itself is rare in every register. Docs register 3.02/1k in 15 of 16 files; elsewhere 0.87/1k in 16 of 30.",
-      "regex": "[,—]\\s+so\\b(?! that\\b| on\\b| far\\b| much\\b| many\\b| long\\b)"
+      "regex": "[,—]\\s+so\\b(?! that\\b| on\\b| far\\b| much\\b| many\\b| long\\b)",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "connectives/medial-therefore",
@@ -1679,7 +1695,11 @@
       "regex": "\\b(?:Section|Figure|Table|Chapter|Listing|Steps?|Phases?|Rules?|rules?|Activit(?:y|ies)|Gates?|Rounds?|Iterations?|pass|tiers?|standards?|rungs?|themes?)\\s+\\d",
       "register_scope": [
         "docs"
-      ]
+      ],
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "content-conventions/emoji-bullet",
@@ -1858,7 +1878,11 @@
       ],
       "tier": 2,
       "tier_reason": "present in under 60% of the measured documents; fewer than 3 quotes",
-      "note": "Fires on any quoted line of 15–160 characters opening with a capital; in the docs files the hits are sample questions and prompts. Docs register 0.46/1k in 7 of 16 files; elsewhere 0.55/1k in 15 of 30."
+      "note": "Fires on any quoted line of 15–160 characters opening with a capital; in the docs files the hits are sample questions and prompts. Docs register 0.46/1k in 7 of 16 files; elsewhere 0.55/1k in 15 of 30.",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "content-conventions/self-reference",
@@ -1955,7 +1979,11 @@
       "exclude": "\\b(?:from|still|is|sits|stays|lands|sorts?|everything) above\\b|\\babove (?:zero|half|its|their|it|them|[\\$~]?\\d|the (?:author|range|ceiling|default|maximum|rate|line|floor))\\b",
       "register_scope": [
         "docs"
-      ]
+      ],
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "content-conventions/source-as-agent",
@@ -2219,22 +2247,27 @@
         "so-called",
         "called"
       ],
-      "rate": 0.345,
-      "spread": 0.37,
+      "rate": 1.05,
+      "spread": 0.688,
       "range": [
         0.0,
         3.501
       ],
       "coverage": 1.0,
       "registers": [
-        "article",
-        "docs",
-        "report"
+        "docs"
       ],
-      "tier": 3,
-      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes",
-      "note": "Docs register 1.05/1k in 11 of 16 files; elsewhere 0.18/1k in 6 of 30.",
-      "regex": "\\b(?:is|are|as) (?:the |a |an )?\\*\\*[^*\\n]{3,45}\\*\\*(?=[:,. —(])|(?:^|(?<=[.!?] ))\\*\\*[A-Z][^*\\n]{2,40}\\*\\* (?:is|are) "
+      "tier": 1,
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, single-register corpus (register condition waived), >=3 quotes",
+      "note": "Docs register 1.05/1k in 11 of 16 files; elsewhere 0.18/1k in 6 of 30. register_scope docs (review round 2026-10-07): present in at most 20% of the earlier files, so the pooled rate would overstate it for every other register.",
+      "regex": "\\b(?:is|are|as) (?:the |a |an )?\\*\\*[^*\\n]{3,45}\\*\\*(?=[:,. —(])|(?:^|(?<=[.!?] ))\\*\\*[A-Z][^*\\n]{2,40}\\*\\* (?:is|are) ",
+      "register_scope": [
+        "docs"
+      ],
+      "review": {
+        "verdict": "nuanced",
+        "note": "Review round 2026-10-07: a docs-register habit; scoped to docs rather than left corpus-wide because it is near-absent in the five earlier registers."
+      }
     },
     {
       "id": "contrast-frames/comma-not",
@@ -2409,21 +2442,27 @@
           "quote": "Migration is an org-level decision — a roadmap proposal, never a default action."
         }
       ],
-      "rate": 0.367,
-      "spread": 0.348,
+      "rate": 1.587,
+      "spread": 0.875,
       "range": [
         0.0,
         5.091
       ],
       "coverage": 1.0,
       "registers": [
-        "article",
         "docs"
       ],
-      "tier": 3,
-      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes",
-      "note": "The never counterpart of comma-not (whose counter matches not only); also catches the dash form. Docs register 1.59/1k in 14 of 16 files; elsewhere 0.05/1k in 2 of 30.",
-      "regex": "(?:,|—|;) never (?!(?:again|mind|before|once|more|been|be|to|had|has|have|was|were|is|are|did|does|do|will|would|should|could|can|gets?|got|goes|went)\\b)[\\w'’-]+"
+      "tier": 1,
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, single-register corpus (register condition waived), >=3 quotes",
+      "note": "The never counterpart of comma-not (whose counter matches not only); also catches the dash form. Docs register 1.59/1k in 14 of 16 files; elsewhere 0.05/1k in 2 of 30. register_scope docs (review round 2026-10-07): present in at most 20% of the earlier files, so the pooled rate would overstate it for every other register.",
+      "regex": "(?:,|—|;) never (?!(?:again|mind|before|once|more|been|be|to|had|has|have|was|were|is|are|did|does|do|will|would|should|could|can|gets?|got|goes|went)\\b)[\\w'’-]+",
+      "register_scope": [
+        "docs"
+      ],
+      "review": {
+        "verdict": "nuanced",
+        "note": "Review round 2026-10-07: a docs-register habit; scoped to docs rather than left corpus-wide because it is near-absent in the five earlier registers."
+      }
     },
     {
       "id": "contrast-frames/not-but",
@@ -2605,7 +2644,11 @@
       "tier": 3,
       "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes",
       "note": "Docs register 0.49/1k in 9 of 16 files; elsewhere 0.16/1k in 6 of 30.",
-      "regex": "\\b(?:beats?|wins?(?: over)?|(?:is|are) (?:worse|better) than)\\b|\\bprefer(?:red)? [^.;,\\n]{2,40}\\bover\\b|(?:^|: |\\*\\*)[A-Z][a-z]+(?: [a-z]+)? over [a-z]+"
+      "regex": "\\b(?:beats?|wins?(?: over)?|(?:is|are) (?:worse|better) than)\\b|\\bprefer(?:red)? [^.;,\\n]{2,40}\\bover\\b|(?:^|: |\\*\\*)[A-Z][a-z]+(?: [a-z]+)? over [a-z]+",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "contrast-frames/rather-than",
@@ -3070,23 +3113,27 @@
           "quote": "Makefile/justfile/package scripts as the single discoverable verb set"
         }
       ],
-      "rate": 0.316,
-      "spread": 0.348,
+      "rate": 0.973,
+      "spread": 0.688,
       "range": [
         0.0,
         2.364
       ],
       "coverage": 1.0,
       "registers": [
-        "article",
-        "docs",
-        "email",
-        "report"
+        "docs"
       ],
-      "tier": 3,
-      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes",
-      "note": "Docs register 0.97/1k in 11 of 16 files; elsewhere 0.18/1k in 5 of 30.",
-      "regex": "\\bthe (?:one|single|only) (?!of\\b|and\\b|or\\b|hand\\b)[a-z]"
+      "tier": 1,
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, single-register corpus (register condition waived), >=3 quotes",
+      "note": "Docs register 0.97/1k in 11 of 16 files; elsewhere 0.18/1k in 5 of 30. register_scope docs (review round 2026-10-07): present in at most 20% of the earlier files, so the pooled rate would overstate it for every other register.",
+      "regex": "\\bthe (?:one|single|only) (?!of\\b|and\\b|or\\b|hand\\b)[a-z]",
+      "register_scope": [
+        "docs"
+      ],
+      "review": {
+        "verdict": "nuanced",
+        "note": "Review round 2026-10-07: a docs-register habit; scoped to docs rather than left corpus-wide because it is near-absent in the five earlier registers."
+      }
     },
     {
       "id": "emphasis/repetition",
@@ -3274,7 +3321,11 @@
       "tier": 2,
       "tier_reason": "present in under 60% of the measured documents",
       "note": "Single-word italic spans; in the write-like-me references about a third are cited forms rather than stress. Docs register 3.15/1k in 15 of 16 files; elsewhere 0.75/1k in 11 of 30.",
-      "regex": "(?<![\\w*_])(?:\\*[\\w'’-]+\\*|_[\\w'’-]+_)(?![\\w*_])"
+      "regex": "(?<![\\w*_])(?:\\*[\\w'’-]+\\*|_[\\w'’-]+_)(?![\\w*_])",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "grammar-habits/distributive-per",
@@ -3347,21 +3398,26 @@
           "quote": "one column per register in the corpus, one row per register-sensitive habit"
         }
       ],
-      "rate": 0.397,
-      "spread": 0.413,
+      "rate": 1.511,
+      "spread": 0.938,
       "range": [
         0.0,
         4.556
       ],
       "coverage": 1.0,
       "registers": [
-        "article",
-        "docs",
-        "report"
+        "docs"
       ],
-      "tier": 2,
-      "tier_reason": "present in under 60% of the measured documents",
-      "note": "Includes the 'one X per Y' allocation formula. Docs register 1.51/1k in 15 of 16 files; elsewhere 0.11/1k in 4 of 30."
+      "tier": 1,
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, single-register corpus (register condition waived), >=3 quotes",
+      "note": "Includes the 'one X per Y' allocation formula. Docs register 1.51/1k in 15 of 16 files; elsewhere 0.11/1k in 4 of 30. register_scope docs (review round 2026-10-07): present in at most 20% of the earlier files, so the pooled rate would overstate it for every other register.",
+      "register_scope": [
+        "docs"
+      ],
+      "review": {
+        "verdict": "nuanced",
+        "note": "Review round 2026-10-07: a docs-register habit; scoped to docs rather than left corpus-wide because it is near-absent in the five earlier registers."
+      }
     },
     {
       "id": "grammar-habits/inanimate-possessive",
@@ -3451,7 +3507,11 @@
       ],
       "tier": 1,
       "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
-      "note": "Excludes person nouns and the it's/that's contractions. Docs register 5.09/1k in 16 of 16 files; elsewhere 1.37/1k in 22 of 30."
+      "note": "Excludes person nouns and the it's/that's contractions. Docs register 5.09/1k in 16 of 16 files; elsewhere 1.37/1k in 22 of 30.",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "headings/colon-heading",
@@ -3526,10 +3586,10 @@
         }
       ],
       "tier": 2,
-      "tier_override": null,
+      "tier_override": 1,
       "review": {
         "verdict": "confirmed",
-        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+        "note": "Review round 2026-10-07: demoted 1 -> 2 by the docs files' spread; 63% of the earlier files show it, earlier tier kept by override."
       },
       "rate": 0.278,
       "spread": 0.543,
@@ -3638,7 +3698,11 @@
       "regex": "^[^\\n—]{2,60} — ",
       "register_scope": [
         "docs"
-      ]
+      ],
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "headings/heading-case",
@@ -3820,7 +3884,11 @@
       "tier_reason": "present in under 60% of the measured documents",
       "note": "Requires an inanimate subject (the validator, the counters, it, they) before the verb; human subjects are excluded. Docs register 1.51/1k in 14 of 16 files; elsewhere 0.36/1k in 8 of 30.",
       "regex": "(?:``|\\b(?:[Tt]he|[Aa]n?|[Ee]very|[Ee]ach|[Tt]his|[Tt]hat|[Ii]ts|[Nn]o|[Ww]hich|[Bb]oth) [a-z-]+|\\b[Ii]t|\\b[Tt]hey) (?:never |only |then |also |still |reliably |now |cannot |does not |do not )?(?:refuses?|rejects?|warns?|knows?|trusts?|expects?|sees?|see|know|complains?|tells?|asks?|notices?|remembers?|forgets?|ignores?|skips?|decides?|learns?|wants?|believes?|says?|say|treats?|respects?|enforces?|guess(?:es)?|assumes?)\\b",
-      "exclude": "\\b(?:[Tt]he|[Aa]n?|[Ee]very|[Ee]ach|[Tt]his|[Tt]hat) (?:author|user|reader|maintainers?|reviewer|person|agent|subagent|stranger|colleague|people|writer|native)s? (?:never |only |then |also |still |reliably |now |cannot |does not |do not )?(?:refuses?|rejects?|warns?|knows?|trusts?|expects?|sees?|see|know|complains?|tells?|asks?|notices?|remembers?|forgets?|ignores?|skips?|decides?|learns?|wants?|believes?|says?|say|treats?|respects?|enforces?|guess(?:es)?|assumes?)\\b"
+      "exclude": "\\b(?:[Tt]he|[Aa]n?|[Ee]very|[Ee]ach|[Tt]his|[Tt]hat) (?:author|user|reader|maintainers?|reviewer|person|agent|subagent|stranger|colleague|people|writer|native)s? (?:never |only |then |also |still |reliably |now |cannot |does not |do not )?(?:refuses?|rejects?|warns?|knows?|trusts?|expects?|sees?|see|know|complains?|tells?|asks?|notices?|remembers?|forgets?|ignores?|skips?|decides?|learns?|wants?|believes?|says?|say|treats?|respects?|enforces?|guess(?:es)?|assumes?)\\b",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "imagery/metaphor-domain-economy",
@@ -3914,7 +3982,11 @@
       "tier": 1,
       "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
       "note": "Noisy on texts whose subject is cost. Docs register 2.97/1k in 13 of 16 files; elsewhere 2.12/1k in 20 of 30.",
-      "regex": "\\b(?:costs?|costing|costly|worth|saves?|pays? (?:for|off)|price|cheap(?:er|ly|est)?|expensive|earn(?:s|ed|ing)?|spends?|afford|buys?|bought)\\b"
+      "regex": "\\b(?:costs?|costing|costly|worth|saves?|pays? (?:for|off)|price|cheap(?:er|ly|est)?|expensive|earn(?:s|ed|ing)?|spends?|afford|buys?|bought)\\b",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "lists/label-led-item",
@@ -4592,7 +4664,11 @@
       ],
       "tier": 1,
       "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
-      "note": "Docs register 2.82/1k in 14 of 16 files; elsewhere 1.21/1k in 19 of 30."
+      "note": "Docs register 2.82/1k in 14 of 16 files; elsewhere 1.21/1k in 19 of 30.",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "punctuation/long-parenthetical",
@@ -4669,22 +4745,26 @@
           "quote": "(Recommend a conventional layering for the chosen topology and let the user correct it.)"
         }
       ],
-      "rate": 0.764,
-      "spread": 0.413,
+      "rate": 2.739,
+      "spread": 0.938,
       "range": [
         0.0,
         5.028
       ],
       "coverage": 1.0,
       "registers": [
-        "article",
-        "docs",
-        "email",
-        "report"
+        "docs"
       ],
-      "tier": 2,
-      "tier_reason": "present in under 60% of the measured documents",
-      "note": "Docs register 2.74/1k in 15 of 16 files; elsewhere 0.23/1k in 4 of 30."
+      "tier": 1,
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, single-register corpus (register condition waived), >=3 quotes",
+      "note": "Docs register 2.74/1k in 15 of 16 files; elsewhere 0.23/1k in 4 of 30. register_scope docs (review round 2026-10-07): present in at most 20% of the earlier files, so the pooled rate would overstate it for every other register.",
+      "register_scope": [
+        "docs"
+      ],
+      "review": {
+        "verdict": "nuanced",
+        "note": "Review round 2026-10-07: a docs-register habit; scoped to docs rather than left corpus-wide because it is near-absent in the five earlier registers."
+      }
     },
     {
       "id": "punctuation/parenthetical-aside",
@@ -4784,7 +4864,11 @@
         "such as",
         "e.g."
       ],
-      "note": "Counts every opening parenthesis; in the docs files about a third hold a pointer to a file, step or section. Docs register 16.82/1k in 16 of 16 files; elsewhere 3.12/1k in 21 of 30."
+      "note": "Counts every opening parenthesis; in the docs files about a third hold a pointer to a file, step or section. Docs register 16.82/1k in 16 of 16 files; elsewhere 3.12/1k in 21 of 30.",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "punctuation/scare-quote",
@@ -5054,22 +5138,27 @@
           "quote": "Don't pad the suite for its own sake; a handful of sharp cases beats a dozen redundant ones."
         }
       ],
-      "rate": 0.441,
-      "spread": 0.435,
+      "rate": 1.434,
+      "spread": 0.875,
       "range": [
         0.0,
         4.556
       ],
       "coverage": 1.0,
       "registers": [
-        "article",
-        "docs",
-        "email"
+        "docs"
       ],
-      "tier": 2,
-      "tier_reason": "present in under 60% of the measured documents",
-      "note": "Docs register 1.43/1k in 14 of 16 files; elsewhere 0.25/1k in 6 of 30.",
-      "regex": "(?:^|(?<=[.!?] )|(?<=\\*\\* ))[A-Z][^.;:!?\\n]{5,70}; [^.;:!?\\n]{5,70}\\."
+      "tier": 1,
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, single-register corpus (register condition waived), >=3 quotes",
+      "note": "Docs register 1.43/1k in 14 of 16 files; elsewhere 0.25/1k in 6 of 30. register_scope docs (review round 2026-10-07): present in at most 20% of the earlier files, so the pooled rate would overstate it for every other register.",
+      "regex": "(?:^|(?<=[.!?] )|(?<=\\*\\* ))[A-Z][^.;:!?\\n]{5,70}; [^.;:!?\\n]{5,70}\\.",
+      "register_scope": [
+        "docs"
+      ],
+      "review": {
+        "verdict": "nuanced",
+        "note": "Review round 2026-10-07: a docs-register habit; scoped to docs rather than left corpus-wide because it is near-absent in the five earlier registers."
+      }
     },
     {
       "id": "reveal-frames/cleft",
@@ -5162,7 +5251,11 @@
       "tier": 1,
       "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
       "note": "Docs register 1.61/1k in 14 of 16 files; elsewhere 1.09/1k in 16 of 30.",
-      "regex": "(?:^|(?<=[.!?] ))What [a-z][^.?!\\n:;]{1,70}? (?:is|are|was|were|stays|remains|becomes) |\\b(?:is|are|was|were) (?:exactly |precisely |also |not |still |therefore )?(?:what|where|why|how)\\b"
+      "regex": "(?:^|(?<=[.!?] ))What [a-z][^.?!\\n:;]{1,70}? (?:is|are|was|were|stays|remains|becomes) |\\b(?:is|are|was|were) (?:exactly |precisely |also |not |still |therefore )?(?:what|where|why|how)\\b",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "reveal-frames/colon-punchline",
@@ -6024,7 +6117,11 @@
       ],
       "tier": 2,
       "tier_reason": "present in under 60% of the measured documents",
-      "note": "Five or more comma-separated short items in one sentence. Docs register 0.92/1k in 11 of 16 files; elsewhere 1.73/1k in 13 of 30."
+      "note": "Five or more comma-separated short items in one sentence. Docs register 0.92/1k in 11 of 16 files; elsewhere 1.73/1k in 13 of 30.",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "rule-of-three/triad",
@@ -6978,7 +7075,11 @@
       ],
       "tier": 1,
       "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
-      "note": "Excludes the AI-only / profile-only mode names. Docs register 3.84/1k in 15 of 16 files; elsewhere 1.05/1k in 16 of 30."
+      "note": "Excludes the AI-only / profile-only mode names. Docs register 3.84/1k in 15 of 16 files; elsewhere 1.05/1k in 16 of 30.",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "spelling-lexical/favourite-word-own",
@@ -7072,7 +7173,11 @@
       "tier": 1,
       "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
       "note": "Docs register 2.28/1k in 13 of 16 files; elsewhere 0.73/1k in 16 of 30.",
-      "regex": "\\bown\\b"
+      "regex": "\\bown\\b",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "spelling-lexical/favourite-word-say-so",
@@ -7148,22 +7253,28 @@
           "quote": "never hand-edit `tier`, use `tier_override` and say why in `review.note`"
         }
       ],
-      "rate": 0.27,
-      "spread": 0.283,
+      "rate": 1.075,
+      "spread": 0.625,
       "range": [
         0.0,
         2.741
       ],
       "coverage": 1.0,
       "registers": [
-        "article",
         "docs"
       ],
-      "tier": 3,
-      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes",
-      "note": "Docs register 1.08/1k in 10 of 16 files; elsewhere 0.07/1k in 3 of 30.",
+      "tier": 1,
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, single-register corpus (register condition waived), >=3 quotes",
+      "note": "Docs register 1.08/1k in 10 of 16 files; elsewhere 0.07/1k in 3 of 30. register_scope docs (review round 2026-10-07): present in at most 20% of the earlier files, so the pooled rate would overstate it for every other register.",
       "regex": "\\bsa(?:y|ys|id|ying) (?:so|why|what|which|how|where)\\b",
-      "ignore_case": true
+      "ignore_case": true,
+      "register_scope": [
+        "docs"
+      ],
+      "review": {
+        "verdict": "nuanced",
+        "note": "Review round 2026-10-07: a docs-register habit; scoped to docs rather than left corpus-wide because it is near-absent in the five earlier registers."
+      }
     },
     {
       "id": "spelling-lexical/hedged-number",
@@ -7455,7 +7566,11 @@
       ],
       "tier": 1,
       "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
-      "note": "Coined noun-plus-participle modifiers (machine-written, word-weighted) that the suffix list of hyphen-compound misses. Docs register 3.00/1k in 15 of 16 files; elsewhere 3.35/1k in 29 of 30."
+      "note": "Coined noun-plus-participle modifiers (machine-written, word-weighted) that the suffix list of hyphen-compound misses. Docs register 3.00/1k in 15 of 16 files; elsewhere 3.35/1k in 29 of 30.",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "spelling-lexical/phrasal-compound",
@@ -7545,7 +7660,11 @@
       ],
       "tier": 1,
       "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
-      "note": "Three or more hyphenated parts. Docs register 2.36/1k in 14 of 16 files; elsewhere 1.53/1k in 20 of 30."
+      "note": "Three or more hyphenated parts. Docs register 2.36/1k in 14 of 16 files; elsewhere 1.53/1k in 20 of 30.",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "stock-phrasing/buzzword",
@@ -7619,10 +7738,10 @@
         }
       ],
       "tier": 2,
-      "tier_override": null,
+      "tier_override": 1,
       "review": {
         "verdict": "confirmed",
-        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+        "note": "Review round 2026-10-07: demoted 1 -> 2 by the docs files' spread; 60% of the earlier files show it, earlier tier kept by override. In the docs files the hits are mostly the content term 'harness' (ai_vocabulary lists it)."
       },
       "rate": 1.617,
       "spread": 0.587,
@@ -8001,10 +8120,10 @@
         }
       ],
       "tier": 2,
-      "tier_override": null,
+      "tier_override": 1,
       "review": {
         "verdict": "confirmed",
-        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+        "note": "Review round 2026-10-07: demoted 1 -> 2 by the docs files' spread; 70% of the earlier files show it, earlier tier kept by override."
       },
       "rate": 0.858,
       "spread": 0.543,
@@ -8096,10 +8215,10 @@
         }
       ],
       "tier": 2,
-      "tier_override": null,
+      "tier_override": 1,
       "review": {
         "verdict": "confirmed",
-        "note": "Carried over from the 2026-09-01 review round; re-confirm in the 2026-09-09 round. Re-confirmed in the 2026-09-09 round."
+        "note": "Review round 2026-10-07: demoted 1 -> 2 by the docs files' spread; 60% of the earlier files show it, earlier tier kept by override."
       },
       "rate": 1.883,
       "spread": 0.478,
@@ -8418,7 +8537,11 @@
       "tier_reason": "counted in every document, present in >=60% and >=3 docs, >=2 registers, >=3 quotes",
       "note": "Excludes roughly/nearly before a number (that is hedged-number). Epistemic hedges (perhaps, maybe, probably, I think) are near-absent in every register. Docs register 0.90/1k in 12 of 16 files; elsewhere 1.48/1k in 22 of 30.",
       "regex": "\\b(?:usually|typically|routinely|often|most often|mostly|roughly|generally|largely|sometimes|commonly|nearly|in principle|in practice)\\b",
-      "exclude": "\\b(?:roughly|nearly|generally) [\\$~]?\\d"
+      "exclude": "\\b(?:roughly|nearly|generally) [\\$~]?\\d",
+      "review": {
+        "verdict": "confirmed",
+        "note": ""
+      }
     },
     {
       "id": "tone-markers/quiet-adverb",
@@ -8689,21 +8812,27 @@
       "displaces": [
         "Do not"
       ],
-      "rate": 0.387,
-      "spread": 0.348,
+      "rate": 1.127,
+      "spread": 0.688,
       "range": [
         0.0,
         4.556
       ],
       "coverage": 1.0,
       "registers": [
-        "article",
         "docs"
       ],
-      "tier": 3,
-      "tier_reason": "present in <2 documents, spread <40%, or fewer than 2 quotes",
-      "note": "Docs register 1.13/1k in 11 of 16 files; elsewhere 0.25/1k in 5 of 30.",
-      "regex": "(?:^|(?<=[.!?:;—] )|(?<=\\*\\*))(?:[Dd]o not|[Dd]on[’']t|[Nn]ever) (?:\\*\\*not\\*\\* )?(?!what\\b|the\\b|an? \\b|to\\b)[a-z]"
+      "tier": 1,
+      "tier_reason": "counted in every document, present in >=60% and >=3 docs, single-register corpus (register condition waived), >=3 quotes",
+      "note": "Docs register 1.13/1k in 11 of 16 files; elsewhere 0.25/1k in 5 of 30. register_scope docs (review round 2026-10-07): present in at most 20% of the earlier files, so the pooled rate would overstate it for every other register.",
+      "regex": "(?:^|(?<=[.!?:;—] )|(?<=\\*\\*))(?:[Dd]o not|[Dd]on[’']t|[Nn]ever) (?:\\*\\*not\\*\\* )?(?!what\\b|the\\b|an? \\b|to\\b)[a-z]",
+      "register_scope": [
+        "docs"
+      ],
+      "review": {
+        "verdict": "nuanced",
+        "note": "Review round 2026-10-07: a docs-register habit; scoped to docs rather than left corpus-wide because it is near-absent in the five earlier registers."
+      }
     }
   ]
 }
