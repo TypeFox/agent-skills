@@ -424,8 +424,13 @@ REPORT_DB = _db([
 
 def test_is_enumeration_separates_a_word_list_from_a_general_rule():
     named = {"id": "x/y", "regex": r"\b(?:behaviour|colour|organised)\b"}
+    # The fixture profile's own British-spelling row: stems with a `\w*` tail are still a
+    # closed list, and this row is the one that let `standardized` ship unmarked.
+    stems = {"id": "spelling-lexical/british-spelling",
+             "regex": r"\b(?:realis\w*|behaviour\w*|colour\w*|favourite\w*|organis\w*)\b"}
     general = {"id": "x/z", "regex": r",\s+but\b"}
     assert textstats.is_enumeration(named)
+    assert textstats.is_enumeration(stems)
     assert not textstats.is_enumeration(general)
     assert not textstats.is_enumeration({"id": "x/w", "stat": "em_dash"})
 

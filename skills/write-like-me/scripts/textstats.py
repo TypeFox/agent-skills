@@ -552,7 +552,9 @@ def classify(value: Optional[float], pattern: Dict[str, Any], verd: str) -> str:
     return "neutral"
 
 
-WORD_ALTERNATION_RE = re.compile(r"[\w' -]+(?:\|[\w' -]+)+")
+# A branch is a plain word, optionally with a `\w*`/`\w+` stem tail: `realis\w*` names
+# one family member as much as `realise` does.
+WORD_ALTERNATION_RE = re.compile(r"(?:[\w' -]|\\w[*+?]?)+(?:\|(?:[\w' -]|\\w[*+?]?)+)+")
 
 
 def group_bodies(rx: str) -> List[str]:
@@ -589,10 +591,11 @@ def is_enumeration(pattern: Dict[str, Any]) -> bool:
     Such a counter sees only the members it names, so `match` on its row says the named
     forms are at the author's rate and says nothing about the rest of the family — the
     `-ize` a British-spelling alternation never listed. Detected structurally: an
-    alternation whose branches are plain words, either as the whole regex or as one group
-    inside it. The group case is the common one and the easiest to miss by eye: the closed
-    list is a verb or modal slot embedded in a general rule, as in `, which (?:is|means|
-    allows)` or `(?:can|cannot|must) … be \\w+ed`, where the surrounding structure is
+    alternation whose branches are plain words (a stem with a `\\w*` tail counts: `realis\\w*`
+    still names one member), either as the whole regex or as one group inside it. The
+    group case is the common one and the easiest to miss by eye: the closed list is a verb
+    or modal slot embedded in a general rule, as in `, which (?:is|means|allows)` or
+    `(?:can|cannot|must) … be \\w+ed`, where the surrounding structure is
     genuinely general and only the listed slot is closed. Reading such a row as a general
     rule is how a real instance of the habit — a `, which enables`, a `can't be mapped` —
     comes back `absent` and pushes a rewrite to swap a word that was already the author's.

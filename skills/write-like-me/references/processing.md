@@ -147,7 +147,7 @@ medium setting, no tone brief; dropped the em dash and "it's worth noting", kept
 11 of 24 patterns need a longer text to measure. Full report on request.
 ```
 
-Every figure in the report is this run's own measurement of the file actually delivered — the `measure` after the last edit, not a number from an earlier convergence round and not one counted by eye. `textstats.py measure INPUT REWRITTEN --db USER_DB.json --db data/ai-style-patterns.json --setting SETTING --report-table` prints the measured sections — the before/after table with its AI-evidence column, the do-not-touch list, the manual-pass list, and the judged patterns as a checklist — as markdown to paste. What it cannot know stays yours to write: the not-converged rows and their reasons, the side effects, the open questions, and the example per row.
+Every figure in the report is this run's own measurement of the file actually delivered — the `measure` after the last edit, not a number from an earlier convergence round and not one counted by eye. `textstats.py measure INPUT REWRITTEN --db USER_DB.json --db data/ai-style-patterns.json --setting SETTING --report-table` prints the measured sections — the before/after table with its AI-evidence column, the do-not-touch list, the manual-pass list, and the judged patterns as a checklist — as markdown to paste whole, each section under its printed heading: a section left out loses the rows it accounted for, and nothing else in the report lists them. What it cannot know stays yours to write: the not-converged rows and their reasons, the side effects, the open questions, and the example per row.
 
 The full report, for anything longer:
 
