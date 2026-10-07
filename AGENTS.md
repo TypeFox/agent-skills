@@ -1,6 +1,6 @@
 # TypeFox Agent Skills
 
-A collection of agent skills in the [agentskills.io](https://agentskills.io/) format for open source technologies maintained at TypeFox. The product is the Markdown skill definitions under `skills/`; the only build is the documentation website under `website/`. Scripts are Python 3.8+, stdlib-only; pytest is the only test dependency.
+A collection of general-purpose agent skills in the [agentskills.io](https://agentskills.io/) format, maintained by TypeFox. The skills are not tied to a specific project; a skill that is specific to one project belongs in that project's own repository, not here. The product is the Markdown skill definitions under `skills/`; the only build is the documentation website under `website/`. Scripts are Python 3.8+, stdlib-only; pytest is the only test dependency.
 
 ## STOP — before running any skill evaluation
 

@@ -2,7 +2,7 @@
 layout: home
 hero:
   name: TypeFox Agent Skills
-  tagline: Reusable instructions that coding agents load when a task calls for them. Install once, and the matching skill activates from your conversation context.
+  tagline: General-purpose instructions that coding agents load when a task calls for them. Install once, and the matching skill activates from your conversation context.
   actions:
     - theme: brand
       text: Browse the skills
@@ -24,6 +24,12 @@ features:
     details: Rewrite agent-written drafts so they read as you, from a style profile built from your own writing.
     link: /write-like-me
 ---
+
+## Scope
+
+The skills here are general-purpose. Each covers a practice or workflow that applies across projects, such as making a repository agent-ready, writing idiomatic Go, or publishing a VS Code extension.
+
+Skills that are specific to one project, such as a framework's API or a repository's build and release setup, are not collected here. They ship in that project's own repository, next to the code they describe.
 
 ## Install
 
