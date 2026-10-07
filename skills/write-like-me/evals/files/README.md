@@ -64,8 +64,10 @@ not evidence the unlisted `-ize` forms were caught. That gap is what eval 2's
 `american-spellings-substituted` probes.
 
 Contractions available for substitution: the draft carries 16 (as `textstats.py` counts
-them) and offers exactly 6 more uncontracted forms, one of which ("we had to handle") has no
-idiomatic contraction. **Pure substitution therefore tops out at 21**, below the author's
+them) and its prose offers 7 more uncontracted forms ("did not", "There is", "we would" ×2,
+"that is", "we had lived", and "we had to handle", which has no idiomatic contraction; the
+"We Would" in a heading is heading text and stays). **Pure substitution therefore tops out
+at 22**, below the author's
 range floor of 31.674 per 1k (≈29 here) — which is why eval 3's soft pass is asked for 20
 and not for the author's rate: closing the rest would mean writing new sentences, and that
 is manufacture at every setting.
