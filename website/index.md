@@ -17,9 +17,9 @@ features:
   - title: Go
     details: Community idioms for API design, errors, concurrency and naming, plus doc comments that render on pkg.go.dev.
     link: /idiomatic-go
-  - title: TypeScript and VS Code
-    details: Senior-level code review for TypeScript projects, and publishing extensions to the Marketplace and Open VSX.
-    link: /ts-code-reviewer
+  - title: VS Code
+    details: Publishing extensions to the Marketplace and Open VSX.
+    link: /publish-vscode-extension
   - title: Your own voice
     details: Rewrite agent-written drafts so they read as you, from a style profile built from your own writing.
     link: /write-like-me
