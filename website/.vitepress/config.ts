@@ -23,7 +23,6 @@ export default defineConfig({
                     { text: 'Idiomatic Go', link: '/idiomatic-go' },
                     { text: 'Publish VS Code Extension', link: '/publish-vscode-extension' },
                     { text: 'Skill Evals', link: '/skill-evals' },
-                    { text: 'TS Code Reviewer', link: '/ts-code-reviewer' },
                     { text: 'Write Like Me', link: '/write-like-me' }
                 ]
             }
