@@ -58,7 +58,12 @@ Usage
       `lists` or `headings` dimensions is marked [structural], and classed
       neutral where the input has no list or heading at all: inapplicable. The
       tier column is the effective tier: the review round's override where one
-      is set.
+      is set. The printout is an agenda a model reads, so what is not a rewrite
+      row and not evidence takes one line, not one each: rows the input is too
+      short to express (`too-short` in every column) and rows outside the
+      input's register are folded into a line of ids per DB, and a built-in
+      statistic or counter a loaded DB row carries as its `stat` appears only in
+      that row, with the DB's rate and a verdict. --json prints everything.
   textstats.py measure FILE... --vet
       Vetting view (references/technique.md, Step 2): every document whose rate
       on a high-signal AI marker stands out against the median of the others.
@@ -104,9 +109,11 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import os
 import re
 import statistics
 import sys
+import textwrap
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 HEADING_RE = re.compile(r"^\s{0,3}#{1,6}\s+(.*?)\s*#*\s*$")
@@ -545,7 +552,9 @@ def classify(value: Optional[float], pattern: Dict[str, Any], verd: str) -> str:
     return "neutral"
 
 
-WORD_ALTERNATION_RE = re.compile(r"[\w' -]+(?:\|[\w' -]+)+")
+# A branch is a plain word, optionally with a `\w*`/`\w+` stem tail: `realis\w*` names
+# one family member as much as `realise` does.
+WORD_ALTERNATION_RE = re.compile(r"(?:[\w' -]|\\w[*+?]?)+(?:\|(?:[\w' -]|\\w[*+?]?)+)+")
 
 
 def group_bodies(rx: str) -> List[str]:
@@ -582,10 +591,11 @@ def is_enumeration(pattern: Dict[str, Any]) -> bool:
     Such a counter sees only the members it names, so `match` on its row says the named
     forms are at the author's rate and says nothing about the rest of the family — the
     `-ize` a British-spelling alternation never listed. Detected structurally: an
-    alternation whose branches are plain words, either as the whole regex or as one group
-    inside it. The group case is the common one and the easiest to miss by eye: the closed
-    list is a verb or modal slot embedded in a general rule, as in `, which (?:is|means|
-    allows)` or `(?:can|cannot|must) … be \\w+ed`, where the surrounding structure is
+    alternation whose branches are plain words (a stem with a `\\w*` tail counts: `realis\\w*`
+    still names one member), either as the whole regex or as one group inside it. The
+    group case is the common one and the easiest to miss by eye: the closed list is a verb
+    or modal slot embedded in a general rule, as in `, which (?:is|means|allows)` or
+    `(?:can|cannot|must) … be \\w+ed`, where the surrounding structure is
     genuinely general and only the listed slot is closed. Reading such a row as a general
     rule is how a real instance of the habit — a `, which enables`, a `can't be mapped` —
     comes back `absent` and pushes a rewrite to swap a word that was already the author's.
@@ -973,6 +983,21 @@ def cmd_vet(results: List[Tuple[str, Dict[str, Any]]]) -> int:
     return 0
 
 
+def column_labels(names: Sequence[str]) -> List[str]:
+    """Short column labels for the measured files: the basename, or the path where basenames
+    collide, cut to 22 characters from the right. The full paths print once, on the first line."""
+    base = [os.path.basename(n) or n for n in names]
+    return [(b if base.count(b) == 1 else n)[-22:] for b, n in zip(base, names)]
+
+
+def fold_ids(lead: str, ids: Sequence[str]) -> str:
+    """A lead-in line and the pattern ids wrapped under it: a row that is neither a rewrite row
+    nor evidence is listed, not printed with columns it would leave empty."""
+    return "  " + lead + "\n" + textwrap.fill(", ".join(ids), width=110, initial_indent="    ",
+                                              subsequent_indent="    ", break_long_words=False,
+                                              break_on_hyphens=False)
+
+
 def cmd_measure(args: argparse.Namespace) -> int:
     results = []
     for path in args.files:
@@ -1064,7 +1089,9 @@ def cmd_measure(args: argparse.Namespace) -> int:
     if args.report_table:
         return cmd_report_table(args, results, dbs, max_tier)
     names = [p for p, _ in results]
-    width = max(28, *(len(n) for n in names))
+    labels = column_labels(names)
+    width = max(16, *(len(l) for l in labels))
+    cols = "".join("{:>{w}}".format(l, w=width + 2) for l in labels)
     # With the comparison flags the first file is the input and the rest are its rewrites:
     # class and gap are pinned to it (processing.md, Step 6), and so is the length the
     # verdicts are judged at, or a rewrite that came out shorter would turn the rows it
@@ -1073,13 +1100,27 @@ def cmd_measure(args: argparse.Namespace) -> int:
     unvetoed = {p["id"] for p, _, _ in
                 unvetoed_ai_rows(dbs, results[0][1], args.register, pinned or results[0][1]["stats"])}
     ai_only = not any(db.get("kind") != "ai" for _, db in dbs)
-    print("{:<32}".format("stat") + "".join("{:>{w}}".format(n[-width:], w=width + 2) for n in names))
-    for key in STATS_HELP:
-        print("{:<32}".format(key) + "".join("{:>{w}}".format(fmt(r["stats"][key]), w=width + 2) for _, r in results))
+    if len(names) == 1:
+        print("file: " + names[0])
+    else:
+        print("files: " + "; ".join("{} = {}".format(l, n) for l, n in zip(labels, names)))
+    # A built-in a loaded DB row carries as its `stat` is shown in that row, next to the DB's
+    # rate and a verdict; the block lists only the rest. The printout is read by a model, and
+    # a number printed twice costs twice.
+    carried = {p.get("stat") for _, db in dbs for p in db.get("patterns", []) if p.get("stat")}
+    stat_keys = [k for k in STATS_HELP if k not in carried]
+    counter_keys = [k for k in COUNTERS if k not in carried]
+    print("{:<30}".format("stat") + cols)
+    for key in stat_keys:
+        print("{:<30}".format(key) + "".join("{:>{w}}".format(fmt(r["stats"][key]), w=width + 2) for _, r in results))
     print()
-    print("{:<32}".format("per 1k words") + "".join("{:>{w}}".format(n[-width:], w=width + 2) for n in names))
-    for key in COUNTERS:
-        print("{:<32}".format(key) + "".join("{:>{w}}".format(fmt(r["per_1k"][key]), w=width + 2) for _, r in results))
+    print("{:<30}".format("per 1k words") + cols)
+    for key in counter_keys:
+        print("{:<30}".format(key) + "".join("{:>{w}}".format(fmt(r["per_1k"][key]), w=width + 2) for _, r in results))
+    folded_builtins = len(STATS_HELP) + len(COUNTERS) - len(stat_keys) - len(counter_keys)
+    if folded_builtins:
+        print("  {} built-in(s) a loaded DB row carries as its stat are shown in that row; "
+              "`textstats.py counters` lists them all".format(folded_builtins))
     for db_path, db in dbs:
         ai = db.get("kind") == "ai"
         classified = bool(args.sort_gap or args.setting) and not ai
@@ -1091,11 +1132,19 @@ def cmd_measure(args: argparse.Namespace) -> int:
         else:
             print("DB patterns from {} (measurable ones only)".format(db_path))
         rows = []
+        out_of_scope: List[str] = []  # neither rewrite rows nor evidence: one line of ids
+        too_short: List[str] = []     # no verdict at the input's length: one line of ids
         for p in db.get("patterns", []):
             values = [measure_pattern(p, r) for _, r in results]
             if all(v is None for v in values):
                 continue
+            if not in_scope(p, args.register):
+                out_of_scope.append(p["id"])
+                continue
             verdicts = [verdict(v, p, pinned or r["stats"]) for v, (_, r) in zip(values, results)]
+            if all(vd == "too-short" for vd in verdicts):
+                too_short.append(p["id"])
+                continue
             gap = cls = None
             name = p["id"] + scope_mark(p, args.register) + register_mark(p)
             if ai:
@@ -1104,15 +1153,13 @@ def cmd_measure(args: argparse.Namespace) -> int:
                 name += (" [enum]" if is_enumeration(p) else "") + (" [structural]" if is_structural(p) else "")
                 gap = gap_size(values[0], p, results[0][1]["stats"], verdicts[0])
                 cls = classify(values[0], p, verdicts[0])
-                if not in_scope(p, args.register):
-                    cls, gap = "neutral", 0.0
-                elif cls in EDITING_CLASSES and is_inapplicable(p, results[0][1]["stats"]):
+                if cls in EDITING_CLASSES and is_inapplicable(p, results[0][1]["stats"]):
                     cls, gap = "neutral", 0.0
                 elif args.setting and cls in EDITING_CLASSES and effective_tier(p) > max_tier:
                     cls += " [manual]"
             rows.append((p, name, values, verdicts, gap, cls))
         if classified:
-            note = ["class and gap for {}".format(names[0])]
+            note = ["class and gap for {}".format(labels[0])]
             if len(results) > 1:
                 note.append("later columns judged at its length")
             if args.setting:
@@ -1121,15 +1168,15 @@ def cmd_measure(args: argparse.Namespace) -> int:
                 rows.sort(key=lambda t: -(t[4] or 0.0))
                 note.append("largest gap first")
             print("  " + "; ".join(note))
-        pid_w = max([40] + [len(name) for _, name, _, _, _, _ in rows])
+        pid_w = max([36] + [len(name) for _, name, _, _, _, _ in rows])
         head = "{:<16}{:>6}  ".format("class", "gap") if classified else ""
-        head += "{:<{pw}}{:>5}{:>12}{:>16}".format("pattern", "tier", "db rate", "db range", pw=pid_w)
-        print(head + "".join("{:>{w}}".format(n[-width:], w=width + 2) for n in names))
+        head += "{:<{pw}}{:>5}{:>9}{:>14}".format("pattern", "tier", "db rate", "db range", pw=pid_w)
+        print(head + cols)
         for p, name, values, verdicts, gap, cls in rows:
             rng = p.get("range")
             rng_s = "{}–{}".format(fmt(rng[0]), fmt(rng[1])) if rng else "-"
             row = "{:<16}{:>6}  ".format(cls, fmt(gap)) if classified else ""
-            row += "{:<{pw}}{:>5}{:>12}{:>16}".format(name, effective_tier(p), fmt(p.get("rate")), rng_s, pw=pid_w)
+            row += "{:<{pw}}{:>5}{:>9}{:>14}".format(name, effective_tier(p), fmt(p.get("rate")), rng_s, pw=pid_w)
             row += "".join("{:>{w}}".format("{} {}".format(fmt(v), vd), w=width + 2)
                            for v, vd in zip(values, verdicts))
             print(row)
@@ -1144,9 +1191,6 @@ def cmd_measure(args: argparse.Namespace) -> int:
         if any("[scope:" in name for _, name, _, _, _, _ in rows):
             marks.append("[scope: ...] = a register-scoped row, a target only for an input in one "
                          "of those registers; pass --register to set the others aside")
-        if any("[out of scope]" in name for _, name, _, _, _, _ in rows):
-            marks.append("[out of scope] = the input's register is outside this row's scope: "
-                         "not a rewrite row, and not evidence")
         if any(" rate]" in name for _, name, _, _, _, _ in rows):
             marks.append("[<register> rate] = rate, range and spread recomputed over the profile's documents "
                          "of the input's register (three or more measured); the pooled figures are "
@@ -1160,17 +1204,26 @@ def cmd_measure(args: argparse.Namespace) -> int:
                          "targets it, so read its hits for the manual pass")
         for mark in marks:
             print("  " + mark)
+        judged = []
         if not ai or ai_only:
-            judged = [p for p in db.get("patterns", [])
-                      if all(measure_pattern(p, r) is None for _, r in results)]
-            if judged:
-                print()
-                print("  read for these — no counter, so no row above and no verdict; "
-                      "each one still gets a class and a line in the report")
-                for p in judged:
-                    print("  {:<{pw}}{:>5}  {}".format(
-                        p["id"] + scope_mark(p, args.register), effective_tier(p),
-                        p.get("description", ""), pw=pid_w))
+            for p in db.get("patterns", []):
+                if all(measure_pattern(p, r) is None for _, r in results):
+                    (judged if in_scope(p, args.register) else out_of_scope).append(p)
+        if too_short:
+            print(fold_ids("too short to judge ({}): the rate predicts less than one occurrence at the "
+                           "input's length, so no count is evidence either way".format(len(too_short)),
+                           too_short))
+        if out_of_scope:
+            print(fold_ids("out of scope for register {} ({}): not rewrite rows, not evidence".format(
+                args.register, len(out_of_scope)),
+                [p if isinstance(p, str) else p["id"] for p in out_of_scope]))
+        if judged:
+            print()
+            print("  read for these — no counter, so no row above and no verdict; "
+                  "each one still gets a class and a line in the report")
+            for p in judged:
+                print("  {:<{pw}}{:>5}  {}".format(p["id"] + scope_mark(p, args.register), effective_tier(p),
+                                                  p.get("description", ""), pw=pid_w))
     print("  tier = effective tier: the review round's override where one is set")
     return 0
 

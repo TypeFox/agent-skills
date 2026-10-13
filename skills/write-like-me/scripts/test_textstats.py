@@ -267,6 +267,18 @@ def test_strictness_ceilings_agree_with_the_db_script():
     assert textstats.effective_tier({"tier": 2}) == styledb.effective_tier({"tier": 2}) == 2
 
 
+def fold_block(out, lead):
+    """The ids folded under a lead line of a measure printout ("too short to judge (3): ...")."""
+    lines = out.splitlines()
+    start = next(i for i, l in enumerate(lines) if l.startswith("  " + lead))
+    ids = []
+    for l in lines[start + 1:]:
+        if not l.startswith("    "):
+            break
+        ids += [t.strip() for t in l.split(",") if t.strip()]
+    return ids
+
+
 def comparison_rows(out):
     """The classified DB rows of a measure run, in the order they were printed."""
     return [l for l in out.splitlines()
@@ -412,8 +424,13 @@ REPORT_DB = _db([
 
 def test_is_enumeration_separates_a_word_list_from_a_general_rule():
     named = {"id": "x/y", "regex": r"\b(?:behaviour|colour|organised)\b"}
+    # The fixture profile's own British-spelling row: stems with a `\w*` tail are still a
+    # closed list, and this row is the one that let `standardized` ship unmarked.
+    stems = {"id": "spelling-lexical/british-spelling",
+             "regex": r"\b(?:realis\w*|behaviour\w*|colour\w*|favourite\w*|organis\w*)\b"}
     general = {"id": "x/z", "regex": r",\s+but\b"}
     assert textstats.is_enumeration(named)
+    assert textstats.is_enumeration(stems)
     assert not textstats.is_enumeration(general)
     assert not textstats.is_enumeration({"id": "x/w", "stat": "em_dash"})
 
@@ -606,11 +623,15 @@ def test_register_sets_scoped_rows_aside_and_shows_the_effective_tier(tmp_path, 
     out = capsys.readouterr().out
     assert [l for l in out.splitlines() if l.startswith("add") and "sign-off [scope: email]" in l]
     assert [l for l in out.splitlines() if "tone-markers/warmth [scope: email]" in l]
-    # with it, an out-of-scope row is neutral and the override is the tier shown
+    # with it, an out-of-scope row is neither a rewrite row nor evidence, so it is folded into one
+    # line of ids (the judged, scoped row with it) instead of printing as a neutral row; the
+    # override is the tier shown
     assert textstats.main(["measure", str(doc), "--db", str(user), "--sort-gap", "--register", "article"]) == 0
     out = capsys.readouterr().out
-    row = [l for l in out.splitlines() if "sign-off [out of scope]" in l][0]
-    assert row.startswith("neutral") and row.split()[1] == "0"
+    assert not [l for l in out.splitlines() if "sign-off" in l and l.startswith("neutral")]
+    assert set(fold_block(out, "out of scope for register article (2)")) == {
+        "opener-closer/sign-off", "tone-markers/warmth"}
+    assert "read for these" not in out  # the only judged row is out of scope
     dash = [l for l in out.splitlines() if "punctuation/em-dash" in l][0]
     assert dash.startswith("remove") and dash.split()[3] == "1"
     assert textstats.main(["measure", str(doc), "--db", str(user), "--register", "email", "--json"]) == 0
@@ -828,10 +849,15 @@ def test_measure_register_re_rates_rows_from_the_manifest(tmp_path, capsys):
     row = next(l for l in out.splitlines() if "question-mark" in l)
     assert "[article rate]" in row and row.startswith("remove") and " 1 " in row  # the register's rate
     assert "[<register> rate]" in out
-    assert [l for l in out.splitlines() if "question-mark" in l and "rate]" not in l and "3 " in l]
-    assert textstats.main(["measure", str(doc), "--db", str(user), "--register", "article", "--json"]) == 0
-    row = json.loads(capsys.readouterr().out)[str(doc)]["patterns"]["punctuation/question-mark"]
+    # the AI row's pooled 3 per 1k predicts less than one occurrence in this draft, so it is
+    # folded as too short; its figures still did not move, which the JSON shows
+    assert fold_block(out, "too short to judge (1)") == ["punctuation/question-mark"]
+    assert textstats.main(["measure", str(doc), "--db", str(user), "--db", str(ai),
+                           "--register", "article", "--json"]) == 0
+    entry = json.loads(capsys.readouterr().out)[str(doc)]
+    row = entry["patterns"]["punctuation/question-mark"]
     assert row["db_rate"] == 1.0 and row["register_rate"]["pooled_rate"] == 5.0
+    assert entry["ai_patterns"]["punctuation/question-mark"]["db_rate"] == 3.0
 
 
 def test_measure_marks_ai_rows_the_profile_has_no_row_for(tmp_path, capsys):
@@ -900,3 +926,85 @@ def test_ai_only_run_reports_machine_typical_ai_rows_as_removals(tmp_path, capsy
             if l.startswith("| reveal-frames/question-answer | remove | 2 | high |")]
     assert "[no author row]" not in out
     assert "- sentence-rhythm/fragment (tier 2)" in rest
+
+
+def test_measure_folds_what_is_neither_a_rewrite_row_nor_evidence(tmp_path, capsys):
+    # The printout is an agenda a model reads. A row the input cannot express at its length
+    # and a row outside the input's register say nothing a rewrite acts on, so each kind takes
+    # one line of ids per DB instead of a row of columns it leaves empty.
+    doc = tmp_path / "note.md"
+    doc.write_text("Notes: I fixed it \u2014 the cause was DNS. " + "More words follow here. " * 20,
+                   encoding="utf-8")
+    user = tmp_path / "user.json"
+    user.write_text(json.dumps(_db([
+        {"id": "punctuation/em-dash", "regex": "\u2014", "kind": "absence", "unit": "per_1k_words",
+         "rate": 0.0, "range": [0.0, 0.0], "spread": 1.0, "tier": 1},
+        {"id": "connectives/so-initial", "regex": r"(?:^|(?<=[.!?]\s))So", "unit": "per_1k_words",
+         "rate": 1.5, "range": [0.0, 4.0], "spread": 0.8, "tier": 1},  # 0.16 occurrences predicted
+        {"id": "opener-closer/sign-off", "regex": "Cheers", "unit": "per_1k_words", "rate": 9.0,
+         "range": [4.0, 12.0], "spread": 1.0, "tier": 1, "register_scope": ["email"]},
+        {"id": "tone-markers/warmth", "measurement": "judged", "unit": "per_1k_words", "rate": 1.0,
+         "tier": 2, "description": "Warm.", "register_scope": ["email"]},
+        {"id": "opener-closer/closer-punch", "measurement": "judged", "unit": "per_1k_words",
+         "rate": 1.0, "tier": 2, "description": "Ends on a punch."}])), encoding="utf-8")
+    assert textstats.main(["measure", str(doc), "--db", str(user), "--sort-gap", "--setting", "medium",
+                           "--register", "article"]) == 0
+    out = capsys.readouterr().out
+    rows = comparison_rows(out)
+    assert len(rows) == 1 and rows[0].startswith("remove") and "punctuation/em-dash" in rows[0]
+    assert fold_block(out, "too short to judge (1)") == ["connectives/so-initial"]
+    assert set(fold_block(out, "out of scope for register article (2)")) == {
+        "opener-closer/sign-off", "tone-markers/warmth"}
+    assert "[out of scope]" not in out
+    # the in-scope judged row is still offered for reading, the scoped one is not
+    judged = out.split("read for these")[1]
+    assert "opener-closer/closer-punch" in judged and "tone-markers/warmth" not in judged
+    # --json still carries every row
+    assert textstats.main(["measure", str(doc), "--db", str(user), "--register", "article", "--json"]) == 0
+    entry = json.loads(capsys.readouterr().out)[str(doc)]
+    assert entry["patterns"]["connectives/so-initial"]["verdict"] == "too-short"
+    assert entry["patterns"]["opener-closer/sign-off"]["out_of_scope"] is True
+    assert entry["judged_patterns"]["tone-markers/warmth"]["out_of_scope"] is True
+
+
+def test_measure_prints_a_built_in_only_where_no_db_row_carries_it(tmp_path, capsys):
+    # A DB row with `stat: em_dash` shows the em-dash rate next to the DB's rate and a verdict;
+    # printing the bare counter as well would print the same number twice.
+    doc = tmp_path / "draft.md"
+    doc.write_text("A draft \u2014 with one dash; and a semicolon. " + "More words follow here. " * 60,
+                   encoding="utf-8")
+    assert textstats.main(["measure", str(doc)]) == 0
+    bare = capsys.readouterr().out
+    assert [l for l in bare.splitlines() if l.startswith("em_dash ")]
+    assert [l for l in bare.splitlines() if l.startswith("semicolon ")]
+    assert "built-in(s) a loaded DB row carries" not in bare
+    db = tmp_path / "db.json"
+    db.write_text(json.dumps(_db([
+        {"id": "punctuation/em-dash", "stat": "em_dash", "unit": "per_1k_words", "rate": 7.5,
+         "range": [0.0, 15.0], "spread": 0.9, "tier": 1},
+        {"id": "sentence-rhythm/median-length", "stat": "sentence_len_median", "unit": "words",
+         "rate": 12.0, "range": [8.0, 20.0], "spread": 1.0, "tier": 1}])), encoding="utf-8")
+    assert textstats.main(["measure", str(doc), "--db", str(db)]) == 0
+    out = capsys.readouterr().out
+    assert not [l for l in out.splitlines() if l.startswith("em_dash ")]
+    assert not [l for l in out.splitlines() if l.startswith("sentence_len_median ")]
+    assert [l for l in out.splitlines() if l.startswith("semicolon ")]  # no row carries it
+    assert [l for l in out.splitlines() if l.startswith("words ")]
+    assert "2 built-in(s) a loaded DB row carries as its stat are shown in that row" in out
+    assert [l for l in out.splitlines() if l.startswith("punctuation/em-dash") and l.rstrip().endswith("match")]
+
+
+def test_measure_names_the_files_once_and_keeps_the_columns_narrow(tmp_path, capsys):
+    deep = tmp_path / "a" / "rather" / "long" / "directory" / "name" / "for" / "the" / "input"
+    deep.mkdir(parents=True)
+    a = deep / "draft.md"
+    a.write_text("We shipped it. " * 100, encoding="utf-8")
+    b = deep / "draft.styled.md"
+    b.write_text("We shipped it. " * 90, encoding="utf-8")
+    assert textstats.main(["measure", str(a), str(b)]) == 0
+    out = capsys.readouterr().out
+    assert out.startswith("files: draft.md = {}; draft.styled.md = {}".format(a, b))
+    assert out.count(str(a)) == 1 and out.count(str(b)) == 1
+    header = [l for l in out.splitlines() if l.startswith("stat ")][0]
+    assert header.split()[1:] == ["draft.md", "draft.styled.md"]
+    assert max(len(l) for l in out.splitlines() if l.startswith(("words", "em_dash"))) < 90

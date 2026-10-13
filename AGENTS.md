@@ -26,6 +26,7 @@ Installing skills for end use is `npx skills add TypeFox/agent-skills` (see READ
 
 - `skills/<name>/` — one skill per folder: `SKILL.md` (frontmatter `name` matches the folder; `description` states when to trigger *and* when not to; the body carries the procedure and points to the reference that owns each piece of detail), `references/` for that detail, loaded on demand, `evals/evals.json` for eval definitions, optional `assets/`, `scripts/`, and `data/` (bundled data files the skill reads).
 - `skills/<name>-workspace/` — gitignored eval output, recreated by skill-evals runs.
+- `data/write-like-me/` — the maintainers' AI-generated corpus behind write-like-me's bundled AI DB
 - `website/` — VitePress sources for [typefox.dev/agent-skills](https://typefox.dev/agent-skills/): hand-written usage guides, one page per skill at the website root (`website/<skill-name>.md`, so the URL is `typefox.dev/agent-skills/<skill-name>`), `index.md` as the landing page, and `.vitepress/config.ts` for base path, sidebar, and search. Nothing on the site is generated from `skills/`. `.github/workflows/docs.yml` builds it on every PR that touches it and deploys from `main`.
 - To create or modify a skill use the skill-creator skill; to measure whether it helps use skill-evals (both installable per README).
 
@@ -45,6 +46,7 @@ Skill changes mostly fold back findings — from an eval report, a run in anothe
 ## Boundaries and definition of done
 
 - Never edit `skills/*-workspace/` — generated eval output.
+- Never edit `data/write-like-me/` by hand — it is the corpus the AI DB's quotes and counts are verified against; the snapshots under its `skills/` are renewed only by a DB refresh that copies the skills again.
 - Files under `skills/*/evals/files/` are eval fixtures and may be *intentionally broken* (dead paths, bloated agent docs). Never "fix" them in repo-wide cleanups; check_docs excludes them deliberately.
 - Done means: the check_docs command above passes locally with output shown, and any changed `SKILL.md` frontmatter still matches its folder name. Run the pytest suite only when a change touches `skills/*/scripts/` — skill scripts are self-contained, so other changes cannot affect them.
 - A new skill ships its `evals/evals.json` in the same PR. A substantive change to an existing skill includes reviewing its `evals/evals.json` in the same change — do the prompts, expected outputs, and assertions still describe the changed behavior? — and updating it where they don't. Only *re-running* evals is a judgment call (they are token-expensive), not a gate; the spec review is cheap and always happens.
