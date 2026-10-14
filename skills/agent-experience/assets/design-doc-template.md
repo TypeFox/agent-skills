@@ -74,15 +74,15 @@ heading cannot be told apart from a concern nobody considered. -->
 
 ## Amendments
 
-<!-- Append-only, dated. The change that alters the design adds a line here
-in the same change — never a silent rewrite — so a reader can tell the
-original design from what changed. A design replaced wholesale gets a new
-doc; mark this one historical in the index. -->
+<!-- Append-only, dated, a line or two each: the delta and the decision that
+drove it; build facts go to the exec plan, not here (references/docs-structure.md,
+Design docs lifecycle). The change that alters the design adds a line here in
+the same change — never a silent rewrite — so a reader can tell the original
+design from what changed. A design replaced wholesale gets a new doc; mark this
+one historical in the index. -->
 
-- YYYY-MM-DD: (what changed and why; the ADR or exec plan that drove it)
+- YYYY-MM-DD: (the delta and the decision; the ADR or exec plan that drove it)
 
-<!-- Lifecycle (references/docs-structure.md, Design docs): amended in the same
-change that alters the design; the trust label lives in design-docs/index.md.
-check_docs.py verifies that the paths this doc cites exist, not that the
+<!-- check_docs.py verifies that the paths this doc cites exist, not that the
 design is still true — a stale design doc is worse than none, because an agent
 believes it. -->
