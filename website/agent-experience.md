@@ -86,7 +86,7 @@ docs/
 └── security-guidelines.md    # per-concern rules no tool enforces, one file per concern
 ```
 
-- **AGENTS.md** is an overview of about 150 lines: what the project is, the commands (all verified by running them), what the main directories are for, the conventions no tool enforces, what counts as done, and pointers into `docs/`. Every line must prevent a mistake the agent would otherwise make; everything else is left out.
+- **AGENTS.md** is an overview of about 150 lines: what the project is, the commands (all verified by running them), what the main directories are for, the conventions no tool enforces, what counts as done, and pointers into `docs/`. Every line must prevent a mistake the agent would otherwise make; everything else is left out. The pointers say what each doc holds and what stays out of it, and the definition of done says where the facts a change produces go, so that later sessions keep the docs lean whether or not they have this skill.
 - **CLAUDE.md** contains only the line `@AGENTS.md`, because Claude Code reads CLAUDE.md and not AGENTS.md. Other tools get a similar one-line pointer at their own location. There is one source and no copies.
 - **docs/** holds the details that AGENTS.md points to and the knowledge that future sessions need. Each kind of file answers one question: `ARCHITECTURE.md` the structure, product specs the intended behavior, design docs the implementation strategy, architecture decision records (ADRs) the reasons, exec plans the state of ongoing work.
 - Each fact is written down in exactly one place, and other places link to it. Specs and design docs are only written when there is a reason, such as a feature about to be built or a behavior that is disputed, not for every module.
