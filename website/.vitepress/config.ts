@@ -22,6 +22,7 @@ export default defineConfig({
                     { text: 'Go Documentation', link: '/go-documentation' },
                     { text: 'Idiomatic Go', link: '/idiomatic-go' },
                     { text: 'Publish VS Code Extension', link: '/publish-vscode-extension' },
+                    { text: 'Review With Me', link: '/review-with-me' },
                     { text: 'Skill Evals', link: '/skill-evals' },
                     { text: 'Write Like Me', link: '/write-like-me' }
                 ]
