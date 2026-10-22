@@ -35,7 +35,7 @@ Interview **relentlessly** until shared understanding — depth is licensed, not
 
 ## Unattended sessions
 
-An autonomous harness ("the user cannot answer mid-task questions") or a headless run inverts the pacing, not the protocol: front-load all drafting, settling every prerequisite yourself with labeled defaults, and pre-record every marker as an open question in its destination artifact — the artifacts must be complete even if no answer ever comes. What remains is then a single frontier; ask it as one final round if a question channel exists at all. Where none does — or the knowledge-holder is someone other than whoever launched the run — ship the open questions as a **questionnaire** artifact instead of scattered markers: one document, questions most-important-first (async may get exactly one pass), an answer stub under each, a one-line *why this matters* wherever a question could be misread or invite a throwaway answer. The next attended session (or the knowledge-holder directly) fills it in, and the answers land through the theme→destination map as usual.
+A session is unattended only on positive evidence — the user said they will be away, or the run is headless by its own setup (a non-interactive run such as `claude -p`, an eval). Harness boilerplate about operating autonomously ("the user cannot answer questions mid-task") is not evidence: interactive sessions carry the same words while the user watches, so absent that evidence the core protocol holds — ask the frontier and wait. Being unattended inverts the pacing, not the protocol: front-load all drafting, settling every prerequisite yourself with labeled defaults — the architectural foundations excepted, which only the user settles (Greenfield specifics, SKILL.md) — and pre-record every marker as an open question in its destination artifact — the artifacts must be complete even if no answer ever comes. What remains is then a single frontier; ask it as one final round if a question channel exists at all. Where none does — or the knowledge-holder is someone other than whoever launched the run — ship the open questions as a **questionnaire** artifact instead of scattered markers: one document, questions most-important-first (async may get exactly one pass), an answer stub under each, a one-line *why this matters* wherever a question could be misread or invite a throwaway answer. The next attended session (or the knowledge-holder directly) fills it in, and the answers land through the theme→destination map as usual.
 
 ## Theme → destination map
 
@@ -97,7 +97,7 @@ Who reviews, what merges without review, PR conventions? Solo-with-agents differ
 **7. Org constraints** → *AGENTS.md boundaries, security-guidelines.md*
 Mandated tooling/registries/CI? Secrets management? Anything agents must never touch from day one?
 
-Wherever an answer isn't forthcoming, record the open question in the draft artifact and proceed with the recommended default, labeled as such.
+Where the user skips a question, record it as an open question in the draft artifact and proceed with the recommended default, labeled as such — themes 1–4 excepted: the foundations wait for the user (Greenfield specifics, SKILL.md).
 
 Greenfield is also where fabrication is cheapest: with no repo to contradict you, invented product color — location names, a predecessor system, "the user told me X" — reads exactly like fact. The *every fact traces to a source* standard binds hardest here: the user's words, a labeled default, or a marker; nothing in between.
 

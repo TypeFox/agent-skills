@@ -39,7 +39,7 @@ The skill works through six steps:
 5. **Generate and wire.** Writes the final AGENTS.md and CLAUDE.md, the docs folder, and checks for the rules that a tool should enforce, each with an error message that tells the agent what to do instead.
 6. **Prove and hand off.** Runs every new check and the skill's doc check on the final state, confirms every statement in the new docs against evidence, and gives you a list of the work that remains, in order.
 
-If nobody is there to answer, for example in a headless run, the interview is reduced to a single round or the open questions are written to a file.
+If you will not be there to answer, say so in your request, or run the skill headless: the interview is then reduced to a single round, or the open questions are written to a file.
 
 ### Improve: agent docs exist but do not help
 
@@ -53,7 +53,7 @@ The same steps, limited to the existing docs. The skill reviews them, removes ev
 
 > I'm starting a new project where coding agents will write most of the code and we mostly review. Set up the foundations for agent-first development.
 
-With no code to look at, the skill starts with the interview: what the product is for, who uses it, the stack, and how the code will be structured. From the answers it sets up AGENTS.md and CLAUDE.md, a one-command setup and a task runner, fast checks that run while the agent works (type check, lint, tests, secrets scan), and a docs folder with the stack decisions and the product intent written down. The skill prepares the repository around the project scaffolding you chose. It does not build the application: at most a placeholder that the checks can run against.
+With no code to look at, the skill starts with the interview: what the product is for, who uses it, the stack, and how the code will be structured. These are your decisions: the skill recommends, and it builds nothing until you have answered. If you are not there to answer, it writes down the product description and the open questions and stops. From the answers it sets up AGENTS.md and CLAUDE.md, a one-command setup and a task runner, fast checks that run while the agent works (type check, lint, tests, secrets scan), and a docs folder with the stack decisions and the product intent written down. The skill prepares the repository around the project scaffolding you chose. It does not build the application: at most a placeholder that the checks can run against.
 
 ### Consult: a question or one small change
 
